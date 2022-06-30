@@ -117,16 +117,61 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Dependencies_MainPackage" xml:space="preserve">
-    <value>main package</value>
-  </data>
-	<data name="Dependencies_ReadingOptionalPackages" xml:space="preserve">
-    <value>Reading optional packages...</value>
-  </data>
-	<data name="Dependencies_ReadingRelations" xml:space="preserve">
-    <value>Reading relations…</value>
-  </data>
-	<data name="Dependencies_Reading_Format" xml:space="preserve">
-    <value>Reading {0}...</value>
-  </data>
+	<data name="Winget_Downloading_Format" xml:space="preserve">
+		<value>Die Datei wird heruntergeladen... ({0}%)</value>
+	</data>
+	<data name="Winget_Error_DownloadFailed" xml:space="preserve">
+		<value>Die Datei konnte nicht heruntergeladen werden.</value>
+	</data>
+	<data name="Winget_Error_DownloadFailed_Format" xml:space="preserve">
+		<value>Die Datei {0} konnte nicht heruntergeladen werden.</value>
+	</data>
+	<data name="Winget_Error_FileNotFound" xml:space="preserve">
+		<value>Die Datei wurde nicht gefunden.</value>
+	</data>
+	<data name="Winget_Error_NoSignature_Format" xml:space="preserve">
+		<value>Die Datei '{0}' enthält keine Signatur.</value>
+	</data>
+	<data name="Winget_Error_NotMsixAppx" xml:space="preserve">
+		<value>Nur MSIX/APPX-Formate unterstützen Signatur-Footprints.</value>
+	</data>
+	<data name="Winget_Error_TooOldWinget" xml:space="preserve">
+		<value>Ihre Winget-Version ist zu alt, um die Validierung anhand des Manifestschemas v1 durchzuführen.</value>
+	</data>
+	<data name="Winget_Validation_Copyright_WrongLength_Format" xml:space="preserve">
+		<value>Das Paket-Copyright muss zwischen {0} und {1} Zeichen lang sein.</value>
+	</data>
+	<data name="Winget_Validation_FamilyName" xml:space="preserve">
+		<value>Der Familienname des Pakets ist gemäß den Winget-Anforderungen ungültig.</value>
+	</data>
+	<data name="Winget_Validation_License_WrongLength_Format" xml:space="preserve">
+		<value>Die Paketlizenz muss zwischen {0} und {1} Zeichen lang sein.</value>
+	</data>
+	<data name="Winget_Validation_PackageName_WrongLength_Format" xml:space="preserve">
+		<value>Der Paketname muss zwischen {0} und {1} Zeichen enthalten.</value>
+	</data>
+	<data name="Winget_Validation_Publisher_WrongLength_Format" xml:space="preserve">
+		<value>Der Herstellername muss zwischen {0} und {1} Zeichen enthalten.</value>
+	</data>
+	<data name="Winget_Validation_ShortDescription_WrongLength_Format" xml:space="preserve">
+		<value>Die kurze Paketbeschreibung muss zwischen {0} und {1} Zeichen lang sein.</value>
+	</data>
+	<data name="Winget_Validation_TooLongCommand_Format" xml:space="preserve">
+		<value>Die Länge des Befehls darf {0} nicht überschreiten.</value>
+	</data>
+	<data name="Winget_Validation_TooLongFamilyName_Format" xml:space="preserve">
+		<value>Der Name der Paketfamilie darf nicht länger als {0} Zeichen sein.</value>
+	</data>
+	<data name="Winget_Validation_TooLongId_Format" xml:space="preserve">
+		<value>Der Wert darf nicht länger als {0} Zeichen sein.</value>
+	</data>
+	<data name="Winget_Validation_TooLongTag_Format" xml:space="preserve">
+		<value>Der Tag darf nicht länger als {0} Zeichen sein.</value>
+	</data>
+	<data name="Winget_Validation_ValueInvalid" xml:space="preserve">
+		<value>Der Wert ist gemäß den Winget-Anforderungen ungültig.</value>
+	</data>
+	<data name="Winget_Validation_ValueRequired" xml:space="preserve">
+		<value>Dieser Wert ist erforderlich.</value>
+	</data>
 </root>

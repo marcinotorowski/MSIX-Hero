@@ -118,15 +118,15 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Dependencies_MainPackage" xml:space="preserve">
-    <value>main package</value>
-  </data>
+		<value>Hauptpaket</value>
+	</data>
 	<data name="Dependencies_ReadingOptionalPackages" xml:space="preserve">
-    <value>Reading optional packages...</value>
-  </data>
+		<value>Die optionalen Pakete werden gelesen...</value>
+	</data>
 	<data name="Dependencies_ReadingRelations" xml:space="preserve">
-    <value>Reading relations…</value>
-  </data>
+		<value>Die Beziehungen werden lesen...</value>
+	</data>
 	<data name="Dependencies_Reading_Format" xml:space="preserve">
-    <value>Reading {0}...</value>
-  </data>
+		<value>{0} wird gelesen...</value>
+	</data>
 </root>

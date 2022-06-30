@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,122 +59,122 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Winget_Downloading_Format" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Winget_Downloading_Format" xml:space="preserve">
     <value>Pobieranie... ({0}%)</value>
   </data>
-  <data name="Winget_Error_CouldNotStart" xml:space="preserve">
+	<data name="Winget_Error_CouldNotStart" xml:space="preserve">
     <value>Uruchamianie wingeta nie powiodło się.</value>
   </data>
-  <data name="Winget_Error_DownloadFailed" xml:space="preserve">
+	<data name="Winget_Error_DownloadFailed" xml:space="preserve">
     <value>Pobieranie pliku nie powiodło się.</value>
   </data>
-  <data name="Winget_Error_DownloadFailed_Format" xml:space="preserve">
+	<data name="Winget_Error_DownloadFailed_Format" xml:space="preserve">
     <value>Pobieranie pliku {0} nie powiodło się.</value>
   </data>
-  <data name="Winget_Error_FileNotFound" xml:space="preserve">
+	<data name="Winget_Error_FileNotFound" xml:space="preserve">
     <value>Plik nie istnieje.</value>
   </data>
-  <data name="Winget_Error_NoSignature_Format" xml:space="preserve">
+	<data name="Winget_Error_NoSignature_Format" xml:space="preserve">
     <value>Plik '{0}' nie jest podpisany cyfrowo.</value>
   </data>
-  <data name="Winget_Error_NotMsixAppx" xml:space="preserve">
+	<data name="Winget_Error_NotMsixAppx" xml:space="preserve">
     <value>Jedynie formaty MSIX/APPX wspierają dane podpisu cyfrowego.</value>
   </data>
-  <data name="Winget_Error_TooOldWinget" xml:space="preserve">
+	<data name="Winget_Error_TooOldWinget" xml:space="preserve">
     <value>Twoja wersja wingeta jest przestarzała i nie może zostać wykorzystana do walifacji manifestu w wersji v1.</value>
   </data>
-  <data name="Winget_Validation_Copyright_WrongLength_Format" xml:space="preserve">
+	<data name="Winget_Validation_Copyright_WrongLength_Format" xml:space="preserve">
     <value>Prawa autorskie powinny mieć pomiędzy {0} a {1} znaków.</value>
   </data>
-  <data name="Winget_Validation_FamilyName" xml:space="preserve">
+	<data name="Winget_Validation_FamilyName" xml:space="preserve">
     <value>Nazwa rodziny pakietu (package family) nie jest zgodna z wymaganiami wingetowymi.</value>
   </data>
-  <data name="Winget_Validation_License_WrongLength_Format" xml:space="preserve">
+	<data name="Winget_Validation_License_WrongLength_Format" xml:space="preserve">
     <value>Licencja pakietu musi mieć pomiędzy {0} a {1} znaków.</value>
   </data>
-  <data name="Winget_Validation_PackageName_WrongLength_Format" xml:space="preserve">
+	<data name="Winget_Validation_PackageName_WrongLength_Format" xml:space="preserve">
     <value>Nazwa pakietu musi mieć pomiędzy {0} a {1} znaków.</value>
   </data>
-  <data name="Winget_Validation_Publisher_WrongLength_Format" xml:space="preserve">
+	<data name="Winget_Validation_Publisher_WrongLength_Format" xml:space="preserve">
     <value>Nazwa wydawcy musi mieć pomiędzy {0} a {1} znaków.</value>
   </data>
-  <data name="Winget_Validation_ShortDescription_WrongLength_Format" xml:space="preserve">
+	<data name="Winget_Validation_ShortDescription_WrongLength_Format" xml:space="preserve">
     <value>Krótki opis pakietu musi mieć pomiędzy {0} a {1} znaków.</value>
   </data>
-  <data name="Winget_Validation_TooLongCommand_Format" xml:space="preserve">
+	<data name="Winget_Validation_TooLongCommand_Format" xml:space="preserve">
     <value>Długość komendy nie może przekroczyć {0} znaków.</value>
   </data>
-  <data name="Winget_Validation_TooLongFamilyName_Format" xml:space="preserve">
+	<data name="Winget_Validation_TooLongFamilyName_Format" xml:space="preserve">
     <value>Nazwa rodziny pakietu (package family) nie może być dłuższa niż {0} znaków.</value>
   </data>
-  <data name="Winget_Validation_TooLongId_Format" xml:space="preserve">
+	<data name="Winget_Validation_TooLongId_Format" xml:space="preserve">
     <value>Wartość nie może być dłuższa niż {0} znaków.</value>
   </data>
-  <data name="Winget_Validation_TooLongTag_Format" xml:space="preserve">
+	<data name="Winget_Validation_TooLongTag_Format" xml:space="preserve">
     <value>Tag nie może być dłuższy niż {0} znaków.</value>
   </data>
-  <data name="Winget_Validation_ValueInvalid" xml:space="preserve">
+	<data name="Winget_Validation_ValueInvalid" xml:space="preserve">
     <value>Wartość niezgodna z wymaganiami wingetowymi.</value>
   </data>
-  <data name="Winget_Validation_ValueRequired" xml:space="preserve">
+	<data name="Winget_Validation_ValueRequired" xml:space="preserve">
     <value>Wartośc wymagana.</value>
   </data>
 </root>

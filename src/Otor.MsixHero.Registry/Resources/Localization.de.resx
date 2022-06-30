@@ -117,16 +117,49 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Dependencies_MainPackage" xml:space="preserve">
-    <value>main package</value>
-  </data>
-	<data name="Dependencies_ReadingOptionalPackages" xml:space="preserve">
-    <value>Reading optional packages...</value>
-  </data>
-	<data name="Dependencies_ReadingRelations" xml:space="preserve">
-    <value>Reading relations…</value>
-  </data>
-	<data name="Dependencies_Reading_Format" xml:space="preserve">
-    <value>Reading {0}...</value>
-  </data>
+	<data name="Registry_Error_InvalidNameContentPair_Format" xml:space="preserve">
+		<value>Name/Inhalt-Paar kann nicht identifiziert werden (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_InvalidTypeValuePair_Format" xml:space="preserve">
+		<value>Typ/Wert-Paar konnte nicht identifiziert werden (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_LineParsingFailed_Format" xml:space="preserve">
+		<value>Fehler beim Parsen der Zeile {0}: {1}.</value>
+	</data>
+	<data name="Registry_Error_NameParsingFailed_Format" xml:space="preserve">
+		<value>'{0}' kann nicht als Name interpretiert werden.</value>
+	</data>
+	<data name="Registry_Error_NoEndingQuote_Format" xml:space="preserve">
+		<value>String endet nicht mit Anführungszeichen (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_NoRoot_Format" xml:space="preserve">
+		<value>Keine Stammstruktur gefunden (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_RegFileNotFound" xml:space="preserve">
+		<value>Die Registry-Datei existiert nicht.</value>
+	</data>
+	<data name="Registry_Error_TooBigDwordNumber_Format" xml:space="preserve">
+		<value>Die Zahl ist zu groß für DWORD (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_TooBigQwordNumber_Format" xml:space="preserve">
+		<value>Die Zahl ist zu groß für QWORD (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_TypeEmpty_Format" xml:space="preserve">
+		<value>Der Typ ist leer (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_UnknownType_Format" xml:space="preserve">
+		<value>Der Wert kann nicht verarbeitet werden: unbekannter Typ (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_WrongHex4_Format" xml:space="preserve">
+		<value>hex(4) muss eine Liste von 4 hexadezimalen Werten in Little-Indian-Byte-Reihenfolge sein (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_WrongHex5_Format" xml:space="preserve">
+		<value>hex(5) muss eine Liste von 4 hexadezimalen Werten in Big-Indian-Byte-Reihenfolge sein (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_EmptyKeyPath_Format" xml:space="preserve">
+		<value>Leerer Schlüsselpfad (Zeile {0}).</value>
+	</data>
+	<data name="Registry_Error_Eol_Format" xml:space="preserve">
+		<value>Fehler beim Parsen der Zeile {0} (unerwartetes Ende der Datei).</value>
+	</data>
 </root>

@@ -112,180 +112,180 @@
 		<value>2.0</value>
 	</resheader>
 	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="AppxEditor_Error_CommandNotSupported_Format" xml:space="preserve">
-    <value>The command '{0}' is not supported.</value>
-  </data>
+		<value>Der Befehl '{0}' wird nicht unterstützt.</value>
+	</data>
 	<data name="AppxEditor_Error_CustomCapabilityLength_Format" xml:space="preserve">
-    <value>The name of a custom capability must be longer than {2} characters. Capability '{0}' has only {1} characters.</value>
-  </data>
+		<value>Der Name einer benutzerdefinierten Capability muss länger als {2} Zeichen sein. Capability '{0}' hat nur {1} Zeichen.</value>
+	</data>
 	<data name="AppxEditor_Error_EmptyRoot" xml:space="preserve">
-    <value>Document root cannot be empty.</value>
-  </data>
+		<value>Der Root des Dokuments darf nicht leer sein.</value>
+	</data>
 	<data name="AppxEditor_Error_FileMissing_Format" xml:space="preserve">
-    <value>File '{0}' does not exist.</value>
-  </data>
+		<value>Die Datei '{0}' existiert nicht.</value>
+	</data>
 	<data name="AppxEditor_Error_HiveNotSupported_Format" xml:space="preserve">
-    <value>Registry hive {0} is not supported.</value>
-  </data>
+		<value>Registry Hive {0} wird nicht unterstützt.</value>
+	</data>
 	<data name="AppxEditor_Error_ManifestCannotBeRemoved" xml:space="preserve">
-    <value>Manifest file cannot be removed.</value>
-  </data>
+		<value>Die Manifestdatei kann nicht entfernt werden.</value>
+	</data>
 	<data name="AppxEditor_Error_ManifestNotFound_Format" xml:space="preserve">
-    <value>Manifest file not found in '{0}'.</value>
-  </data>
+		<value>Manifestdatei nicht gefunden in '{0}'.</value>
+	</data>
 	<data name="AppxEditor_Error_NotAVersion_Format" xml:space="preserve">
-    <value>The value '{0}' is not a valid version string.</value>
-  </data>
+		<value>Der Wert '{0}' ist keine gültige Versionsnummer.</value>
+	</data>
 	<data name="AppxEditor_Error_PathNoRegFile" xml:space="preserve">
-    <value>The path must be a registry path.</value>
-  </data>
+		<value>Der Pfad muss ein Registry-Pfad sein.</value>
+	</data>
 	<data name="AppxEditor_Files_Copy_Format" xml:space="preserve">
-    <value>Copying file from '{0}' to '{1}'...</value>
-  </data>
+		<value>Kopieren der Datei von '{0}' nach '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_ChangingArchitecture_Format" xml:space="preserve">
-    <value>Changing attribute 'ProcessorArchitecture' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Setzen des Attributs 'ProcessorArchitecture' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_ChangingName_Format" xml:space="preserve">
-    <value>Changing attribute 'Name' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'Name' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_ChangingPublisher_Format" xml:space="preserve">
-    <value>Changing attribute 'Publisher' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'Publisher' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_ChangingResourceId_Format" xml:space="preserve">
-    <value>Changing attribute 'ResourceId' from '{0}' to '{1}'...</value>
-  </data>
+		<value>Ändern des Attributs 'ResourceId' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_ChangingVersion_Format" xml:space="preserve">
-    <value>Changing attribute 'Version' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'Version' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_SettingArchitecture_Format" xml:space="preserve">
-    <value>Setting attribute 'ProcessorArchitecture' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'ProcessorArchitecture' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_SettingName_Format" xml:space="preserve">
-    <value>Setting attribute 'Name' to '{0}'...</value>
-  </data>
+		<value>Setzen des Attributs 'Name' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_SettingPublisher_Format" xml:space="preserve">
-    <value>Setting attribute 'Publisher' to '{0}'...</value>
-  </data>
+		<value>Setzen des Attributs 'Publisher' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_SettingResourceId_Format" xml:space="preserve">
-    <value>Setting attribute 'ResourceId' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'ResourceId' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Identity_SettingVersion_Format" xml:space="preserve">
-    <value>Setting attribute 'Version' to '{0}'...</value>
-  </data>
+		<value>Setzen des Attributs 'Version' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_ChangingDescription_Format" xml:space="preserve">
-    <value>Changing attribute 'Description' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'Description' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_ChangingDisplayName_Format" xml:space="preserve">
-    <value>Changing attribute 'DisplayName' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'DisplayName' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_ChangingLogo_Format" xml:space="preserve">
-    <value>Changing attribute 'Logo' from '{0}' to '{1}'…</value>
-  </data>
+		<value>Ändern des Attributs 'Logo' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_ChangingModPackTrue_Format" xml:space="preserve">
-    <value>Changing property 'ModificationPackage' from '{0}' to 'true'…</value>
-  </data>
+		<value>Ändern der Eigenschaft 'ModificationPackage' von '{0}' auf 'true'...</value>
+	</data>
 	<data name="AppxEditor_Properties_ChangingPublisherDisplayName_Format" xml:space="preserve">
-    <value>Changing attribute 'PublisherDisplayName' from '{0}' to '{1}'...</value>
-  </data>
+		<value>Ändern des Attributs 'PublisherDisplayName' von '{0}' auf '{1}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_RemovingModPack" xml:space="preserve">
-    <value>Removing property 'ModificationPackage'…</value>
-  </data>
+		<value>Entfernen der Eigenschaft 'ModificationPackage'...</value>
+	</data>
 	<data name="AppxEditor_Properties_SettingDescription_Format" xml:space="preserve">
-    <value>Setting property 'Description' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'Description' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_SettingDisplayName_Format" xml:space="preserve">
-    <value>Setting attribute 'DisplayName' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'DisplayName' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_SettingLogo_Format" xml:space="preserve">
-    <value>Setting attribute 'Logo' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'Logo' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Properties_SettingModPackTrue" xml:space="preserve">
-    <value>Setting property 'ModificationPackage' to 'true'…</value>
-  </data>
+		<value>Setzen der Eigenschaft 'ModificationPackage' auf 'true'...</value>
+	</data>
 	<data name="AppxEditor_Properties_SettingPublisherDisplayName_Format" xml:space="preserve">
-    <value>Setting attribute 'PublisherDisplayName' to '{0}'…</value>
-  </data>
+		<value>Setzen des Attributs 'PublisherDisplayName' auf '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Registry_ImportingRegFile_Format" xml:space="preserve">
-    <value>Importing registry file '{0}'…</value>
-  </data>
+		<value>Importieren der Registry-Datei '{0}'...</value>
+	</data>
 	<data name="AppxEditor_Registry_ImportSuccess" xml:space="preserve">
-    <value>Registry key has been successfully imported.</value>
-  </data>
+		<value>Der Registry-Schlüssel wurde erfolgreich importiert.</value>
+	</data>
 	<data name="AppxEditor_Registry_RegKeySet_Format" xml:space="preserve">
-    <value>Registry key '{0}\{1}' has been set.</value>
-  </data>
+		<value>Der Registry-Schlüssel '{0}\{1}' wurde gesetzt.</value>
+	</data>
 	<data name="AppxEditor_Registry_RegValueSet_Format" xml:space="preserve">
-    <value>Registry value '{0}' = '{1}' ({3}) has been set in '{4}\{5}</value>
-  </data>
+		<value>Der Registry-Wert '{0}' = '{1}' ({3}) wurde in '{4}\{5}' gesetzt.</value>
+	</data>
 	<data name="AppxEditor_Registry_RemovingKey_Format" xml:space="preserve">
-    <value>Removing registry key '{0}\{1}'…</value>
-  </data>
+		<value>Entfernen des Registry-Schlüssels '{0}\{1}'...</value>
+	</data>
 	<data name="AppxEditor_Registry_RemovingValue_Format" xml:space="preserve">
-    <value>Removing value '{0}' from key '{1}\{2}'...</value>
-  </data>
+		<value>Entfernen des Wertes '{0}' aus dem Schlüssel '{1}\{2}'...</value>
+	</data>
 	<data name="AppxEditor_Warn_CapabilityExists_Format" xml:space="preserve">
-    <value>The capability '{0}' already exists and will not be added again.</value>
-  </data>
+		<value>Die Capability '{0}' existiert bereits und wird nicht erneut hinzugefügt.</value>
+	</data>
 	<data name="AppxEditor_Warn_FileCouldNotRemove_Format" xml:space="preserve">
-    <value>File '{0}' could not be removed ({1}).</value>
-  </data>
+		<value>Die Datei '{0}' konnte nicht entfernt werden ({1}).</value>
+	</data>
 	<data name="AppxEditor_Warn_FilePath_PartMissing_Format" xml:space="preserve">
-    <value>Part of the path '{0}' does not exist.</value>
-  </data>
+		<value>Ein Teil des Pfades '{0}' existiert nicht.</value>
+	</data>
 	<data name="AppxEditor_Warn_NoChangesDueToMissingKey_Format" xml:space="preserve">
-    <value>No changes have been applied. Registry key '{0}\{1}' does not exist.</value>
-  </data>
+		<value>Es wurden keine Änderungen vorgenommen. Der Registrierungsschlüssel '{0}\{1}' existiert nicht.</value>
+	</data>
 	<data name="AppxEditor_Warn_NoFileRemoved" xml:space="preserve">
-    <value>No files have been removed.</value>
-  </data>
+		<value>Es wurden keine Dateien entfernt.</value>
+	</data>
 	<data name="AppxEditor_Warn_NothingImported" xml:space="preserve">
-    <value>No new entries have been imported.</value>
-  </data>
+		<value>Es wurden keine neuen Einträge importiert.</value>
+	</data>
 	<data name="Validation_Appx_CannotEndWithDot" xml:space="preserve">
-    <value>The value cannot end with dot.</value>
-  </data>
+		<value>Der Wert darf nicht mit einem Punkt enden.</value>
+	</data>
 	<data name="Validation_Appx_PackageName_Empty" xml:space="preserve">
-    <value>The package name cannot be empty.</value>
-  </data>
+		<value>Der Paketname darf nicht leer sein.</value>
+	</data>
 	<data name="Validation_Appx_PackageName_WrongChars" xml:space="preserve">
-    <value>The package name must consist of alpha-numeric, period and dash characters.</value>
-  </data>
+		<value>Der Paketname muss aus alphanumerischen Zeichen, Punkt und Bindestrich bestehen.</value>
+	</data>
 	<data name="Validation_Appx_PackageName_WrongLength" xml:space="preserve">
-    <value>The package name must be a string between 3 and 50 characters in length.</value>
-  </data>
+		<value>Der Paketname muss zwischen 3 und 50 Zeichen haben</value>
+	</data>
 	<data name="Validation_Appx_Publisher_Empty" xml:space="preserve">
-    <value>The publisher cannot be empty.</value>
-  </data>
+		<value>Der Herausgeber darf nicht leer sein.</value>
+	</data>
 	<data name="Validation_Appx_Publisher_InvalidFormat" xml:space="preserve">
-    <value>Publisher name must be a valid DN string (for example CN=Author)</value>
-  </data>
+		<value>Der Name des Herausgebers muss eine gültige DN-Zeichenfolge sein (z. B. CN=Herausgeber)</value>
+	</data>
 	<data name="Validation_Appx_ResourceId_Empty" xml:space="preserve">
-    <value>The resource ID cannot be empty.</value>
-  </data>
+		<value>Die Ressourcen-ID darf nicht leer sein.</value>
+	</data>
 	<data name="Validation_Appx_ResourceId_WrongChars" xml:space="preserve">
-    <value>The resource ID must consist of alpha-numeric, period and dash characters.</value>
-  </data>
+		<value>Die Ressourcen-ID muss aus alphanumerischen Zeichen, Punkt und Bindestrich bestehen.</value>
+	</data>
 	<data name="Validation_Appx_ResourceId_WrongLength" xml:space="preserve">
-    <value>The resource ID must be a string between 1 and 30 characters in length.</value>
-  </data>
+		<value>Die Ressourcen-ID muss zwischen 1 und 30 Zeichen haben.</value>
+	</data>
 	<data name="Validation_Appx_RestrictedPrefix" xml:space="preserve">
-    <value>The value '{1}' starts with a restricted prefix '{0}'.</value>
-  </data>
+		<value>Der Wert "{1}" beginnt mit einem verbotenen Präfix "{0}".</value>
+	</data>
 	<data name="Validation_Appx_RestrictedValue" xml:space="preserve">
-    <value>The value '{0}' is a restricted name and cannot be used.</value>
-  </data>
+		<value>Der Wert '{0}' ist ein verbotener Name und kann nicht verwendet werden.</value>
+	</data>
 	<data name="Validation_Appx_RestrictedXnString" xml:space="preserve">
-    <value>The value '{0}' contains a restricted string '.xn--'.</value>
-  </data>
+		<value>Der Wert "{0}" enthält eine verbotene Zeichenfolge ".xn--".</value>
+	</data>
 	<data name="Validation_Appx_Version_Empty" xml:space="preserve">
-    <value>The version cannot be empty.</value>
-  </data>
+		<value>Die Version darf nicht leer sein.</value>
+	</data>
 	<data name="Validation_Appx_Version_InvalidFormat" xml:space="preserve">
-    <value>The version must be in format #.#.#.#.</value>
-  </data>
+		<value>Die Version muss im Format #.#.#.#.# angegeben werden.</value>
+	</data>
 </root>

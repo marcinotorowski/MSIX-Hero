@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,92 +59,1064 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Dashboard_CalculateNames" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Dashboard_CalculateNames" xml:space="preserve">
     <value>Paketnamen ermitteln...</value>
   </data>
-  <data name="PackageExpert_LoadingCertificate" xml:space="preserve">
+	<data name="PackageExpert_LoadingCertificate" xml:space="preserve">
     <value>Zertifikat wird gelesen...</value>
   </data>
-  <data name="PackageExpert_NotSigned" xml:space="preserve">
-    <value>Nicht signiert</value>
-  </data>
-  <data name="PackageExpert_SignedBy" xml:space="preserve">
+	<data name="PackageExpert_SignedBy" xml:space="preserve">
     <value>Signiert von</value>
   </data>
-  <data name="PackageExpert_SignedBy_TrustButton" xml:space="preserve">
+	<data name="PackageExpert_SignedBy_TrustButton" xml:space="preserve">
     <value>Diesem Herausgeber vertrauen</value>
   </data>
-  <data name="PackageExpert_SignedBy_Trusted" xml:space="preserve">
+	<data name="PackageExpert_SignedBy_Trusted" xml:space="preserve">
     <value>(vertrauenswürdiger Herausgeber)</value>
   </data>
-  <data name="PackageExpert_SignedBy_Untrusted" xml:space="preserve">
+	<data name="PackageExpert_SignedBy_Untrusted" xml:space="preserve">
     <value>(nicht vertrauenswürdiger Herausgeber)</value>
   </data>
-  <data name="Packages_Search_Badge_Machine" xml:space="preserve">
+	<data name="Packages_Search_Badge_Machine" xml:space="preserve">
     <value>MASCHINE</value>
   </data>
-  <data name="Packages_Search_Badge_User" xml:space="preserve">
+	<data name="Packages_Search_Badge_User" xml:space="preserve">
     <value>BENUTZER</value>
   </data>
-  <data name="Packages_Search_TextBox_Prompt" xml:space="preserve">
+	<data name="Packages_Search_TextBox_Prompt" xml:space="preserve">
     <value>In Applikationen suchen...</value>
   </data>
+	<data name="Dashboard_CreateAppInstaller" xml:space="preserve">
+		<value>App-Installer erstellen</value>
+	</data>
+	<data name="Dashboard_CreateWinget" xml:space="preserve">
+		<value>Winget-Manifest erstellen</value>
+	</data>
+	<data name="Dashboard_Header_AnalyzeMsix" xml:space="preserve">
+		<value>MSIX analysieren</value>
+	</data>
+	<data name="Dashboard_Header_AppAttach" xml:space="preserve">
+		<value>MSIX app attach</value>
+	</data>
+	<data name="Dashboard_Header_AppInstaller" xml:space="preserve">
+		<value>App-Installer</value>
+	</data>
+	<data name="Dashboard_Header_CertAndSigning" xml:space="preserve">
+		<value>Zertifikate und Signierung</value>
+	</data>
+	<data name="Dashboard_OpenMsix" xml:space="preserve">
+		<value>MSIX-Paket öffnen...</value>
+	</data>
+	<data name="Dashboard_Search_TextBox_Prompt" xml:space="preserve">
+		<value>In Tools suchen...</value>
+	</data>
+	<data name="Dashboard_ShowDeps" xml:space="preserve">
+		<value>MSIX-Abhängigkeiten anzeigen...</value>
+	</data>
+	<data name="Dashboard_SignResign" xml:space="preserve">
+		<value>MSIX-Paket signieren oder neu signieren</value>
+	</data>
+	<data name="Dashboard_UnpackMsix" xml:space="preserve">
+		<value>MSIX → Verzeichnis entpacken</value>
+	</data>
+	<data name="Dialog_AppInstaller_AllowDowngrades" xml:space="preserve">
+		<value>Downgrades zulassen (Installation einer älteren Version einer Anwendung anstelle einer neueren)</value>
+	</data>
+	<data name="Dialog_AppInstaller_AppInstallerVersion" xml:space="preserve">
+		<value>Version des App-Installers</value>
+	</data>
+	<data name="Dialog_AppInstaller_List_Tooltip_Bundle" xml:space="preserve">
+		<value>Bündel</value>
+	</data>
+	<data name="Dialog_AppInstaller_List_Tooltip_Package" xml:space="preserve">
+		<value>Paket</value>
+	</data>
+	<data name="Dialog_AppInstaller_LoadButton" xml:space="preserve">
+		<value>Aus Datei laden...</value>
+	</data>
+	<data name="Dialog_AppInstaller_Never" xml:space="preserve">
+		<value>Nie</value>
+	</data>
+	<data name="Dialog_AppInstaller_OK" xml:space="preserve">
+		<value>App-Installer erstellen...</value>
+	</data>
+	<data name="Sidebar_About" xml:space="preserve">
+		<value>Über MSIX Hero...</value>
+	</data>
+	<data name="Sidebar_Dashboard" xml:space="preserve">
+		<value>Dashboard</value>
+	</data>
+	<data name="Sidebar_EventViewer" xml:space="preserve">
+		<value>Ereignisanzeige</value>
+	</data>
+	<data name="Sidebar_Packages" xml:space="preserve">
+		<value>Pakete</value>
+	</data>
+	<data name="Sidebar_Settings" xml:space="preserve">
+		<value>Konfigurieren Sie die MSIX Hero-Einstellungen...</value>
+	</data>
+	<data name="Sidebar_SystemStatus" xml:space="preserve">
+		<value>System-Übersicht</value>
+	</data>
+	<data name="Sidebar_Volumes" xml:space="preserve">
+		<value>Volumen</value>
+	</data>
+	<data name="System_Action_Error" xml:space="preserve">
+		<value>Der Vorgang konnte nicht ausgeführt werden.</value>
+	</data>
+	<data name="System_Apps_AlreadyInstalled" xml:space="preserve">
+		<value>Bereits installiert</value>
+	</data>
+	<data name="System_Apps_Discover" xml:space="preserve">
+		<value>Weitere Tools entdecken...</value>
+	</data>
+	<data name="System_Apps_FromStore" xml:space="preserve">
+		<value>Aus dem Microsoft Store holen</value>
+	</data>
+	<data name="System_Apps_Recommendation" xml:space="preserve">
+		<value>MSIX-Werkzeuge</value>
+	</data>
+	<data name="System_Apps_Recommendation_Option0" xml:space="preserve">
+		<value>Auf diesem Computer wurde kein MSIX-Authoring-Tool erkannt.</value>
+	</data>
+	<data name="System_Apps_Recommendation_Option1" xml:space="preserve">
+		<value>Es wurde ein MSIX-Authoring-Tool entdeckt.</value>
+	</data>
+	<data name="System_Apps_Recommendation_Option2" xml:space="preserve">
+		<value>Es wurden zwei MSIX-Authoring-Tools entdeckt.</value>
+	</data>
+	<data name="System_Apps_Recommendation_Option3" xml:space="preserve">
+		<value>Es wurden drei MSIX-Authoring-Tools entdeckt.</value>
+	</data>
+	<data name="System_Apps_Recommendation_OptionN" xml:space="preserve">
+		<value>Es wurden {0} MSIX-Authoring-Tools entdeckt.</value>
+	</data>
+	<data name="System_AutoDownload_Recommendation" xml:space="preserve">
+		<value>Automatische Updates von Store-Apps</value>
+	</data>
+	<data name="System_AutoDownload_Recommendation_Option0" xml:space="preserve">
+		<value>Standardeinstellungen</value>
+	</data>
+	<data name="System_AutoDownload_Recommendation_Option1" xml:space="preserve">
+		<value>Der automatische Download ist aktiviert.</value>
+	</data>
+	<data name="System_AutoDownload_Recommendation_Option2" xml:space="preserve">
+		<value>Der automatische Download ist deaktiviert.</value>
+	</data>
+	<data name="System_AutoUpdates_GP_Editor" xml:space="preserve">
+		<value>Gruppenrichtlinien-Editor öffnen</value>
+	</data>
+	<data name="System_AutoUpdates_OnOff" xml:space="preserve">
+		<value>Automatisches Herunterladen und Installieren von Updates ein- oder ausschalten</value>
+	</data>
+	<data name="System_AutoUpdates_OnOff_GPO" xml:space="preserve">
+		<value>Die Einstellungen können manuell im Editor für lokale Gruppenrichtlinien unter dem folgenden Knoten geändert werden:</value>
+	</data>
+	<data name="System_AutoUpdates_OnOff_GPO_Path" xml:space="preserve">
+		<value>Computer Configuration/Administrative Templates/Windows Components/Store</value>
+	</data>
+	<data name="System_AutoUpdates_Option1" xml:space="preserve">
+		<value>Standardeinstellungen verwenden</value>
+	</data>
+	<data name="System_AutoUpdates_Option2" xml:space="preserve">
+		<value>Automatischer Download immer aktiviert</value>
+	</data>
+	<data name="System_AutoUpdates_Option3" xml:space="preserve">
+		<value>Automatischer Download immer deaktiviert</value>
+	</data>
+	<data name="System_DeveloperOptions" xml:space="preserve">
+		<value>Installieren und Debuggen von Anwendungen von außerhalb des Microsoft Store</value>
+	</data>
+	<data name="System_DeveloperOptions_Option1" xml:space="preserve">
+		<value>Nur Anwendungen aus dem Microsoft Store installieren</value>
+	</data>
+	<data name="System_DeveloperOptions_Option2" xml:space="preserve">
+		<value>Anwendungen aus jeder vertrauenswürdigen Quelle (Microsoft Store und von der Seite geladene Pakete) installieren</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3a" xml:space="preserve">
+		<value>Installation von Anwendungen aus beliebigen Quellen, einschließlich Einzeldateien (Entwicklermodus)</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3b" xml:space="preserve">
+		<value>Alle signierten und vertrauenswürdigen Anwendungen installieren und die Entwicklungsfunktionen aktivieren</value>
+	</data>
+	<data name="System_DeveloperOptions_WindowsSettings" xml:space="preserve">
+		<value>Die Einstellungen können manuell in der Windows-Einstellungs-App geändert werden.</value>
+	</data>
+	<data name="System_DeveloperOptions_WindowsSettings_Link" xml:space="preserve">
+		<value>Windows-Einstellungen öffnen</value>
+	</data>
+	<data name="System_Error_UrlCouldNotOpen" xml:space="preserve">
+		<value>Die URL {0} konnte nicht geöffnet werden.</value>
+	</data>
+	<data name="System_Header" xml:space="preserve">
+		<value>Mit MSIX mehr machen</value>
+	</data>
+	<data name="System_Header2" xml:space="preserve">
+		<value>Sehen Sie, was mit MSIX, wichtigen Diensten und verwandten Programmen auf Ihrem Gerät passiert, und führen Sie die erforderlichen Maßnahmen durch.</value>
+	</data>
+	<data name="System_Refresh" xml:space="preserve">
+		<value>Aktualisieren</value>
+	</data>
+	<data name="System_Repackaging" xml:space="preserve">
+		<value>Repaketierung auf dieser Maschine</value>
+	</data>
+	<data name="System_Repackaging_Recommendation_Option0" xml:space="preserve">
+		<value>Keine Empfehlungen verfügbar</value>
+	</data>
+	<data name="System_Repackaging_Recommendation_Option1" xml:space="preserve">
+		<value>Eine Empfehlung vorhanden</value>
+	</data>
+	<data name="System_Repackaging_Recommendation_Option2" xml:space="preserve">
+		<value>Zwei Empfehlungen vorhanden</value>
+	</data>
+	<data name="System_Repackaging_Recommendation_Option3" xml:space="preserve">
+		<value>Drei Empfehlungen vorhanden</value>
+	</data>
+	<data name="System_Repackaging_Recommendation_OptionN" xml:space="preserve">
+		<value>{0} Empfehlungen vorhanden</value>
+	</data>
+	<data name="System_Service_Defender" xml:space="preserve">
+		<value>Windows Defender-Einstellungen öffnen</value>
+	</data>
+	<data name="System_Service_Disabled" xml:space="preserve">
+		<value>Dieser Dienst ist deaktiviert.</value>
+	</data>
+	<data name="System_Service_Disabled_Link" xml:space="preserve">
+		<value>Klicken Sie hier, um ihn zu aktivieren</value>
+	</data>
+	<data name="System_Service_Disable_Button" xml:space="preserve">
+		<value>Deaktivieren</value>
+	</data>
+	<data name="System_Service_Kill_Button" xml:space="preserve">
+		<value>Prozess beenden</value>
+	</data>
+	<data name="System_Sideloading_Recommendation_Option1" xml:space="preserve">
+		<value>Es können nur Anwendungen aus dem Microsoft Store installiert werden.</value>
+	</data>
+	<data name="System_Sideloading_Recommendation_Option2" xml:space="preserve">
+		<value>Das Sideloading von Anwendungen ist aktiviert.</value>
+	</data>
+	<data name="System_Sideloading_Recommendation_Option3" xml:space="preserve">
+		<value>Sideloading und Entwicklungsfunktionen sind aktiviert.</value>
+	</data>
+	<data name="System_Sideloading_Recommendation_Title" xml:space="preserve">
+		<value>Sideloading und Entwicklungsfunktionen</value>
+	</data>
+	<data name="System_StoreUpdates" xml:space="preserve">
+		<value>Automatische Aktualisierungen von Microsoft Store-Anwendungen</value>
+	</data>
+	<data name="System_StoreUpdates2" xml:space="preserve">
+		<value>Der Microsoft Store aktualisiert möglicherweise gelegentlich Ihre vom Store verwalteten Anwendungen. Dies kann bei der Paketierung zu unerwünschten Effekten führen. Es wird empfohlen, automatische Updates auf Repaketierungsmaschinen zu deaktivieren.</value>
+	</data>
+	<data name="System_StoreUpdates_Disabled" xml:space="preserve">
+		<value>Automatische Aktualisierungen sind deaktiviert.</value>
+	</data>
+	<data name="System_StoreUpdates_Disable_Button" xml:space="preserve">
+		<value>Automatische Updates deaktivieren</value>
+	</data>
+	<data name="System_StoreUpdates_RestoreLink" xml:space="preserve">
+		<value>Klicken Sie hier, um die Standardeinstellung wiederherzustellen</value>
+	</data>
+	<data name="System_StoreUpdates_Services" xml:space="preserve">
+		<value>Dienste können über das Snap-In Dienste verwaltet werden:</value>
+	</data>
+	<data name="System_StoreUpdates_Services_ServMan" xml:space="preserve">
+		<value>Service Manager öffnen</value>
+	</data>
+	<data name="Volumes_ContextMenu_Dismount" xml:space="preserve">
+		<value>Trennen</value>
+	</data>
+	<data name="Volumes_ContextMenu_Mount" xml:space="preserve">
+		<value>Mounten</value>
+	</data>
+	<data name="Volumes_ContextMenu_Remove" xml:space="preserve">
+		<value>Entfernen</value>
+	</data>
+	<data name="Volumes_ContextMenu_SetDefault" xml:space="preserve">
+		<value>Als Standard festlegen</value>
+	</data>
+	<data name="Volumes_Create" xml:space="preserve">
+		<value>Erstellen...</value>
+	</data>
+	<data name="Volumes_DefaultVolume" xml:space="preserve">
+		<value>Dies ist das Standardvolumen</value>
+	</data>
+	<data name="Volumes_DefaultVolume_Caption" xml:space="preserve">
+		<value>Standard</value>
+	</data>
+	<data name="Volumes_DefaultVolume_Tooltip" xml:space="preserve">
+		<value>Dies ist das Standardvolumen</value>
+	</data>
+	<data name="Volumes_DetachedVolume_Caption" xml:space="preserve">
+		<value>Getrennt</value>
+	</data>
+	<data name="Volumes_DetachedVolume_Tooltip" xml:space="preserve">
+		<value>Dieses Volume ist abgetrennt (offline)</value>
+	</data>
+	<data name="Volumes_NotMounted" xml:space="preserve">
+		<value>Dieses Volume ist nicht gemountet</value>
+	</data>
+	<data name="Volumes_OnlineVolume_Caption" xml:space="preserve">
+		<value>Online</value>
+	</data>
+	<data name="Volumes_OnlineVolume_Tooltip" xml:space="preserve">
+		<value>Dieses Volume ist online</value>
+	</data>
+	<data name="Volumes_Refresh" xml:space="preserve">
+		<value>Aktualisieren</value>
+	</data>
+	<data name="Volumes_Search_Prompt" xml:space="preserve">
+		<value>In Volumen suchen...</value>
+	</data>
+	<data name="Volumes_Sidebar_MultipleItems" xml:space="preserve">
+		<value>Mehrere Elemente ausgewählt</value>
+	</data>
+	<data name="Volumes_Sidebar_MultipleItems_Hint" xml:space="preserve">
+		<value>Wählen Sie ein einzelnes Volume aus, um dessen Eigenschaften anzuzeigen.</value>
+	</data>
+	<data name="Volumes_Sidebar_NoSelection" xml:space="preserve">
+		<value>Keine Auswahl</value>
+	</data>
+	<data name="Volumes_SystemVolume_Caption" xml:space="preserve">
+		<value>System</value>
+	</data>
+	<data name="Volumes_SystemVolume_Tooltip" xml:space="preserve">
+		<value>Dies ist ein Systemvolumen</value>
+	</data>
+	<data name="Dialog_AppInstaller_ContextMenu_NewBundle" xml:space="preserve">
+		<value>Neues Bündel</value>
+	</data>
+	<data name="Dialog_AppInstaller_ContextMenu_NewPackage" xml:space="preserve">
+		<value>Neues Paket</value>
+	</data>
+	<data name="Dialog_AppInstaller_ContextMenu_Remove" xml:space="preserve">
+		<value>Entfernen</value>
+	</data>
+	<data name="Volumes_SizeConverter_Caption_Format" xml:space="preserve">
+		<value>{0} frei von {1}</value>
+	</data>
+	<data name="Capability_3d" xml:space="preserve">
+		<value>3D-Objekte</value>
+	</data>
+	<data name="Button_Cancel" xml:space="preserve">
+		<value>Abrechen</value>
+	</data>
+	<data name="Button_Browse" xml:space="preserve">
+		<value>Durchsuchen...</value>
+	</data>
+	<data name="Button_Save" xml:space="preserve">
+		<value>Speichern</value>
+	</data>
+	<data name="DeviceGuard_SignWithMS" xml:space="preserve">
+		<value>Mit Microsoft anmelden</value>
+	</data>
+	<data name="Dashboard_AnalyzeImpact" xml:space="preserve">
+		<value>Die Auswirkungen der MSIX-Aktualisierung analysieren</value>
+	</data>
+	<data name="Dialogs_AppAttach_Errors_NoFiles" xml:space="preserve">
+		<value>Mindestens eine Datei ist erforderlich.</value>
+	</data>
+	<data name="Dialogs_AppAttach_Tabs_Packages_Header" xml:space="preserve">
+		<value>Pakete</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Architecture_ARM" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Architecture_ARM64" xml:space="preserve">
+		<value>ARM 64-bit</value>
+	</data>
+	<data name="Dialogs_AppInstaller_BundleName" xml:space="preserve">
+		<value>Name des Bündels</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Filter_AllFiles" xml:space="preserve">
+		<value>Alle Dateien</value>
+	</data>
+	<data name="Dialogs_AppInstaller_PackagePublisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Dialogs_Browse_AllFiles" xml:space="preserve">
+		<value>Alle Dateien</value>
+	</data>
+	<data name="Dialogs_Filter_AllFiles" xml:space="preserve">
+		<value>Alle Dateien</value>
+	</data>
+	<data name="Dialogs_Filter_AllSupportedFiles" xml:space="preserve">
+		<value>Alle unterstützten Dateien</value>
+	</data>
+	<data name="Dialogs_Filter_Packages" xml:space="preserve">
+		<value>Pakete</value>
+	</data>
+	<data name="Dialogs_PackageName_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="Dialogs_PackageName_Architecture_ARM" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Dialogs_PackageName_Architecture_ARM64" xml:space="preserve">
+		<value>ARM64</value>
+	</data>
+	<data name="Dialogs_PackageName_ProductName" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="Dialogs_PackageName_Publisher" xml:space="preserve">
+		<value>Herausgeber-String</value>
+	</data>
+	<data name="Dialogs_PackageName_PublisherHash" xml:space="preserve">
+		<value>Herausgeber-Hash</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Compare_Button" xml:space="preserve">
+		<value>Die Auswirkungen der Aktualisierung analysieren</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Title" xml:space="preserve">
+		<value>Die Auswirkungen der Aktualisierung analysieren</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Files_All" xml:space="preserve">
+		<value>Alle Dateien</value>
+	</data>
+	<data name="Dialog_AppInstaller_ToggleButton_New_Browse" xml:space="preserve">
+		<value>Durchsuchen...</value>
+	</data>
+	<data name="EventViewer_Details_PackageName" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="EventViewer_Filter_OrderBy_Package" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="EventViewer_Refresh" xml:space="preserve">
+		<value>Aktualisieren</value>
+	</data>
+	<data name="Loading_Cancelling" xml:space="preserve">
+		<value>Wird abgebrochen...</value>
+	</data>
+	<data name="PackageExpert_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="PackageSelector_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="PackageSelector_Architecture_Arm" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="PackageSelector_Architecture_Arm64" xml:space="preserve">
+		<value>ARM 64-bit</value>
+	</data>
+	<data name="PackageSelector_BundleName" xml:space="preserve">
+		<value>Name des Bündels</value>
+	</data>
+	<data name="PackageSelector_Name" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="PackageSelector_PackageName" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="PackageSelector_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="PackageSelector_PublisherDisplayName" xml:space="preserve">
+		<value>Anzeigename des Herausgebers</value>
+	</data>
+	<data name="PackageSelector_PublisherName" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Packages_Actions_Refresh" xml:space="preserve">
+		<value>Aktualisieren</value>
+	</data>
+	<data name="Packages_Filter_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="Packages_Filter_Architecture_ARM" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Packages_Filter_Architecture_ARM64" xml:space="preserve">
+		<value>ARM64</value>
+	</data>
+	<data name="Packages_Filter_Category" xml:space="preserve">
+		<value>Kategorie</value>
+	</data>
+	<data name="Packages_Filter_GroupBy_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="Packages_Filter_GroupBy_Category" xml:space="preserve">
+		<value>Kategorie</value>
+	</data>
+	<data name="Packages_Filter_GroupBy_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Packages_Filter_OrderBy_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="Packages_Filter_OrderBy_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Packages_List_ContextMenu_AnalyzeDependencies" xml:space="preserve">
+		<value>Abhängigkeiten analysieren</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Copy_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Copy_PublisherDisplayName" xml:space="preserve">
+		<value>Herausgeber (Anzeigename)</value>
+	</data>
+	<data name="Packages_List_ContextMenu_RemoveFor_AllUsers" xml:space="preserve">
+		<value>Alle Benutzer</value>
+	</data>
+	<data name="Psf_Process_Any" xml:space="preserve">
+		<value>Immer</value>
+	</data>
+	<data name="Psf_Regex_AllFiles" xml:space="preserve">
+		<value>Alle Dateien</value>
+	</data>
+	<data name="System_UAC" xml:space="preserve">
+		<value>Um diese Einstellung zu ändern, sind Administratorrechte erforderlich.</value>
+	</data>
+	<data name="Validation_Guid" xml:space="preserve">
+		<value>Dieser Wert ist keine gültige GUID.</value>
+	</data>
+	<data name="Validation_Guid_Named" xml:space="preserve">
+		<value>{0} muss eine gültige GUID sein.</value>
+	</data>
+	<data name="Validation_Integer" xml:space="preserve">
+		<value>Dieser Wert muss eine Ganzzahl sein</value>
+	</data>
+	<data name="Validation_Integer_Named" xml:space="preserve">
+		<value>{0} ist keine Ganzzahl.</value>
+	</data>
+	<data name="Validation_NotEmptyField" xml:space="preserve">
+		<value>Dieser Wert darf nicht leer sein.</value>
+	</data>
+	<data name="Validation_NotEmptyField_Named" xml:space="preserve">
+		<value>{0} darf nicht leer sein.</value>
+	</data>
+	<data name="Validation_Sha256Field" xml:space="preserve">
+		<value>SHA-256-Zeichenfolge ist ungültig. Sie muss aus genau 64 hexadezimalen Zeichen bestehen.</value>
+	</data>
+	<data name="Validation_Sha256Field_Named" xml:space="preserve">
+		<value>{0} hat einen ungültigen Wert. Es muss ein gültiger SHA-256-Hash sein, der aus genau 64 hexadezimalen Zeichen besteht.</value>
+	</data>
+	<data name="Validation_SupportedWebProtocol" xml:space="preserve">
+		<value>Protokoll {0} wird nicht unterstützt.</value>
+	</data>
+	<data name="Validation_SupportedWebProtocol_Named" xml:space="preserve">
+		<value>{0} hat ein nicht unterstütztes Protokoll {1}.</value>
+	</data>
+	<data name="Validation_Url" xml:space="preserve">
+		<value>Dieser Wert muss eine gültige URL sein.</value>
+	</data>
+	<data name="Validation_Url_Named" xml:space="preserve">
+		<value>{0} muss eine gültige URL sein.</value>
+	</data>
+	<data name="Validation_VersionField" xml:space="preserve">
+		<value>Die Version muss im Format #.#.#.#.# angegeben werden.</value>
+	</data>
+	<data name="Validation_VersionField_Named" xml:space="preserve">
+		<value>{0} muss im Format #.#.#.#.# angegeben werden.</value>
+	</data>
+	<data name="Dialogs_Dependencies_Analyze_Button" xml:space="preserve">
+		<value>Abhängigkeiten analysieren</value>
+	</data>
+	<data name="Dialogs_Dependencies_Analyze_Header" xml:space="preserve">
+		<value>Analysieren</value>
+	</data>
+	<data name="Dialogs_Dependencies_Browse" xml:space="preserve">
+		<value>Durchsuchen...</value>
+	</data>
+	<data name="Dialogs_Dependencies_Title" xml:space="preserve">
+		<value>Abhängigkeiten analysieren</value>
+	</data>
+	<data name="Dialogs_Winget_AppMoniker" xml:space="preserve">
+		<value>AppMoniker</value>
+	</data>
+	<data name="Dialogs_Winget_Architecture_Arm" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Dialogs_Winget_Architecture_Arm64" xml:space="preserve">
+		<value>ARM64</value>
+	</data>
+	<data name="Dialogs_Winget_InstallerType_APPX" xml:space="preserve">
+		<value>APPX</value>
+	</data>
+	<data name="Dialogs_Winget_PackageName" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Tabs_Adjustments" xml:space="preserve">
+		<value>Anpassungen</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Tabs_Packages" xml:space="preserve">
+		<value>Pakete</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Validation_FileNotSelected" xml:space="preserve">
+		<value>Mindestens eine Datei ist erforderlich.</value>
+	</data>
+	<data name="Dialogs_Settings_Commands_Arguments" xml:space="preserve">
+		<value>Argumente</value>
+	</data>
+	<data name="Dialogs_Settings_InitialScreen_Packages" xml:space="preserve">
+		<value>Pakete</value>
+	</data>
+	<data name="Dialogs_Settings_OkButton" xml:space="preserve">
+		<value>Anwenden</value>
+	</data>
+	<data name="Dialogs_ModPack_Package" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="Dialogs_ModPack_Publisher" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="Dialogs_NewCert_PublisherDisplayName" xml:space="preserve">
+		<value>Anzeigename des Herausgebers</value>
+	</data>
+	<data name="Dialogs_NewCert_PublisherName" xml:space="preserve">
+		<value>Herausgeber (Subjekt)</value>
+	</data>
+	<data name="PackageExpert_Architecture" xml:space="preserve">
+		<value>Architektur</value>
+	</data>
+	<data name="PackageExpert_Publisher1" xml:space="preserve">
+		<value>Herausgeber</value>
+	</data>
+	<data name="PackageExpert_Tab_Capabilities" xml:space="preserve">
+		<value>Funktionen</value>
+	</data>
+	<data name="PackageExpert_PsScripts_Args" xml:space="preserve">
+		<value>Argumente</value>
+	</data>
+	<data name="PackageExpert_Tabs_Applications" xml:space="preserve">
+		<value>Anwendungen</value>
+	</data>
+	<data name="UacApp_AdminRightsRequired" xml:space="preserve">
+		<value>Dieser Vorgang erfordert Administratorrechte.</value>
+	</data>
+	<data name="Dialogs_About_Header" xml:space="preserve">
+		<value>Über</value>
+	</data>
+	<data name="Dialogs_About_License" xml:space="preserve">
+		<value>Lizenz</value>
+	</data>
+	<data name="Dialogs_About_WindowTitle" xml:space="preserve">
+		<value>Über MSIX Hero...</value>
+	</data>
+	<data name="Dialogs_AppAttach_CmdLine_DirPlaceholder" xml:space="preserve">
+		<value>&lt;ausgabe-verzeichnis&gt;</value>
+	</data>
+	<data name="Dialogs_AppAttach_CmdLine_PathPlaceholder" xml:space="preserve">
+		<value>&lt;pfad-zu-msix&gt;</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Architecture_32" xml:space="preserve">
+		<value>32-bit</value>
+	</data>
+	<data name="Dialogs_AppInstaller_Architecture_64" xml:space="preserve">
+		<value>64-bit</value>
+	</data>
+	<data name="Dialogs_AppInstaller_PackageName" xml:space="preserve">
+		<value>Paketname</value>
+	</data>
+	<data name="Dialogs_AppInstaller_PackageVersion" xml:space="preserve">
+		<value>Paketversion</value>
+	</data>
+	<data name="Dialogs_OK" xml:space="preserve">
+		<value>OK</value>
+	</data>
+	<data name="Dialogs_Filter_Manifests" xml:space="preserve">
+		<value>Manifest-Dateien</value>
+	</data>
+	<data name="Dialogs_Filter_Msi" xml:space="preserve">
+		<value>Windows Installer</value>
+	</data>
+	<data name="Dialogs_Filter_MultipleFormats" xml:space="preserve">
+		<value>{0} Dateien</value>
+	</data>
+	<data name="Dialogs_Filter_Registry" xml:space="preserve">
+		<value>Windows Registry-Dateien</value>
+	</data>
+	<data name="Dialogs_PackageName_Architecture_64" xml:space="preserve">
+		<value>x64</value>
+	</data>
+	<data name="Dialogs_PackageName_Architecture_86" xml:space="preserve">
+		<value>x86</value>
+	</data>
+	<data name="Dialogs_PackageName_Identity" xml:space="preserve">
+		<value>Paket-Identität</value>
+	</data>
+	<data name="Dialogs_PackageName_Version" xml:space="preserve">
+		<value>Version</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Duplicates_FilesCount" xml:space="preserve">
+		<value>{0} Dateien</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Files_Column_Name" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Files_Column_Size" xml:space="preserve">
+		<value>Größe</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Files_Column_Type" xml:space="preserve">
+		<value>Typ</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_SizeComparison_Total" xml:space="preserve">
+		<value>∑ Gesamt</value>
+	</data>
+	<data name="Dialogs_UpdateImpact_Tabs_Overview" xml:space="preserve">
+		<value>Übersicht</value>
+	</data>
+	<data name="Dialogs_WhatsNew_License" xml:space="preserve">
+		<value>Lizenz und Bedingungen</value>
+	</data>
+	<data name="Dialog_AppInstaller_Tab_Package" xml:space="preserve">
+		<value>Paket</value>
+	</data>
+	<data name="Dialog_AppInstaller_Tab_Properties" xml:space="preserve">
+		<value>Eigenschaften</value>
+	</data>
+	<data name="Dialog_AppInstaller_ToggleButton_New_AppxMsix" xml:space="preserve">
+		<value>Paket (APPX/MSIX)</value>
+	</data>
+	<data name="EventViewer_Details_Message" xml:space="preserve">
+		<value>Nachricht</value>
+	</data>
+	<data name="EventViewer_Details_Properties" xml:space="preserve">
+		<value>Eigenschaften</value>
+	</data>
+	<data name="EventViewer_Details_User" xml:space="preserve">
+		<value>Benutzer</value>
+	</data>
+	<data name="EventViewer_Filter_Log_Warn" xml:space="preserve">
+		<value>Warnung</value>
+	</data>
+	<data name="EventViewer_Sidebar_NoSelection" xml:space="preserve">
+		<value>Keine Auswahl</value>
+	</data>
+	<data name="HumanDate_Last6Months" xml:space="preserve">
+		<value>Letzte 6 Monate</value>
+	</data>
+	<data name="HumanDate_LastMonth" xml:space="preserve">
+		<value>Letzter Monat</value>
+	</data>
+	<data name="HumanDate_LastWeek" xml:space="preserve">
+		<value>Letzte Woche</value>
+	</data>
+	<data name="HumanDate_LastYear" xml:space="preserve">
+		<value>Letztes Jahr</value>
+	</data>
+	<data name="HumanDate_ThisYear" xml:space="preserve">
+		<value>Dieses Jahr</value>
+	</data>
+	<data name="HumanDate_Yesterday" xml:space="preserve">
+		<value>Gestern</value>
+	</data>
+	<data name="PackageExpert_App_Open" xml:space="preserve">
+		<value>Öffnen</value>
+	</data>
+	<data name="PackageExpert_App_Start" xml:space="preserve">
+		<value>Ausführen</value>
+	</data>
+	<data name="PackageExpert_PackageArchitecture" xml:space="preserve">
+		<value>Paketarchitektur</value>
+	</data>
+	<data name="PackageExpert_Reading" xml:space="preserve">
+		<value>Lesen...</value>
+	</data>
+	<data name="PackageExpert_Version" xml:space="preserve">
+		<value>Version</value>
+	</data>
+	<data name="PackageSelector_Architecture_32" xml:space="preserve">
+		<value>32-bit</value>
+	</data>
+	<data name="PackageSelector_Architecture_64" xml:space="preserve">
+		<value>64-bit</value>
+	</data>
+	<data name="PackageSelector_Caption_LoadFromBundle" xml:space="preserve">
+		<value>ein Bündel</value>
+	</data>
+	<data name="PackageSelector_Caption_LoadFromManifest" xml:space="preserve">
+		<value>ein Manifest</value>
+	</data>
+	<data name="PackageSelector_Caption_LoadFromPkg" xml:space="preserve">
+		<value>ein Paket</value>
+	</data>
+	<data name="PackageSelector_Caption_Separator" xml:space="preserve">
+		<value>oder</value>
+	</data>
+	<data name="PackageSelector_DisplayPublisher1" xml:space="preserve">
+		<value>Version</value>
+	</data>
+	<data name="PackageSelector_PackagePath" xml:space="preserve">
+		<value>Paketpfad</value>
+	</data>
+	<data name="PackageSelector_PackageType_Package" xml:space="preserve">
+		<value>Paket (.msix/.appx)</value>
+	</data>
+	<data name="PackageSelector_Version" xml:space="preserve">
+		<value>Version</value>
+	</data>
+	<data name="Packages_Filter_Architecture_32Bit" xml:space="preserve">
+		<value>32-bit</value>
+	</data>
+	<data name="Packages_Filter_Architecture_64Bit" xml:space="preserve">
+		<value>64-bit</value>
+	</data>
+	<data name="Packages_Filter_Category_Store" xml:space="preserve">
+		<value>Microsoft Store</value>
+	</data>
+	<data name="Packages_Filter_OrderBy_Name" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Copy_Name" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Copy_Version" xml:space="preserve">
+		<value>Version</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Open" xml:space="preserve">
+		<value>Öffnen...</value>
+	</data>
+	<data name="Packages_List_ContextMenu_Open_ManifestFile" xml:space="preserve">
+		<value>Manifest-Datei</value>
+	</data>
+	<data name="Packages_List_ContextMenu_StartApp" xml:space="preserve">
+		<value>App ausführen</value>
+	</data>
+	<data name="Psf_Redirection_ReadOnly" xml:space="preserve">
+		<value>(schreibgeschützt)</value>
+	</data>
+	<data name="Dialogs_Dependencies_Line_Hint" xml:space="preserve">
+		<value>(B) hängt von (A) ab</value>
+	</data>
+	<data name="Dialogs_Winget_Architecture_x64" xml:space="preserve">
+		<value>x64</value>
+	</data>
+	<data name="Dialogs_Winget_Architecture_x86" xml:space="preserve">
+		<value>x86</value>
+	</data>
+	<data name="Dialogs_Winget_InstallerType_Zip" xml:space="preserve">
+		<value>ZIP-Datei</value>
+	</data>
+	<data name="Dialogs_Winget_License" xml:space="preserve">
+		<value>Lizenz</value>
+	</data>
+	<data name="Dialogs_Winget_ManifestVersion" xml:space="preserve">
+		<value>Manifest-Version</value>
+	</data>
+	<data name="Dialogs_Winget_PackageVersion" xml:space="preserve">
+		<value>Paketversion</value>
+	</data>
+	<data name="Dialogs_Winget_Platform" xml:space="preserve">
+		<value>Plattform</value>
+	</data>
+	<data name="Dialogs_Winget_Publisher" xml:space="preserve">
+		<value>Herausgeber des Pakets</value>
+	</data>
+	<data name="Dialogs_Winget_SignatureHash" xml:space="preserve">
+		<value>Signatur-Hash</value>
+	</data>
+	<data name="Dialogs_Winget_Tab_License" xml:space="preserve">
+		<value>Lizenz + Copyright</value>
+	</data>
+	<data name="Dialogs_Winget_Url" xml:space="preserve">
+		<value>URL</value>
+	</data>
+	<data name="Dialogs_ChangeVolume_ReadingPackages" xml:space="preserve">
+		<value>Pakete lesen...</value>
+	</data>
+	<data name="Dialogs_ExportCertificate_Cmd_InputPath_Placeholder" xml:space="preserve">
+		<value>&lt;input-pfad&gt;</value>
+	</data>
+	<data name="Dialogs_ExportCertificate_Cmd_OutputPath_Placeholder" xml:space="preserve">
+		<value>&lt;ausgabe-pfad&gt;</value>
+	</data>
+	<data name="Dialogs_ExportCertificate_Output_Cer_Path" xml:space="preserve">
+		<value>Pfad zum Zertifikat</value>
+	</data>
+	<data name="Dialogs_NewVolume_Path" xml:space="preserve">
+		<value>Pfad</value>
+	</data>
+	<data name="Dialogs_NewVolume_Reading" xml:space="preserve">
+		<value>Volumen lesen...</value>
+	</data>
+	<data name="CertificateSelector_Certificate_TimeStamp_Random2" xml:space="preserve">
+		<value>eine Liste der bekannten Server</value>
+	</data>
+	<data name="CertificateSelector_PfxPath" xml:space="preserve">
+		<value>Pfad zur PFX-Datei</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Placeholder_Msix" xml:space="preserve">
+		<value>&lt;pfad-zu-msix&gt;</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Placeholder_Pfx" xml:space="preserve">
+		<value>&lt;pfad-zu-pfx&gt;</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Placeholder_Pwd" xml:space="preserve">
+		<value>&lt;ihr-kennwort&gt;</value>
+	</data>
+	<data name="Dialogs_PackageSigning_Placeholder_Thumbprint" xml:space="preserve">
+		<value>&lt;zertifikat-fingerabdruck&gt;</value>
+	</data>
+	<data name="Dialogs_Settings_Editors_ManifestFiles" xml:space="preserve">
+		<value>Manifest-Dateien</value>
+	</data>
+	<data name="Dialogs_Settings_InitialScreen_Volumes" xml:space="preserve">
+		<value>Volumen</value>
+	</data>
+	<data name="Dialogs_Settings_Language" xml:space="preserve">
+		<value>Sprache</value>
+	</data>
+	<data name="Dialogs_Settings_Signing" xml:space="preserve">
+		<value>Signierung</value>
+	</data>
+	<data name="Dialogs_Settings_StartUp" xml:space="preserve">
+		<value>Starten der App</value>
+	</data>
+	<data name="Dialogs_ModPack_RegFile" xml:space="preserve">
+		<value>Die zu importierende .REG-Datei</value>
+	</data>
+	<data name="Dialogs_ModPack_Tab_Properties" xml:space="preserve">
+		<value>Eigenschaften</value>
+	</data>
+	<data name="Dialogs_ModPack_Tab_Signature" xml:space="preserve">
+		<value>Signatur</value>
+	</data>
+	<data name="Dialogs_ModPack_Version" xml:space="preserve">
+		<value>Paketversion</value>
+	</data>
+	<data name="Dialogs_Pack_SrcDir" xml:space="preserve">
+		<value>Quellenverzeichnis</value>
+	</data>
+	<data name="Dialogs_Pack_TabSignature" xml:space="preserve">
+		<value>Signatur</value>
+	</data>
+	<data name="Dialogs_Unpack_Cmd_Placeholder_OutputDir" xml:space="preserve">
+		<value>&lt;ausgabe-verzeichnis&gt;</value>
+	</data>
+	<data name="Dialogs_Unpack_Cmd_Placeholder_SourcePkg" xml:space="preserve">
+		<value>&lt;quell-paket&gt;</value>
+	</data>
+	<data name="Dialogs_Unpack_TargetDir_Suffix" xml:space="preserve">
+		<value>_entpackt</value>
+	</data>
+	<data name="Dialogs_Winget_Installer_ProductCode" xml:space="preserve">
+		<value>Produkt-Code</value>
+	</data>
+	<data name="Dialogs_Winget_Installer_SignatureHash" xml:space="preserve">
+		<value>Signatur-Hash</value>
+	</data>
+	<data name="Dialogs_NewCert_Placeholder_DisplayName" xml:space="preserve">
+		<value>&lt;anzeige-name&gt;</value>
+	</data>
+	<data name="Dialogs_NewCert_Placeholder_Name" xml:space="preserve">
+		<value>&lt;name&gt;</value>
+	</data>
+	<data name="Dialogs_NewCert_Placeholder_OutputDir" xml:space="preserve">
+		<value>&lt;ausgabe-verzeichnis&gt;</value>
+	</data>
+	<data name="PackageExpert_MoreInfoLink" xml:space="preserve">
+		<value>[weitere Informationen]</value>
+	</data>
+	<data name="PackageExpert_MsStore" xml:space="preserve">
+		<value>Microsoft Store</value>
+	</data>
+	<data name="PackageExpert_PackageManifest" xml:space="preserve">
+		<value>Paket-Manifest</value>
+	</data>
+	<data name="PackageExpert_Tab_Properties" xml:space="preserve">
+		<value>Eigenschaften</value>
+	</data>
+	<data name="PackageExpert_Files_Context_View" xml:space="preserve">
+		<value>Ansehen/Bearbeiten</value>
+	</data>
+	<data name="PackageExpert_Files_Header_Name" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="PackageExpert_Files_Header_Size" xml:space="preserve">
+		<value>Größe</value>
+	</data>
+	<data name="PackageExpert_Installation_Status" xml:space="preserve">
+		<value>Status</value>
+	</data>
+	<data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
+		<value>Ausführen</value>
+	</data>
+	<data name="PackageExpert_Registry_Header_Name" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="PackageExpert_Registry_Header_Type" xml:space="preserve">
+		<value>Typ</value>
+	</data>
+	<data name="PackageExpert_Tabs_General" xml:space="preserve">
+		<value>Allgemein</value>
+	</data>
+	<data name="PackageExpert_Tab_Overview" xml:space="preserve">
+		<value>Übersicht</value>
+	</data>
+	<data name="Capability_Pictures" xml:space="preserve">
+		<value>Bilder</value>
+	</data>
+	<data name="Capability_USB" xml:space="preserve">
+		<value>USB</value>
+	</data>
+	<data name="Packages_Sidebar_NoSelection" xml:space="preserve">
+		<value>Keine Auswahl</value>
+	</data>
+	<data name="Dialogs_About_Update_YourVersion" xml:space="preserve">
+		<value>Ihre Version ist:</value>
+	</data>
 </root>
