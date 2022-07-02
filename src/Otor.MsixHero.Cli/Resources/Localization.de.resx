@@ -117,4 +117,502 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
+	<data name="CommandLineParser_SentenceBadFormatConversionErrorOption" xml:space="preserve">
+		<value>Die Option '{0}' ist mit einem ungültigen Format definiert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceBadFormatConversionErrorValue" xml:space="preserve">
+		<value>Ein nicht an den Optionsnamen gebundener Wert ist mit einem ungültigen Format definiert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceBadFormatTokenError" xml:space="preserve">
+		<value>Das Token '{0}' wird nicht erkannt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceBadVerbSelectedError" xml:space="preserve">
+		<value>Der Befehl '{0}' wird nicht erkannt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceErrorsHeadingText" xml:space="preserve">
+		<value>FEHLER:</value>
+	</data>
+	<data name="CommandLineParser_SentenceHelpCommandTextOption" xml:space="preserve">
+		<value>Zeigt diesen Hilfebildschirm an.</value>
+	</data>
+	<data name="CommandLineParser_SentenceHelpCommandTextVerb" xml:space="preserve">
+		<value>Zeigt weitere Informationen zu einem bestimmten Befehl an.</value>
+	</data>
+	<data name="CommandLineParser_SentenceMissingRequiredOptionError" xml:space="preserve">
+		<value>Die erforderliche Option '{0}' fehlt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceMissingRequiredValueError" xml:space="preserve">
+		<value>Ein erforderlicher Wert, der nicht an den Optionsnamen gebunden ist, fehlt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceMissingValueOptionError" xml:space="preserve">
+		<value>Die Option '{0}' hat keinen Wert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceMutuallyExclusiveSetErrors" xml:space="preserve">
+		<value>Optionen: {0} sind nicht kompatibel mit {1}.</value>
+	</data>
+	<data name="CommandLineParser_SentenceNoVerbSelectedError" xml:space="preserve">
+		<value>Kein Befehl ausgewählt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceRepeatedOptionError" xml:space="preserve">
+		<value>Die Option '{0}' ist mehrfach definiert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceRequiredWord" xml:space="preserve">
+		<value>Erforderlich.</value>
+	</data>
+	<data name="CommandLineParser_SentenceSequenceOutOfRangeErrorOption" xml:space="preserve">
+		<value>Eine Sequenzoption '{0}' ist mit weniger oder mehr Elementen als erforderlich definiert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceSequenceOutOfRangeErrorValue" xml:space="preserve">
+		<value>Ein Sequenzwert, der nicht an den Optionsnamen gebunden ist, wird mit weniger Elementen als erforderlich definiert.</value>
+	</data>
+	<data name="CommandLineParser_SentenceSetValueExceptionError" xml:space="preserve">
+		<value>Fehler beim Setzen des Wertes für die Option '{0}': {1}</value>
+	</data>
+	<data name="CommandLineParser_SentenceUnknownOptionError" xml:space="preserve">
+		<value>Die Option '{0}' ist unbekannt.</value>
+	</data>
+	<data name="CommandLineParser_SentenceUsageHeadingText" xml:space="preserve">
+		<value>NUTZUNG:</value>
+	</data>
+	<data name="CommandLineParser_SentenceVersionCommandText" xml:space="preserve">
+		<value>Zeigt Versionsinformationen an.</value>
+	</data>
+	<data name="CLI_CertificateSummary_ExpiresNever_Aligned" xml:space="preserve">
+		<value>Ablaufsdatum:    &lt;keine&gt;</value>
+	</data>
+	<data name="CLI_CertificateSummary_Expires_Aligned_Format" xml:space="preserve">
+		<value>Ablaufsdatum:    {0}</value>
+	</data>
+	<data name="CLI_CertificateSummary_Issuer_Aligned_Format" xml:space="preserve">
+		<value>Herausgeber:     {0}</value>
+	</data>
+	<data name="CLI_CertificateSummary_SignedByUntrusted_Aligned_Format" xml:space="preserve">
+		<value>Signiert von:    {0} (nicht vertrauenswürdig)</value>
+	</data>
+	<data name="CLI_CertificateSummary_SignedBy_Aligned_Format" xml:space="preserve">
+		<value>Signiert von:    {0}</value>
+	</data>
+	<data name="CLI_CertificateSummary_Thumbprint_Aligned_Format" xml:space="preserve">
+		<value>Fingerabdruck:   {0}</value>
+	</data>
+	<data name="CLI_Error_FileNotExists_Format" xml:space="preserve">
+		<value>Die Datei '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Error_Manifest_Empty" xml:space="preserve">
+		<value>Der Root eines Dokuments darf nicht leer sein.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Error_AlreadyExists_Format" xml:space="preserve">
+		<value>Datei '{0}' konnte nicht hinzugefügt werden, da die Zieldatei '{1}' bereits existiert.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Error_AlreadyExists_Hint" xml:space="preserve">
+		<value>Sie können die Ersetzung der Datei mit der Option --force erzwingen.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Error_CouldNotAdd_Format" xml:space="preserve">
+		<value>Datei '{0}' konnte nicht als '{1}' hinzugefügt werden.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Error_DirectManifestImport" xml:space="preserve">
+		<value>Die Manifestdatei kann nicht direkt hinzugefügt werden.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Error_Missing_Format" xml:space="preserve">
+		<value>Die Datei '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Executor_AddFile_Success_Format" xml:space="preserve">
+		<value>Die Datei '{0}' wurde in '{1}' importiert.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_CreatingVolumes_Format" xml:space="preserve">
+		<value>Volumen wird/werden in '{0}' erstellt..</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Error_NameSwitchConflict" xml:space="preserve">
+		<value>Der Parameter --name/-n darf nicht mit mehr als einer Instanz des Schalters --package/-p verwendet werden.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Error_NotAdmin" xml:space="preserve">
+		<value>Dieser Befehl kann nur von einem lokalen Administrator gestartet werden.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Error_SizeCimSwitchConflict" xml:space="preserve">
+		<value>Der Parameter --size/-s kann nicht mit dem Zieltyp CIM verwendet werden.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Error_SizeSwitchConflict" xml:space="preserve">
+		<value>Der Parameter --size/-s kann nicht mit mehr als einer Instanz des Schalters --package/-p verwendet werden.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Success_Certificate_Format" xml:space="preserve">
+		<value>Zertifikatsdatei '{0}' wurde extrahiert.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Success_Format" xml:space="preserve">
+		<value>Volumen '{0}' wurde erstellt.</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Success_Json_Format" xml:space="preserve">
+		<value>Die Definition: '{0}' wurde mit den folgenden Parametern erstellt:</value>
+	</data>
+	<data name="CLI_Executor_AppAttach_Success_Scripts_Format" xml:space="preserve">
+		<value>Skripte wurden erstellt: '{0}', '{1}', '{2}', '{3}'.</value>
+	</data>
+	<data name="CLI_Executor_BuildMetaData_Error_EmptyName" xml:space="preserve">
+		<value>Der Name der Build-Metadaten darf nicht leer sein.</value>
+	</data>
+	<data name="CLI_Executor_BuildMetaData_Error_EmptyVersion" xml:space="preserve">
+		<value>Die Version der Build-Metadaten darf nicht leer sein.</value>
+	</data>
+	<data name="CLI_Executor_BuildMetaData_Error_Format" xml:space="preserve">
+		<value>Build-Metadaten '{0}' konnten nicht hinzugefügt werden.</value>
+	</data>
+	<data name="CLI_Executor_BuildMetaData_Success_Change_Format" xml:space="preserve">
+		<value>Das Attribut '{0}' wurde von '{1}' zu '{2}' geändert.</value>
+	</data>
+	<data name="CLI_Executor_BuildMetaData_Success_Set_Format" xml:space="preserve">
+		<value>Das Attribut '{0}' wurde auf '{1}' gesetzt.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Error_CouldNotAdd_Format" xml:space="preserve">
+		<value>Die Capability '{0}' konnte nicht hinzugefügt werden.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Error_Empty" xml:space="preserve">
+		<value>Der Capability-Name darf nicht leer sein.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Error_NotGuid_Format" xml:space="preserve">
+		<value>Der Wert '{0}' ist weder eine GUID noch eine gültige Zeichenkette.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Error_TooLong_Format" xml:space="preserve">
+		<value>Der Wert '{0}' ist länger als {1} Zeichen.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Success_Custom_Format" xml:space="preserve">
+		<value>Benutzerdefinierte Capability '{0}' wurde hinzugefügt.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Success_Restricted_Format" xml:space="preserve">
+		<value>Eingeschränkte Capability '{0}' wurde hinzugefügt.</value>
+	</data>
+	<data name="CLI_Executor_Capability_Success_Standard_Format" xml:space="preserve">
+		<value>Standard-Capability '{0}' wurde hinzugefügt.</value>
+	</data>
+	<data name="CLI_Executor_DeleteRegistryKey_Error_Format" xml:space="preserve">
+		<value>Der Registry-Schlüssel '{0}\{1}' konnte nicht gelöscht werden.</value>
+	</data>
+	<data name="CLI_Executor_DeleteRegistryKey_Success_Format" xml:space="preserve">
+		<value>Der Registry-Schlüssel '{0}\{1}' wurde entfernt.</value>
+	</data>
+	<data name="CLI_Executor_DeleteRegistryValue_Error_Format" xml:space="preserve">
+		<value>Der Registry-Wert '{0}' konnte nicht aus '{1}\{2}' entfernt werden.</value>
+	</data>
+	<data name="CLI_Executor_DeleteRegistryValue_Success_Format" xml:space="preserve">
+		<value>Der Registry-Wert '{0}' wurde aus '{1}\{2}' entfernt.</value>
+	</data>
+	<data name="CLI_Executor_Dependencies_Reading" xml:space="preserve">
+		<value>Abhängigkeiten werden gelesen...</value>
+	</data>
+	<data name="CLI_Executor_DidYouMean_Format" xml:space="preserve">
+		<value>Meinten Sie '{0}'?</value>
+	</data>
+	<data name="CLI_Executor_Error_PathNotExist_Format" xml:space="preserve">
+		<value>Der Pfad '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Executor_Error_PathNotSupported_Format" xml:space="preserve">
+		<value>Der Pfad '{0}' ist weder ein Verzeichnis mit extrahierten MSIX, ein .MSIX-Paket noch eine Manifestdatei.</value>
+	</data>
+	<data name="CLI_Executor_ExtractCert_Extracting_Format" xml:space="preserve">
+		<value>Extrahieren des Zertifikats von '{0}'...</value>
+	</data>
+	<data name="CLI_Executor_ExtractCert_Success" xml:space="preserve">
+		<value>Das Zertifikat wurde extrahiert.</value>
+	</data>
+	<data name="CLI_Executor_ImportRegistry_Error_InputMissing" xml:space="preserve">
+		<value>Es muss entweder der Dateipfad oder der lokale Registry-Pfad angegeben werden.</value>
+	</data>
+	<data name="CLI_Executor_ImportRegistry_Error_InvalidHive" xml:space="preserve">
+		<value>Der Registry-Schlüssel muss ein Pfad sein, der mit einem gültigen Hive-Namen beginnt.</value>
+	</data>
+	<data name="CLI_Executor_ImportRegistry_Error_MissingFile_Format" xml:space="preserve">
+		<value>Die Registry-Datei '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Executor_ImportRegistry_Error_UnsupportedHive_Format" xml:space="preserve">
+		<value>Registry Hive {0} wird nicht unterstützt.</value>
+	</data>
+	<data name="CLI_Executor_List_Error_MissingFile_Format" xml:space="preserve">
+		<value>Die Datei '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Executor_List_Error_NoCommands" xml:space="preserve">
+		<value>Es muss mindestens ein Befehl angegeben werden.</value>
+	</data>
+	<data name="CLI_Executor_List_Error_NoCommandsInFile" xml:space="preserve">
+		<value>Die Datei enthält keine Befehle.</value>
+	</data>
+	<data name="CLI_Executor_List_Error_Parsing_Format" xml:space="preserve">
+		<value>Die folgende Zeile konnte nicht geparst werden: {0}</value>
+	</data>
+	<data name="CLI_Executor_List_Error_Split" xml:space="preserve">
+		<value>Das Argument kann nicht gesplittet werden.</value>
+	</data>
+	<data name="CLI_Executor_List_NoFileDefined" xml:space="preserve">
+		<value>Es wurde keine Datei mit MSIX Hero-Befehlen definiert.</value>
+	</data>
+	<data name="CLI_Executor_List_NoFileDefined_Instructions" xml:space="preserve">
+		<value>Geben Sie den gewünschten Befehl zeilenweise ein und beenden Sie die Eingabe durch zweimaliges Drücken von &lt;Enter&gt;.</value>
+	</data>
+	<data name="CLI_Executor_ManifestEdit_MissingFile_Format" xml:space="preserve">
+		<value>Die Manifestdatei '{0}' existiert nicht.</value>
+	</data>
+	<data name="CLI_Executor_ModPack_Success_Format" xml:space="preserve">
+		<value>Das Modifikationspaket wurde in '{0}' erstellt.</value>
+	</data>
+	<data name="CLI_Executor_NewCert_Creating_Format" xml:space="preserve">
+		<value>Erstellen eines neuen Zertifikats für '{0}'...</value>
+	</data>
+	<data name="CLI_Executor_NewCert_ImportingTrustedPeople" xml:space="preserve">
+		<value>Importieren der Zertifikatsdatei in die Liste der vertrauenswürdigen Personen...</value>
+	</data>
+	<data name="CLI_Executor_NewCert_ImportingTrustedPeople_Success" xml:space="preserve">
+		<value>Das Zertifikat wurde in den Speicher für vertrauenswürdige Personen importiert.</value>
+	</data>
+	<data name="CLI_Executor_NewCert_Success_Format" xml:space="preserve">
+		<value>Das Zertifikat wurde in '{0}' gespeichert.</value>
+	</data>
+	<data name="CLI_Executor_OpeningFile_Format" xml:space="preserve">
+		<value>Die Datei '{0}' wird geöffnet...</value>
+	</data>
+	<data name="CLI_Executor_Pack_Packing_Format" xml:space="preserve">
+		<value>Komprimieren von '{0}' nach '{1}'...</value>
+	</data>
+	<data name="CLI_Executor_Pack_RemovingSource_Format" xml:space="preserve">
+		<value>Entfernen des Quellverzeichnisses {0}...</value>
+	</data>
+	<data name="CLI_Executor_Pack_Success_Format" xml:space="preserve">
+		<value>Das Paket '{0}' wurde erstellt.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_Binary" xml:space="preserve">
+		<value>Der Binärwert muss eine gültige base64-Zeichenfolge, eine durch kommagetrennte Liste von Bytewerten oder eine Hex-Zeichenfolge sein, die Bytes darstellt.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_ByteDecimal_Format" xml:space="preserve">
+		<value>Der Wert '{0}' stellt keinen korrekten Dezimalwert für ein Byte dar.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_ByteHex_Format" xml:space="preserve">
+		<value>Der Wert '{0}' stellt keine korrekte Hex-Zeichenkette für ein Byte dar.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_CsvByte_Format" xml:space="preserve">
+		<value>Der kommagetrennte Wert '{0}' stellt keine korrekte Bytefolge dar.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_DwordRange_Format" xml:space="preserve">
+		<value>Der Wert '{0}' liegt nicht innerhalb des Bereichs der DWORD-Werte ({1}-{2}).</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_HexParsing_Format" xml:space="preserve">
+		<value>Die hexadezimale Zeichenfolge '{0}' konnte nicht geparst werden.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_Hex_Format" xml:space="preserve">
+		<value>Der Wert '{0}' ist keine gültige Hexadezimalzahl.</value>
+	</data>
+	<data name="CLI_Executor_Registry_Error_Number_Format" xml:space="preserve">
+		<value>Der Wert '{0}' ist keine gültige Zahl.</value>
+	</data>
+	<data name="CLI_Executor_RemoveFile_Error_CouldNotRemove_Format" xml:space="preserve">
+		<value>Die Datei '{0}' konnte nicht entfernt werden.</value>
+	</data>
+	<data name="CLI_Executor_RemoveFile_Success_Format" xml:space="preserve">
+		<value>Die Datei '{0}' wurde entfernt.</value>
+	</data>
+	<data name="CLI_Executor_SavingFile_Format" xml:space="preserve">
+		<value>Speichern von '{0}'...</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Error_NoProperty" xml:space="preserve">
+		<value>Mindestens eine zu ändernde Eigenschaft ist erforderlich.</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Error_PackageName" xml:space="preserve">
+		<value>Das Format des Paketnamens ist ungültig.</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Error_PublisherFormat" xml:space="preserve">
+		<value>Das Format des Herausgebers ist ungültig.</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Error_ResourceId" xml:space="preserve">
+		<value>Das Format der Ressourcen-ID ist ungültig.</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Success_Change_Format" xml:space="preserve">
+		<value>Das Identitätsattribut '{0}' wurde von '{1}' auf '{2}' geändert.</value>
+	</data>
+	<data name="CLI_Executor_SetIdentity_Success_Set_Format" xml:space="preserve">
+		<value>Das Identitätsattribut wird '{0}' auf '{1}' gesetzt.</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryKey_Error_Format" xml:space="preserve">
+		<value>Registry-Schlüssel '{0}\{1}' konnte nicht gesetzt werden</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryKey_Success_Format" xml:space="preserve">
+		<value>Der Registry-Schlüssel '{0}\{1}' wurde gesetzt.</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryValue_Error_Format" xml:space="preserve">
+		<value>Der Registry-Wert '{0}' konnte nicht auf '{1}' ({2}) in '{3}\{4}' gesetzt werden.</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryValue_Error_ParseType_Format" xml:space="preserve">
+		<value>Der Wertetyp '{0}' konnte nicht geparst werden.</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryValue_Error_TypeNotSupported_Format" xml:space="preserve">
+		<value>Der Wertetyp '{0}' wird nicht unterstützt.</value>
+	</data>
+	<data name="CLI_Executor_SetRegistryValue_Success_Format" xml:space="preserve">
+		<value>Der Registry-Wert "{0}" wurde auf '{1}' ({2}) in '{3}{4}' gesetzt.</value>
+	</data>
+	<data name="CLI_Executor_Sign_DeviceGuardDeterminingPublisher" xml:space="preserve">
+		<value>Ermittlung des Herausgebernamens aus dem Device Guard Signing-Zertifikat...</value>
+	</data>
+	<data name="CLI_Executor_Sign_DeviceGuardSigning_Format" xml:space="preserve">
+		<value>Signieren von '{0}' mit Device Guard...</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_Code_Format" xml:space="preserve">
+		<value>Signierung mit Fehlercode {0} fehlgeschlagen: {1}</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_DecryptFailed" xml:space="preserve">
+		<value>Das konfigurierte Kennwort konnte nicht verwendet werden. Die Entschlüsselung der Zeichenkette aus den Einstellungen ist fehlgeschlagen.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_DeviceGuardNoConfig" xml:space="preserve">
+		<value>Device Guard wurde noch nicht konfiguriert.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_InvalidTimestampUrl_Format" xml:space="preserve">
+		<value>Der Wert '{0}' ist kein gültiger URI.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_Message_Format" xml:space="preserve">
+		<value>Signierung fehlgeschlagen: {0}</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_NoCertAndDefaultConfig" xml:space="preserve">
+		<value>Es wurde kein Zertifikat bereitgestellt, und in den MSIX Hero-Einstellungen wurde kein Standardzertifikat konfiguriert.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_NoConfig" xml:space="preserve">
+		<value>Um mit CLI ohne zusätzliche Signierparameter zu signieren, konfigurieren Sie Ihre Signatur in den MSIX Hero-Einstellungen.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_OptionConflict_Format" xml:space="preserve">
+		<value>Die Optionen --{0} und --{1} können nicht zusammen verwendet werden.</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_Option_Format" xml:space="preserve">
+		<value>Option --{0}: {1}</value>
+	</data>
+	<data name="CLI_Executor_Sign_Error_WrongThumbprint_Format" xml:space="preserve">
+		<value>Zertifikat mit Fingerabdruck '{0}' wurde nicht gefunden.</value>
+	</data>
+	<data name="CLI_Executor_Sign_NewName_Format" xml:space="preserve">
+		<value>Der neue Herausgebername lautet '{0}'.</value>
+	</data>
+	<data name="CLI_Executor_Sign_SigningCerFile_Format" xml:space="preserve">
+		<value>Signieren von '{0}' mit Zertifikat '{1}'...</value>
+	</data>
+	<data name="CLI_Executor_Sign_SigningSha_Format" xml:space="preserve">
+		<value>Signieren von '{0}' mit Zertifikat [SHA1 = {1}]...</value>
+	</data>
+	<data name="CLI_Executor_Sign_Success" xml:space="preserve">
+		<value>Das Paket wurde erfolgreich signiert!</value>
+	</data>
+	<data name="CLI_Executor_Sign_UsingCurrent" xml:space="preserve">
+		<value>Die aktuellen MSIX Hero-Signieroptionen werden verwendet...</value>
+	</data>
+	<data name="CLI_Executor_Trust_Importing_Format" xml:space="preserve">
+		<value>Importiere Zertifikat von '{0}'...</value>
+	</data>
+	<data name="CLI_Executor_Trust_Success" xml:space="preserve">
+		<value>Das Zertifikat wurde importiert.</value>
+	</data>
+	<data name="CLI_Executor_Unpack_RemovingSource_Format" xml:space="preserve">
+		<value>Entfernen des Quellpakets '{0}'...</value>
+	</data>
+	<data name="CLI_Executor_Unpack_Success_Format" xml:space="preserve">
+		<value>Das Paket wurde nach '{0}' entpackt.</value>
+	</data>
+	<data name="CLI_Executor_Unpack_Unpacking_Format" xml:space="preserve">
+		<value>Entpacken von '{0}' nach '{1}'...</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Comparing" xml:space="preserve">
+		<value>Die Pakete werden verglichen...</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_AccessDenied_Format" xml:space="preserve">
+		<value>Konnte nicht in '{0}' schreiben. Zugriff verweigert (Fehlercode: {1}).</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_Format" xml:space="preserve">
+		<value>Ungültiges Paketformat.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_InvalidPath" xml:space="preserve">
+		<value>Der Pfad zur XML-Datei ist ungültig.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_InvalidWindowsPath" xml:space="preserve">
+		<value>Der Pfad zur XML-Datei ist ungültig. Es muss ein gültiger Windows-Pfad sein.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_InvalidXMLPath" xml:space="preserve">
+		<value>Der Pfad zur XML-Datei ist ungültig.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_MessageCode_Format" xml:space="preserve">
+		<value>{0} (Fehlercode: {1})</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_NewPackageMissing" xml:space="preserve">
+		<value>Der neue Paketpfad ist erforderlich.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_NotSameFamily" xml:space="preserve">
+		<value>Ausgewählte Pakete konnten nicht analysiert werden, da sie nicht upgradefähig sind. Damit ein Upgrade funktioniert, muss der Name der Paketfamilie identisch sein.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_OldPackageMissing" xml:space="preserve">
+		<value>Der alte Paketpfad ist erforderlich.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_Unknown" xml:space="preserve">
+		<value>Die Pakete konnten nicht verglichen werden.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_UnknownCode_Format" xml:space="preserve">
+		<value>Die Ergebnisse konnten nicht in ''{0}'' geschrieben werden (Fehlercode: {1})</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_Versioning" xml:space="preserve">
+		<value>Ausgewählte Pakete konnten nicht analysiert werden, weil die Version des 'oldPackage' neuer ist als die Version des 'newPackage'.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Error_Versioning_Hint" xml:space="preserve">
+		<value>Verwenden Sie den Befehlszeilenschalter --force, um diese Prüfung zu ignorieren.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Success" xml:space="preserve">
+		<value>Ausgewählte Pakete sind erfolgreich verglichen worden.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Success_File_Format" xml:space="preserve">
+		<value>Die XML-Datei mit den Ergebnissen wurde in '{0}' gespeichert.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Success_MoreDetails" xml:space="preserve">
+		<value>Um weitere Details zu erhalten, führen Sie diesen Befehl erneut mit der Option --xml "&lt;output_file_path&gt;" aus.</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Added" xml:space="preserve">
+		<value>Neue Dateien</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_BlocksChanged_Format" xml:space="preserve">
+		<value>Blöcke = {0} -&gt; {1}</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Blocks_Format" xml:space="preserve">
+		<value>Blöcke = {0}</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Changed" xml:space="preserve">
+		<value>Geänderte Dateien</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Count_Format" xml:space="preserve">
+		<value>Anzahl = {0}</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Deleted" xml:space="preserve">
+		<value>Gelöschte Dateien</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_NetSizeDiff_Format" xml:space="preserve">
+		<value>Differenz der Nettogröße = {0} Bytes</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_NewBytes_Format" xml:space="preserve">
+		<value>Neue = {0} Bytes</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_OldBytes_Format" xml:space="preserve">
+		<value>Alte = {0} Bytes</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_PackageSize" xml:space="preserve">
+		<value>Paketgröße</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_RequiredDownload_Format" xml:space="preserve">
+		<value>Erforderlicher Download = {0} Bytes</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_SizeChanged_Format" xml:space="preserve">
+		<value>Größe = {0} -&gt; {1}</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Size_Format" xml:space="preserve">
+		<value>Größe = {0}</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_Unchanged" xml:space="preserve">
+		<value>Unveränderte Dateien</value>
+	</data>
+	<data name="CLI_Executor_UpdateImpact_Summary_UpdateImpact" xml:space="preserve">
+		<value>Auswirkung der Aktualisierung</value>
+	</data>
+	<data name="CLI_Executor_Warn_SkippedDueToPreviousErrors" xml:space="preserve">
+		<value>Das Paket wurde aufgrund von früheren Fehlern nicht aktualisiert.</value>
+	</data>
+	<data name="CommandLineParser_Group" xml:space="preserve">
+		<value>Gruppe</value>
+	</data>
+	<data name="CLI_InvalidPassword" xml:space="preserve">
+		<value>Das konfigurierte Kennwort konnte nicht verwendet werden. Die Entschlüsselung der Zeichenkette aus den Einstellungen ist fehlgeschlagen.</value>
+	</data>
 </root>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,62 +59,382 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="CLI_Verbs_AppAttach_Prop_CreateScript" xml:space="preserve">
+		<value>Falls angegeben, werden Beispiel-PS1-Skripte für die Registrierung und De-Registrierung erstellt. Dies wird derzeit nur für VHD-Volumes unterstützt.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_Directory" xml:space="preserve">
+		<value>Ausgabeverzeichnis.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_ExtractCertificate" xml:space="preserve">
+		<value>Falls angegeben, wird das digitale Zertifikat aus dem angegebenen Paket extrahiert.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_FileType" xml:space="preserve">
+		<value>Der Typ der Ausgabedatei.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_Name" xml:space="preserve">
+		<value>Dateiname für die Ausgabedatei. Wenn leer, wird der MSIX-Dateiname ohne Erweiterung verwendet. Dieser Parameter wird nicht verwendet, wenn mehrere Eingabepakete vorhanden sind.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_Package" xml:space="preserve">
+		<value>Vollständige Pfade zu MSIX-Paketen, die in das App-Attach-Format konvertiert werden sollen. Wenn der Pfad ein Verzeichnis ist, werden alle MSIX-Pakete aus diesem Ordner konvertiert.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_Prop_Size" xml:space="preserve">
+		<value>Größe des Containers (in MB). Für die automatische Auswahl leer lassen.</value>
+	</data>
+	<data name="CLI_Verbs_AppAttach_VerbName" xml:space="preserve">
+		<value>Erzeugt ein App-Attach-Volume für MSIX-Pakete.</value>
+	</data>
+	<data name="CLI_Verbs_Dependencies_Prop_Path" xml:space="preserve">
+		<value>Der Pfad zum Paket.</value>
+	</data>
+	<data name="CLI_Verbs_Dependencies_VerbName" xml:space="preserve">
+		<value>Erstellt eine Liste von Beziehungen zwischen Paketabhängigkeiten, einschließlich verschachtelter Abhängigkeiten, Add-ons und Systemabhängigkeiten.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddCapability_Prop_Name" xml:space="preserve">
+		<value>Der Name der hinzuzufügenden Capability.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddCapability_VerbName" xml:space="preserve">
+		<value>Fügt dem Paketmanifest eine bestimmte Capability hinzu.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddFile_Prop_Force" xml:space="preserve">
+		<value>Falls gesetzt, wird die Zieldatei überschrieben, falls sie existiert.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddFile_Prop_Source" xml:space="preserve">
+		<value>Quelldatei von der Festplatte.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddFile_Prop_Target" xml:space="preserve">
+		<value>Relativer Zielpfad zur aktuellen Datei.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_AddFile_VerbName" xml:space="preserve">
+		<value>Fügt eine bestimmte Datei im Paket hinzu oder ersetzt sie.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteFile_Prop_FilePath" xml:space="preserve">
+		<value>Relativer Pfad zur entfernten Datei (Dateisterne werden unterstützt).</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteFile_VerbName" xml:space="preserve">
+		<value>Löscht eine bestimmte Datei aus dem Paket.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteRegistryKey_Prop_RegistryKey" xml:space="preserve">
+		<value>Ein Registry-Pfad (z.B. HKLM\Software\abc) eines zu löschenden Registry-Schlüssels.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteRegistryKey_VerbName" xml:space="preserve">
+		<value>Löscht einen bestimmten Registry-Schlüssel.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteRegistryValue_Prop_RegistryKey" xml:space="preserve">
+		<value>Ein Registry-Pfad (z. B. HKLM\Software\abc) zu einem Registry-Schlüssel, der den zu löschenden Wert enthält.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteRegistryValue_Prop_RegistryValueName" xml:space="preserve">
+		<value>Ein zu löschender Wertname.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_DeleteRegistryValue_VerbName" xml:space="preserve">
+		<value>Löscht einen bestimmten Registry-Wert.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_ImportRegistry_Prop_File" xml:space="preserve">
+		<value>Eine .reg-Datei (Windows-Registrierung) zum Importieren.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_ImportRegistry_Prop_RegistryKey" xml:space="preserve">
+		<value>Ein lokaler Registry-Pfad (z. B. HKLM\Software\abc) eines zu importierenden Registrierungsschlüssels.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_ImportRegistry_VerbName" xml:space="preserve">
+		<value>Importiert die Registry aus einer .reg-Datei oder einer lokalen Registry.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_List_Prop_File" xml:space="preserve">
+		<value>Dateipfad zu einer Datei, die die auszuführenden Anweisungen enthält. Wenn keine Datei angegeben wird, kann der Benutzer den erforderlichen Inhalt über die Konsole angeben</value>
+	</data>
+	<data name="CLI_Verbs_Edit_List_VerbName" xml:space="preserve">
+		<value>Führt eine Liste von Befehlen aus, entweder aus einer Datei oder von einer Befehlszeile aus.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_Prop_PackagePath" xml:space="preserve">
+		<value>Vollständiger Pfad zu dem bearbeiteten Paket.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetBuildMetaData_Prop_Name" xml:space="preserve">
+		<value>Der Name der Komponente, zum Beispiel SignTool.exe.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetBuildMetaData_Prop_Version" xml:space="preserve">
+		<value>Die Version der Komponente, zum Beispiel 1.0.0.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetBuildMetaData_VerbName" xml:space="preserve">
+		<value>Fügt dem Paketmanifest die angegebenen Build-Metadaten hinzu.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_Prop_Name" xml:space="preserve">
+		<value>Der Paketname.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_Prop_ProcessorArchitecture" xml:space="preserve">
+		<value>Die Prozessorarchitektur, zum Beispiel x64, arm oder Neutral.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_Prop_Publisher" xml:space="preserve">
+		<value>Die DN-String eines Herausgebers.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_Prop_ResourceId" xml:space="preserve">
+		<value>Die Ressourcen-ID.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_Prop_Version" xml:space="preserve">
+		<value>Die Paketversion. Es muss eine gültige Versionszeichenkette sein. Sie können auch 'auto' schreiben, um die Version automatisch zu erhöhen, oder die Platzhalter ^ oder + verwenden, um eine Einheit zu erhöhen, und 'x' oder '*', um die Einheit zu behalten. Zum Beispiel würde die Version *.*.+.0 die Haupt- und Nebenversion vom aktuellen Wert beibehalten, die dritte Position um eins erhöhen und die vierte Position auf 0 zurücksetzen.
+
+</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetIdentity_VerbName" xml:space="preserve">
+		<value>Setzt die Paketidentität.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_Prop_Description" xml:space="preserve">
+		<value>Die Paketbeschreibung.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_Prop_DisplayName" xml:space="preserve">
+		<value>Der Anzeigename des Pakets.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_Prop_Logo" xml:space="preserve">
+		<value>Der Pfad zu einem internen Logo.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_Prop_ModificationPackage" xml:space="preserve">
+		<value>Ein boolescher Wert, der definiert, ob es sich um ein Modifikationspaket handelt.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_Prop_PublisherDisplayName" xml:space="preserve">
+		<value>Der Anzeigename des Herausgebers.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetProperties_VerbName" xml:space="preserve">
+		<value>Setzt Paketeigenschaften (wie Anzeigename, Logo usw.)</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryKey_Prop_RegistryKey" xml:space="preserve">
+		<value>Ein Registry-Pfad (z.B. HKLM\Software\abc) eines zu setzenden Registry-Schlüssels.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryKey_VerbName" xml:space="preserve">
+		<value>Setzt den Registry-Schlüssel.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryValue_Prop_RegistryKey" xml:space="preserve">
+		<value>Registry-Schlüssel (z.B. HKLM\Software\abc), der den bearbeiteten Wert enthält.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryValue_Prop_RegistryValueName" xml:space="preserve">
+		<value>Ein zu setzender Wertname.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryValue_Prop_Value" xml:space="preserve">
+		<value>Der Wert.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryValue_Prop_ValueType" xml:space="preserve">
+		<value>Werttyp.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_SetRegistryValue_VerbName" xml:space="preserve">
+		<value>Setzt einen bestimmten Registry-Wert.</value>
+	</data>
+	<data name="CLI_Verbs_Edit_VerbName" xml:space="preserve">
+		<value>Bearbeitet ein angegebenes MSIX-Paket.</value>
+	</data>
+	<data name="CLI_Verbs_ExtractCert_Prop_File" xml:space="preserve">
+		<value>Pfad zu einem Quellpaket.</value>
+	</data>
+	<data name="CLI_Verbs_ExtractCert_Prop_Output" xml:space="preserve">
+		<value>Vollständiger Dateipfad, unter dem die extrahierte .CER-Datei gespeichert wird.</value>
+	</data>
+	<data name="CLI_Verbs_ExtractCert_VerbName" xml:space="preserve">
+		<value>Extrahiert die Zertifikatsdatei (.CER) aus einem bereits signierten MSIX-Paket.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_DisplayName" xml:space="preserve">
+		<value>Der Anzeigename für das neue Zertifikat.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_Import" xml:space="preserve">
+		<value>Wenn diese Option gesetzt ist, wird das Zertifikat in den lokalen Speicher importiert. Diese Option erfordert, dass MSIXHeroCLI.exe als Administrator gestartet wird.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_OutputFolder" xml:space="preserve">
+		<value>Verzeichnis, in dem die Zertifikatsdateien gespeichert werden sollen.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_Password" xml:space="preserve">
+		<value>Zertifikat-Passwort.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_Subject" xml:space="preserve">
+		<value>Subjekt des Zertifikats, zum Beispiel CN=John. Wird er nicht angegeben, wird er automatisch anhand des Anzeigenamens festgelegt.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_Prop_ValidUntil" xml:space="preserve">
+		<value>Datumszeitpunkt, bis zu dem das Zertifikat für Signierzwecke verwendet werden kann. Der Standardwert ist ein Jahr ab heute.</value>
+	</data>
+	<data name="CLI_Verbs_NewCert_VerbName" xml:space="preserve">
+		<value>Erstellt ein neues Zertifikat zur Selbstsignierung.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_CopyFolderStructure" xml:space="preserve">
+		<value>Bestimmt, ob die Ordnerstruktur aus dem übergeordneten Paket kopiert werden soll. Diese Option ist nur gültig, wenn der Parameter --parentPackage definiert ist UND der Zieldateipfad ein Ordner ist.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_DisplayName" xml:space="preserve">
+		<value>Der angezeigte Name des neuen Modifikationspakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_IncludeFolder" xml:space="preserve">
+		<value>Pfad zu einem Ordner, der in den Stammordner des neuen Änderungspakets eingefügt wird.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_IncludeRegFile" xml:space="preserve">
+		<value>Pfad zu einer .REG-Datei mit Registry-Schlüsseln, die in das neue Änderungspaket eingefügt werden sollen.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_Name" xml:space="preserve">
+		<value>Der Name des neuen Modifikationspakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_OutputPath" xml:space="preserve">
+		<value>Pfad zur Ausgabedatei. Wenn der angegebene Wert die Erweiterung .msix hat, wird ein gepacktes Paket erstellt. Andernfalls wird der Wert wie ein Ordner behandelt, in dem die entpackten Ressourcen gespeichert werden.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_ParentName" xml:space="preserve">
+		<value>Der Name des Hauptpakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_ParentPackagePath" xml:space="preserve">
+		<value>Vollständiger Pfad zum Hauptpaket (ein Manifest oder ein .msix-Paket).</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_ParentPublisher" xml:space="preserve">
+		<value>Der Name des Herausgebers des Hauptpakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_PublisherDisplayName" xml:space="preserve">
+		<value>Der angezeigte Name des Herausgebers des neuen Modifikationspakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_PublisherName" xml:space="preserve">
+		<value>Der Name des Herausgebers des neuen Modifikationspakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_VerbName" xml:space="preserve">
+		<value>Erzeugt ein neues Modifikationspaket.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_Prop_Version" xml:space="preserve">
+		<value>Die Version des neuen Modifikationspakets.</value>
+	</data>
+	<data name="CLI_Verbs_NewModPack_VerbName" xml:space="preserve">
+		<value>Erzeugt ein neues Modifikationspaket.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_Prop_Directory" xml:space="preserve">
+		<value>Zu komprimierendes Quellverzeichnis.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_Prop_NoCompression" xml:space="preserve">
+		<value>Verhindert, dass MSIX Hero die Dateien im Paket komprimiert. Standardmäßig werden die Dateien im Paket anhand des erkannten Dateityps komprimiert.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_Prop_NoValidation" xml:space="preserve">
+		<value>Überspringt die semantische Validierung. Wenn Sie diese Option nicht angeben, führt MSIX Hero eine vollständige Validierung des Pakets durch.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_Prop_Package" xml:space="preserve">
+		<value>Pfad des Ausgabepakets.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_Prop_RemoveDirectoryAfterPacking" xml:space="preserve">
+		<value>Falls gesetzt, wird das Eingabeverzeichnis nach der Komprimierung entfernt.</value>
+	</data>
+	<data name="CLI_Verbs_Pack_VerbName" xml:space="preserve">
+		<value>Komprimiert einen Ordner.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_DeviceGuardFile" xml:space="preserve">
+		<value>Vollständiger Pfad zur JSON-Datei mit Zugriffstoken für AzureAD.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_DeviceGuardInteractive" xml:space="preserve">
+		<value>Ein Schalter für die interaktive Device Guard-Signierung (Sie werden nach den AzureAD-Anmeldedaten gefragt).</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_DeviceGuardSubject" xml:space="preserve">
+		<value>Name des Herausgebers, der für die Signierung mit Device Guard verwendet wird.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_FilePath" xml:space="preserve">
+		<value>Vollständige Pfade zu einer oder mehreren Dateien (durch Leerzeichen getrennt).</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_IncreaseVersion" xml:space="preserve">
+		<value>Bestimmt, ob die Version automatisch erhöht werden soll, und (falls ja) welche Komponente davon. Unterstützte Werte sind [None, Major, Minor, Build, Revision].</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_NoPublisherUpdate" xml:space="preserve">
+		<value>Deaktiviert die automatische Aktualisierung des Herausgebernamens mit dem Wert des Zertifikatsbetreffs.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_PfxFilePath" xml:space="preserve">
+		<value>Definiert das Signierzertifikat in einer Datei. Wenn die Datei im PFX-Format (Personal Information Exchange) vorliegt und durch ein Kennwort geschützt ist, verwenden Sie die Option -p, um das Kennwort anzugeben.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_PfxPassword" xml:space="preserve">
+		<value>Bestimmt das Passwort, das beim Öffnen einer PFX-Datei verwendet wird.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_ThumbPrint" xml:space="preserve">
+		<value>Bestimmt den SHA1-Hash des Signierzertifikats. Der SHA1-Hash wird in der Regel angegeben, wenn mehrere Zertifikate die mit den übrigen Schaltern angegebenen Kriterien erfüllen.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_TimeStampUrl" xml:space="preserve">
+		<value>Bestimmt die URL des RFC 3161-Zeitstempelservers. Wenn nicht angegeben, wird der Standardwert aus den MSIX Hero-Einstellungen verwendet.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_Prop_UseMachineStore" xml:space="preserve">
+		<value>Bestimmt, dass ein Maschinenspeicher anstelle eines Benutzerspeichers verwendet wird.</value>
+	</data>
+	<data name="CLI_Verbs_Sign_VerbName" xml:space="preserve">
+		<value>Signiert ein Paket.</value>
+	</data>
+	<data name="CLI_Verbs_Trust_Prop_File" xml:space="preserve">
+		<value>Die zu importierende Datei (eine .CER-Datei oder ein MSIX-Paket).</value>
+	</data>
+	<data name="CLI_Verbs_Trust_VerbName" xml:space="preserve">
+		<value>Importiert ein Zertifikat oder ein Zertifikat von MSIX in den Speicher für vertrauenswürdige Personen,</value>
+	</data>
+	<data name="CLI_Verbs_Unpack_Prop_Directory" xml:space="preserve">
+		<value>Ausgabeverzeichnis.</value>
+	</data>
+	<data name="CLI_Verbs_Unpack_Prop_NoValidation" xml:space="preserve">
+		<value>Semantische Validierung überspringen. Wenn Sie diese Option nicht angeben, führt MSIX Hero eine vollständige Validierung des Pakets durch.</value>
+	</data>
+	<data name="CLI_Verbs_Unpack_Prop_Package" xml:space="preserve">
+		<value>Pfad des Quellpakets.</value>
+	</data>
+	<data name="CLI_Verbs_Unpack_Prop_RemovePackageAfterExtraction" xml:space="preserve">
+		<value>Falls gesetzt, wird das Eingabepaket nach dem Extrahieren entfernt.</value>
+	</data>
+	<data name="CLI_Verbs_Unpack_VerbName" xml:space="preserve">
+		<value>Extrahiert ein MSIX-Paket in einen Ordner.</value>
+	</data>
+	<data name="CLI_Verbs_UpdateImpact_Prop_IgnoreVersionMismatch" xml:space="preserve">
+		<value>Erzwingt den Vergleich auch dann, wenn die "newVersion" nicht höher ist als die "oldVersion".</value>
+	</data>
+	<data name="CLI_Verbs_UpdateImpact_Prop_NewPackagePath" xml:space="preserve">
+		<value>Die neuere Version des Pakets zum Vergleich. Akzeptierte Dateien: *.msix, *.appx, AppxManifest.xml und AppxBlockMap.xml.</value>
+	</data>
+	<data name="CLI_Verbs_UpdateImpact_Prop_OldPackagePath" xml:space="preserve">
+		<value>Die ältere Version des Pakets zum Vergleich. Akzeptierte Dateien: *.msix, *.appx, AppxManifest.xml und AppxBlockMap.xml.</value>
+	</data>
+	<data name="CLI_Verbs_UpdateImpact_Prop_OutputXml" xml:space="preserve">
+		<value>Der Dateipfad, in dem die XML-Datei mit dem detaillierten Vergleich gespeichert wird.</value>
+	</data>
+	<data name="CLI_Verbs_UpdateImpact_VerbName" xml:space="preserve">
+		<value>Analysiert den Unterschied zwischen zwei Paketen und zeigt die Auswirkungen auf Aktualisierungen an.</value>
+	</data>
 </root>

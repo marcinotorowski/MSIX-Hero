@@ -552,9 +552,6 @@
 	<data name="CLI_InvalidPassword" xml:space="preserve">
     <value>Nie można było użyć skonfigurowanego hasła. Odszyfrowywanie z poziomu ustawień nie powiodło się.</value>
   </data>
-	<data name="CommandLineParser_Bytes" xml:space="preserve">
-    <value> bajtów</value>
-  </data>
 	<data name="CommandLineParser_Group" xml:space="preserve">
     <value>Grupa</value>
   </data>

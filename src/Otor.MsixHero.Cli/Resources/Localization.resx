@@ -117,17 +117,11 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Reading" xml:space="preserve">
-    <value>Reading </value>
-  </data>
-	<data name="CommandLineParser_Bytes" xml:space="preserve">
-    <value> bytes</value>
-  </data>
 	<data name="CommandLineParser_SentenceBadFormatConversionErrorOption" xml:space="preserve">
-    <value>Option '{0}' is defined with a bad format.</value>
+    <value>Option '{0}' is defined with an invalid format.</value>
   </data>
 	<data name="CommandLineParser_SentenceBadFormatConversionErrorValue" xml:space="preserve">
-    <value>A value not bound to option name is defined with a bad format.</value>
+    <value>A value not bound to option name is defined with an invalid format.</value>
   </data>
 	<data name="CommandLineParser_SentenceBadFormatTokenError" xml:space="preserve">
     <value>Token '{0}' is not recognized.</value>
@@ -139,10 +133,10 @@
     <value>ERROR(S):</value>
   </data>
 	<data name="CommandLineParser_SentenceHelpCommandTextOption" xml:space="preserve">
-    <value>Display this help screen.</value>
+    <value>Displays this help screen.</value>
   </data>
 	<data name="CommandLineParser_SentenceHelpCommandTextVerb" xml:space="preserve">
-    <value>Display more information on a specific command.</value>
+    <value>Displays more information on a specific command.</value>
   </data>
 	<data name="CommandLineParser_SentenceMissingRequiredOptionError" xml:space="preserve">
     <value>Required option '{0}' is missing.</value>
@@ -181,7 +175,7 @@
     <value>USAGE:</value>
   </data>
 	<data name="CommandLineParser_SentenceVersionCommandText" xml:space="preserve">
-    <value>Display version information.</value>
+    <value>Displays version information.</value>
   </data>
 	<data name="CLI_CertificateSummary_ExpiresNever_Aligned" xml:space="preserve">
     <value>Expires:    &lt;never&gt;</value>
