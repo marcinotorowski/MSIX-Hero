@@ -1384,7 +1384,7 @@
     <value>Wszystkie pliki</value>
   </data>
 	<data name="Psf_Regex_Any" xml:space="preserve">
-    <value>**Wszystkie** pliki</value>
+    <value>wszystkie</value>
   </data>
 	<data name="Psf_Regex_File" xml:space="preserve">
     <value>Plik **{0}**</value>
@@ -2096,12 +2096,6 @@
   </data>
 	<data name="Dialogs_ExportCertificate_PackageOrCerFile" xml:space="preserve">
     <value>Podpisany pakiet MSIX lub plik z certyfikatem</value>
-  </data>
-	<data name="Dialogs_ExportCertificate_Prompt_Part1" xml:space="preserve">
-    <value>Wciśnij</value>
-  </data>
-	<data name="Dialogs_ExportCertificate_Prompt_Part3" xml:space="preserve">
-    <value>aby zaimportować certyfikat.</value>
   </data>
 	<data name="Dialogs_ExportCertificate_SignatureDetails" xml:space="preserve">
     <value>Szczegóły podpisu cyfrowego:</value>
@@ -2895,9 +2889,6 @@
 	<data name="Dialogs_Winget_ValidatingCli_Title" xml:space="preserve">
     <value>Błędy walidacji</value>
   </data>
-	<data name="Psf_Process_NamedProcess_TextBefore" xml:space="preserve">
-    <value>proces</value>
-  </data>
 	<data name="Dialogs_NewCert_OkButton" xml:space="preserve">
     <value>Wygeneruj certyfikat</value>
   </data>
@@ -3388,7 +3379,7 @@
     <value>Historia lokalizacji</value>
   </data>
 	<data name="Capability_LowLevel" xml:space="preserve">
-    <value>GPIO, I2C, SPI, and PWM</value>
+    <value>GPIO, I2C, SPI, i PWM</value>
   </data>
 	<data name="Capability_ManageOtherApps" xml:space="preserve">
     <value>Zarządzanie innymi aplikacjami</value>
@@ -3397,7 +3388,7 @@
     <value>Zarządzanie połączeniem telefonicznym</value>
   </data>
 	<data name="Capability_MotionActivity" xml:space="preserve">
-    <value>Aktywność ruchu</value>
+    <value>Aktywność ruchowa</value>
   </data>
 	<data name="Capability_Music" xml:space="preserve">
     <value>Muzyka</value>
@@ -3460,7 +3451,7 @@
     <value>Nazwa pryncypała</value>
   </data>
 	<data name="Capability_UserSystemID" xml:space="preserve">
-    <value>User System ID</value>
+    <value>Systemowy identyfikator użytkownika</value>
   </data>
 	<data name="Capability_Videos" xml:space="preserve">
     <value>Wideo</value>
@@ -3591,4 +3582,103 @@
 	<data name="PackageControl_Error_Exception" xml:space="preserve">
     <value>Wczytywanie szczegółów nie powiodło się. {0}</value>
   </data>
+	<data name="Dialogs_ExportCertificate_Output_Import_Press_Hint" xml:space="preserve">
+		<value>Wciśnij **Importuj certyfikat** aby zaimportować certyfikat. Po zaimportowaniu do magazynu zaufanych osób, wszystkie aplikacje podpisane za pomocą tego certyfikatu będą zaufane na tym komputerze.</value>
+	</data>
+	<data name="EventViewer_Details_Properties" xml:space="preserve">
+		<value>Właściwości</value>
+	</data>
+	<data name="Capability_CameraProcExt" xml:space="preserve">
+		<value>Rozszerzenie przetwarzania kamery</value>
+	</data>
+	<data name="Capability_CustomDevices" xml:space="preserve">
+		<value>Własne urządzenia</value>
+	</data>
+	<data name="Capability_DevelopmentModeNetwork" xml:space="preserve">
+		<value>Sieć w trybie deweloperskim</value>
+	</data>
+	<data name="Capability_EnterpriseSharedStorage" xml:space="preserve">
+		<value>Współdzielony magazyn firmowy</value>
+	</data>
+	<data name="Capability_EnterpriseSSO" xml:space="preserve">
+		<value>Pojedyncze logowanie w chmurze firmowej</value>
+	</data>
+	<data name="Capability_ExtendedBgTaskTime" xml:space="preserve">
+		<value>Rozszerzony czas dla zadań w tle</value>
+	</data>
+	<data name="Capability_ExtendedExecBgAudio" xml:space="preserve">
+		<value>Rozszerzone wykonywanie odtwarzania w tle</value>
+	</data>
+	<data name="Capability_FirstTimeSignIn" xml:space="preserve">
+		<value>Ustawienia pierwszego logowania</value>
+	</data>
+	<data name="Capability_ForegroundObservation" xml:space="preserve">
+		<value>Obserwacja na pierwszym tle</value>
+	</data>
+	<data name="Capability_GameDvr" xml:space="preserve">
+		<value>Ustawienia DVR gier</value>
+	</data>
+	<data name="Capability_HID" xml:space="preserve">
+		<value>Human interface device (HID)</value>
+	</data>
+	<data name="Capability_HidTelephony" xml:space="preserve">
+		<value>Telefonia HID</value>
+	</data>
+	<data name="Capability_InProcMediaExt" xml:space="preserve">
+		<value>Rozszerzenie in-processs mediów</value>
+	</data>
+	<data name="Capability_ManageEmailAccount" xml:space="preserve">
+		<value>Dodawanie i zarządzanie kontami poczty (MO)</value>
+	</data>
+	<data name="Capability_MdmCspInf" xml:space="preserve">
+		<value>Dostęp do infrastruktury MDM CSP</value>
+	</data>
+	<data name="Capability_ObserveInput" xml:space="preserve">
+		<value>Śledzenie wprowadzania</value>
+	</data>
+	<data name="Capability_OemDeploy" xml:space="preserve">
+		<value>Dostęp do współdzielonego folderu aplikacji (OEM)</value>
+	</data>
+	<data name="Capability_PackagePolicyControl" xml:space="preserve">
+		<value>Kontrola polityki pakietów</value>
+	</data>
+	<data name="Capability_PenWorkspace" xml:space="preserve">
+		<value>Obszar roboczy technologii Pen</value>
+	</data>
+	<data name="Capability_POS" xml:space="preserve">
+		<value>Point of Service (POS)</value>
+	</data>
+	<data name="Capability_ProvisionConfigureOmaDm" xml:space="preserve">
+		<value>Prowizjonowanie i konfiguracja MO OMA-DM</value>
+	</data>
+	<data name="Capability_RadioState" xml:space="preserve">
+		<value>Status radio</value>
+	</data>
+	<data name="Capability_ReserveVoIP" xml:space="preserve">
+		<value>Rezerwowanie zasobów dla telefonii VoIP</value>
+	</data>
+	<data name="Capability_SerialCommunication" xml:space="preserve">
+		<value>Komunikacja serialowa</value>
+	</data>
+	<data name="Capability_SoftwareLicensing" xml:space="preserve">
+		<value>Licencjonowanie oprogramowania</value>
+	</data>
+	<data name="Capability_SpeechRecognition" xml:space="preserve">
+		<value>Rozpoznawanie mowy dla akcesoriów</value>
+	</data>
+	<data name="Capability_SuppressInput" xml:space="preserve">
+		<value>Zawieszenie wprowadzania</value>
+	</data>
+	<data name="Capability_SysInputInjection" xml:space="preserve">
+		<value>Wstrzykiwanie inputu systemowego</value>
+	</data>
+	<data name="Capability_UserSignIn" xml:space="preserve">
+		<value>Wsparcie dla logowania</value>
+	</data>
+	<data name="Capability_WindowsTeamAppView" xml:space="preserve">
+		<value>Widok aplikacji sesji Windows Team</value>
+	</data>
+	<data name="Capability_WindowsTeamDeviceCreds" xml:space="preserve">
+		<value>Zarządzanie uprawnieniami sesji Windows Team</value>
+	</data>
 </root>

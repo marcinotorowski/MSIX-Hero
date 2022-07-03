@@ -1120,16 +1120,10 @@
     <value>Displayed bundle name</value>
   </data>
 	<data name="PackageSelector_DisplayName" xml:space="preserve">
-    <value>Package display name</value>
-  </data>
-	<data name="PackageSelector_DisplayName1" xml:space="preserve">
     <value>Displayed package name</value>
   </data>
 	<data name="PackageSelector_DisplayPublisher" xml:space="preserve">
     <value>Displayed publisher name</value>
-  </data>
-	<data name="PackageSelector_DisplayPublisher1" xml:space="preserve">
-    <value>Version</value>
   </data>
 	<data name="PackageSelector_Error_Manifest_Format" xml:space="preserve">
     <value>Could not read value from MSIX manifest '{0}'.</value>
@@ -1270,7 +1264,7 @@
     <value>Copy...</value>
   </data>
 	<data name="Packages_List_ContextMenu_Copy_DisplayName" xml:space="preserve">
-    <value>DisplayName</value>
+    <value>Display name</value>
   </data>
 	<data name="Packages_List_ContextMenu_Copy_FamilyName" xml:space="preserve">
     <value>Family name</value>
@@ -2002,7 +1996,7 @@
     <value>Tags</value>
   </data>
 	<data name="Dialogs_Winget_Tags_Hint" xml:space="preserve">
-    <value>Additional strings a user would use to search for the package</value>
+    <value>Additional strings users would use to search for the package</value>
   </data>
 	<data name="Dialogs_Winget_Url" xml:space="preserve">
     <value>URL</value>
@@ -2105,12 +2099,6 @@
   </data>
 	<data name="Dialogs_ExportCertificate_PackageOrCerFile" xml:space="preserve">
     <value>Signed MSIX package or a certificate file</value>
-  </data>
-	<data name="Dialogs_ExportCertificate_Prompt_Part1" xml:space="preserve">
-    <value>Press</value>
-  </data>
-	<data name="Dialogs_ExportCertificate_Prompt_Part3" xml:space="preserve">
-    <value>to import the certificate.</value>
   </data>
 	<data name="Dialogs_ExportCertificate_SignatureDetails" xml:space="preserve">
     <value>Digital signature details:</value>
@@ -2907,9 +2895,6 @@
 	<data name="Dialogs_Winget_ValidatingCli_Title" xml:space="preserve">
     <value>Validation errors</value>
   </data>
-	<data name="Psf_Process_NamedProcess_TextBefore" xml:space="preserve">
-    <value>process</value>
-  </data>
 	<data name="Dialogs_NewCert_OkButton" xml:space="preserve">
     <value>Generate certificate</value>
   </data>
@@ -2917,9 +2902,6 @@
     <value>Output path</value>
   </data>
 	<data name="Dialogs_NewCert_Password" xml:space="preserve">
-    <value>Password</value>
-  </data>
-	<data name="Dialogs_NewCert_Password1" xml:space="preserve">
     <value>Password</value>
   </data>
 	<data name="Dialogs_NewCert_Placeholder_DisplayName" xml:space="preserve">
@@ -3696,4 +3678,7 @@
 	<data name="PackageControl_Error_Exception" xml:space="preserve">
     <value>Could not load details. {0}</value>
   </data>
+	<data name="Dialogs_ExportCertificate_Output_Import_Press_Hint" xml:space="preserve">
+		<value>Press **Import certificate** to import the certificate. After importing to the Trusted People store, all apps signed with this certificate will be trusted on this machine.</value>
+	</data>
 </root>

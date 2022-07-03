@@ -27,12 +27,10 @@
     <globalSetting name="CreateNewFileForm.newLanguageComboBox.SelectedIndex">-1</globalSetting>
     <globalSetting name="CreateNewFileForm.copyTextsCheckBox.Checked">False</globalSetting>
     <globalSetting name="CreateNewFileForm.automaticallyTranslateCheckBox.Checked">False</globalSetting>
-    <globalSetting name="projectMruItems">&lt;?xml version='1.0' encoding='utf-8'?&gt;&lt;items /&gt;</globalSetting>
+    <globalSetting name="projectMruItems">&lt;?xml version='1.0' encoding='utf-8'?&gt;&lt;items&gt;&lt;item type="2" checksum="2657057764" /&gt;&lt;item type="2" checksum="3815873961" /&gt;&lt;item type="2" checksum="5357772078" /&gt;&lt;item type="2" checksum="4172551155" /&gt;&lt;item type="2" checksum="1532146354" /&gt;&lt;/items&gt;</globalSetting>
     <userSetting name="marci@DESKTOP-5162GQS.filesInitialDir">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources</userSetting>
-    <userSetting name="marci@DESKTOP-5162GQS.FindText">
-    </userSetting>
-    <userSetting name="marci@DESKTOP-5162GQS.RecentFiles">
-    </userSetting>
+    <userSetting name="marci@DESKTOP-5162GQS.FindText">prr</userSetting>
+    <userSetting name="marci@DESKTOP-5162GQS.RecentFiles">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.pl.resx</userSetting>
     <description>
     </description>
   </configuration>

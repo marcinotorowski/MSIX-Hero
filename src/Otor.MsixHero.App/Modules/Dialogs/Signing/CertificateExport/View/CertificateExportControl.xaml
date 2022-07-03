@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:CertificateExportViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -124,13 +125,9 @@
 
                 <Border Visibility="{Binding CertificateDetails.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock 
+                        controls1:SimpleTextMarkup.Markup="{localization:Loc Dialogs_ExportCertificate_Output_Import_Press_Hint}"
                         Visibility="{Binding CanExtract.CurrentValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
-                        Margin="0 16 0 0" Style="{StaticResource DataHeader}" TextWrapping="Wrap">
-                        <Run Text="{localization:Loc Dialogs_ExportCertificate_Prompt_Part1}" />
-                        <Run Text="{localization:Loc Dialogs_ExportCertificate_OkLabel_Import}" FontWeight="SemiBold" />
-                        <Run Text="{localization:Loc Dialogs_ExportCertificate_Prompt_Part3}" />
-                        <Run Text="{localization:Loc Dialogs_ExportCertificate_Output_Import_Hint}" />
-                    </TextBlock>
+                        Margin="0 16 0 0" Style="{StaticResource DataHeader}" TextWrapping="Wrap" />
                 </Border>
             </StackPanel>
         </AdornerDecorator>

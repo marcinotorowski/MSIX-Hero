@@ -174,4 +174,7 @@
 	<data name="Winget_Validation_ValueRequired" xml:space="preserve">
 		<value>Dieser Wert ist erforderlich.</value>
 	</data>
+	<data name="Winget_Error_CouldNotStart" xml:space="preserve">
+		<value>Winget konnte nicht ausgeführt werden.</value>
+	</data>
 </root>
