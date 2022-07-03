@@ -608,16 +608,21 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                     <TextBlock 
                         x:Name="PART_Overlay"
+                        HorizontalAlignment="Stretch"
+                        Margin="16 8" 
                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0" />
-
                     <ProgressBar
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        MaxWidth="160"
+                        BorderThickness="0"
+                        Background="#22000000"
+                        Margin="16 0 16 8" 
+                        Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="4" 
                         Opacity="0.0"
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
-                        Margin="0 8 0 0" 
-                        Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
                         Width="200" 
-                        HorizontalAlignment="Center" 
                         Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}" />
 
                     <Button 
@@ -626,7 +631,7 @@
                         SnapsToDevicePixels="True"
                         x:Name="PART_CancelButton" 
                         HorizontalAlignment="Center" 
-                        Margin="0 8 0 0" 
+                        Margin="16 8" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
                         Content="{localization:Loc Button_Cancel}" />
                 </StackPanel>
@@ -691,16 +696,22 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                     <TextBlock 
                         x:Name="PART_Overlay"
+                        HorizontalAlignment="Stretch"
+                        Margin="16 8" 
                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message}" TextAlignment="Center" Opacity="0">
-
                     </TextBlock>
 
                     <ProgressBar
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        MaxWidth="160"
+                        BorderThickness="0"
+                        Background="#22000000"
+                        Margin="16 0 16 8" 
+                        Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="4" 
                         Opacity="0.0"
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
-                        Margin="0 8 0 0" Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
-                        Width="200" HorizontalAlignment="Center" 
                         local:AnimatedProgressBar.Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}">
                     </ProgressBar>
 
@@ -710,7 +721,7 @@
                         SnapsToDevicePixels="True"
                         x:Name="PART_CancelButton" 
                         HorizontalAlignment="Center" 
-                        Margin="0 8 0 0" 
+                        Margin="16 8" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
                         Content="{localization:Loc Button_Cancel}">
                     </Button>
@@ -794,18 +805,27 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                     <TextBlock 
                         x:Name="PART_Overlay"
-                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message}" TextAlignment="Center" Opacity="0">
+                        HorizontalAlignment="Stretch"
+                        Margin="16 8" 
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message}" 
+                        TextAlignment="Center" 
+                        Opacity="0">
                         <TextBlock.RenderTransform>
                             <TranslateTransform Y="40" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
 
                     <ProgressBar
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        MaxWidth="160"
+                        BorderThickness="0"
+                        Background="#22000000"
+                        Margin="16 0 16 8" 
+                        Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="4" 
                         Opacity="0.0"
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
-                        Margin="0 8 0 0" Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
-                        Width="200" HorizontalAlignment="Center" 
                         local:AnimatedProgressBar.Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}">
                         <ProgressBar.RenderTransform>
                             <TranslateTransform Y="40" />
@@ -818,7 +838,7 @@
                         SnapsToDevicePixels="True"
                         x:Name="PART_CancelButton" 
                         HorizontalAlignment="Center" 
-                        Margin="0 8 0 0" 
+                        Margin="16 8" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
                         Content="{localization:Loc Button_Cancel}">
                         <Button.RenderTransform>
@@ -912,7 +932,7 @@
 
     <Style TargetType="local:ProgressOverlay">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="0">
