@@ -5,6 +5,8 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/ContextMenu.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Themes/ScrollBar.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Themes/ScrollViewer.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Fonts.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Forms.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Icons.xaml" />

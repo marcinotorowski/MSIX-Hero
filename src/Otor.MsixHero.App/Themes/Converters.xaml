@@ -13,4 +13,5 @@
     <converters:GroupNameConverter x:Key="GroupConverter" />
     <converters:StringFormatConverter x:Key="StringFormatConverter" />
     <converters:StringConcatConverter x:Key="StringConcatConverter" />
+    <converters:MathConverter x:Key="MathConverter" />
 </ResourceDictionary>
