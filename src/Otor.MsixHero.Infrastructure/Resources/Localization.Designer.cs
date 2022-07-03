@@ -88,7 +88,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating named pipe security for {0}….
+        ///   Looks up a localized string similar to Creating named pipe for {0}….
         /// </summary>
         public static string Infrastructure_Ipc_CreatingNamedPipeFor_Format {
             get {
@@ -520,7 +520,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process existed with an improper exit code {0}..
+        ///   Looks up a localized string similar to Process exited with an improper exit code {0}..
         /// </summary>
         public static string Infrastructure_Sdk_ProcessExited_WrongExitCode_Format {
             get {

@@ -1366,15 +1366,6 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  bytes.
-        /// </summary>
-        public static string CommandLineParser_Bytes {
-            get {
-                return ResourceManager.GetString("CommandLineParser_Bytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
         public static string CommandLineParser_Group {
@@ -1384,7 +1375,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option &apos;{0}&apos; is defined with a bad format..
+        ///   Looks up a localized string similar to Option &apos;{0}&apos; is defined with an invalid format..
         /// </summary>
         public static string CommandLineParser_SentenceBadFormatConversionErrorOption {
             get {
@@ -1393,7 +1384,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A value not bound to option name is defined with a bad format..
+        ///   Looks up a localized string similar to A value not bound to option name is defined with an invalid format..
         /// </summary>
         public static string CommandLineParser_SentenceBadFormatConversionErrorValue {
             get {
@@ -1429,7 +1420,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display this help screen..
+        ///   Looks up a localized string similar to Displays this help screen..
         /// </summary>
         public static string CommandLineParser_SentenceHelpCommandTextOption {
             get {
@@ -1438,7 +1429,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display more information on a specific command..
+        ///   Looks up a localized string similar to Displays more information on a specific command..
         /// </summary>
         public static string CommandLineParser_SentenceHelpCommandTextVerb {
             get {
@@ -1555,20 +1546,11 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display version information..
+        ///   Looks up a localized string similar to Displays version information..
         /// </summary>
         public static string CommandLineParser_SentenceVersionCommandText {
             get {
                 return ResourceManager.GetString("CommandLineParser_SentenceVersionCommandText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reading .
-        /// </summary>
-        public static string Reading {
-            get {
-                return ResourceManager.GetString("Reading", resourceCulture);
             }
         }
     }

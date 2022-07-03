@@ -2509,7 +2509,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;C.
+        ///   Looks up a localized string similar to Version.
         /// </summary>
         public static string Dialogs_AppInstaller_Version {
             get {
@@ -2977,29 +2977,20 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Press **Import certificate** to import the certificate. After importing to the Trusted People store, all apps signed with this certificate will be trusted on this machine..
+        /// </summary>
+        public static string Dialogs_ExportCertificate_Output_Import_Press_Hint {
+            get {
+                return ResourceManager.GetString("Dialogs_ExportCertificate_Output_Import_Press_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Signed MSIX package or a certificate file.
         /// </summary>
         public static string Dialogs_ExportCertificate_PackageOrCerFile {
             get {
                 return ResourceManager.GetString("Dialogs_ExportCertificate_PackageOrCerFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Press.
-        /// </summary>
-        public static string Dialogs_ExportCertificate_Prompt_Part1 {
-            get {
-                return ResourceManager.GetString("Dialogs_ExportCertificate_Prompt_Part1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to to import the certificate..
-        /// </summary>
-        public static string Dialogs_ExportCertificate_Prompt_Part3 {
-            get {
-                return ResourceManager.GetString("Dialogs_ExportCertificate_Prompt_Part3", resourceCulture);
             }
         }
         
@@ -3567,15 +3558,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_NewCert_Password {
             get {
                 return ResourceManager.GetString("Dialogs_NewCert_Password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password.
-        /// </summary>
-        public static string Dialogs_NewCert_Password1 {
-            get {
-                return ResourceManager.GetString("Dialogs_NewCert_Password1", resourceCulture);
             }
         }
         
@@ -4399,7 +4381,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;thumbprint-to-certificate&gt;.
+        ///   Looks up a localized string similar to &lt;certificate-thumbprint&gt;.
         /// </summary>
         public static string Dialogs_PackageSigning_Placeholder_Thumbprint {
             get {
@@ -6964,7 +6946,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Additional strings a user would use to search for the package.
+        ///   Looks up a localized string similar to Additional strings users would use to search for the package.
         /// </summary>
         public static string Dialogs_Winget_Tags_Hint {
             get {
@@ -8449,15 +8431,6 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signed by.
-        /// </summary>
-        public static string PackageExpert_SignedBy1 {
-            get {
-                return ResourceManager.GetString("PackageExpert_SignedBy1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Capabilities.
         /// </summary>
         public static string PackageExpert_Tab_Capabilities {
@@ -8971,7 +8944,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DisplayName.
+        ///   Looks up a localized string similar to Display name.
         /// </summary>
         public static string Packages_List_ContextMenu_Copy_DisplayName {
             get {
@@ -9394,20 +9367,11 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package display name.
+        ///   Looks up a localized string similar to Displayed package name.
         /// </summary>
         public static string PackageSelector_DisplayName {
             get {
                 return ResourceManager.GetString("PackageSelector_DisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displayed package name.
-        /// </summary>
-        public static string PackageSelector_DisplayName1 {
-            get {
-                return ResourceManager.GetString("PackageSelector_DisplayName1", resourceCulture);
             }
         }
         
@@ -9417,15 +9381,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageSelector_DisplayPublisher {
             get {
                 return ResourceManager.GetString("PackageSelector_DisplayPublisher", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version.
-        /// </summary>
-        public static string PackageSelector_DisplayPublisher1 {
-            get {
-                return ResourceManager.GetString("PackageSelector_DisplayPublisher1", resourceCulture);
             }
         }
         
@@ -9606,15 +9561,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Psf_Process_EndsWith {
             get {
                 return ResourceManager.GetString("Psf_Process_EndsWith", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to process.
-        /// </summary>
-        public static string Psf_Process_NamedProcess_TextBefore {
-            get {
-                return ResourceManager.GetString("Psf_Process_NamedProcess_TextBefore", resourceCulture);
             }
         }
         
@@ -10492,7 +10438,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This value is not a  well-formed GUID..
+        ///   Looks up a localized string similar to This value is not a valid GUID..
         /// </summary>
         public static string Validation_Guid {
             get {
@@ -10596,24 +10542,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Validation_Url_Named {
             get {
                 return ResourceManager.GetString("Validation_Url_Named", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} must be a well-formed URI..
-        /// </summary>
-        public static string Validation_Url_Named1 {
-            get {
-                return ResourceManager.GetString("Validation_Url_Named1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This value is not a valid URI..
-        /// </summary>
-        public static string Validation_Url1 {
-            get {
-                return ResourceManager.GetString("Validation_Url1", resourceCulture);
             }
         }
         

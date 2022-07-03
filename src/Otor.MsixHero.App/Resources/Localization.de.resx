@@ -397,13 +397,13 @@
 		<value>Erstellen...</value>
 	</data>
 	<data name="Volumes_DefaultVolume" xml:space="preserve">
-		<value>Dies ist das Standardvolumen</value>
+		<value>Dies ist das Standardvolume</value>
 	</data>
 	<data name="Volumes_DefaultVolume_Caption" xml:space="preserve">
 		<value>Standard</value>
 	</data>
 	<data name="Volumes_DefaultVolume_Tooltip" xml:space="preserve">
-		<value>Dies ist das Standardvolumen</value>
+		<value>Dies ist das Standardvolume</value>
 	</data>
 	<data name="Volumes_DetachedVolume_Caption" xml:space="preserve">
 		<value>Getrennt</value>
@@ -439,7 +439,7 @@
 		<value>System</value>
 	</data>
 	<data name="Volumes_SystemVolume_Tooltip" xml:space="preserve">
-		<value>Dies ist ein Systemvolumen</value>
+		<value>Dies ist ein Systemvolume</value>
 	</data>
 	<data name="Dialog_AppInstaller_ContextMenu_NewBundle" xml:space="preserve">
 		<value>Neues Bündel</value>
@@ -1222,7 +1222,7 @@
 		<value>Weitere Pakete konvertieren</value>
 	</data>
 	<data name="Dialogs_AppAttach_Success_OpenFolder" xml:space="preserve">
-		<value>Den Ordner mit Ihren Volumen öffnen</value>
+		<value>Den Ordner mit Ihrem Volume öffnen</value>
 	</data>
 	<data name="Dialogs_AppAttach_Tabs_Packages_Context_Remove" xml:space="preserve">
 		<value>Ausgewählte(s) Paket(e) entfernen</value>
@@ -1765,7 +1765,7 @@
 		<value>Andere</value>
 	</data>
 	<data name="PackageExpert_App_Other_ChangeVolume" xml:space="preserve">
-		<value>Volumen ändern...</value>
+		<value>Volume ändern...</value>
 	</data>
 	<data name="PackageExpert_App_SendTo" xml:space="preserve">
 		<value>Senden an...</value>
@@ -1867,7 +1867,7 @@
 		<value>Diese Anwendung läuft derzeit</value>
 	</data>
 	<data name="Packages_List_ContextMenu_ChangeVolume" xml:space="preserve">
-		<value>Volumen ändern...</value>
+		<value>Volume ändern...</value>
 	</data>
 	<data name="Packages_List_ContextMenu_CheckUpdates" xml:space="preserve">
 		<value>Nach Updates suchen</value>
@@ -2236,7 +2236,7 @@
 		<value>YAML-Manifest in {0} schreiben...</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_CurrentVolume" xml:space="preserve">
-		<value>Aktuelles Volumen</value>
+		<value>Aktuelles Volume</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_GettingData" xml:space="preserve">
 		<value>Daten abrufen...</value>
@@ -2257,7 +2257,7 @@
 		<value>Ein neues Volume erstellen</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_Select" xml:space="preserve">
-		<value>Anderes Volumen auswählen</value>
+		<value>Anderes Volume auswählen</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_Use_Format" xml:space="preserve">
 		<value>{0} verwenden</value>

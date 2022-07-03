@@ -97,7 +97,7 @@ namespace Otor.MsixHero.Registry.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error while parsing line {0}: {{{1}}}..
+        ///   Looks up a localized string similar to Error while parsing line {0}: {1}..
         /// </summary>
         public static string Registry_Error_LineParsingFailed_Format {
             get {

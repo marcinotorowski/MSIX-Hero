@@ -295,7 +295,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File path to a file containing the instructions to execute. If not provided, the user can prompt the required content from the console..
+        ///   Looks up a localized string similar to File path to a file containing the instructions to execute. If not provided, the user can provide the required content from the console..
         /// </summary>
         public static string CLI_Verbs_Edit_List_Prop_File {
             get {
@@ -520,7 +520,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit a specified MSIX package..
+        ///   Looks up a localized string similar to Edits a specified MSIX package..
         /// </summary>
         public static string CLI_Verbs_Edit_VerbName {
             get {
@@ -610,7 +610,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create new certificate for self-signing..
+        ///   Looks up a localized string similar to Creates new certificate for self-signing..
         /// </summary>
         public static string CLI_Verbs_NewCert_VerbName {
             get {
@@ -736,7 +736,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new modification package..
+        ///   Looks up a localized string similar to Creates a new modification package..
         /// </summary>
         public static string CLI_Verbs_NewModPack_VerbName {
             get {
@@ -763,7 +763,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skip semantic validation. If you don&apos;t specify this option, MSIX Hero performs a full validation of the package..
+        ///   Looks up a localized string similar to Skips semantic validation. If you don&apos;t specify this option, MSIX Hero performs a full validation of the package..
         /// </summary>
         public static string CLI_Verbs_Pack_Prop_NoValidation {
             get {
@@ -790,7 +790,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pack a folder..
+        ///   Looks up a localized string similar to Packs a folder..
         /// </summary>
         public static string CLI_Verbs_Pack_VerbName {
             get {
@@ -898,7 +898,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign a package..
+        ///   Looks up a localized string similar to Signs a package..
         /// </summary>
         public static string CLI_Verbs_Sign_VerbName {
             get {
@@ -916,7 +916,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import a certificate or a certificate from MSIX to Trusted People store,.
+        ///   Looks up a localized string similar to Imports a certificate or a certificate from MSIX to Trusted People store,.
         /// </summary>
         public static string CLI_Verbs_Trust_VerbName {
             get {
@@ -961,7 +961,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unpack an MSIX package to a folder..
+        ///   Looks up a localized string similar to Unpacks an MSIX package to a folder..
         /// </summary>
         public static string CLI_Verbs_Unpack_VerbName {
             get {
