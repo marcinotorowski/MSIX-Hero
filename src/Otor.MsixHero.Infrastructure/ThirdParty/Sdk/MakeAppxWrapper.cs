@@ -100,7 +100,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (options.PublisherBridge != null)
             {
-                arguments.Append(" /pb");
+                arguments.Append(" /pb ");
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(options.PublisherBridge));
             }
 

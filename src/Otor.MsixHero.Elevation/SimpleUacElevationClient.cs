@@ -78,7 +78,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
 
             if (targetMethod.DeclaringType == null)
             {
-                throw new ArgumentException("Undefined declaring type.", nameof(targetMethod));
+                throw new ArgumentException(@"Undefined declaring type.", nameof(targetMethod));
             }
 
             if (Log.IsVerboseEnabled())
@@ -202,8 +202,8 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                                     throw new InvalidOperationException("Missing exception.");
                                 }
 
-                                var exception = Serializer.Deserialize(typeof(Exception), serializedObject) as Exception ?? throw new InvalidOperationException("Missing exception.");
-                                throw new TargetInvocationException("Remoting returned an exception", exception);
+                                var exceptionData = Serializer.Deserialize(typeof(SerializableExceptionData), serializedObject) as SerializableExceptionData ?? throw new InvalidOperationException("Missing exception.");
+                                throw new MsixHeroRemoteInvocationException(exceptionData);
                             }
 
                         case ResponseType.Progress:

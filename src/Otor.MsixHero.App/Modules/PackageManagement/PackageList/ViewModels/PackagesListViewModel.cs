@@ -214,6 +214,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     case SignatureKind.Enterprise:
                         if ((packageFilterSignatureFlags & PackageFilter.Developer) == 0)
                         {
+                            item.IsSelected = false;
                             return false;
                         }
 
@@ -221,6 +222,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     case SignatureKind.Store:
                         if ((packageFilterSignatureFlags & PackageFilter.Store) == 0)
                         {
+                            item.IsSelected = false;
                             return false;
                         }
 
@@ -228,6 +230,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     case SignatureKind.System:
                         if ((packageFilterSignatureFlags & PackageFilter.System) == 0)
                         {
+                            item.IsSelected = false;
                             return false;
                         }
 
@@ -242,6 +245,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 {
                     if ((packageFilterAddOnFlags & PackageFilter.Addons) == 0)
                     {
+                        item.IsSelected = false;
                         return false;
                     }
                 }
@@ -249,6 +253,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 {
                     if ((packageFilterAddOnFlags & PackageFilter.MainApps) == 0)
                     {
+                        item.IsSelected = false;
                         return false;
                     }
                 }
@@ -263,6 +268,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.x86) == 0)
                             {
+                                item.IsSelected = false;
                                 return false;
                             }
 
@@ -272,6 +278,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.x64) == 0)
                             {
+                                item.IsSelected = false;
                                 return false;
                             }
 
@@ -281,6 +288,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Arm) == 0)
                             {
+                                item.IsSelected = false;
                                 return false;
                             }
 
@@ -290,6 +298,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Arm64) == 0)
                             {
+                                item.IsSelected = false;
                                 return false;
                             }
 
@@ -299,6 +308,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Neutral) == 0)
                             {
+                                item.IsSelected = false;
                                 return false;
                             }
 
@@ -312,6 +322,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             {
                 if (!item.IsRunning)
                 {
+                    item.IsSelected = false;
                     return false;
                 }
             }
@@ -329,6 +340,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 (item.PackageFamilyName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
             )
             {
+                item.IsSelected = false;
                 return false;
             }
 

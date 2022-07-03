@@ -33,10 +33,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         private static readonly LogSource Logger = new();
         public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, string timestampUrl, CancellationToken cancellationToken = default)
         {
-            var signToolArguments = new StringBuilder();
+            var signToolArguments = new StringBuilder(256);
 
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /debug /fd {0}", CommandLineHelper.EncodeParameterArgument(algorithmType));
+            signToolArguments.Append(" /debug /fd ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(algorithmType));
             
             if (!string.IsNullOrEmpty(timestampUrl))
             {
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             foreach (var filePath in filePaths)
             {
-                signToolArguments.Append(" ");
+                signToolArguments.Append(' ');
                 signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(filePath));
             }
 
@@ -119,24 +120,26 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var remove = -1;
             var removeLength = 0;
 
-            var signToolArguments = new StringBuilder();
+            var signToolArguments = new StringBuilder(256);
 
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
-            signToolArguments.AppendFormat(" /a /f \"{0}\"", pfxPath);
+            signToolArguments.Append(" /debug /fd ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(algorithmType));
+            signToolArguments.Append(" /a /f ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(pfxPath));
 
             if (!string.IsNullOrEmpty(password))
             {
-                signToolArguments.Append(" /p \"");
+                signToolArguments.Append(" /p ");
                 remove = signToolArguments.Length;
-                signToolArguments.Append(password);
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(password));
                 removeLength = signToolArguments.Length - remove;
-                signToolArguments.Append('"');
             }
 
             if (!string.IsNullOrEmpty(timestampUrl))
             {
-                signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+                signToolArguments.Append(" /tr ");
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(timestampUrl));
 
                 // required in SDK builds 20236 and later
                 // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
@@ -145,7 +148,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             foreach (var filePath in filePaths)
             {
-                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+                signToolArguments.Append(' ');
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(filePath));
             }
 
             var args = signToolArguments.ToString();
@@ -184,10 +188,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public async Task SignPackageWithPersonal(IEnumerable<string> filePaths, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
         {
-            var signToolArguments = new StringBuilder();
+            var signToolArguments = new StringBuilder(256);
             
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
+            signToolArguments.Append(" /debug");
+            signToolArguments.Append(" /fd ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(algorithmType));
 
             if (useMachineStore)
             {
@@ -196,7 +202,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (!string.IsNullOrEmpty(timestampUrl))
             {
-                signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+                signToolArguments.Append(" /tr ");
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(timestampUrl));
 
                 // required in SDK builds 20236 and later
                 // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
@@ -204,11 +211,13 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
 
             signToolArguments.Append(" /a /s MY ");
-            signToolArguments.AppendFormat(" /sha1 \"{0}\"", thumbprint);
+            signToolArguments.Append(" /sha1 ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(thumbprint));
 
             foreach (var filePath in filePaths)
             {
-                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+                signToolArguments.Append(' ');
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(filePath));
             }
 
             var args = signToolArguments.ToString();

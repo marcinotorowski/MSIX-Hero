@@ -126,9 +126,9 @@ namespace Otor.MsixHero.Elevation.Ipc
                 var jsonString = Serializer.Serialize(ResponseType.Exception);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken);
 
-                await WriteStringToBinaryWriter(binaryWriter, TypeHelper.ToFullNameWithAssembly(e.GetType()), cancellationToken).ConfigureAwait(false);
+                await WriteStringToBinaryWriter(binaryWriter, TypeHelper.ToFullNameWithAssembly(typeof(SerializableExceptionData)), cancellationToken).ConfigureAwait(false);
 
-                jsonString = Serializer.Serialize(e);
+                jsonString = Serializer.Serialize(new SerializableExceptionData(e));
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
             }
             finally

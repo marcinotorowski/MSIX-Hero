@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     }
                 }
 
-                var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToArray();
+                var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToList();
                 
                 var results = await manager.GetInstalledPackages(mode, cancellationToken, context).ConfigureAwait(false);
                 
@@ -107,6 +107,17 @@ namespace Otor.MsixHero.App.Hero.Handlers
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
+                }
+
+                // Just in case, make sure to remove stuff from the selection if the list of packages does not have it anymore.
+                for (var i = selected.Count - 1; i >= 0; i--)
+                {
+                    if (this.commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.ManifestLocation == selected[i]))
+                    {
+                        continue;
+                    }
+
+                    selected.RemoveAt(i);
                 }
 
                 await this.commandExecutor.Invoke(this, new SelectPackagesCommand(selected), cancellationToken).ConfigureAwait(false);

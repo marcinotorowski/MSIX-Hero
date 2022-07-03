@@ -76,7 +76,7 @@ attach vdisk";
                         await File.WriteAllTextAsync(tempCreateFile, string.Format(content, vhdPath, requiredSizeMb), cancellationToken).ConfigureAwait(false);
                         var arguments = $"/S \"{tempCreateFile}\"";
 
-                        Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempCreateFile) + $"\r\n{string.Format(content, vhdPath)}");
+                        Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempCreateFile) + $"\r\n{string.Format(content, vhdPath, requiredSizeMb)}");
                         await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                     finally

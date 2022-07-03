@@ -57,12 +57,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public Task Unpack(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = new StringBuilder("-Unpack ", 256);
+            var arguments = new StringBuilder("-Unpack", 256);
 
-            arguments.Append(" -packagePath");
+            arguments.Append(" -packagePath ");
             arguments.Append(CommandLineHelper.EncodeParameterArgument(packageFilePath));
             
-            arguments.Append(" -destination");
+            arguments.Append(" -destination ");
             arguments.Append(CommandLineHelper.EncodeParameterArgument(unpackedDirectory));
             
             return this.RunMsixMgr(arguments.ToString(), cancellationToken);
@@ -70,9 +70,9 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public Task ApplyAcls(string unpackedPackageDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = new StringBuilder("-ApplyACLs ", 256);
+            var arguments = new StringBuilder("-ApplyACLs", 256);
 
-            arguments.Append(" -packagePath");
+            arguments.Append(" -packagePath ");
             arguments.Append(CommandLineHelper.EncodeParameterArgument(unpackedPackageDirectory));
 
             return this.RunMsixMgr(arguments.ToString(), cancellationToken);
@@ -89,30 +89,30 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             string rootDirectory = null,
             CancellationToken cancellationToken = default)
         {
-            var arguments = new StringBuilder("-Unpack ", 256);
+            var arguments = new StringBuilder("-Unpack", 256);
 
-            arguments.Append(" -packagePath");
+            arguments.Append(" -packagePath ");
             arguments.Append(CommandLineHelper.EncodeParameterArgument(packageFilePath));
 
-            arguments.Append(" -destination");
+            arguments.Append(" -destination ");
             arguments.Append(CommandLineHelper.EncodeParameterArgument(containerPath));
             
             if (fileType.HasValue)
             {
-                arguments.Append(" -fileType");
+                arguments.Append(" -fileType ");
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(fileType.Value.ToString("G").ToUpperInvariant()));
             }
 
             if (size > 0)
             {
-                arguments.Append(" -vhdSize");
+                arguments.Append(" -vhdSize ");
                 arguments.Append(size);
             }
 
             if (applyAcls)
             {
                 // ReSharper disable once StringLiteralTypo
-                arguments.Append(" -applyacls");
+                arguments.Append(" -applyacls ");
             }
             
             if (create)
@@ -122,7 +122,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (!string.IsNullOrEmpty(rootDirectory))
             {
-                arguments.Append(" -rootDirectory");
+                arguments.Append(" -rootDirectory ");
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(rootDirectory));
             }
             
