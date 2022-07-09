@@ -44,7 +44,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
     
     public T AsAdministrator<T>(bool keepElevation = true) where T : class
     {
-        return AsAdministratorProxy<T>.Create(this._handler);
+        return AsAdministratorProxy<T>.Create(this._handler, this.Resolve<T>, keepElevation);
     }
 
     public T AsCurrentUser<T>() where T : class
@@ -358,8 +358,9 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
     {
         private bool _keepElevation;
         private ClientHandler? _clientHandler;
+        private Func<T?>? _fallbackFactory;
 
-        public static T Create(ClientHandler clientHandler, bool keepElevation = true)
+        public static T Create(ClientHandler clientHandler, Func<T> immediateExecutionFallback, bool keepElevation = true)
         {
             if (!typeof(T).IsInterface)
             {
@@ -369,6 +370,11 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
             if (clientHandler == null)
             {
                 throw new ArgumentNullException(nameof(clientHandler));
+            }
+
+            if (immediateExecutionFallback == null)
+            {
+                throw new ArgumentNullException(nameof(immediateExecutionFallback));
             }
 
             // DispatchProxy.Create creates proxy objects
@@ -385,6 +391,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
 
             proxy._clientHandler = clientHandler;
             proxy._keepElevation = keepElevation;
+            proxy._fallbackFactory = immediateExecutionFallback;
 
             return result;
         }
@@ -401,7 +408,18 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                 throw new NullReferenceException("Client handler was not set.");
             }
 
-            if (this._clientHandler.IsRunningAsAdministratorAsync().GetAwaiter().GetResult() || this._clientHandler.IsUacHelperRunning().GetAwaiter().GetResult())
+            if (this._clientHandler.IsRunningAsAdministratorAsync().GetAwaiter().GetResult())
+            {
+                if (this._fallbackFactory == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                var fallBack = this._fallbackFactory();
+                return targetMethod.Invoke(fallBack, args);
+            }
+
+            if (this._clientHandler.IsUacHelperRunning().GetAwaiter().GetResult())
             {
                 return base.Invoke(targetMethod, args);
             }
