@@ -83,7 +83,7 @@
         <Border Background="{StaticResource MsixHero.Brushes.Background}">
             <DockPanel Margin="16">
                 <DockPanel DockPanel.Dock="Top">
-                    <Image MouseDown="LicenseUrlMouseDown" VerticalAlignment="Top" Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
+                    <Image MouseDown="LicenseUrlMouseDown" VerticalAlignment="Top" Source="Images/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
                     <StackPanel Margin="10 0 0 0">
                         <Label Content="{localization:Loc Dialogs_About_Header}" Style="{StaticResource FormLabel}" />
                         <TextBlock>

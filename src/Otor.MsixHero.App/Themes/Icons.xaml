@@ -5,7 +5,7 @@
         <ResourceDictionary Source="Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <BitmapImage x:Key="DummyLogo" UriSource="/Resources/icons8-sugar-cube-48.png" />
+    <BitmapImage x:Key="DummyLogo" UriSource="/Resources/Images/icons8-sugar-cube-48.png" />
     
     <Style TargetType="{x:Type Path}" x:Key="LargeIcon">
         <Setter Property="Width" Value="32" />

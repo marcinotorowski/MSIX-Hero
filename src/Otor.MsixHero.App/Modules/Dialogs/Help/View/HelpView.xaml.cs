@@ -1791,7 +1791,8 @@ SOFTWARE.
                 var bi = new BitmapImage();
                 bi.BeginInit();
 
-                var s = Assembly.GetAssembly(typeof(HelpView)).GetManifestResourceStream(typeof(HelpView).Namespace + ".bundle-icon.png");
+                // ReSharper disable once PossibleNullReferenceException
+                var s = Assembly.GetAssembly(typeof(HelpView)).GetManifestResourceStream(typeof(HelpView).Namespace + ".Images.bundle-icon.png");
                 var memArr = new byte[s.Length];
                 for (var i = s.Length - 1; i >= 0; i--)
                 {

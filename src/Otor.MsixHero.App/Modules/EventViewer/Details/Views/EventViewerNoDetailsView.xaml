@@ -11,7 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
     <StackPanel VerticalAlignment="Center">
-        <Image Source="/Resources/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
+        <Image Source="/Resources/Images/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
         <Label Margin="0 7 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{localization:Loc EventViewer_Sidebar_NoSelection}" Style="{StaticResource FormLabelThin}" />
         <TextBlock Foreground="#999" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{localization:Loc EventViewer_Sidebar_NoSelection_Hint}" />
     </StackPanel>

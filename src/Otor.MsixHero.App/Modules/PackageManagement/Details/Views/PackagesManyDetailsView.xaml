@@ -30,7 +30,7 @@
         </Border>
 
         <StackPanel VerticalAlignment="Center">
-            <Image Source="/Resources/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
+            <Image Source="/Resources/Images/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
             <Label Margin="0 7 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{localization:Loc Packages_Sidebar_MultipleItems}" Style="{StaticResource FormLabelThin}" />
             <TextBlock Foreground="#999" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{localization:Loc Packages_Sidebar_MultipleItems_Hint}" />
         </StackPanel>

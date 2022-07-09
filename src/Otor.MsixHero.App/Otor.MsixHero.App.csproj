@@ -10,7 +10,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>msixhero</AssemblyName>
-    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icons\favicon.ico</ApplicationIcon>
     <RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
   </PropertyGroup>
@@ -36,13 +36,16 @@
     <None Remove="Modules\VolumeManagement\Views\acryllicbg.png" />
     <None Remove="Modules\WhatsNew\Views\arrow.png" />
     <None Remove="Modules\WhatsNew\Views\whatsnew2.0.png" />
+    <None Remove="Resources\Fonts\SourceSansPro-ExtraLight.ttf" />
+    <None Remove="Resources\Fonts\SourceSansPro-Light.ttf" />
+    <None Remove="Resources\Fonts\SourceSansPro-Regular.ttf" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
     <None Remove="Resources\msix-hero-32.png" />
     <None Remove="Resources\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Modules\Dialogs\Help\View\bundle-icon.png">
+    <EmbeddedResource Include="Modules\Dialogs\Help\View\Images\bundle-icon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -93,12 +96,14 @@
     <Resource Include="Modules\WhatsNew\Views\arrow.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\acryllicbg.png" />
-    <Resource Include="Resources\icons8-sugar-cube-48.png" />
-    <Resource Include="Resources\msix-hero-32.png">
+    <Resource Include="Resources\Fonts\SourceSansPro-ExtraLight.ttf" />
+    <Resource Include="Resources\Fonts\SourceSansPro-Light.ttf" />
+    <Resource Include="Resources\Fonts\SourceSansPro-Regular.ttf" />
+    <Resource Include="Resources\Images\icons8-sugar-cube-48.png" />
+    <Resource Include="Resources\Images\msix-hero-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\msix-hero-64.png" />
+    <Resource Include="Modules\Dialogs\Help\View\Images\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>

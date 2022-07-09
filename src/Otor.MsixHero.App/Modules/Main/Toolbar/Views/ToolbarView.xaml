@@ -17,7 +17,7 @@
             Height="58" Width="60" DockPanel.Dock="Left">
             <Image 
                 RenderOptions.BitmapScalingMode="HighQuality"
-                Source="/Resources/msix-hero-32.png" 
+                Source="/Resources/Images/msix-hero-32.png" 
                 Width="32"
                 Height="32"
                 Stretch="None"
