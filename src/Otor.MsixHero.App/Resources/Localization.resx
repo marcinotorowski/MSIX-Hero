@@ -1533,8 +1533,11 @@
 	<data name="System_AutoUpdates_Option3" xml:space="preserve">
     <value>Automatic download always disabled</value>
   </data>
-	<data name="System_DeveloperOptions" xml:space="preserve">
+  <data name="System_DeveloperOptions" xml:space="preserve">
     <value>Installing and debugging apps from outside of Microsoft Store</value>
+  </data>
+  <data name="System_DeveloperOptions_DevMode" xml:space="preserve">
+    <value>Developer mode</value>
   </data>
 	<data name="System_DeveloperOptions_Option1" xml:space="preserve">
     <value>Only install apps from Microsoft Store</value>
@@ -1543,7 +1546,7 @@
     <value>Install apps from any trusted source (Microsoft Store and side-loaded packages)</value>
   </data>
 	<data name="System_DeveloperOptions_Option3a" xml:space="preserve">
-    <value>Install apps from any source, including loose files (developer mode)</value>
+    <value>Install apps from any source, including loose files</value>
   </data>
 	<data name="System_DeveloperOptions_Option3b" xml:space="preserve">
     <value>Install any signed and trusted app and enable development features</value>
@@ -1552,7 +1555,7 @@
     <value>The settings can be changed manually in Windows Settings app.</value>
   </data>
 	<data name="System_DeveloperOptions_WindowsSettings_Link" xml:space="preserve">
-    <value>Open Windows Settings</value>
+    <value>Windows Settings</value>
   </data>
 	<data name="System_Error_UrlCouldNotOpen" xml:space="preserve">
     <value>Could not open the URL {0}.</value>
@@ -3680,5 +3683,23 @@
   </data>
 	<data name="Dialogs_ExportCertificate_Output_Import_Press_Hint" xml:space="preserve">
 		<value>Press **Import certificate** to import the certificate. After importing to the Trusted People store, all apps signed with this certificate will be trusted on this machine.</value>
+	</data>
+	<data name="System_DeveloperOptions_Option1_Short" xml:space="preserve">
+		<value>Allow only Microsoft Store apps</value>
+	</data>
+	<data name="System_DeveloperOptions_Option2_Short" xml:space="preserve">
+		<value>Allow Microsoft Store and signed apps</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3a_Short" xml:space="preserve">
+		<value>Allow all apps (developer mode)</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3b_Short" xml:space="preserve">
+		<value>Allow all apps (developer mode)</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading" xml:space="preserve">
+		<value>Side-loading</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading_OutOfTheBox" xml:space="preserve">
+		<value>Your system supports installing signed apps out-of-the-box.</value>
 	</data>
 </root>

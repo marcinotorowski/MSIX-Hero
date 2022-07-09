@@ -49,12 +49,24 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
             this.eventAggregator = eventAggregator;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
 
-            var sideloading = new DeveloperAndSideloadingRecommendationViewModel(this.SideloadingConfigurator);
+            if (this.SideloadingConfigurator.Flavor == SideloadingFlavor.Windows10Below2004)
+            {
+                var sideLoadingAndDeveloperMode = new DeveloperAndSideloadingRecommendationViewModel(this.SideloadingConfigurator);
+                this.Items.Add(sideLoadingAndDeveloperMode);
+            }
+            else
+            {
+                var sideLoading = new SideloadingRecommendationViewModel();
+                this.Items.Add(sideLoading);
+
+                var developer = new DeveloperModeRecommendationViewModel(this.SideloadingConfigurator);
+                this.Items.Add(developer);
+            }
+
             var storeAutoDownload = new AutoDownloadRecommendationViewModel(this.WindowsStoreAutoDownloadConfigurator);
             var repackaging = new RepackagingRecommendationViewModel(serviceAdvisor, interactionService, storeAutoDownload);
             var tooling = new ToolingRecommendationViewModel(thirdPartyDetector);
 
-            this.Items.Add(sideloading);
             this.Items.Add(storeAutoDownload);
             this.Items.Add(repackaging);
             this.Items.Add(tooling);

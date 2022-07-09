@@ -13,6 +13,7 @@
         <ResourceDictionary Source="/msixhero;component/Controls/Acrylic/Background/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TreeListView/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Controls/Cards/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="local:LearnMore">

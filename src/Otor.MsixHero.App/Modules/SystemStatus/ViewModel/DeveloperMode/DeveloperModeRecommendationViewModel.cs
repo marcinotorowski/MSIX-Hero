@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -23,14 +22,13 @@ using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
 {
-    public class DeveloperAndSideloadingRecommendationViewModel : BaseRecommendationViewModel
+    public class DeveloperModeRecommendationViewModel : BaseRecommendationViewModel
     {
         protected readonly ISideloadingConfigurator SideloadingConfigurator;
-        private SideloadingStatus sideloadingStatus;
+        private bool _isActive;
 
-        public DeveloperAndSideloadingRecommendationViewModel(ISideloadingConfigurator sideloadingConfigurator)
+        public DeveloperModeRecommendationViewModel(ISideloadingConfigurator sideloadingConfigurator)
         {
-            this.IsLegacyFlavor = new Lazy<bool>(() => sideloadingConfigurator.Flavor == SideloadingFlavor.Windows10Below2004);
             this.SideloadingConfigurator = sideloadingConfigurator;
             this.SetStatusAndSummary();
         }
@@ -41,26 +39,34 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
             base.OnCultureChanged();
         }
 
-        public Lazy<bool> IsLegacyFlavor { get; }
+        public override string Title => Resources.Localization.System_DeveloperOptions_DevMode;
 
-        public override string Title => Resources.Localization.System_Sideloading_Recommendation_Title;
-
-        public SideloadingStatus SideloadingStatus
+        public bool IsActive
         {
-            get => this.sideloadingStatus;
+            get => this._isActive;
             set
             {
-                if (this.sideloadingStatus == value)
+                if (this._isActive == value)
                 {
                     return;
                 }
 
-                if (!this.SideloadingConfigurator.Set(value))
+                if (value)
                 {
-                    return;
+                    if (!this.SideloadingConfigurator.Set(SideloadingStatus.DeveloperMode))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    if (!this.SideloadingConfigurator.Set(SideloadingStatus.Sideloading))
+                    {
+                        return;
+                    }
                 }
 
-                this.sideloadingStatus = value;
+                this._isActive = value;
                 this.OnPropertyChanged();
                 this.SetStatusAndSummary();
             }
@@ -69,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
         public override Task Refresh(CancellationToken cancellationToken = default)
         {
             this.SetStatusAndSummary();
-            this.OnPropertyChanged(nameof(this.SideloadingStatus));
+            this.OnPropertyChanged(nameof(this.IsActive));
             return Task.FromResult(true);
         }
 
@@ -80,25 +86,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
 
         private void SetStatusAndSummary()
         {
-            this.sideloadingStatus = this.SideloadingConfigurator.Get();
-
-            switch (this.SideloadingStatus)
-            {
-                case SideloadingStatus.NotAllowed:
-                    this.Status = RecommendationStatus.Warning;
-                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option1;
-                    break;
-                case SideloadingStatus.Sideloading:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option2;
-                    break;
-                case SideloadingStatus.DeveloperMode:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option3;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            this._isActive = this.SideloadingConfigurator.Get() == SideloadingStatus.DeveloperMode;
         }
     }
 }

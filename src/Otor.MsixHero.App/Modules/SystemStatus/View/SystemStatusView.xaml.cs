@@ -81,8 +81,10 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.View
         private void WindowsSettingsExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var sourceViewModel = (BaseRecommendationViewModel)e.Parameter;
-            
-            if (sourceViewModel is DeveloperAndSideloadingRecommendationViewModel)
+
+            if (sourceViewModel is DeveloperAndSideloadingRecommendationViewModel ||
+                sourceViewModel is SideloadingRecommendationViewModel ||
+                sourceViewModel is DeveloperModeRecommendationViewModel)
             {
                 var process = new ProcessStartInfo("ms-settings:developers") { UseShellExecute = true };
                 Process.Start(process);

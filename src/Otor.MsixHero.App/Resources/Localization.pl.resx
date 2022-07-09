@@ -1533,14 +1533,17 @@
 	<data name="System_DeveloperOptions" xml:space="preserve">
     <value>Instalowanie i debugowanie aplikacji spoza Sklepu Microsoft</value>
   </data>
-	<data name="System_DeveloperOptions_Option1" xml:space="preserve">
+  <data name="System_DeveloperOptions_DevMode" xml:space="preserve">
+    <value>Tryb deweloperski</value>
+  </data>
+  <data name="System_DeveloperOptions_Option1" xml:space="preserve">
     <value>Instaluj aplikacje wyłącznie ze Sklepu Microsoft</value>
   </data>
 	<data name="System_DeveloperOptions_Option2" xml:space="preserve">
     <value>Instaluj aplikacje z dowolnego, zaufanego źródła (Sklep Microsoft oraz ręcznie instalowane pakiety)</value>
   </data>
 	<data name="System_DeveloperOptions_Option3a" xml:space="preserve">
-    <value>Instaluj aplikacje z dowolnych źródeł, także z pojedynczych plików (tryb deweloperski)</value>
+    <value>Instaluj aplikacje z dowolnych źródeł, także z pojedynczych plików</value>
   </data>
 	<data name="System_DeveloperOptions_Option3b" xml:space="preserve">
     <value>Instaluj dowolne podpisane cyfrowo aplikacje i włącz funkcje deweloperskie</value>
@@ -1549,7 +1552,7 @@
     <value>To ustawienie można zmienić ręcznie w aplikacji ustawień Windows.</value>
   </data>
 	<data name="System_DeveloperOptions_WindowsSettings_Link" xml:space="preserve">
-    <value>Otwórz Ustawienia Windows</value>
+    <value>Ustawienia Windows</value>
   </data>
 	<data name="System_Error_UrlCouldNotOpen" xml:space="preserve">
     <value>Nie udało się otworzyć zasobu pod adresem {0}.</value>
@@ -3680,5 +3683,23 @@
 	</data>
 	<data name="Capability_WindowsTeamDeviceCreds" xml:space="preserve">
 		<value>Zarządzanie uprawnieniami sesji Windows Team</value>
+	</data>
+	<data name="System_DeveloperOptions_Option1_Short" xml:space="preserve">
+		<value>Instalowanie jedynie aplikacji ze Sklepu Microsoft</value>
+	</data>
+	<data name="System_DeveloperOptions_Option2_Short" xml:space="preserve">
+		<value>Instalowanie podpisanych aplikacji i ze Sklepu Microsoft</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3a_Short" xml:space="preserve">
+		<value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3b_Short" xml:space="preserve">
+		<value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading" xml:space="preserve">
+		<value>Sideloading</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading_OutOfTheBox" xml:space="preserve">
+		<value>Twój system wspiera natywnie instalowanie aplikacji z podpisanych plików.</value>
 	</data>
 </root>

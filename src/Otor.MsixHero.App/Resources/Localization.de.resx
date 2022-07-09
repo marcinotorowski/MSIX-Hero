@@ -285,6 +285,9 @@
 	<data name="System_DeveloperOptions" xml:space="preserve">
 		<value>Installieren und Debuggen von Anwendungen von außerhalb des Microsoft Store</value>
 	</data>
+	<data name="System_DeveloperOptions_DevMode" xml:space="preserve">
+        <value>Entwicklermodus</value>
+    </data>
 	<data name="System_DeveloperOptions_Option1" xml:space="preserve">
 		<value>Nur Anwendungen aus dem Microsoft Store installieren</value>
 	</data>
@@ -292,7 +295,7 @@
 		<value>Anwendungen aus jeder vertrauenswürdigen Quelle (Microsoft Store und von der Seite geladene Pakete) installieren</value>
 	</data>
 	<data name="System_DeveloperOptions_Option3a" xml:space="preserve">
-		<value>Installation von Anwendungen aus beliebigen Quellen, einschließlich Einzeldateien (Entwicklermodus)</value>
+		<value>Installation von Anwendungen aus beliebigen Quellen, einschließlich Einzeldateien</value>
 	</data>
 	<data name="System_DeveloperOptions_Option3b" xml:space="preserve">
 		<value>Alle signierten und vertrauenswürdigen Anwendungen installieren und die Entwicklungsfunktionen aktivieren</value>
@@ -301,7 +304,7 @@
 		<value>Die Einstellungen können manuell in der Windows-Einstellungs-App geändert werden.</value>
 	</data>
 	<data name="System_DeveloperOptions_WindowsSettings_Link" xml:space="preserve">
-		<value>Windows-Einstellungen öffnen</value>
+		<value>Windows-Einstellungen</value>
 	</data>
 	<data name="System_Error_UrlCouldNotOpen" xml:space="preserve">
 		<value>Die URL {0} konnte nicht geöffnet werden.</value>
@@ -3677,5 +3680,23 @@
 	</data>
 	<data name="Dialogs_ModPack_AdditionalContent_Vfs_Hint" xml:space="preserve">
 		<value>Wenn diese Option aktiviert ist, werden bei der Erstellung unkomprimierter Quellen für ein Änderungspaket auch leere Ordner erstellt, die der ursprünglichen VFS-Struktur des Hauptpakets entsprechen. Dies ist nützlich für Win32-Add-ons und die Erstellung von Modifikationspaketen.</value>
+	</data>
+	<data name="System_DeveloperOptions_Option1_Short" xml:space="preserve">
+		<value>Nur Microsoft Store erlauben</value>
+	</data>
+	<data name="System_DeveloperOptions_Option2_Short" xml:space="preserve">
+		<value>Microsoft Store und signierete Apps erlauben</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3a_Short" xml:space="preserve">
+		<value>Alle apps erlauben (Entwicklermodus)</value>
+	</data>
+	<data name="System_DeveloperOptions_Option3b_Short" xml:space="preserve">
+		<value>Alle apps erlauben (Entwicklermodus)</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading" xml:space="preserve">
+		<value>Side-Loading</value>
+	</data>
+	<data name="System_DeveloperOptions_SideLoading_OutOfTheBox" xml:space="preserve">
+		<value>Ihr System unterstützt standardmäßig die Installation von signierten Anwendungen.</value>
 	</data>
 </root>

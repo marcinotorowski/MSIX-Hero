@@ -36,6 +36,7 @@
     <None Remove="Modules\VolumeManagement\Views\acryllicbg.png" />
     <None Remove="Modules\WhatsNew\Views\arrow.png" />
     <None Remove="Modules\WhatsNew\Views\whatsnew2.0.png" />
+    <None Remove="Resources\Fonts\FluentSystemIcons-Regular.ttf" />
     <None Remove="Resources\Fonts\SourceSansPro-ExtraLight.ttf" />
     <None Remove="Resources\Fonts\SourceSansPro-Light.ttf" />
     <None Remove="Resources\Fonts\SourceSansPro-Regular.ttf" />
@@ -96,6 +97,7 @@
     <Resource Include="Modules\WhatsNew\Views\arrow.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Fonts\FluentSystemIcons-Regular.ttf" />
     <Resource Include="Resources\Fonts\SourceSansPro-ExtraLight.ttf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Light.ttf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Regular.ttf" />

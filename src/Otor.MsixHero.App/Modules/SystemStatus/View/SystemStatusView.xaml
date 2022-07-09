@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             Background="#FBFBFB"
              xmlns:developerMode1="clr-namespace:Otor.MsixHero.Appx.Diagnostic.Developer.Enums;assembly=Otor.MsixHero.Appx"
              xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;assembly=Otor.MsixHero.Appx"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.SystemStatus.ViewModel"
@@ -18,6 +19,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SystemStatusViewModel}">
     <UserControl.Resources>
@@ -36,22 +38,24 @@
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.ServiceManager}" Command="{Binding CommandHandler.OpenServices}" />
     </commands:RoutedCommandHandlers.Commands>
     <DockPanel>
-        <WrapPanel DockPanel.Dock="Top">
-            <Button 
-                IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
-                Command="Refresh" 
-                Style="{StaticResource ActionButton}">
-                <controls:LabelWithIcon 
-                    Icon16x16="M 7.5 1 C 3.914063 1 1 3.914063 1 7.5 C 1 11.085938 3.914063 14 7.5 14 C 11.085938 14 14 11.085938 14 7.5 L 14 7 L 13 7 L 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 C 9.140625 2 10.597656 2.722656 11.605469 3.859375 L 10.464844 5 L 14 5 L 14 1.464844 L 12.3125 3.152344 C 11.121094 1.835938 9.410156 1 7.5 1 Z"
-                    Content="{localization:Loc System_Refresh}"
-                    Style="{StaticResource ActionLabelWithIcon}" />
-            </Button>
-        </WrapPanel>
+        <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0 0 0 1" SnapsToDevicePixels="True" UseLayoutRounding="True">
+            <WrapPanel>
+                <Button 
+                    IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                    Command="Refresh" 
+                    Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        Icon16x16="M 7.5 1 C 3.914063 1 1 3.914063 1 7.5 C 1 11.085938 3.914063 14 7.5 14 C 11.085938 14 14 11.085938 14 7.5 L 14 7 L 13 7 L 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 C 9.140625 2 10.597656 2.722656 11.605469 3.859375 L 10.464844 5 L 14 5 L 14 1.464844 L 12.3125 3.152344 C 11.121094 1.835938 9.410156 1 7.5 1 Z"
+                        Content="{localization:Loc System_Refresh}"
+                        Style="{StaticResource ActionLabelWithIcon}" />
+                </Button>
+            </WrapPanel>
+        </Border>
 
         <ScrollViewer 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled">
-            <DockPanel Margin="10">
+            <DockPanel Margin="8">
                 <DockPanel.Resources>
                     <Style TargetType="Hyperlink" x:Key="PassiveHyperlink">
                         <Setter Property="Foreground" Value="#888" />
@@ -61,7 +65,7 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="ToggleButton">
+                    <!--<Style TargetType="ToggleButton">
                         <Setter Property="HorizontalAlignment" Value="Left" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -119,15 +123,15 @@
                                 <Setter Property="Background" Value="#BEE6FD" />
                             </Trigger>
                         </Style.Triggers>
-                    </Style>
+                    </Style>-->
 
                     <Style TargetType="Separator">
-                        <Setter Property="Margin" Value="-72 16 -16 8" />
+                        <Setter Property="Margin" Value="8" />
                         <Setter Property="Height" Value="1" />
                         <Setter Property="UseLayoutRounding" Value="True" />
                         <Setter Property="SnapsToDevicePixels" Value="True" />
                         <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Background" Value="#aaa" />
+                        <Setter Property="Background" Value="{StaticResource CardBorderBrush}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Separator">
@@ -140,7 +144,7 @@
                         </Setter>
                     </Style>
 
-                    <Style TargetType="Border" x:Key="BorderEase">
+                    <!--<Style TargetType="Border" x:Key="BorderEase">
                         <Setter Property="Padding" Value="72 8 16 8 " />
                         <Setter Property="Background" Value="#efefef" />
                         <Setter Property="Opacity" Value="0.0" />
@@ -196,15 +200,8 @@
                                 </Trigger.ExitActions>
                             </Trigger>
                         </Style.Triggers>
-                    </Style>
+                    </Style>-->
                 </DockPanel.Resources>
-
-                <Label 
-                    Visibility="Collapsed"
-                    Style="{StaticResource Label}" Margin="0 0 0 4"  DockPanel.Dock="Top" Content="{localization:Loc System_Header}" />
-                <TextBlock 
-                    Visibility="Collapsed"
-                    DockPanel.Dock="Top" Opacity="0.5" Margin="0 0 0 16" Text="{localization:Loc System_Header2}" />
 
                 <controls:ProgressOverlay>
                     <controls:ProgressOverlay.CommandBindings>
@@ -212,77 +209,82 @@
                         <CommandBinding Command="Stop" Executed="StopExecuted" />
                         <CommandBinding Command="Play" Executed="StartExecuted" />
                     </controls:ProgressOverlay.CommandBindings>
-                    <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl ItemsSource="{Binding Items}" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Width="700">
                         <ItemsControl.Resources>
-                            <Style TargetType="HeaderedContentControl">
-                                <Setter Property="Padding" Value="0 8" />
-                                <Setter Property="Template">
+                            <Style TargetType="Ellipse" x:Key="StyleForEllipse">
+                                <Setter Property="Fill" Value="Gray" />
+                                <Setter Property="Width" Value="13" />
+                                <Setter Property="Height" Value="13" />
+                                <Setter Property="Canvas.Right" Value="2" />
+                                <Setter Property="Canvas.Bottom" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Loading}">
+                                        <Setter Property="Fill" Value="DarkGray" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Success}">
+                                        <Setter Property="Fill" Value="Green" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Warning}">
+                                        <Setter Property="Fill" Value="Orange" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Error}">
+                                        <Setter Property="Fill" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                            <Style TargetType="Path" x:Key="StyleForIndicator">
+                                <Setter Property="Width" Value="32" />
+                                <Setter Property="Height" Value="32" />
+                                <Setter Property="StrokeThickness" Value="3" />
+                                <Setter Property="Stroke" Value="White" />
+                                <Setter Property="Fill" Value="White" />
+                                <Setter Property="Canvas.Right" Value="3.5" />
+                                <Setter Property="Canvas.Bottom" Value="3.5" />
+                                <Setter Property="LayoutTransform">
                                     <Setter.Value>
-                                        <ControlTemplate TargetType="HeaderedContentControl">
-                                            <StackPanel>
-                                                <ContentPresenter ContentSource="Header" />
-                                                <Border Style="{StaticResource BorderEase}" Tag="{Binding IsExpanded}">
-                                                    <ContentPresenter Margin="{TemplateBinding Padding}" ContentSource="Content" />
-                                                </Border>
-                                            </StackPanel>
-                                        </ControlTemplate>
+                                        <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
                                     </Setter.Value>
                                 </Setter>
-                                <Setter Property="HeaderTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate DataType="{x:Type viewModel:BaseRecommendationViewModel}">
-                                            <ToggleButton IsChecked="{Binding IsExpanded}" IsEnabled="{Binding IsEnabled}">
-                                                <DockPanel VerticalAlignment="Center">
-
-                                                    <Viewbox Width="48" Height="48" Margin="0 0 8 0" VerticalAlignment="Center">
-                                                        <Canvas Width="32" Height="32">
-                                                            <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
-                                                            <Ellipse x:Name="PART_Ellipse" Fill="Gray" Width="13" Height="13" Canvas.Right="1" Canvas.Bottom="1" />
-
-                                                            <Path x:Name="PART_Path" Width="32" Height="32" StrokeThickness="3" Stroke="White" Canvas.Right="3.5" Canvas.Bottom="3.5" Fill="White">
-                                                                <Path.LayoutTransform>
-                                                                    <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
-                                                                </Path.LayoutTransform>
-                                                            </Path>
-                                                        </Canvas>
-                                                    </Viewbox>
-
-                                                    <StackPanel VerticalAlignment="Center" Margin="0 0 0 0">
-                                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
-                                                        <TextBlock Opacity="0.7" Text="{Binding Summary}" />
-                                                    </StackPanel>
-                                                </DockPanel>
-                                            </ToggleButton>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Loading}">
-                                                    <Setter TargetName="PART_Ellipse" Property="Fill" Value="DarkGray" />
-                                                    <Setter TargetName="PART_Path" Property="Data" Value="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" />
-                                                    <Setter TargetName="PART_Path" Property="Canvas.Bottom" Value="3" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Success}">
-                                                    <Setter TargetName="PART_Ellipse" Property="Fill" Value="Green" />
-                                                    <Setter TargetName="PART_Path" Property="Data" Value="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" />
-                                                    <Setter TargetName="PART_Path" Property="Canvas.Bottom" Value="3" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Warning}">
-                                                    <Setter TargetName="PART_Ellipse" Property="Fill" Value="Orange" />
-                                                    <Setter TargetName="PART_Path" Property="Data" Value="M 16 4 C 11.042969 4 7 8.042969 7 13 C 7 14.917969 7.84375 16.90625 9 18.6875 C 9.859375 20.011719 10.886719 21.230469 12 22.15625 L 12 25 C 12 26.09375 12.90625 27 14 27 L 15 28 L 17 28 L 18 27 C 19.09375 27 20 26.09375 20 25 L 20 22.15625 C 21.113281 21.230469 22.140625 20.011719 23 18.6875 C 24.15625 16.90625 25 14.917969 25 13 C 25 8.042969 20.957031 4 16 4 Z M 16 6 C 19.878906 6 23 9.121094 23 13 C 23 14.308594 22.355469 16.035156 21.34375 17.59375 C 20.441406 18.984375 19.253906 20.222656 18.15625 21 L 13.84375 21 C 12.746094 20.222656 11.558594 18.984375 10.65625 17.59375 C 9.644531 16.035156 9 14.308594 9 13 C 9 9.121094 12.121094 6 16 6 Z M 14.25 23 L 17.75 23 C 17.828125 23.054688 17.910156 23.09375 18 23.125 L 18 25 L 14 25 L 14 23.125 C 14.089844 23.09375 14.171875 23.054688 14.25 23 Z" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Error}">
-                                                    <Setter TargetName="PART_Ellipse" Property="Fill" Value="Red" />
-                                                    <Setter TargetName="PART_Path" Property="Data" Value="M 16 4 C 11.042969 4 7 8.042969 7 13 C 7 14.917969 7.84375 16.90625 9 18.6875 C 9.859375 20.011719 10.886719 21.230469 12 22.15625 L 12 25 C 12 26.09375 12.90625 27 14 27 L 15 28 L 17 28 L 18 27 C 19.09375 27 20 26.09375 20 25 L 20 22.15625 C 21.113281 21.230469 22.140625 20.011719 23 18.6875 C 24.15625 16.90625 25 14.917969 25 13 C 25 8.042969 20.957031 4 16 4 Z M 16 6 C 19.878906 6 23 9.121094 23 13 C 23 14.308594 22.355469 16.035156 21.34375 17.59375 C 20.441406 18.984375 19.253906 20.222656 18.15625 21 L 13.84375 21 C 12.746094 20.222656 11.558594 18.984375 10.65625 17.59375 C 9.644531 16.035156 9 14.308594 9 13 C 9 9.121094 12.121094 6 16 6 Z M 14.25 23 L 17.75 23 C 17.828125 23.054688 17.910156 23.09375 18 23.125 L 18 25 L 14 25 L 14 23.125 C 14.089844 23.09375 14.171875 23.054688 14.25 23 Z" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Loading}">
+                                        <Setter Property="Data" Value="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" />
+                                        <Setter Property="Canvas.Bottom" Value="3" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Success}">
+                                        <Setter Property="Data" Value="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" />
+                                        <Setter Property="Canvas.Bottom" Value="3" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Warning}">
+                                        <Setter Property="Data" Value="M 16 4 C 11.042969 4 7 8.042969 7 13 C 7 14.917969 7.84375 16.90625 9 18.6875 C 9.859375 20.011719 10.886719 21.230469 12 22.15625 L 12 25 C 12 26.09375 12.90625 27 14 27 L 15 28 L 17 28 L 18 27 C 19.09375 27 20 26.09375 20 25 L 20 22.15625 C 21.113281 21.230469 22.140625 20.011719 23 18.6875 C 24.15625 16.90625 25 14.917969 25 13 C 25 8.042969 20.957031 4 16 4 Z M 16 6 C 19.878906 6 23 9.121094 23 13 C 23 14.308594 22.355469 16.035156 21.34375 17.59375 C 20.441406 18.984375 19.253906 20.222656 18.15625 21 L 13.84375 21 C 12.746094 20.222656 11.558594 18.984375 10.65625 17.59375 C 9.644531 16.035156 9 14.308594 9 13 C 9 9.121094 12.121094 6 16 6 Z M 14.25 23 L 17.75 23 C 17.828125 23.054688 17.910156 23.09375 18 23.125 L 18 25 L 14 25 L 14 23.125 C 14.089844 23.09375 14.171875 23.054688 14.25 23 Z" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static viewModel:RecommendationStatus.Error}">
+                                        <Setter Property="Data" Value="M 16 4 C 11.042969 4 7 8.042969 7 13 C 7 14.917969 7.84375 16.90625 9 18.6875 C 9.859375 20.011719 10.886719 21.230469 12 22.15625 L 12 25 C 12 26.09375 12.90625 27 14 27 L 15 28 L 17 28 L 18 27 C 19.09375 27 20 26.09375 20 25 L 20 22.15625 C 21.113281 21.230469 22.140625 20.011719 23 18.6875 C 24.15625 16.90625 25 14.917969 25 13 C 25 8.042969 20.957031 4 16 4 Z M 16 6 C 19.878906 6 23 9.121094 23 13 C 23 14.308594 22.355469 16.035156 21.34375 17.59375 C 20.441406 18.984375 19.253906 20.222656 18.15625 21 L 13.84375 21 C 12.746094 20.222656 11.558594 18.984375 10.65625 17.59375 C 9.644531 16.035156 9 14.308594 9 13 C 9 9.121094 12.121094 6 16 6 Z M 14.25 23 L 17.75 23 C 17.828125 23.054688 17.910156 23.09375 18 23.125 L 18 25 L 14 25 L 14 23.125 C 14.089844 23.09375 14.171875 23.054688 14.25 23 Z" />
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
 
                             <DataTemplate DataType="{x:Type windowsStoreUpdates:AutoDownloadRecommendationViewModel}">
-                                <HeaderedContentControl Header="{Binding}">
+                                <cards:CardExpander Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                                    <cards:CardExpander.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
+                                                <Ellipse Style="{StaticResource StyleForEllipse}"/>
+                                                <Path Style="{StaticResource StyleForIndicator}" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:CardExpander.Icon>
+                                    <cards:CardExpander.Header>
+                                        <HeaderedContentControl 
+                                            Header="{Binding Title}"
+                                            Content="{Binding Summary}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:CardExpander.Header>
                                     <StackPanel>
                                         <TextBlock Text="{localization:Loc System_AutoUpdates_OnOff}" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="Black" />
-                                        <DockPanel Margin="0 2">
+                                        <DockPanel Margin="0 8">
                                             <Image 
                                                 VerticalAlignment="Center" 
                                                 Source="{x:Static helpers:ShieldIcon.Source}" 
@@ -301,18 +303,18 @@
 
                                         <Separator />
 
-                                        <DockPanel Margin="-64 0 0 0">
-                                            <Border Width="64" VerticalAlignment="Center">
+                                        <DockPanel Margin="0 0 0 0">
+                                            <Border Width="48" VerticalAlignment="Center">
                                                 <Path Data="{StaticResource VectorInfo}" HorizontalAlignment="Center" Style="{StaticResource LargeIcon}"/>
                                             </Border>
-                                            <TextBlock Margin="0 8" TextWrapping="Wrap" VerticalAlignment="Center">
-                                            <Run Text="{localization:Loc System_AutoUpdates_OnOff_GPO}" />
-                                            <Run Text="{localization:Loc System_AutoUpdates_OnOff_GPO_Path}" FontWeight="SemiBold" />
+                                            <TextBlock Margin="0 8 0 8" TextWrapping="Wrap" VerticalAlignment="Center">
+                                                <Run Text="{localization:Loc System_AutoUpdates_OnOff_GPO}" />
+                                                <Run Text="{localization:Loc System_AutoUpdates_OnOff_GPO_Path}" FontWeight="SemiBold" />
                                             </TextBlock>
                                         </DockPanel>
 
                                         <Button 
-                                        HorizontalAlignment="Left" Margin="0 0 0 8" 
+                                        HorizontalAlignment="Left" Margin="48 0 0 8" 
                                         Command="{x:Static viewModel:RecommendationCommands.GoToWindowsSettings}"
                                         CommandParameter="{Binding}">
                                             <StackPanel Orientation="Horizontal">
@@ -320,67 +322,122 @@
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
-                                </HeaderedContentControl>
+                                </cards:CardExpander>
+                            </DataTemplate>
+                           
+                            <DataTemplate DataType="{x:Type developerMode:DeveloperAndSideloadingRecommendationViewModel}">
+                                <cards:Card VerticalContentAlignment="Stretch">
+                                    <cards:Card.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
+                                                <Ellipse Style="{StaticResource StyleForEllipse}"/>
+                                                <Path Style="{StaticResource StyleForIndicator}" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:Card.Icon>
+                                    <cards:Card.Header>
+                                        <HeaderedContentControl 
+                                            Header="{Binding Title}"
+                                            Content="{Binding Summary}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:Card.Header>
+
+                                    <ComboBox>
+                                        <ComboBox.Items>
+                                            <ComboBoxItem 
+                                                x:Name="Option1"
+                                                Visibility="Collapsed" 
+                                                IsSelected="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.NotAllowed}, Converter={StaticResource EnumToBooleanConverter}}" 
+                                                Content="{localization:Loc System_DeveloperOptions_Option1_Short}" />
+                                            <ComboBoxItem 
+                                                IsSelected="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.Sideloading}, Converter={StaticResource EnumToBooleanConverter}}" 
+                                                Content="{localization:Loc System_DeveloperOptions_Option2_Short}" />
+                                            <ComboBoxItem 
+                                                x:Name="Option3"
+                                                Content="{localization:Loc System_DeveloperOptions_Option3a_Short}"
+                                                IsSelected="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.DeveloperMode}, Converter={StaticResource EnumToBooleanConverter}}" />
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                </cards:Card>
+                                <DataTemplate.Resources>
+                                    <system:Boolean x:Key="BoolTrue">True</system:Boolean>
+                                </DataTemplate.Resources>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsLegacyFlavor.Value}" Value="{StaticResource BoolTrue}">
+                                        <Setter TargetName="Option3" Property="Content" Value="{localization:Loc System_DeveloperOptions_Option3b_Short}" />
+                                        <Setter TargetName="Option3" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type developerMode:DeveloperAndSideloadingRecommendationViewModel}">
-                                <HeaderedContentControl Header="{Binding}">
-                                    <StackPanel>
-                                        <TextBlock Text="{localization:Loc System_DeveloperOptions}" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="Black" />
-                                        <DockPanel Margin="0 2">
-                                            <Image 
-                                            VerticalAlignment="Center" 
-                                            Source="{x:Static helpers:ShieldIcon.Source}" 
-                                            Stretch="None" 
-                                            Margin="0 0 2 0"
-                                            UseLayoutRounding="True" 
-                                            SnapsToDevicePixels="True">
-                                            </Image>
+                            <DataTemplate DataType="{x:Type developerMode:DeveloperModeRecommendationViewModel}">
+                                <cards:Card VerticalContentAlignment="Stretch">
+                                    <cards:Card.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:Card.Icon>
+                                    <cards:Card.Header>
+                                        <HeaderedContentControl 
+                                            Header="{Binding Title}"
+                                            Content="{localization:Loc System_DeveloperOptions_Option3a}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:Card.Header>
 
-                                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc System_UAC}" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="#555" />
-                                        </DockPanel>
+                                    <CheckBox IsChecked="{Binding IsActive}" />
+                                </cards:Card>
+                            </DataTemplate>
 
-                                        <RadioButton Visibility="{Binding IsLegacyFlavor.Value, Converter={StaticResource BooleanToVisibilityConverter}}" IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.NotAllowed}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 12 0 4" Content="{localization:Loc System_DeveloperOptions_Option1}" />
-                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.Sideloading}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4" Content="{localization:Loc System_DeveloperOptions_Option2}" />
-                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.DeveloperMode}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4">
-                                            <RadioButton.Style>
-                                                <Style TargetType="RadioButton">
-                                                    <Style.Resources>
-                                                        <system:Boolean x:Key="BoolTrue">True</system:Boolean>
-                                                    </Style.Resources>
-                                                    <Setter Property="Content" Value="{localization:Loc System_DeveloperOptions_Option3a}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsLegacyFlavor.Value}" Value="{StaticResource BoolTrue}">
-                                                            <Setter Property="Content" Value="{localization:Loc System_DeveloperOptions_Option3b}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </RadioButton.Style>
-                                        </RadioButton>
-                                        
-                                        <Separator />
-
-                                        <DockPanel Margin="-64 0 0 0">
-                                            <Border Width="64" VerticalAlignment="Center">
-                                                <Path Data="{StaticResource VectorInfo}" HorizontalAlignment="Center" Style="{StaticResource LargeIcon}"/>
-                                            </Border>
-                                            <TextBlock Margin="0 8" TextWrapping="Wrap" VerticalAlignment="Center" Text="{localization:Loc System_DeveloperOptions_WindowsSettings}" />
-                                        </DockPanel>
-
+                            <DataTemplate DataType="{x:Type developerMode:SideloadingRecommendationViewModel}">
+                                <cards:Card VerticalContentAlignment="Stretch">
+                                    <cards:Card.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
+                                                <Ellipse Style="{StaticResource StyleForEllipse}"/>
+                                                <Path Style="{StaticResource StyleForIndicator}" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:Card.Icon>
+                                    <cards:Card.Content>
                                         <Button 
-                                        HorizontalAlignment="Left" Margin="0 0 0 8" 
-                                        Command="{x:Static viewModel:RecommendationCommands.GoToWindowsSettings}"
-                                        CommandParameter="{Binding}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{localization:Loc System_DeveloperOptions_WindowsSettings_Link}" VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </HeaderedContentControl>
+                                            Content="{localization:Loc System_DeveloperOptions_WindowsSettings_Link}"
+                                            VerticalAlignment="Center"
+                                            Command="{x:Static viewModel:RecommendationCommands.GoToWindowsSettings}"
+                                            CommandParameter="{Binding}" />
+                                    </cards:Card.Content>
+                                    <cards:Card.Header>
+                                        <HeaderedContentControl 
+                                            Header="{localization:Loc System_DeveloperOptions_SideLoading}"
+                                            Content="{localization:Loc System_DeveloperOptions_SideLoading_OutOfTheBox}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:Card.Header>
+                                </cards:Card>
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type repackaging:RepackagingRecommendationViewModel}">
-                                <HeaderedContentControl Header="{Binding}">
+                                <cards:CardExpander Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                                    <cards:CardExpander.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
+                                                <Ellipse Style="{StaticResource StyleForEllipse}"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:CardExpander.Icon>
+                                    <cards:CardExpander.Header>
+                                        <HeaderedContentControl 
+                                            Header="{Binding Title}"
+                                            Content="{Binding Summary}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:CardExpander.Header>
                                     <StackPanel>
                                         <ItemsControl ItemsSource="{Binding Items}" Margin="0 -8">
                                             <ItemsControl.ItemTemplate>
@@ -470,23 +527,23 @@
                                         </StackPanel>
 
                                         <Separator />
-                                        <DockPanel Margin="-64 0 0 0">
-                                            <Border Width="64" VerticalAlignment="Center">
+                                        <DockPanel Margin="0 0 0 0">
+                                            <Border Width="48" VerticalAlignment="Center">
                                                 <Path Data="{StaticResource VectorInfo}" HorizontalAlignment="Center" Style="{StaticResource LargeIcon}"/>
                                             </Border>
-                                            <TextBlock Margin="0 8" TextWrapping="Wrap" VerticalAlignment="Center" Text="{localization:Loc System_StoreUpdates_Services}" />
+                                            <TextBlock Margin="0 8 0 8" TextWrapping="Wrap" VerticalAlignment="Center" Text="{localization:Loc System_StoreUpdates_Services}" />
                                         </DockPanel>
 
                                         <Button 
-                                        HorizontalAlignment="Left" Margin="0 0 0 8" 
-                                        Command="{x:Static viewModel:RecommendationCommands.GoToWindowsSettings}"
-                                        CommandParameter="{Binding}">
+                                            HorizontalAlignment="Left" Margin="48 0 0 8" 
+                                            Command="{x:Static viewModel:RecommendationCommands.GoToWindowsSettings}"
+                                            CommandParameter="{Binding}">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{localization:Loc System_StoreUpdates_Services_ServMan}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
-                                </HeaderedContentControl>
+                                </cards:CardExpander>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding AutoDownloadRecommendation.AutoDownloadStatus}" Value="{x:Static developerMode1:WindowsStoreAutoDownload.Never}">
                                         <Setter TargetName="PART_AutoUpdateOk" Property="Visibility" Value="Visible" />
@@ -497,7 +554,21 @@
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type tooling:ToolingRecommendationViewModel}">
-                                <HeaderedContentControl Header="{Binding}">
+                                <cards:CardExpander Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                                    <cards:CardExpander.Icon>
+                                        <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
+                                            <Canvas Width="32" Height="32">
+                                                <Path Style="{StaticResource LargeIcon}" Data="{Binding Icon}" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </cards:CardExpander.Icon>
+                                    <cards:CardExpander.Header>
+                                        <HeaderedContentControl 
+                                            Header="{Binding Title}"
+                                            Content="{Binding Summary}"
+                                            Style="{StaticResource CardHeader}">
+                                        </HeaderedContentControl>
+                                    </cards:CardExpander.Header>
                                     <StackPanel>
                                         <ItemsControl 
                                             Margin="-10" 
@@ -566,7 +637,7 @@
                                         </Hyperlink>
                                         </TextBlock>
                                     </StackPanel>
-                                </HeaderedContentControl>
+                                </cards:CardExpander>
                             </DataTemplate>
                         </ItemsControl.Resources>
                     </ItemsControl>

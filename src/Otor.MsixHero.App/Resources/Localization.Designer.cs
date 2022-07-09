@@ -10132,11 +10132,29 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Developer mode.
+        /// </summary>
+        public static string System_DeveloperOptions_DevMode {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_DevMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only install apps from Microsoft Store.
         /// </summary>
         public static string System_DeveloperOptions_Option1 {
             get {
                 return ResourceManager.GetString("System_DeveloperOptions_Option1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow only Microsoft Store apps.
+        /// </summary>
+        public static string System_DeveloperOptions_Option1_Short {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_Option1_Short", resourceCulture);
             }
         }
         
@@ -10150,11 +10168,29 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install apps from any source, including loose files (developer mode).
+        ///   Looks up a localized string similar to Allow Microsoft Store and signed apps.
+        /// </summary>
+        public static string System_DeveloperOptions_Option2_Short {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_Option2_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install apps from any source, including loose files.
         /// </summary>
         public static string System_DeveloperOptions_Option3a {
             get {
                 return ResourceManager.GetString("System_DeveloperOptions_Option3a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow all apps (developer mode).
+        /// </summary>
+        public static string System_DeveloperOptions_Option3a_Short {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_Option3a_Short", resourceCulture);
             }
         }
         
@@ -10168,6 +10204,33 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow all apps (developer mode).
+        /// </summary>
+        public static string System_DeveloperOptions_Option3b_Short {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_Option3b_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side-loading.
+        /// </summary>
+        public static string System_DeveloperOptions_SideLoading {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_SideLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your system supports installing signed apps out-of-the-box..
+        /// </summary>
+        public static string System_DeveloperOptions_SideLoading_OutOfTheBox {
+            get {
+                return ResourceManager.GetString("System_DeveloperOptions_SideLoading_OutOfTheBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The settings can be changed manually in Windows Settings app..
         /// </summary>
         public static string System_DeveloperOptions_WindowsSettings {
@@ -10177,7 +10240,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Windows Settings.
+        ///   Looks up a localized string similar to Windows Settings.
         /// </summary>
         public static string System_DeveloperOptions_WindowsSettings_Link {
             get {

@@ -1,0 +1,529 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.Cards">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Themes/Fonts.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Thickness x:Key="CardBorderThickness">1</Thickness>
+    <Thickness x:Key="CardContentPadding">14</Thickness>
+    <Thickness x:Key="CardMargin">0,0,0,-1</Thickness>
+    <Thickness x:Key="CardIconMargin">0,0,14,0</Thickness>
+    <Thickness x:Key="CardArrowMargin">14,0,0,0</Thickness>
+    <Thickness x:Key="CardPadding">14</Thickness>
+
+    <Color x:Key="CardBorderColor">#FFE0E0E0</Color>
+    <Color x:Key="CardBackgroundColor">#FFFFFFFF</Color>
+    <Color x:Key="CardPressedBackgroundColor">#95E9E9E9</Color>
+    <Color x:Key="CardHoveredBackgroundColor">#95F9F9F9</Color>
+    <Color x:Key="CardDisabledBackgroundColor">#4DF9F9F9</Color>
+
+    <LinearGradientBrush x:Key="CardFooterGradientBrush" StartPoint="0 0" EndPoint="0 1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#F5F5F5" Offset="0" />
+            <GradientStop Color="#FFFFFF" Offset="1.0" />
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="CardBorderBrush" Color="{StaticResource CardBorderColor}" />
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}" />
+
+    <SolidColorBrush x:Key="CardPressedBorderBrush" Color="{StaticResource CardBorderColor}" />
+    <SolidColorBrush x:Key="CardPressedBackgroundBrush" Color="{StaticResource CardPressedBackgroundColor}" />
+
+    <SolidColorBrush x:Key="CardDisabledBackgroundBrush" Color="{StaticResource CardDisabledBackgroundColor}" />
+    <SolidColorBrush x:Key="CardHoveredBackgroundBrush" Color="{StaticResource CardHoveredBackgroundColor}" />
+    
+    <ControlTemplate x:Key="CardExpanderToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Border Background="{TemplateBinding Background}">
+            <Grid Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ContentPresenter
+                    Margin="{TemplateBinding Padding}"
+                    x:Name="ContentPresenter"
+                    Grid.Column="0"
+                    IsHitTestVisible="False"
+                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                    ContentSource="Content" />
+                
+                <Border
+                    x:Name="Arrow"
+                    Background="Transparent"
+                    Grid.Column="1"
+                    IsHitTestVisible="False"
+                    Margin="{TemplateBinding Padding}"
+                    RenderTransformOrigin="0.5,0.5"
+                    VerticalAlignment="Center">
+
+                    <Border.RenderTransform>
+                        <RotateTransform Angle="0" />
+                    </Border.RenderTransform>
+
+                    <TextBlock
+                        FontFamily="{StaticResource FluentSystemIcons}"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Stretch"
+                        Margin="0"
+                        Text="&#xF2A4;"
+                        VerticalAlignment="Center" />
+                </Border>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Duration="00:00:00.15"
+                                Storyboard.TargetName="Arrow"
+                                Storyboard.TargetProperty="(Border.RenderTransform).(RotateTransform.Angle)"
+                                To="180.0" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Duration="00:00:00.15"
+                                Storyboard.TargetName="Arrow"
+                                Storyboard.TargetProperty="(Border.RenderTransform).(RotateTransform.Angle)"
+                                To="0.0" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource CardHoveredBackgroundBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="CardHeader" TargetType="{x:Type HeaderedContentControl}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="HeaderedContentControl">
+                    <StackPanel>
+                        <ContentPresenter 
+                            HorizontalAlignment="Left"
+                            ContentSource="Header" />
+                        <ContentPresenter 
+                            HorizontalAlignment="Left"
+                            ContentSource="Content"
+                            TextBlock.Foreground="#FF787878" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type controls:Card}">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
+        <Setter Property="Margin" Value="{StaticResource CardMargin}" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="{StaticResource CardPadding}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:Card}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border
+                            x:Name="Content"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            Padding="{TemplateBinding Padding}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <DockPanel>
+
+                                <ContentPresenter 
+                                    x:Name="ContentPresenter"
+                                    DockPanel.Dock="Right" 
+                                    ContentSource="Content"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                
+                                <ContentPresenter
+                                    x:Name="IconPresenter"
+                                    ContentSource="Icon"
+                                    HorizontalAlignment="Left"
+                                    Margin="{StaticResource CardIconMargin}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                
+                                <ContentPresenter
+                                    x:Name="HeaderPresenter"
+                                    ContentSource="Header"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </DockPanel>
+                        </Border>
+
+                        <Border
+                            x:Name="Footer"
+                            Background="{StaticResource CardFooterGradientBrush}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1,0,1,1"
+                            Grid.Row="1"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="FooterPresenter" ContentSource="Footer" />
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
+                        <Trigger Property="Icon" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
+                        <Trigger Property="Footer" Value="{x:Null}">
+                            <Setter TargetName="Footer" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="Content" Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+                        </Trigger>
+
+                        <Trigger Property="Footer" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter TargetName="Footer" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="Content" Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:CardAction}">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="{StaticResource CardMargin}" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="{StaticResource CardContentPadding}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CardAction}">
+                    <Border
+                        x:Name="ContentBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        Padding="{TemplateBinding Padding}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Width="{TemplateBinding Width}">
+                        <Grid HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentPresenter 
+                                x:Name="IconPresenter"
+                                ContentSource="Icon" 
+                                Grid.Column="0"
+                                Margin="{StaticResource CardIconMargin}"
+                                VerticalAlignment="Center" />
+
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                ContentSource="Content"
+                                Grid.Column="1"
+                                VerticalAlignment="Center" />
+
+                            <TextBlock
+                                x:Name="Arrow"
+                                FontFamily="{StaticResource FluentSystemIcons}"
+                                FontWeight="Bold"
+                                Grid.Column="2"
+                                Margin="{StaticResource CardArrowMargin}"
+                                Text="&#xF2B1;"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource CardDisabledBackgroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CardHoveredBackgroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CardPressedBackgroundBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource CardPressedBorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:CardExpander}">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="IsExpanded" Value="False" />
+        <Setter Property="Margin" Value="{StaticResource CardMargin}" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="{StaticResource CardContentPadding}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CardExpander}">
+                    <Border
+                        x:Name="ContentBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--  Top level controls always visible  -->
+                            <ToggleButton
+                                x:Name="ExpanderToggleButton"
+                                Cursor="Hand"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsExpanded, Mode=TwoWay}"
+                                Margin="0"
+                                OverridesDefaultStyle="True"
+                                Padding="{TemplateBinding Padding}"
+                                Template="{StaticResource CardExpanderToggleButtonStyle}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Style="{x:Null}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ToggleButton.Content>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <ContentPresenter 
+                                            x:Name="IconPresenter"
+                                            ContentSource="Icon" 
+                                            Grid.Column="0"
+                                            Margin="{StaticResource CardIconMargin}"
+                                            VerticalAlignment="Center" />
+
+                                        <ContentPresenter
+                                            x:Name="HeaderPresenter"
+                                            ContentSource="Header"
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center" />
+                                    </Grid>
+                                </ToggleButton.Content>
+                            </ToggleButton>
+
+                            <Border
+                                x:Name="ContentPresenterBorder"
+                                Background="{StaticResource CardFooterGradientBrush}"
+                                BorderBrush="{StaticResource CardBorderBrush}"
+                                BorderThickness="0 1 0 0"
+                                Grid.Row="1"
+                                Opacity="0.0">
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    ContentSource="Content"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    Margin="{TemplateBinding Padding}" 
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <Border.LayoutTransform>
+                                    <ScaleTransform ScaleY="0" />
+                                </Border.LayoutTransform>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource CardDisabledBackgroundBrush}" />
+                            <Setter TargetName="IconPresenter" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentPresenterBorder" Property="BorderThickness" Value="0,1,0,0" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ContentPresenterBorder"
+                                            Storyboard.TargetProperty="(Border.LayoutTransform).(ScaleTransform.ScaleY)"
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="00:00:00.167" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ContentPresenterBorder"
+                                            Storyboard.TargetProperty="(Border.Opacity)"
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="00:00:00.167" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ContentPresenterBorder"
+                                            Storyboard.TargetProperty="(Border.LayoutTransform).(ScaleTransform.ScaleY)"
+                                            From="1.0"
+                                            To="0"
+                                            Duration="00:00:00.167" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ContentPresenterBorder"
+                                            Storyboard.TargetProperty="(Border.Opacity)"
+                                            From="1.0"
+                                            To="0.0"
+                                            Duration="00:00:00.167" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:CardButton}">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="{StaticResource CardMargin}" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="{StaticResource CardContentPadding}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CardButton}">
+                    <Border
+                        x:Name="ContentBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        Padding="{TemplateBinding Padding}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Width="{TemplateBinding Width}">
+                        <Grid HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentPresenter 
+                                x:Name="IconPresenter"
+                                ContentSource="Icon" 
+                                Grid.Column="0"
+                                Margin="{StaticResource CardIconMargin}"
+                                VerticalAlignment="Center" />
+
+                            <ContentPresenter
+                                x:Name="HeaderPresenter"
+                                ContentSource="Header"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"/>
+
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource CardDisabledBackgroundBrush}" />
+                            <Setter TargetName="IconPresenter" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CardHoveredBackgroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CardPressedBackgroundBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource CardPressedBorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="Content" Value="{x:Null}">
+                            <Setter TargetName="ContentPresenter" Property="Margin" Value="0" />
+                        </Trigger>
+                        <Trigger Property="Content" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter TargetName="ContentPresenter" Property="Margin" Value="0" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="IconPresenter" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Static DependencyProperty.UnsetValue}">
+                            <Setter Property="Visibility" TargetName="IconPresenter" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
