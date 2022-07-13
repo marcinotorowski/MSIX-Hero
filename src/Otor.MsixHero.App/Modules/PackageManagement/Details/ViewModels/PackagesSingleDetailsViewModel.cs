@@ -33,7 +33,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
                 this.FilePath =
 
                     // ReSharper disable once PossibleMultipleEnumeration
-                    pkgs.OfType<InstalledPackage>().FirstOrDefault()?.InstallLocation ??
+                    pkgs.OfType<InstalledPackage>().FirstOrDefault()?.ManifestLocation ??
 
                     // ReSharper disable once PossibleMultipleEnumeration
                     pkgs.OfType<string>().FirstOrDefault();

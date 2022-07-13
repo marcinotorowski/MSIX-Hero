@@ -34,6 +34,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
 using Otor.MsixHero.Appx.Psf;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
@@ -376,22 +377,20 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                             }
                             else
                             {
-                                await using (var stream =
-                                             fileReader.GetResource(appxApplication.Square44x44Logo) ??
-                                             fileReader.GetResource(appxApplication.Square30x30Logo) ??
-                                             fileReader.GetResource(appxApplication.Square71x71Logo) ??
-                                             fileReader.GetResource(appxApplication.Square150x150Logo))
+                                await using var stream =
+                                    fileReader.GetResource(appxApplication.Square44x44Logo) ??
+                                    fileReader.GetResource(appxApplication.Square30x30Logo) ??
+                                    fileReader.GetResource(appxApplication.Square71x71Logo) ??
+                                    fileReader.GetResource(appxApplication.Square150x150Logo);
+                                if (stream != null)
                                 {
-                                    if (stream != null)
-                                    {
-                                        var bytes = new byte[stream.Length];
-                                        var read = await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
-                                        appxApplication.Logo = bytes;
-                                    }
-                                    else
-                                    {
-                                        appxApplication.Logo = appxPackage.Logo;
-                                    }
+                                    var bytes = new byte[stream.Length];
+                                    await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+                                    appxApplication.Logo = bytes;
+                                }
+                                else
+                                {
+                                    appxApplication.Logo = appxPackage.Logo;
                                 }
                             }
                         }
@@ -549,34 +548,40 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     manifestFilePath = manifestFileName;
                 }
 
+                DateTime installedOn = default;
+                if (pkg != null)
+                {
+                    installedOn = ExceptionGuard.Guard(() => pkg.InstalledDate.DateTime);
+                }
+
                 if (pkg == null)
                 {
                     appxPackage.Source = new NotInstalledSource();
                 }
                 else if (pkg.SignatureKind == PackageSignatureKind.System)
                 {
-                    appxPackage.Source = new SystemSource(manifestFilePath);
+                    appxPackage.Source = new SystemSource(manifestFilePath, installedOn);
                 }
                 else if (pkg.SignatureKind == PackageSignatureKind.None || pkg.IsDevelopmentMode)
                 {
-                    appxPackage.Source = new DeveloperSource(Path.Combine(appxPackage.RootFolder, manifestFileName));
+                    appxPackage.Source = new DeveloperSource(Path.Combine(appxPackage.RootFolder, manifestFileName), installedOn);
                 }
                 else if (pkg.SignatureKind == PackageSignatureKind.Store)
                 {
-                    appxPackage.Source = new StorePackageSource(appxPackage.FamilyName, Path.GetDirectoryName(manifestFilePath));
+                    appxPackage.Source = new StorePackageSource(appxPackage.FamilyName, Path.GetDirectoryName(manifestFilePath), installedOn);
                 }
                 else
                 {
                     var appInstaller = pkg.GetAppInstallerInfo();
                     if (appInstaller != null)
                     {
-                        appxPackage.Source = new AppInstallerPackageSource(appInstaller.Uri, Path.GetDirectoryName(manifestFilePath));
+                        appxPackage.Source = new AppInstallerPackageSource(appInstaller.Uri, Path.GetDirectoryName(manifestFilePath), installedOn);
                     }
                 }
 
                 if (appxPackage.Source == null)
                 {
-                    appxPackage.Source = new StandardSource(manifestFilePath);
+                    appxPackage.Source = new StandardSource(manifestFilePath, installedOn);
                 }
 
                 return await Translate(fileReader, appxPackage, cancellationToken).ConfigureAwait(false);

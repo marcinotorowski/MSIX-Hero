@@ -1,0 +1,26 @@
+﻿<ResourceDictionary
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Controls.WindowsVersion">
+
+    <Style TargetType="windowsVersion:WindowsVersionControl">
+        <Setter Property="Windows10ImageSource" Value="Images/windows10.png" />
+        <Setter Property="Windows11ImageSource" Value="Images/windows11.png" />
+        <Setter Property="Windows8ImageSource" Value="Images/windows8.png" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="windowsVersion:WindowsVersionControl">
+                    <Border Background="{TemplateBinding Background}">
+                        <Image Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" Source="{TemplateBinding ActualImageSource}" Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="ActualImageSource" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

@@ -771,8 +771,8 @@
 	<data name="Dialogs_WhatsNew_ShowUpdateInfo" xml:space="preserve">
     <value>Pokazuj tę informację po każdej aktualizacji</value>
   </data>
-	<data name="Dialogs_WhatsNew_SkipToDashboard" xml:space="preserve">
-    <value>Pomiń i przejdź do kokpitu</value>
+	<data name="Dialogs_WhatsNew_SkipToTools" xml:space="preserve">
+    <value>Pomiń i przejdź do narzędzi</value>
   </data>
 	<data name="Dialogs_WhatsNew_SkipToEventViewer" xml:space="preserve">
     <value>Pomiń i przejdź do dziennika zdarzeń MSIX</value>
@@ -1449,11 +1449,11 @@
 	<data name="Sidebar_About" xml:space="preserve">
     <value>O MSIX Hero...</value>
   </data>
-	<data name="Sidebar_Dashboard" xml:space="preserve">
-    <value>Kokpit</value>
+	<data name="Sidebar_Tools" xml:space="preserve">
+    <value>Narzędzia</value>
   </data>
 	<data name="Sidebar_EventViewer" xml:space="preserve">
-    <value>Dziennik zdarzeń</value>
+    <value>Zdarzenia</value>
   </data>
 	<data name="Sidebar_Packages" xml:space="preserve">
     <value>Pakiety</value>
@@ -1462,7 +1462,7 @@
     <value>Skonfiguruj ustawienia MSIX Hero...</value>
   </data>
 	<data name="Sidebar_SystemStatus" xml:space="preserve">
-    <value>Przegląd systemu</value>
+    <value>System</value>
   </data>
 	<data name="Sidebar_Volumes" xml:space="preserve">
     <value>Woluminy</value>

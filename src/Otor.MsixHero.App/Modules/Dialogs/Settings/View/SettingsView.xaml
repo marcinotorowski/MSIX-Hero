@@ -201,7 +201,7 @@
                             <ComboBox 
                                 SelectedValuePath="Tag"
                                 SelectedValue="{Binding DefaultScreen.CurrentValue}">
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Dashboard}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Tools}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Tools}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Tools}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Packages}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Volumes}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}" Content="{localization:Loc Dialogs_Settings_InitialScreen_EventViewer}" />

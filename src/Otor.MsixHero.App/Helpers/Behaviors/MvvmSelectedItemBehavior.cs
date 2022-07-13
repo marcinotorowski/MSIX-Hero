@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Xaml.Behaviors;
-using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 
 namespace Otor.MsixHero.App.Helpers.Behaviors
 {

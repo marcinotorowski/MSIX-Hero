@@ -39,7 +39,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             IAppxFileReader reader;
             if (pkg.ManifestLocation == null || !File.Exists(pkg.ManifestLocation))
             {
-                reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, pkg.PackageId);
+                reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, pkg.PackageFullName);
             }
             else
             {

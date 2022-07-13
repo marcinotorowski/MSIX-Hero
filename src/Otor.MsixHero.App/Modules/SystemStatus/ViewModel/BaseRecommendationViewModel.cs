@@ -25,14 +25,14 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 {
     public abstract class BaseRecommendationViewModel : NotifyPropertyChanged
     {
-        private readonly Lazy<Geometry> iconProvider;
-        private bool isExpanded;
-        private string summary = "Checking your system...";
-        private RecommendationStatus status;
-
+        private readonly Lazy<Geometry> _iconProvider;
+        private bool _isExpanded;
+        private string _summary = "Checking your system...";
+        private RecommendationStatus _status;
+        private bool _isLoading;
         protected BaseRecommendationViewModel()
         {
-            this.iconProvider = new Lazy<Geometry>(this.GetIcon);
+            this._iconProvider = new Lazy<Geometry>(this.GetIcon);
 
             MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
             {
@@ -48,23 +48,26 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 
         public abstract string Title { get; }
 
-        public Geometry Icon
+        public Geometry Icon => this._iconProvider.Value;
+
+        public bool IsLoading
         {
-            get => this.iconProvider.Value;
+            get => this._isLoading;
+            set => this.SetField(ref this._isLoading, value);
         }
 
         protected abstract Geometry GetIcon();
 
         public  string Summary
         {
-            get => this.summary;
-            protected set => this.SetField(ref this.summary, value);
+            get => this._summary;
+            protected set => this.SetField(ref this._summary, value);
         }
 
         public RecommendationStatus Status
         {
-            get => status;
-            protected set => this.SetField(ref this.status, value);
+            get => _status;
+            protected set => this.SetField(ref this._status, value);
         }
 
         public virtual bool IsEnabled => true;
@@ -73,8 +76,8 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 
         public bool IsExpanded
         {
-            get => this.isExpanded;
-            set => this.SetField(ref this.isExpanded, value);
+            get => this._isExpanded;
+            set => this.SetField(ref this._isExpanded, value);
         }
     }
 }

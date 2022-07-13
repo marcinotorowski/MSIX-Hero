@@ -20,7 +20,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
 {
     public class AppInstallerPackageSource : AppxSource
     {
-        public AppInstallerPackageSource(Uri appInstallerUri, string rootDirectory) : base(rootDirectory)
+        public AppInstallerPackageSource(Uri appInstallerUri, string rootDirectory, DateTime installDate) : base(rootDirectory, installDate)
         {
             this.AppInstallerUri = appInstallerUri;
         }

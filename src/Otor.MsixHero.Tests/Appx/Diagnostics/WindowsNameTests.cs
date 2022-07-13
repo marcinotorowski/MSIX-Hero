@@ -84,7 +84,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
 
             // Test if display versions were recognized
             Assert.AreEqual("Windows 7 SP1 / Server 2008 R2", parsedWindows7.Name);
-            Assert.AreEqual("Windows Server 2012", parsedWindowsServer2012.Name);
+            Assert.AreEqual("Windows 8 / Server 2012", parsedWindowsServer2012.Name);
             Assert.AreEqual("Windows 8.1 / Server 2012 R2", parsedWindows81.Name);
             Assert.AreEqual("Windows 10 1507", parsedWindows101507.Name);
             Assert.AreEqual("Windows 10 1511", parsedWindows101511.Name);
@@ -99,7 +99,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("Windows 10 20H2", parsedWindows1020H2.Name);
             Assert.AreEqual("Windows 10 21H1", parsedWindows1021H1.Name);
             Assert.AreEqual("Windows 11 21H2", parsedWindows1121H2.Name);
-            Assert.AreEqual("Windows 10.0.99999", parsedWindowsOther.Name);
+            Assert.AreEqual("Windows 11 (build 99999)", parsedWindowsOther.Name);
 
             // Test if type of support for MSIX was recognized
             Assert.True(parsedWindows7.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);

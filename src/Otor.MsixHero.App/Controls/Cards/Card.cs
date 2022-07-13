@@ -19,12 +19,28 @@ using System.Windows.Controls;
 
 namespace Otor.MsixHero.App.Controls.Cards;
 
-public class Card : HeaderedContentControl
+public class Card : HeaderedContentControl, ILoadingCard
 {
     public static readonly DependencyProperty FooterProperty = DependencyProperty.Register(nameof(Footer), typeof(object), typeof(Card), new PropertyMetadata(null));
 
     public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(object), typeof(Card), new PropertyMetadata(null));
-    
+
+    public static readonly DependencyProperty IsLoadingProperty = DependencyProperty.Register("IsLoading", typeof(bool), typeof(Card), new PropertyMetadata(false));
+
+    public static readonly DependencyProperty LoadingContentTemplateProperty = DependencyProperty.Register("LoadingContentTemplate", typeof(DataTemplate), typeof(Card), new PropertyMetadata(null));
+
+    public DataTemplate LoadingContentTemplate
+    {
+        get => (DataTemplate)GetValue(LoadingContentTemplateProperty);
+        set => SetValue(LoadingContentTemplateProperty, value);
+    }
+
+    public bool IsLoading
+    {
+        get => (bool)GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+
     public object Icon
     {
         get => GetValue(IconProperty);

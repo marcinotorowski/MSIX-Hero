@@ -285,7 +285,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     if (converted != null)
                     {
                         converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
-                        if (provisioned.Contains(converted.PackageId))
+                        if (provisioned.Contains(converted.PackageFullName))
                         {
                             converted.IsProvisioned = true;
                         }
@@ -305,7 +305,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 if (converted != null)
                 {
                     converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
-                    if (provisioned.Contains(converted.PackageId))
+                    if (provisioned.Contains(converted.PackageFullName))
                     {
                         converted.IsProvisioned = true;
                     }
@@ -373,7 +373,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 DisplayName = details.DisplayName,
                 Name = item.Id.Name,
                 Image = details.Logo,
-                PackageId = item.Id.FullName,
+                PackageFullName = item.Id.FullName,
                 InstallLocation = installLocation,
                 PackageFamilyName = item.Id.FamilyName,
                 Description = details.Description,
@@ -402,9 +402,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 var priFile = Path.Combine(installLocation, "resources.pri");
 
-                pkg.DisplayName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.DisplayName);
-                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.DisplayPublisherName);
-                pkg.Description = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.Description);
+                pkg.DisplayName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayName);
+                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayPublisherName);
+                pkg.Description = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.Description);
 
                 if (string.IsNullOrEmpty(pkg.DisplayName))
                 {

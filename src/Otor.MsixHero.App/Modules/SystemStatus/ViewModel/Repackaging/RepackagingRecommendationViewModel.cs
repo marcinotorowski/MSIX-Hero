@@ -35,7 +35,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
         private readonly IInteractionService interactionService;
 
         public RepackagingRecommendationViewModel(
-            IServiceRecommendationAdvisor serviceAdvisor, 
+            IServiceRecommendationAdvisor serviceAdvisor,
             IInteractionService interactionService,
             AutoDownloadRecommendationViewModel autoDownloadRecommendation)
         {
@@ -59,49 +59,58 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
         public AutoDownloadRecommendationViewModel AutoDownloadRecommendation { get; }
 
         public override string Title { get; } = Resources.Localization.System_Repackaging;
-        
+
         public override async Task Refresh(CancellationToken cancellationToken = default)
         {
-            var list = await Task.Run(() => this.ServiceAdvisor.Advise(AdvisorMode.ForPackaging).ToList(), cancellationToken).ConfigureAwait(true);
-            
-            var newItems = new ObservableCollection<ServiceRecommendationViewModel>();
-            foreach (var item in list)
+            this.IsLoading = true;
+            try
             {
-                newItems.Add(new ServiceRecommendationViewModel(this, this.ServiceAdvisor, item, this.interactionService));
+                await Task.Delay(1200, cancellationToken).ConfigureAwait(false);
+                var list = await Task.Run(() => this.ServiceAdvisor.Advise(AdvisorMode.ForPackaging).ToList(), cancellationToken).ConfigureAwait(true);
+
+                var newItems = new ObservableCollection<ServiceRecommendationViewModel>();
+                foreach (var item in list)
+                {
+                    newItems.Add(new ServiceRecommendationViewModel(this, this.ServiceAdvisor, item, this.interactionService));
+                }
+
+                this.Items = newItems;
+                this.OnPropertyChanged(nameof(Items));
+
+                var suggestedActions = this.Items.Count(c => c.IsRunning != c.ShouldRun);
+
+                if (this.AutoDownloadRecommendation.AutoDownloadStatus != WindowsStoreAutoDownload.Never)
+                {
+                    suggestedActions++;
+                }
+
+                switch (suggestedActions)
+                {
+                    case 0:
+                        this.Status = RecommendationStatus.Success;
+                        this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option0;
+                        break;
+                    case 1:
+                        this.Status = RecommendationStatus.Warning;
+                        this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option1;
+                        break;
+                    case 2:
+                        this.Status = RecommendationStatus.Warning;
+                        this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option2;
+                        break;
+                    case 3:
+                        this.Status = RecommendationStatus.Warning;
+                        this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option3;
+                        break;
+                    default:
+                        this.Status = RecommendationStatus.Warning;
+                        this.Summary = string.Format(Resources.Localization.System_Repackaging_Recommendation_OptionN, suggestedActions);
+                        break;
+                }
             }
-
-            this.Items = newItems;
-            this.OnPropertyChanged(nameof(Items));
-
-            var suggestedActions = this.Items.Count(c => c.IsRunning != c.ShouldRun);
-
-            if (this.AutoDownloadRecommendation.AutoDownloadStatus != WindowsStoreAutoDownload.Never)
+            finally
             {
-                suggestedActions++;
-            }
-
-            switch (suggestedActions)
-            {
-                case 0:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option0;
-                    break;
-                case 1:
-                    this.Status = RecommendationStatus.Warning;
-                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option1;
-                    break;
-                case 2:
-                    this.Status = RecommendationStatus.Warning;
-                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option2;
-                    break;
-                case 3:
-                    this.Status = RecommendationStatus.Warning;
-                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option3;
-                    break;
-                default:
-                    this.Status = RecommendationStatus.Warning;
-                    this.Summary = string.Format(Resources.Localization.System_Repackaging_Recommendation_OptionN, suggestedActions);
-                    break;
+                this.IsLoading = false;
             }
         }
 

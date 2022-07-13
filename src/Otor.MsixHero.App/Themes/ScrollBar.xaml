@@ -139,7 +139,6 @@
         </Style.Triggers>
     </Style>
 
-
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
         <Setter Property="Background" Value="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollBar}}}" />
         <Setter Property="Panel.ZIndex" Value="1" />
@@ -198,7 +197,6 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
         <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollBar}}}" />
         <Setter Property="Panel.ZIndex" Value="0" />
@@ -214,7 +212,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
         <Border x:Name="Border"
@@ -437,7 +434,6 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-
     <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
         <Border x:Name="Border"
                 Margin="{TemplateBinding Padding}"
@@ -659,7 +655,6 @@
             </MultiDataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
 
     <Style TargetType="{x:Type ScrollBar}">
         <Setter Property="Foreground" Value="{StaticResource Layer1BorderBrush}"/>

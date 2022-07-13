@@ -33,41 +33,41 @@ namespace Otor.MsixHero.App.Hero.Commands.Packages
         public SelectPackagesCommand()
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedManifestPaths = new List<string>();
+            this.SelectedFullNames = new List<string>();
         }
 
-        public SelectPackagesCommand(string manifestPaths, PackageSelectionMode mode = PackageSelectionMode.Replace)
+        public SelectPackagesCommand(string packageFullName, PackageSelectionMode mode = PackageSelectionMode.Replace)
         {
             this.SelectionMode = mode;
-            if (manifestPaths == null)
+            if (packageFullName == null)
             {
-                this.SelectedManifestPaths = new List<string>();
+                this.SelectedFullNames = new List<string>();
             }
             else
             {
-                this.SelectedManifestPaths = new List<string> { manifestPaths };
+                this.SelectedFullNames = new List<string> { packageFullName };
             }
         }
 
-        public SelectPackagesCommand(IList<string> manifestPaths)
+        public SelectPackagesCommand(IList<string> packageFullNames)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedManifestPaths = manifestPaths;
+            this.SelectedFullNames = packageFullNames;
         }
 
-        public SelectPackagesCommand(params string[] manifestPaths)
+        public SelectPackagesCommand(params string[] packageFullNames)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedManifestPaths = manifestPaths.ToList();
+            this.SelectedFullNames = packageFullNames.ToList();
         }
 
-        public SelectPackagesCommand(IEnumerable<string> manifestPaths)
+        public SelectPackagesCommand(IEnumerable<string> packageFullNames)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedManifestPaths = manifestPaths.ToList();
+            this.SelectedFullNames = packageFullNames.ToList();
         }
 
-        public IList<string> SelectedManifestPaths { get; }
+        public IList<string> SelectedFullNames { get; }
 
         public PackageSelectionMode SelectionMode { get; set; }
     }

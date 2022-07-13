@@ -27,5 +27,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement
         public const string PackageExpert = Base + "package-expert";
         
         public const string PopupFilter = Base + "popup-filter";
+
+        public const string PackageExpertContent = Base + "package-expert-content";
     }
 }

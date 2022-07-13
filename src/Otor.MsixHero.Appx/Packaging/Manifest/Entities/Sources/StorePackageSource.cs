@@ -14,11 +14,13 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
+
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
 {
     public class StorePackageSource : AppxSource
     {
-        public StorePackageSource(string family, string rootDirectory) : base(rootDirectory)
+        public StorePackageSource(string family, string rootDirectory, DateTime installDate) : base(rootDirectory, installDate)
         {
             this.FamilyName = family;
         }

@@ -14,8 +14,10 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Controls.PackageExpert;
+using Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.Details.Views;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels;
@@ -37,14 +39,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement
             containerRegistry.RegisterForNavigation<PackagesSearchView, PackagesSearchViewModel>(NavigationPaths.PackageManagementPaths.Search);
             containerRegistry.RegisterForNavigation<PackagesNoDetailsView>(NavigationPaths.PackageManagementPaths.ZeroSelection);
             containerRegistry.RegisterForNavigation<PackagesSingleDetailsView>(NavigationPaths.PackageManagementPaths.SingleSelection);
-            containerRegistry.RegisterForNavigation<PackagesManyDetailsView>(NavigationPaths.PackageManagementPaths.MultipleSelection);
+            containerRegistry.RegisterForNavigation<PackagesManyDetailsView, PackageManyDetailsViewModel>(NavigationPaths.PackageManagementPaths.MultipleSelection);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(PackageManagementRegionNames.Master, typeof(PackagesListView));
-            regionManager.RegisterViewWithRegion(PackageManagementRegionNames.PackageExpert, typeof(PackageExpertControl));
+            regionManager.RegisterViewWithRegion(PackageManagementRegionNames.PackageExpert, typeof(PackageContentHost));
             regionManager.RegisterViewWithRegion(PackageManagementRegionNames.PopupFilter, typeof(PackageFilterSortView));
 
             ViewModelLocationProvider.Register<PackagesListView, PackagesListViewModel>();

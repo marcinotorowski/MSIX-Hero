@@ -18,7 +18,7 @@ namespace Otor.MsixHero.App.Hero.State
 {
     public enum ApplicationMode
     {
-        Dashboard,
+        Tools,
 
         Packages,
 

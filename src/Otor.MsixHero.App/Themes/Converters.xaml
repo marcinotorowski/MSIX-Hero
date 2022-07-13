@@ -13,5 +13,7 @@
     <converters:GroupNameConverter x:Key="GroupConverter" />
     <converters:StringFormatConverter x:Key="StringFormatConverter" />
     <converters:StringConcatConverter x:Key="StringConcatConverter" />
+    <converters:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter" />
+    <converters:StringNonEmptyToVisibilityConverter x:Key="StringNonEmptyToVisibilityConverter" />
     <converters:MathConverter x:Key="MathConverter" />
 </ResourceDictionary>

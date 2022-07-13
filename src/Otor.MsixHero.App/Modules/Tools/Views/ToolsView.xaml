@@ -1,0 +1,417 @@
+﻿<UserControl 
+    x:Class="Otor.MsixHero.App.Modules.Tools.Views.ToolsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:localization1="clr-namespace:Otor.MsixHero.Infrastructure.Localization;assembly=Otor.MsixHero.Infrastructure"
+    mc:Ignorable="d" 
+    d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}">
+    <DockPanel>
+        <Label Margin="20 20 20 10"  Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top" FontSize="32" />
+
+        <ScrollViewer
+            FocusVisualStyle="{x:Null}"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="22 0 22 0" HorizontalAlignment="Left" MaxWidth="1200">
+                <Grid.Resources>
+                    <Style TargetType="Label" BasedOn="{StaticResource Label}">
+                        <Setter Property="Height" Value="65" />
+                        <Setter Property="Margin" Value="0 0 0 12" />
+                        <Setter Property="VerticalContentAlignment" Value="Bottom" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Label">
+                                    <TextBlock
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Text="{TemplateBinding Content}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style TargetType="Button">
+                        <Setter Property="Padding" Value="8" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Margin" Value="0 0 0 4" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            Background="{TemplateBinding Background}">
+                                        <ContentPresenter
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Margin="{TemplateBinding Padding}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style TargetType="{x:Type Border}" x:Key="ExtensionBackground">
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="2 0 0 0" />
+                        <Setter Property="CornerRadius" Value="6" />
+                        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light5}" />
+                    </Style>
+
+                    <Style TargetType="{x:Type TextBlock}" x:Key="ExtensionText">
+                        <Setter Property="controls:Highlighter.Selection" Value="{Binding SearchKey}" />
+                        <Setter Property="Margin" Value="5 2.5" />
+                        <Setter Property="FontWeight" Value="Regular" />
+                        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}" />
+                    </Style>
+
+                    <Style TargetType="Path" BasedOn="{StaticResource LargeIcon}" x:Key="ButtonIcon">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0 0 8 0" />
+                        <Setter Property="Fill" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                    </Style>
+
+                    <Style TargetType="TextBlock" x:Key="ButtonText">
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                        <Setter Property="Margin" Value="0 0 12 0" />
+                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                        <Setter Property="MaxHeight" Value="45" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="TextAlignment" Value="Left" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="controls:Highlighter.Selection" Value="{Binding SearchKey}" />
+                    </Style>
+
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel  x:Name="Host">
+                    <Label Content="{localization:Loc Dashboard_Header_PackageOperations}" />
+
+                    <Button Command="{Binding ShowPackDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorPack}" />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_PackToMsix}" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowUnpackDialog}">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorUnpack}" />
+                            <TextBlock 
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_UnpackMsix}" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowModificationPackageDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorTransform}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_CreateModPackage}" />
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Label Content="{localization:Loc Dashboard_Header_CertAndSigning}" />
+
+                    <Button Command="{Binding ShowSignPackageDialog}">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorSign}" />
+                            <TextBlock 
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_SignResign}" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowExtractCertificateDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorExport}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_ExtractCer}" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowNewSelfSignedDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorSelfSign}" />
+
+                            <TextBlock
+                                Grid.Column="1" 
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_CreateSelfSigned}" />
+
+                            <Border
+                                Grid.Column="2"
+                                Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".cer" />
+                            </Border>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <Label Content="{localization:Loc Dashboard_Header_AppAttach}" />
+
+                    <Button Command="{Binding ShowAppAttachDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorNetworkDrive}" />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_AppAttach}" />
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Border
+                                    Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}" Text=".vhd" />
+                                </Border>
+                                <Border
+                                    Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}" Text=".cim" />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+
+                    <Label Content="{localization:Loc Dashboard_Header_AppInstaller}" />
+                    <Button Command="{Binding ShowAppInstallerDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_CreateAppInstaller}" />
+
+                            <Border
+                                Grid.Column="2"
+                                Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowAppInstallerDialog}" CommandParameter="open">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorOpen}" />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_OpenAppInstaller}" />
+                        </Grid>
+                    </Button>
+
+                    <Label Content="{localization:Loc Dashboard_Header_Winget}" />
+
+                    <Button Command="{Binding ShowWingetDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorConsole}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_CreateWinget}" />
+
+                            <Border
+                            Grid.Column="2" 
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.WingetExtension}" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowWingetDialog}" CommandParameter="open">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorOpen}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_OpenWinget}" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4">
+                    <Label Content="{localization:Loc Dashboard_Header_AnalyzeMsix}" />
+
+                    <Button Command="{Binding OpenMsixDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorOpen}" />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_OpenMsix}" />
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowDependencyGraphDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorDependencies}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="{localization:Loc Dashboard_ShowDeps}" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowUpdateImpactDialog}">
+                        <DockPanel>
+                            <Path 
+                        Style="{StaticResource ButtonIcon}"
+                        Data="{StaticResource VectorCheckmark}" />
+                            <TextBlock 
+                        Style="{StaticResource ButtonText}"
+                        Text="{localization:Loc Dashboard_AnalyzeImpact}" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowNamesDialog}">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorCopy}" />
+                            <TextBlock 
+                                Style="{StaticResource ButtonText}"
+                                Text="{localization:Loc Dashboard_CalculateNames}" />
+                        </DockPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

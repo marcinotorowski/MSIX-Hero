@@ -48,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
         private readonly IMsixHeroCommandExecutor _commandExecutor;
         private readonly IInteractionService _interactionService;
         private readonly ReaderWriterLockSlim _packagesSync = new ReaderWriterLockSlim();
-        private readonly HashSet<string> _selectedManifests = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> _selectedManifests = new HashSet<string>(StringComparer.Ordinal);
         private bool _firstRun = true;
         private bool _isActive;
 
@@ -172,14 +172,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
         {
             this._selectedManifests.Clear();
             
-            foreach (var item in this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation))
+            foreach (var item in this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName))
             {
                 this._selectedManifests.Add(item);
             }
             
             foreach (var package in this.Items)
             {
-                package.IsSelected = this._selectedManifests.Contains(package.ManifestLocation);
+                package.IsSelected = this._selectedManifests.Contains(package.PackageFullName);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                 foreach (var item in eventPayload.Result)
                 {
-                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.ManifestLocation)));
+                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.PackageFullName)));
                 }
             }
             finally
@@ -336,7 +336,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             if (
                 (item.DisplayName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
                 (item.DisplayPublisherName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
-                (item.ProductId?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 &&
+                (item.PackageFullName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 &&
                 (item.PackageFamilyName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
             )
             {

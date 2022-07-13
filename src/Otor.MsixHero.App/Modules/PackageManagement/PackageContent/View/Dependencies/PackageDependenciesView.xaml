@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Dependencies.PackageDependenciesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:dependencies="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Enums;assembly=Otor.MsixHero.Appx"
+             xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Controls.WindowsVersion"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance dependencies:PackageDependenciesViewModel}">
+    <DockPanel VerticalAlignment="Top">
+        <DockPanel.Resources>
+            <DataTemplate DataType="{x:Type dependencies:SystemDependencyViewModel}">
+                <cards:Card HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
+                    <cards:Card.Icon>
+                        <Path x:Name="Icon1" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWindows}" />
+                    </cards:Card.Icon>
+                    <cards:Card.Header>
+                        <StackPanel>
+                            <HeaderedContentControl
+                                x:Name="Text1"
+                                Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="Minimum required OS version"
+                                Style="{StaticResource CardHeader}">
+                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
+                                    <Run Text="{Binding MinimumDisplayName, Mode=OneWay}" />
+                                    <Run Text="|" />
+                                    <Run Text="{Binding MinimumVersion, Mode=OneWay}" />
+                                </TextBlock>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl
+                                x:Name="Text2"
+                                Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="Declared API compatibility level"
+                                Margin="0 8 0 0" Style="{StaticResource CardHeader}">
+                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
+                                    <Run Text="{Binding TestedDisplayName, Mode=OneWay}" />
+                                    <Run Text="|" />
+                                    <Run Text="{Binding TestedVersion, Mode=OneWay}" />
+                                </TextBlock>
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </cards:Card.Header>
+                    <cards:Card.Content>
+                        <windowsVersion:WindowsVersionControl WindowsVersion="{Binding MinimumVersion}" HorizontalAlignment="Right" Margin="2" />
+                    </cards:Card.Content>
+                </cards:Card>
+
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
+                        <Setter TargetName="Text1" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
+                        <Setter TargetName="Text2" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
+                        <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type dependencies:SoftwareDependencyViewModel}">
+                <cards:Card HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
+                    <cards:Card.Icon>
+                        <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDocumentLink}" />
+                    </cards:Card.Icon>
+                    <cards:Card.Header>
+                        <HeaderedContentControl 
+                            Style="{StaticResource CardHeader}">
+                            <HeaderedContentControl.Header>
+                                <TextBlock TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding DisplayName, Mode=OneWay}" />
+                                    <Run Text="{Binding Version, Mode=OneWay}" Foreground="#666" />
+                                </TextBlock>
+                            </HeaderedContentControl.Header>
+                            <HeaderedContentControl.Content>
+                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" ToolTip="{Binding Publisher}" Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" />
+                            </HeaderedContentControl.Content>
+                        </HeaderedContentControl>
+                    </cards:Card.Header>
+                    <cards:Card.Content>
+                        <Button Margin="16 0 0 0" Style="{StaticResource CardButton}" Content="Open" VerticalAlignment="Center" />
+                    </cards:Card.Content>
+                </cards:Card>
+            </DataTemplate>
+        </DockPanel.Resources>
+        <cards:CardAction 
+            DockPanel.Dock="Top"
+            ShowArrow="False"
+            Command="{Binding GoBack}" 
+            Margin="0">
+            <cards:CardAction.Icon>
+                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
+            </cards:CardAction.Icon>
+            <cards:CardAction.Content>
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                    <HeaderedContentControl.Header>
+                        <TextBlock Text="Dependencies" FontWeight="SemiBold" />
+                    </HeaderedContentControl.Header>
+                </HeaderedContentControl>
+            </cards:CardAction.Content>
+        </cards:CardAction>
+        <ScrollViewer
+            Padding="0"
+            Margin="0 8 0 0"
+            DockPanel.Dock="Top" 
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <Label 
+                    Content="{localization:Loc PackageExpert_Dependencies_Family_Header}" 
+                    Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />
+
+                <ItemsControl
+                    Padding="0 0 0 1" Margin="0 8 0 8"
+                    Visibility="{Binding HasSystemDependencies, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    ItemsSource="{Binding SystemDependencies}" />
+
+                <controls:LearnMore 
+                    Visibility="{Binding HasWindows10Dependency, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Link="https://msixhero.net/redirect/windows-10-version-history"
+                    Background="Transparent"
+                    Topic="Windows 10 version history"
+                    Margin="0 -8 0 8" />
+
+                <controls:LearnMore 
+                    Visibility="{Binding HasWindows11Dependency, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Link="https://msixhero.net/redirect/windows-11-version-history"
+                    Background="Transparent"
+                    Topic="Windows 11 version history"
+                    Margin="0 -8 0 8" />
+
+                <Label 
+                    Visibility="{Binding HasSoftwareDependencies, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Content="{localization:Loc PackageExpert_Dependencies_Package_Header}" 
+                    Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />
+                
+                <ItemsControl
+                    Padding="0 0 0 1" Margin="0 8 0 8"
+                    Visibility="{Binding HasSoftwareDependencies, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    ItemsSource="{Binding SoftwareDependencies}" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

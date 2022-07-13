@@ -79,6 +79,13 @@
     <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\sidebar.png" />
+    <Resource Include="Controls\WindowsVersion\Images\windows10.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Controls\WindowsVersion\Images\windows11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Controls\WindowsVersion\Images\windows8.png" />
     <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -173,6 +180,33 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\PackageManagement\Details\Views\PackagesSingleDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Dependencies\PackageDependenciesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryCapabilitiesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryApplicationsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryRegistryView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryInstallationView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryDependenciesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryFilesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummarySignatureView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Registry\PackageRegistryView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\VolumeManagement\Views\VolumesManyDetailsView.xaml.cs">
@@ -334,7 +368,58 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dashboard\Views\DashboardSearchView.xaml">
+    <Page Update="Modules\PackageManagement\PackageContent\More\ActionsMoreView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\Open\ActionsOpenView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\Start\ActionsStartView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Dependencies\PackageDependenciesView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Installation\Source\AppInstallerSourceView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Installation\Source\StoreSourceView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryCapabilitiesView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryApplicationsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryRegistryView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryInstallationView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryDependenciesView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryFilesView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummarySignatureView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Registry\PackageRegistryView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Tools\Views\ToolsSearchView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\EventViewer\Details\Views\EventViewerNoDetailsView.xaml">
@@ -362,6 +447,9 @@
     </Page>
     <Page Update="Modules\PackageManagement\Details\Views\PackagesSingleDetailsView.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Header.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\SystemStatus\View\SystemStatusView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

@@ -18,7 +18,7 @@
         <Border 
             Width="60" 
             DockPanel.Dock="Left" 
-            Background="{StaticResource MsixHero.Brushes.Background}"
+            Background="#FCFCFC"
             BorderBrush="#D2D2D2"
             BorderThickness="0 0 1 0"
             SnapsToDevicePixels="True"

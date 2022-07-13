@@ -56,6 +56,7 @@
             FontFamily="Webdings" Height="26" MinHeight="26" 
             Margin="2" 
             BorderThickness="0" 
+            Visibility="{Binding ElementName=SearchBox, Path=Text, Converter={StaticResource StringNonEmptyToVisibilityConverter}}"
             Content="&#x72;">
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -64,18 +65,6 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light6}" />
                         </Trigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
-                                    <Condition.Value>
-                                        <system:Int32>0</system:Int32>
-                                    </Condition.Value>
-                                </Condition>
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.Setters>
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </MultiDataTrigger.Setters>
-                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>

@@ -1,0 +1,98 @@
+<UserControl x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Overview.Actions.More.MoreView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:pkgMgmtCommands="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             d:DataContext="{d:DesignInstance actions:MoreViewModel}"
+             mc:Ignorable="d" >
+
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="Label" BasedOn="{StaticResource FormLabelThin}" >
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Margin" Value="8 8 8 0" />
+            </Style>
+        </StackPanel.Resources>
+        <Button 
+            Visibility="Collapsed"
+            Style="{StaticResource ActionButton}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.PackageExpert}">
+            <controls:LabelWithIcon Icon16x16="{StaticResource SmallInNewWindow}" Content="{localization:Loc PackageExpert_App_NewWindow}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Label Content="{localization:Loc PackageExpert_App_SendTo}" />
+        <Button 
+            Style="{StaticResource ActionButton}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
+            <controls:LabelWithIcon 
+                Icon16x16="{StaticResource SmallDependencies}"
+                Content="{localization:Loc PackageExpert_App_SendTo_DependencyAnalyzer}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Button 
+            Style="{StaticResource ActionButton}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.ModificationPackage}">
+            <controls:LabelWithIcon 
+                Icon16x16="{StaticResource SmallMicrosoftWindows}"
+                Content="{localization:Loc PackageExpert_App_SendTo_ModPackage}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Button
+            Style="{StaticResource ActionButton}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.AppInstaller}">
+            <controls:LabelWithIcon 
+                Icon16x16="{StaticResource SmallAppInstaller}"
+                Content="{localization:Loc PackageExpert_App_SendTo_AppInstaller}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Button
+            Style="{StaticResource ActionButton}"
+            CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.Winget}">
+
+            <controls:LabelWithIcon 
+                Icon16x16="{StaticResource SmallTerminal}"
+                Content="{localization:Loc PackageExpert_App_SendTo_Winget}" />
+
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Label Content="{localization:Loc PackageExpert_App_Other}" />
+
+        <Button 
+            Style="{StaticResource ActionButton}"
+            CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}">
+            <controls:LabelWithIcon Content="{localization:Loc PackageExpert_App_Other_ChangeVolume}" Icon16x16="{StaticResource SmallForward}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+    </StackPanel>
+</UserControl>

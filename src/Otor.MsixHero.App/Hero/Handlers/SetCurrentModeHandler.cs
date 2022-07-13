@@ -35,10 +35,10 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.PackageManagement);
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.PackageManagementPaths.Search);
                     break;
-                case ApplicationMode.Dashboard:
-                    this.moduleManager.LoadModule(ModuleNames.Dashboard);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.Dashboard);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.DashboardPaths.Search);
+                case ApplicationMode.Tools:
+                    this.moduleManager.LoadModule(ModuleNames.Tools);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.Tools);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.ToolsPaths.Search);
                     break;
                 case ApplicationMode.WhatsNew:
                     this.moduleManager.LoadModule(ModuleNames.WhatsNew);

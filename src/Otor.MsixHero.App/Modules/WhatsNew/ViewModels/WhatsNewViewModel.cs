@@ -94,7 +94,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             {
                 return this.currentScreen switch
                 {
-                    DefaultScreen.Dashboard => Resources.Localization.Dialogs_WhatsNew_SkipToDashboard,
+                    DefaultScreen.Tools => Resources.Localization.Dialogs_WhatsNew_SkipToTools,
                     DefaultScreen.Packages => Resources.Localization.Dialogs_WhatsNew_SkipToPackages,
                     DefaultScreen.Volumes => Resources.Localization.Dialogs_WhatsNew_SkipToVolumes,
                     DefaultScreen.Events => Resources.Localization.Dialogs_WhatsNew_SkipToEventViewer,

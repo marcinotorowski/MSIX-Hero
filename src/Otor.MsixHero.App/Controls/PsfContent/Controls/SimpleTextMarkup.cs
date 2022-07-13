@@ -33,6 +33,10 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Controls
         public static void InsertMarkup(InlineCollection collection, string text)
         {
             collection.Clear();
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
 
             var index = 0;
             var isBold = false;

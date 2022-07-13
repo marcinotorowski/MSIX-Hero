@@ -771,8 +771,8 @@
 	<data name="Dialogs_WhatsNew_ShowUpdateInfo" xml:space="preserve">
     <value>Show this information after each update</value>
   </data>
-	<data name="Dialogs_WhatsNew_SkipToDashboard" xml:space="preserve">
-    <value>Dismiss and go to the Dashboard</value>
+	<data name="Dialogs_WhatsNew_SkipToTools" xml:space="preserve">
+    <value>Dismiss and go to the tools</value>
   </data>
 	<data name="Dialogs_WhatsNew_SkipToEventViewer" xml:space="preserve">
     <value>Dismiss and go to MSIX logs</value>
@@ -1452,11 +1452,11 @@
 	<data name="Sidebar_About" xml:space="preserve">
     <value>About MSIX Hero…</value>
   </data>
-	<data name="Sidebar_Dashboard" xml:space="preserve">
-    <value>Dashboard</value>
+	<data name="Sidebar_Tools" xml:space="preserve">
+    <value>Tools</value>
   </data>
 	<data name="Sidebar_EventViewer" xml:space="preserve">
-    <value>Event viewer</value>
+    <value>Events</value>
   </data>
 	<data name="Sidebar_Packages" xml:space="preserve">
     <value>Packages</value>
@@ -1465,7 +1465,7 @@
     <value>Configure MSIX Hero settings...</value>
   </data>
 	<data name="Sidebar_SystemStatus" xml:space="preserve">
-    <value>System overview</value>
+    <value>System</value>
   </data>
 	<data name="Sidebar_Volumes" xml:space="preserve">
     <value>Volumes</value>

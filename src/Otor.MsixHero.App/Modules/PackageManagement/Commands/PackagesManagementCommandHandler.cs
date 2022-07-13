@@ -494,7 +494,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         //this.application.ApplicationState.Packages.SelectedPackages.Clear();
                         //this.application.ApplicationState.Packages.SelectedPackages.Add(selected);
 
-                        await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
+                        await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.PackageFullName)).ConfigureAwait(false);
                     }
                 }
                 else
@@ -610,7 +610,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             if (appInstallers.Length == 1)
             {
-                var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(appInstallers[0].PackageId)).ConfigureAwait(false);
+                var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(appInstallers[0].PackageFullName)).ConfigureAwait(false);
                 string msg;
 
                 var askForUpdate = false;
@@ -656,7 +656,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
                 foreach (var item in appInstallers)
                 {
-                    var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(item.PackageId)).ConfigureAwait(false);
+                    var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(item.PackageFullName)).ConfigureAwait(false);
 
                     if (!updateResults.TryGetValue(updateResult, out var list))
                     {
@@ -830,7 +830,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
                 var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
                 var removedPackageNames = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
-                var removedPackages = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
+                var removedPackages = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToArray();
                 await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);
                 
                 await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
@@ -972,7 +972,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                             toCopy.AppendLine(pkg.DisplayName);
                             break;
                         case PackageProperty.FullName:
-                            toCopy.AppendLine(pkg.PackageId);
+                            toCopy.AppendLine(pkg.PackageFullName);
                             break;
                         case PackageProperty.FamilyName:
                             toCopy.AppendLine(pkg.PackageFamilyName);

@@ -19,11 +19,27 @@ using System.Windows.Controls.Primitives;
 
 namespace Otor.MsixHero.App.Controls.Cards;
 
-public class CardAction : ButtonBase
+public class CardAction : ButtonBase, ILoadingCard
 {
     public static readonly DependencyProperty ShowArrowProperty = DependencyProperty.Register(nameof(ShowArrow), typeof(bool), typeof(CardAction), new PropertyMetadata(true));
 
     public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(object), typeof(CardAction), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty IsLoadingProperty = DependencyProperty.Register("IsLoading", typeof(bool), typeof(CardAction), new PropertyMetadata(false));
+    
+    public static readonly DependencyProperty LoadingContentTemplateProperty = DependencyProperty.Register("LoadingContentTemplate", typeof(DataTemplate), typeof(CardAction), new PropertyMetadata(null));
+
+    public DataTemplate LoadingContentTemplate
+    {
+        get => (DataTemplate)GetValue(LoadingContentTemplateProperty);
+        set => SetValue(LoadingContentTemplateProperty, value);
+    }
+
+    public bool IsLoading
+    {
+        get => (bool)GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
 
     public object Icon
     {

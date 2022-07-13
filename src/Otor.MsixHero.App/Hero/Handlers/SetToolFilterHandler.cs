@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Otor.MsixHero.App.Hero.Commands.Dashboard;
+using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Executor;
 
 namespace Otor.MsixHero.App.Hero.Handlers
@@ -15,7 +15,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         protected override void Handle(SetToolFilterCommand request)
         {
-            this.commandExecutor.ApplicationState.Dashboard.SearchKey = request.SearchKey;
+            this.commandExecutor.ApplicationState.Tools.SearchKey = request.SearchKey;
         }
     }
 }

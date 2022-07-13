@@ -60,11 +60,6 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
             this.SidebarItems = new ObservableCollection<SidebarItemViewModel>
             {
                 new SidebarItemViewModel(
-                    ApplicationMode.Dashboard,
-                    NavigationPaths.Dashboard,
-                    TabOverview),
-
-                new SidebarItemViewModel(
                     ApplicationMode.Packages,
                     NavigationPaths.PackageManagement,
                     TabPackages),
@@ -83,6 +78,11 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                     ApplicationMode.SystemStatus, 
                     NavigationPaths.SystemStatus,
                     TabSystemStatus),
+
+                new SidebarItemViewModel(
+                    ApplicationMode.Tools,
+                    NavigationPaths.Tools,
+                    TabOverview),
 
                 new SidebarItemViewModel(
                     ApplicationMode.WhatsNew, 

@@ -92,10 +92,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
-                Logger.Info().WriteLine("Removing {0}", item.PackageId);
+                Logger.Info().WriteLine("Removing {0}", item.PackageFullName);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    PackageManagerWrapper.Instance.RemovePackageAsync(item.PackageId, opts),
+                    PackageManagerWrapper.Instance.RemovePackageAsync(item.PackageFullName, opts),
                     string.Format(Resources.Localization.Packages_Removing_Format, item.DisplayName), CancellationToken.None, progress);
 
                 await task.ConfigureAwait(false);

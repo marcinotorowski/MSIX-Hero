@@ -49,7 +49,7 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
         /// <see cref="DependencyProperty"/> for the <see cref="Transition"/> property.
         /// </summary>
         public static readonly DependencyProperty TransitionDirectionProperty = DependencyProperty.RegisterAttached(
-            nameof(TransitionDirection),
+            nameof(Direction),
             typeof(TransitionDirection),
             typeof(TransitioningContentControl),
             new PropertyMetadata(TransitionDirection.Left));
@@ -338,6 +338,7 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
             _isTransitioning = true;
             RaiseTransitionStarted();
 
+            Console.Out.WriteLine("Go to state " + startingTransitionName);
             VisualStateManager.GoToState(
                                          this,
                                          startingTransitionName,

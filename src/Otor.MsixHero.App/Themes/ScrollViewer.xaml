@@ -7,22 +7,28 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Top" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Padding" Value="4"/>
         <Setter Property="adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode" Value="ExpandOnHover"/>
         <Setter Property="adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode" Value="ExpandOnHover"/>
-        <Setter Property="adonisExtensions:ScrollViewerExtension.VerticalScrollBarPlacement" Value="Docked"/>
+        <Setter Property="adonisExtensions:ScrollViewerExtension.VerticalScrollBarPlacement" Value="Overlay"/>
         <Setter Property="adonisExtensions:ScrollViewerExtension.HorizontalScrollBarPlacement" Value="Docked"/>
-        <Setter Property="adonisExtensions:ScrollViewerExtension.HideScrollBarsUntilMouseOver" Value="False"/>
+        <Setter Property="adonisExtensions:ScrollViewerExtension.HideScrollBarsUntilMouseOver" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                    <Border 
+                        MaxWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
 
-                        <Grid Background="{TemplateBinding Background}">
+                        <Grid
+                            x:Name="Grid"
+                            Background="{TemplateBinding Background}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
@@ -32,11 +38,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
-                                                    Cursor="{TemplateBinding Cursor}"
-                                                    Margin="{TemplateBinding Padding}"
-                                                    CanContentScroll="{TemplateBinding CanContentScroll}"
-                                                    ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                            <ScrollContentPresenter
+                                x:Name="PART_ScrollContentPresenter"
+                                Cursor="{TemplateBinding Cursor}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                Margin="{TemplateBinding Padding}"
+                                CanContentScroll="{TemplateBinding CanContentScroll}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"/>
 
                             <Rectangle Grid.Column="1" Grid.Row="1" Fill="Transparent"/>
 
@@ -68,7 +76,6 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-
                         <Trigger Property="adonisExtensions:ScrollViewerExtension.VerticalScrollBarPlacement" Value="Overlay">
                             <Setter Property="Grid.ColumnSpan" TargetName="PART_ScrollContentPresenter" Value="2"/>
                         </Trigger>

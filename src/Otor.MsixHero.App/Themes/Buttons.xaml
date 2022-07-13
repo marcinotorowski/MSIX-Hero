@@ -256,7 +256,7 @@
                             <Path 
                                 SnapsToDevicePixels="True"
                                 UseLayoutRounding="True"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="10" Height="5" DockPanel.Dock="Right" Margin="6 0 2 0" Data="M 0 0 10 0 5 5 Z" Fill="{TemplateBinding Foreground}" />
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="12" Height="8" DockPanel.Dock="Right" Margin="6 0 2 0" Data="M 1 2 2 1 6 5 10 1 11 2 6 7" Fill="{TemplateBinding Foreground}" Opacity="0.4" />
                             <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </DockPanel>
                     </Border>

@@ -422,7 +422,8 @@
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type repackaging:RepackagingRecommendationViewModel}">
-                                <cards:CardExpander Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                                <cards:CardExpander 
+                                    Margin="0 0 0 8" VerticalContentAlignment="Stretch">
                                     <cards:CardExpander.Icon>
                                         <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                             <Canvas Width="32" Height="32">

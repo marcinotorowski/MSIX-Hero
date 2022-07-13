@@ -20,7 +20,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 {
     public enum DefaultScreen
     {
-        Dashboard = 0,
+        Tools = 0,
         Packages = 1,
         Volumes = 2,
         Events = 3,

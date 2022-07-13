@@ -26,7 +26,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
     {
         public PackageContext Context { get; set; }
 
-        public string PackageId { get; set; }
+        public string PackageFullName { get; set; }
 
         public string DisplayName { get; set; }
 

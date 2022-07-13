@@ -137,11 +137,43 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                 this.resource = "";
                 this.SetCalculatedProperties();
             }
-            else
+            else 
             {
+                if (parameters.Keys.Count() == 1 && File.Exists(parameters.Keys.First()))
+                {
 #pragma warning disable CS4014
-                this.LoadFile(parameters.GetValue<string>(parameters.Keys.First()));
+                    this.LoadFile(parameters.GetValue<string>(parameters.Keys.First()));
 #pragma warning restore CS4014
+                }
+                else
+                {
+                    if (parameters.TryGetValue("version", out string v))
+                    {
+                        this.version = v;
+                    }
+
+                    if (parameters.TryGetValue("name", out string n))
+                    {
+                        this.name = n;
+                    }
+
+                    if (parameters.TryGetValue("publisher", out string p))
+                    {
+                        this.publisher = p;
+                    }
+
+                    if (parameters.TryGetValue("resource", out string r))
+                    {
+                        this.resource = r;
+                    }
+
+                    if (parameters.TryGetValue("architecture", out string a))
+                    {
+                        this.architecture = Enum.TryParse(a, out AppxPackageArchitecture parsed) ? parsed : AppxPackageArchitecture.Neutral;
+                    }
+
+                    this.SetCalculatedProperties();
+                }
             }
         }
 

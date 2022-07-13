@@ -90,7 +90,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
         private async Task Fix(bool desiredState)
         {
             this.IsFixing = true;
-
+            
             try
             {
                 bool result;

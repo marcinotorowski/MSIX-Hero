@@ -32,6 +32,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 
         public AppxTargetOperatingSystemType IsNativeMsixPlatform { get; set; }
 
+        public WindowsVersion WindowsVersion { get; set; }
+
         public override string ToString()
         {
             return string.IsNullOrEmpty(this.MarketingCodename) ? $"{this.Name} ({this.TechnicalVersion})" : $"{this.Name} {this.MarketingCodename} ({this.TechnicalVersion})";

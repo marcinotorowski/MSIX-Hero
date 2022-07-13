@@ -6154,15 +6154,6 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dismiss and go to the Dashboard.
-        /// </summary>
-        public static string Dialogs_WhatsNew_SkipToDashboard {
-            get {
-                return ResourceManager.GetString("Dialogs_WhatsNew_SkipToDashboard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dismiss and go to MSIX logs.
         /// </summary>
         public static string Dialogs_WhatsNew_SkipToEventViewer {
@@ -6186,6 +6177,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_WhatsNew_SkipToStatus {
             get {
                 return ResourceManager.GetString("Dialogs_WhatsNew_SkipToStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss and go to the tools.
+        /// </summary>
+        public static string Dialogs_WhatsNew_SkipToTools {
+            get {
+                return ResourceManager.GetString("Dialogs_WhatsNew_SkipToTools", resourceCulture);
             }
         }
         
@@ -9880,16 +9880,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dashboard.
-        /// </summary>
-        public static string Sidebar_Dashboard {
-            get {
-                return ResourceManager.GetString("Sidebar_Dashboard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event viewer.
+        ///   Looks up a localized string similar to Events.
         /// </summary>
         public static string Sidebar_EventViewer {
             get {
@@ -9916,11 +9907,20 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System overview.
+        ///   Looks up a localized string similar to System.
         /// </summary>
         public static string Sidebar_SystemStatus {
             get {
                 return ResourceManager.GetString("Sidebar_SystemStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Sidebar_Tools {
+            get {
+                return ResourceManager.GetString("Sidebar_Tools", resourceCulture);
             }
         }
         

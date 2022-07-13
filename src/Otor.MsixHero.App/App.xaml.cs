@@ -34,7 +34,6 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
-using Otor.MsixHero.App.Modules.Dashboard;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies;
@@ -48,7 +47,9 @@ using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;
 using Otor.MsixHero.App.Modules.PackageManagement;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent;
 using Otor.MsixHero.App.Modules.SystemStatus;
+using Otor.MsixHero.App.Modules.Tools;
 using Otor.MsixHero.App.Modules.VolumeManagement;
 using Otor.MsixHero.App.Modules.WhatsNew;
 using Otor.MsixHero.App.Mvvm.Progress;
@@ -231,7 +232,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemStatusModule), ModuleNames.SystemStatus, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(DashboardModule), ModuleNames.Dashboard, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(ToolsModule), ModuleNames.Tools, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(WhatsNewModule), ModuleNames.WhatsNew, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), ModuleNames.Dialogs.Signing, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), ModuleNames.Dialogs.AppInstaller, InitializationMode.OnDemand));
@@ -253,7 +254,7 @@ namespace Otor.MsixHero.App
 
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
-            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
+            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageContentHost));
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
             var config = this.Container.Resolve<IConfigurationService>();
@@ -274,7 +275,7 @@ namespace Otor.MsixHero.App
         {
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
             var regionManager = this.Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
+            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageContentHost));
             var par = new DialogParameters
             {
                 {

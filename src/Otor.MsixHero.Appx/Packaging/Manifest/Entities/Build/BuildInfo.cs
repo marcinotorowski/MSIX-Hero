@@ -20,7 +20,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build
 {
     public class BuildInfo
     {
-        public string OperatingSystem { get; set; }
+        public AppxTargetOperatingSystem OperatingSystem { get; set; }
 
         public string ProductName { get; set; }
 

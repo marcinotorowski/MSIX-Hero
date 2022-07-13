@@ -44,11 +44,11 @@ public class SelectableInstalledPackageViewModel : InstalledPackageViewModel
             // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
             if (value)
             {
-                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.ManifestLocation, SelectPackagesCommand.PackageSelectionMode.Add));
+                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.PackageFullName, SelectPackagesCommand.PackageSelectionMode.Add));
             }
             else
             {
-                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.ManifestLocation, SelectPackagesCommand.PackageSelectionMode.Remove));
+                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.PackageFullName, SelectPackagesCommand.PackageSelectionMode.Remove));
             }
         }
     }

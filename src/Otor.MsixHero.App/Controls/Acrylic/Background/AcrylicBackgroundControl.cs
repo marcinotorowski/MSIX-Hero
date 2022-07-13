@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Otor.MsixHero.App.Controls.Acrylic.Background
 {
@@ -18,7 +17,7 @@ namespace Otor.MsixHero.App.Controls.Acrylic.Background
         public static readonly DependencyProperty TintTextOpacityProperty = DependencyProperty.Register("TintTextOpacity", typeof(double), typeof(AcrylicBackgroundControl), new PropertyMetadata(default(double)));
         
         public static readonly DependencyProperty TintOpacityProperty = DependencyProperty.Register("TintOpacity", typeof(double), typeof(AcrylicBackgroundControl), new PropertyMetadata(default(double)));
-
+        
         public double TintTextOpacity
         {
             get => (double) GetValue(TintTextOpacityProperty);

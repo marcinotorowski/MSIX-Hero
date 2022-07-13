@@ -14,13 +14,14 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.IO;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
 {
     public class DeveloperSource : AppxSource
     {
-        public DeveloperSource(string manifestPath) : base(Path.GetDirectoryName(manifestPath))
+        public DeveloperSource(string manifestPath, DateTime installDate) : base(Path.GetDirectoryName(manifestPath), installDate)
         {
             this.ManifestPath = manifestPath;
         }

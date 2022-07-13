@@ -63,7 +63,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
             return result;
         }
 
-        private static AppxTargetOperatingSystem GetWindowsDesktop(string version)
+        public static AppxTargetOperatingSystem GetWindowsDesktop(string version)
         {
             var result = new AppxTargetOperatingSystem
             {
@@ -78,82 +78,138 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
                     case "6.1.7601":
                         result.Name = "Windows 7 SP1 / Server 2008 R2";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win7;
                         break;
                     case "6.2.9200":
-                        result.Name = "Windows Server 2012";
+                        result.Name = "Windows 8 / Server 2012";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win8;
                         break;
                     case "6.3.9600":
                         result.Name = "Windows 8.1 / Server 2012 R2";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win81;
                         break;
                     case "10.0.10240":
                         result.MarketingCodename = "";
                         result.Name = "Windows 10 1507";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.10586":
                         result.MarketingCodename = "November Update";
                         result.Name = "Windows 10 1511";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.14393":
                         result.MarketingCodename = "Anniversary Update";
                         result.Name = "Windows 10 1607";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.15063":
                         result.MarketingCodename = "Creators Update";
                         result.Name = "Windows 10 1703";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.16299":
                         result.MarketingCodename = "Fall Creators Update";
                         result.Name = "Windows 10 1709";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.17134":
                         result.MarketingCodename = "April 2018 Update";
                         result.Name = "Windows 10 1803";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.17763":
                         result.MarketingCodename = "October 2018 Update";
                         result.Name = "Windows 10 1809";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.18362":
                         result.MarketingCodename = "May 2019 Update";
                         result.Name = "Windows 10 1903";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.18363":
                         result.MarketingCodename = "November 2019 Update";
                         result.Name = "Windows 10 1909";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.19041":
                         result.MarketingCodename = "May 2020 Update";
                         result.Name = "Windows 10 2004";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.19042":
                         result.MarketingCodename = "October 2020 Update";
                         result.Name = "Windows 10 20H2";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.19043":
                         result.MarketingCodename = "May 2021 Update";
                         result.Name = "Windows 10 21H1";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win10;
                         break;
                     case "10.0.22000":
                         result.Name = "Windows 11 21H2";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win11;
+                        break;
+                    case "10.0.22621":
+                        result.Name = "Windows 11 22H2";
+                        result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        result.WindowsVersion = WindowsVersion.Win11;
                         break;
                     default:
-                        result.Name = "Windows " + version;
-                        result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        if (parsedVersion.Build >= 22000)
+                        {
+                            result.Name = "Windows 11 (build " + parsedVersion.Build + ")";
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                            result.WindowsVersion = WindowsVersion.Win11;
+                        }
+                        else if (parsedVersion.Build >= 10240)
+                        {
+                            result.Name = "Windows 10 (build " + parsedVersion.Build + ")";
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                            result.WindowsVersion = WindowsVersion.Win10;
+                        }
+                        else if (parsedVersion.Build >= 9600)
+                        {
+                            result.Name = "Windows 8.1 (build " + parsedVersion.Build + ")";
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                            result.WindowsVersion = WindowsVersion.Win81;
+                        }
+                        else if (parsedVersion.Build >= 9200)
+                        {
+                            result.Name = "Windows 8 (build " + parsedVersion.Build + ")";
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                            result.WindowsVersion = WindowsVersion.Win8;
+                        }
+                        else if (parsedVersion.Build >= 7601)
+                        {
+                            result.Name = "Windows 7 (build " + parsedVersion.Build + ")";
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixCore;
+                            result.WindowsVersion = WindowsVersion.Win7;
+                        }
+                        else
+                        {
+                            result.Name = "Windows " + version;
+                            result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.Other;
+                            result.WindowsVersion = WindowsVersion.Unspecified;
+                        }
+
                         return result;
                 }
             }

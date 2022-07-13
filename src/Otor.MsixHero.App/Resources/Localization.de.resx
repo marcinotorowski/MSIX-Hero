@@ -201,11 +201,11 @@
 	<data name="Sidebar_About" xml:space="preserve">
 		<value>Über MSIX Hero...</value>
 	</data>
-	<data name="Sidebar_Dashboard" xml:space="preserve">
-		<value>Dashboard</value>
+	<data name="Sidebar_Tools" xml:space="preserve">
+		<value>Werkzeuge</value>
 	</data>
 	<data name="Sidebar_EventViewer" xml:space="preserve">
-		<value>Ereignisanzeige</value>
+		<value>Ereignisse</value>
 	</data>
 	<data name="Sidebar_Packages" xml:space="preserve">
 		<value>Pakete</value>
@@ -214,7 +214,7 @@
 		<value>Konfigurieren Sie die MSIX Hero-Einstellungen...</value>
 	</data>
 	<data name="Sidebar_SystemStatus" xml:space="preserve">
-		<value>System-Übersicht</value>
+		<value>System</value>
 	</data>
 	<data name="Sidebar_Volumes" xml:space="preserve">
 		<value>Volumen</value>
@@ -1599,8 +1599,8 @@
 	<data name="Dialogs_WhatsNew_ShowUpdateInfo" xml:space="preserve">
 		<value>Diese Informationen nach jeder Aktualisierung anzeigen</value>
 	</data>
-	<data name="Dialogs_WhatsNew_SkipToDashboard" xml:space="preserve">
-		<value>Verbergen und zum Dashboard gehen</value>
+	<data name="Dialogs_WhatsNew_SkipToTools" xml:space="preserve">
+		<value>Verbergen und zu den Tools gehen</value>
 	</data>
 	<data name="Dialogs_WhatsNew_SkipToEventViewer" xml:space="preserve">
 		<value>Verbergen und zu den MSIX-Protokollen gehen</value>

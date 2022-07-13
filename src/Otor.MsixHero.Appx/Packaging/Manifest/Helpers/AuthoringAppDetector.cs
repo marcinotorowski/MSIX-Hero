@@ -27,11 +27,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
 {
     public class AuthoringAppDetector
     {
-        private readonly IAppxFileReader fileReader;
+        private readonly IAppxFileReader _fileReader;
 
         public AuthoringAppDetector(IAppxFileReader fileReader)
         {
-            this.fileReader = fileReader;
+            this._fileReader = fileReader;
         }
 
         public bool TryDetectAny(IReadOnlyDictionary<string, string> buildKeyValues, out BuildInfo buildInfo)
@@ -59,15 +59,15 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
             buildInfo = new BuildInfo
             {
                 ProductName = "Microsoft Visual Studio",
-                ProductVersion = visualStudio,
-
+                ProductVersion = visualStudio
             };
+
+            buildInfo.Components = new Dictionary<string, string>(buildValues);
 
             if (buildValues.TryGetValue("OperatingSystem", out var win10))
             {
                 var firstUnit = win10.Split(' ')[0];
-                buildInfo.OperatingSystem = WindowsNames.GetOperatingSystemFromNameAndVersion(firstUnit).ToString();
-                buildInfo.Components = new Dictionary<string, string>(buildValues);
+                buildInfo.OperatingSystem = WindowsNames.GetOperatingSystemFromNameAndVersion(firstUnit);
             }
 
             return true;
@@ -95,10 +95,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
                 ProductVersion = advInst
             };
 
+            buildInfo.Components = new Dictionary<string, string>(buildValues);
+
             if (buildValues.TryGetValue("OperatingSystem", out var os))
             {
                 var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
-                buildInfo.OperatingSystem = win10Version.ToString();
+                buildInfo.OperatingSystem = win10Version;
             }
 
             return true;
@@ -124,10 +126,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
                 ProductVersion = msixHero
             };
 
+            buildInfo.Components = new Dictionary<string, string>(buildValues);
+
             if (buildValues.TryGetValue("OperatingSystem", out var os))
             {
                 var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
-                buildInfo.OperatingSystem = win10Version.ToString();
+                buildInfo.OperatingSystem = win10Version;
             }
 
             return true;
@@ -142,48 +146,54 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
                 // Detect RayPack by taking a look at the metadata of PsfLauncher.
                 // This is a fallback in case there are no other build values.
                 const string fileLauncher = "PsfLauncher.exe";
-                if (!fileReader.FileExists(fileLauncher))
+                if (!_fileReader.FileExists(fileLauncher))
                 {
                     return false;
                 }
-                
-                using (var launcher = this.fileReader.GetFile(fileLauncher))
+
+                using var launcher = this._fileReader.GetFile(fileLauncher);
+                FileVersionInfo fileVersionInfo;
+                if (launcher is FileStream fileStream)
                 {
-                    FileVersionInfo fileVersionInfo;
-                    if (launcher is FileStream fileStream)
+                    fileVersionInfo = FileVersionInfo.GetVersionInfo(fileStream.Name);
+                }
+                else
+                {
+                    var tempFilePath = Path.GetTempFileName();
+                    try
                     {
-                        fileVersionInfo = FileVersionInfo.GetVersionInfo(fileStream.Name);
+                        using (var fs = File.OpenWrite(tempFilePath))
+                        {
+                            launcher.CopyTo(fs);
+                            fs.Flush();
+                        }
+
+                        fileVersionInfo = FileVersionInfo.GetVersionInfo(tempFilePath);
+                    }
+                    finally
+                    {
+                        File.Delete(tempFilePath);
+                    }
+                }
+
+                if (fileVersionInfo.ProductName != null && fileVersionInfo.ProductName.StartsWith("Raynet", StringComparison.OrdinalIgnoreCase))
+                {
+                    var pv = fileVersionInfo.ProductVersion;
+                    buildInfo = new BuildInfo
+                    {
+                        ProductVersion = fileVersionInfo.ProductVersion
+                    };
+
+                    if (pv == null)
+                    {
+                        buildInfo.ProductName = "RayPack";
                     }
                     else
                     {
-                        var tempFilePath = Path.GetTempFileName();
-                        try
-                        {
-                            using (var fs = File.OpenWrite(tempFilePath))
-                            {
-                                launcher.CopyTo(fs);
-                                fs.Flush();
-                            }
-
-                            fileVersionInfo = FileVersionInfo.GetVersionInfo(tempFilePath);
-                        }
-                        finally
-                        {
-                            File.Delete(tempFilePath);
-                        }
+                        buildInfo.ProductName = "RayPack " + Version.Parse(pv).ToString(2);
                     }
 
-                    if (fileVersionInfo.ProductName != null && fileVersionInfo.ProductName.StartsWith("Raynet", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var pv = fileVersionInfo.ProductVersion;
-                        buildInfo = new BuildInfo
-                        {
-                            ProductName = "RayPack " + Version.Parse(pv).ToString(2),
-                            ProductVersion = fileVersionInfo.ProductVersion
-                        };
-
-                        return true;
-                    }
+                    return true;
                 }
             }
             else
@@ -211,11 +221,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
                         ProductVersion = $"(MSIX builder v{rayPack})"
                     };
                 }
-
+                
+                buildInfo.Components = new Dictionary<string, string>(buildValues);
                 if (buildValues.TryGetValue("OperatingSystem", out var os))
                 {
                     var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
-                    buildInfo.OperatingSystem = win10Version.ToString();
+                    buildInfo.OperatingSystem = win10Version;
                 }
                 
                 return true;

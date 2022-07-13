@@ -63,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public string Publisher => this.Model.Publisher;
 
-        public string ProductId => this.Model.PackageId;
+        public string PackageFullName => this.Model.PackageFullName;
 
         public string PackageFamilyName => this.Model.PackageFamilyName;
 

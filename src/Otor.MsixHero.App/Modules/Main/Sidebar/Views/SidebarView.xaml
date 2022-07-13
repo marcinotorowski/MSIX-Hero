@@ -197,27 +197,27 @@
                                     <Border 
                                         Visibility="Collapsed"
                                         x:Name="PART_Border"
-                                        Background="#0173C7" Width="4" Height="26" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        Background="#0173C7" Width="4" Height="60" VerticalAlignment="Center" HorizontalAlignment="Left">
                                     </Border>
 
-                                    <Ellipse 
+                                    <Border 
                                         Visibility="{TemplateBinding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Fill="#eeeeee"
-                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    </Ellipse>
+                                        Background="#eeeeee"
+                                        Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    </Border>
 
-                                    <Ellipse 
+                                    <Border 
                                         x:Name="PART_Background"
-                                        Fill="#0173C7"
+                                        Background="#0173C7"
                                         Opacity="0"
-                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Ellipse.RenderTransform>
-                                            <ScaleTransform ScaleX="0.0" ScaleY="0.0" CenterX="20.5" CenterY="20.5" />
-                                        </Ellipse.RenderTransform>
-                                    </Ellipse>
+                                        Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    </Border>
                                     <!--Fill="#B1D6F0"-->
 
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4 0 0 0">
+                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <TextBlock TextTrimming="CharacterEllipsis" Text="{TemplateBinding ToolTip}" FontSize="9" Opacity="0.8" Margin="0 3 0 0" />
+                                    </StackPanel>
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
@@ -225,24 +225,6 @@
                                         <Trigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
-                                                    <DoubleAnimation 
-                                                        Duration="00:00:0.3"
-                                                        To="1.0"
-                                                        From="0.0"
-                                                        AccelerationRatio="0.5"
-                                                        DecelerationRatio="0.5"
-                                                        Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                        Storyboard.TargetName="PART_Background">
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation 
-                                                        Duration="00:00:0.3"
-                                                        To="1.0"
-                                                        From="0.0"
-                                                        AccelerationRatio="0.5"
-                                                        DecelerationRatio="0.5"
-                                                        Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                        Storyboard.TargetName="PART_Background">
-                                                    </DoubleAnimation>
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
                                                         To="0.3"
@@ -261,24 +243,6 @@
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
                                                         To="0.0"
-                                                        From="1.0" 
-                                                        AccelerationRatio="0.5"
-                                                        DecelerationRatio="0.5"
-                                                        Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                        Storyboard.TargetName="PART_Background">
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation 
-                                                        Duration="00:00:0.3"
-                                                        To="0.0"
-                                                        From="1.0"
-                                                        AccelerationRatio="0.5"
-                                                        DecelerationRatio="0.5"
-                                                        Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                        Storyboard.TargetName="PART_Background">
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation 
-                                                        Duration="00:00:0.3"
-                                                        To="0.0"
                                                         From="0.3"
                                                         AccelerationRatio="0.5"
                                                         DecelerationRatio="0.5"
@@ -294,8 +258,8 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Dashboard}">
-                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Dashboard}" />
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Tools}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Tools}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Packages}">
                             <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Packages}" />

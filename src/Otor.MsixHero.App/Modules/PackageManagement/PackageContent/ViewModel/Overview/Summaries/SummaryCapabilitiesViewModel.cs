@@ -1,0 +1,114 @@
+﻿// MSIX Hero
+// Copyright (C) 2022 Marcin Otorowski
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// Full notice:
+// https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
+
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
+using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Prism.Commands;
+
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
+{
+    public class SummaryCapabilitiesViewModel : NotifyPropertyChanged, ILoadPackage
+    {
+        public SummaryCapabilitiesViewModel(IPackageContentItemNavigation navigation)
+        {
+            this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Capabilities));
+        }
+
+        public ICommand Details { get; }
+
+        public Task LoadPackage(AppxPackage model, string filePath)
+        {
+            var stringBuilder = new StringBuilder();
+
+            this.Count = 0;
+            foreach (var capability in model.Capabilities.Where(c => c.Name == "runFullTrust" || c.Name == "allowElevation"))
+            {
+                if (this.Count >= 2)
+                {
+                    break;
+                }
+
+                this.Count++;
+
+                if (stringBuilder.Length != 0)
+                {
+                    stringBuilder.Append(", ");
+                }
+
+                switch (capability.Name)
+                {
+                    case "runFullTrust":
+                        stringBuilder.Append("runs with full trust");
+                        break;
+                    case "allowElevation":
+                        stringBuilder.Append("can elevate");
+                        break;
+                }
+            }
+
+            foreach (var capability in model.Capabilities.Where(c => c.Name != "runFullTrust" && c.Name != "allowElevation"))
+            {
+                if (this.Count >= 2)
+                {
+                    break;
+                }
+
+                this.Count++;
+
+                if (stringBuilder.Length != 0)
+                {
+                    stringBuilder.Append(", ");
+                }
+
+                stringBuilder.Append(CapabilityTranslationProvider.ToDisplayName(capability.Name));
+            }
+            
+            if (model.Capabilities.Count - this.Count == 1)
+            {
+                stringBuilder.Append(" and one another capability...");
+            }
+            else if (model.Capabilities.Count - this.Count > 0)
+            {
+                stringBuilder.Append(" and " + (model.Capabilities.Count - this.Count) + " other capabilities...");
+            }
+
+            this.Count = model.Capabilities.Count;
+            if (stringBuilder.Length == 0)
+            {
+                this.Summary = "This package has no capabilities.";
+            }
+            else
+            {
+                this.Summary = stringBuilder.ToString(0, 1).ToUpper() + stringBuilder.ToString(1, stringBuilder.Length - 1);
+            }
+            
+            this.OnPropertyChanged(null);
+
+            return Task.CompletedTask;
+        }
+        
+        public int Count { get; private set; }
+        
+        public string Summary { get; private set; }
+    }
+}

@@ -14,15 +14,19 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
+
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 {
     public abstract class AppxSource
     {
-        protected AppxSource(string rootDirectory)
+        protected AppxSource(string rootDirectory, DateTime? installDate = default)
         {
             this.RootDirectory = rootDirectory;
+            InstallDate = installDate;
         }
 
         public string RootDirectory { get; }
+        public DateTime? InstallDate { get; }
     }
 }
