@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
@@ -44,15 +45,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public string FirstLine { get; private set; }
 
+        public long FileSize { get; private set; }
+
         public string SecondLine { get; private set; }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
-            this.EstimateFilesCount(model, filePath);
+            this.EstimateFilesCount(model, filePath, cancellationToken);
             return Task.CompletedTask;
         }
 
-        private async void EstimateFilesCount(AppxPackage model, string filePath)
+        private async void EstimateFilesCount(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             var fileReader = FileReaderFactory.CreateFileReader(filePath);
 
@@ -76,9 +79,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     .Take(2)
                     .ToArray();
 
-                await foreach (var _ in fileReader.EnumerateFiles(null, "*", SearchOption.AllDirectories).ConfigureAwait(false))
+                long size = 0;
+                await foreach (var f in fileReader.EnumerateFiles(null, "*", SearchOption.AllDirectories, cancellationToken).ConfigureAwait(false))
                 {
                     count++;
+                    size += f.Size;
+
                     if (stopWatch.Elapsed > MaxScanTime || count > MaxFileCount)
                     {
                         this.IsEstimated = true;
@@ -86,6 +92,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     }
                 }
 
+                this.FileSize = size;
                 this.FilesCount = count;
                 this.OtherFilesCount = count;
 
@@ -95,11 +102,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else if (this.IsEstimated)
                 {
-                    this.FirstLine = "Files: more than **" + count + "**";
+                    this.FirstLine = "Files: more than **" + count + "** and **" + Convert(size) + "**";
                 }
                 else
                 {
-                    this.FirstLine = "Files: **" + count + "**";
+                    this.FirstLine = "Files: **" + count + "**, total **" + Convert(size) + "**";
                 }
                 
                 switch (executables.Length)
@@ -134,6 +141,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                         break;
                 }
             }
+            catch (OperationCanceledException)
+            {
+            }
             finally
             {
                 stopWatch.Stop();
@@ -153,5 +163,27 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         public bool IsEstimated { get; private set; }
 
         public ProgressProperty Estimating { get; } = new ProgressProperty();
+
+        private static string Convert(long value)
+        {
+            var units = new[] { "B", "KB", "MB", "GB", "TB" };
+
+            var hasMinus = value < 0;
+
+            var doubleValue = (double)Math.Abs(value);
+            var index = 0;
+            while (doubleValue > 1024 && index < units.Length)
+            {
+                doubleValue /= 1024.0;
+                index++;
+            }
+
+            if (index == 0)
+            {
+                return value + " " + units[index];
+            }
+
+            return (hasMinus ? "-" : string.Empty) + (Math.Round(doubleValue * 10, 0) / 10.0).ToString("0.0") + " " + units[index];
+        }
     }
 }

@@ -103,9 +103,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public AsyncProperty<TrustStatus> TrustStatus { get; } = new AsyncProperty<TrustStatus>(isLoading: true);
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
-            return this.TrustStatus.Load(this.LoadSignature(filePath, CancellationToken.None));
+            return this.TrustStatus.Load(this.LoadSignature(filePath, cancellationToken));
         }
 
         private async Task<TrustStatus> LoadSignature(string packagePath, CancellationToken cancellationToken)

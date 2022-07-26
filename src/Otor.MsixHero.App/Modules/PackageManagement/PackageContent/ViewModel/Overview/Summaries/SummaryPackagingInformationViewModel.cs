@@ -16,6 +16,7 @@
 
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
@@ -31,7 +32,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         {
         }
         
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.BuildInfo = model.BuildInfo;
             this.WindowsVersion = model.BuildInfo?.OperatingSystem?.TechnicalVersion;

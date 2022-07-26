@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
@@ -30,12 +31,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
             set => this.SetField(ref this._isActive, value);
         }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.Capabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
+;
             this.GeneralCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.General).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
+            
             this.RestrictedCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.Restricted).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
+            
             this.CustomCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.Custom).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
+
             this.DeviceCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.Device).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
             
             this.OnPropertyChanged(null);

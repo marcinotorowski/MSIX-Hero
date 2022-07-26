@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
@@ -55,7 +56,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         
         public bool HasSystemDependencies => this.SystemDependencies?.Any() == true;
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.SoftwareDependencies = new ObservableCollection<SoftwareDependencyViewModel>(model.PackageDependencies.Select(d => new SoftwareDependencyViewModel(d)));
             this.SystemDependencies = new ObservableCollection<SystemDependencyViewModel>(model.OperatingSystemDependencies.Select(d => new SystemDependencyViewModel(d)));

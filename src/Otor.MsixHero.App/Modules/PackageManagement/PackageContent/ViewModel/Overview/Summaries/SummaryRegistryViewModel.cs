@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
@@ -42,7 +43,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public string SecondLine { get; private set; }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             var fileReader = FileReaderFactory.CreateFileReader(filePath);
             this.HasRegistry = fileReader.FileExists("Registry.dat");
@@ -50,7 +51,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             if (this.HasRegistry)
             {
-                this.EstimateRegistryCount(fileReader);
+                this.EstimateRegistryCount(fileReader, cancellationToken);
             }
 
             return Task.CompletedTask;
@@ -59,7 +60,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         public bool HasRegistry { get; private set; }
 
 
-        private async void EstimateRegistryCount(IAppxFileReader fileReader)
+        private async void EstimateRegistryCount(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             await using var f = fileReader.GetFile("Registry.dat");
             using var appxRegistryReader = new AppxRegistryReader(f);
@@ -74,14 +75,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             try
             {
-                await foreach (var root in appxRegistryReader.EnumerateKeys(AppxRegistryRoots.Root).ConfigureAwait(false))
+                await foreach (var root in appxRegistryReader.EnumerateKeys(AppxRegistryRoots.Root, cancellationToken)
+                                   .ConfigureAwait(false))
                 {
-                    if (string.Equals(AppxRegistryRoots.HKLM.TrimEnd('\\'), root.Path, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(AppxRegistryRoots.HKLM.TrimEnd('\\'), root.Path,
+                            StringComparison.OrdinalIgnoreCase))
                     {
                         hasMachine = true;
                     }
 
-                    if (string.Equals(AppxRegistryRoots.HKCU.TrimEnd('\\'), root.Path, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(AppxRegistryRoots.HKCU.TrimEnd('\\'), root.Path,
+                            StringComparison.OrdinalIgnoreCase))
                     {
                         hasUser = true;
                     }
@@ -93,10 +97,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else if (hasMachine)
                 {
-                    var findKey = await appxRegistryReader.EnumerateKeys(AppxRegistryRoots.HKLM + "Software").FirstOrDefaultAsync().ConfigureAwait(false);
+                    var findKey = await appxRegistryReader
+                        .EnumerateKeys(AppxRegistryRoots.HKLM + "Software", cancellationToken).FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
                     if (findKey.Path != null)
                     {
-                        this.SecondLine = "HKLM\\" + findKey.Path.Substring(AppxRegistryRoots.HKLM.Length) + " and other per-machine registry keys.";
+                        this.SecondLine = "HKLM\\" + findKey.Path.Substring(AppxRegistryRoots.HKLM.Length) +
+                                          " and other per-machine registry keys.";
                     }
                     else
                     {
@@ -105,10 +112,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else if (hasUser)
                 {
-                    var findKey = await appxRegistryReader.EnumerateKeys(AppxRegistryRoots.HKCU + "Software").FirstOrDefaultAsync().ConfigureAwait(false);
+                    var findKey = await appxRegistryReader
+                        .EnumerateKeys(AppxRegistryRoots.HKCU + "Software", cancellationToken).FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
                     if (findKey.Path != null)
                     {
-                        this.SecondLine = "HKCU\\" + findKey.Path.Substring(AppxRegistryRoots.HKCU.Length) + " and other per-user registry keys.";
+                        this.SecondLine = "HKCU\\" + findKey.Path.Substring(AppxRegistryRoots.HKCU.Length) +
+                                          " and other per-user registry keys.";
                     }
                     else
                     {
@@ -119,6 +129,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 {
                     this.SecondLine = "Contains registry keys.";
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                this.SecondLine = "Contains registry keys.";
             }
             finally
             {

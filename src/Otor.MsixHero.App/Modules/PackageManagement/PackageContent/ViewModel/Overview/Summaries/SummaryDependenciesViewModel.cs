@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
@@ -34,7 +35,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public ICommand Details { get; }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.Count = model.OperatingSystemDependencies.Count + model.PackageDependencies.Count;
             this.HasAny = this.Count > 0;

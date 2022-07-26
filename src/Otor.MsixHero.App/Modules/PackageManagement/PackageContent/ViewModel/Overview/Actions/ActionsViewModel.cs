@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.More;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Open;
@@ -19,16 +20,18 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             More = new MoreViewModel();
         }
 
-        public async Task LoadPackage(AppxPackage model, string filePath)
+        public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             await Task.WhenAll(
-                Start.LoadPackage(model, filePath),
-                Open.LoadPackage(model, filePath),
-                More.LoadPackage(model, filePath)).ConfigureAwait(false);
+                Start.LoadPackage(model, filePath, cancellationToken),
+                Open.LoadPackage(model, filePath, cancellationToken),
+                More.LoadPackage(model, filePath, cancellationToken)).ConfigureAwait(false);
         }
 
         public StartViewModel Start { get; }
+
         public OpenViewModel Open { get; }
+
         public MoreViewModel More { get; }
     }
 }

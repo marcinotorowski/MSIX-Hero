@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
@@ -54,7 +55,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         _loadPackageHandlers.Add(SummaryPackagingInformation = new SummaryPackagingInformationViewModel(navigation, prismServices));
         _loadPackageHandlers.Add(SummarySummarySignature = new SummarySignatureViewModel(navigation, interactionService, uacElevation));
         _loadPackageHandlers.Add(SummarySummaryDependencies = new SummaryDependenciesViewModel(navigation));
-        _loadPackageHandlers.Add(SummarySummaryInstallation = new SummaryInstallationViewModel(navigation));
+        _loadPackageHandlers.Add(SummarySummaryInstallation = new SummaryInstallationViewModel(navigation, uacElevation));
         _loadPackageHandlers.Add(SummaryFiles = new SummaryFilesViewModel(navigation));
         _loadPackageHandlers.Add(SummaryRegistry = new SummaryRegistryViewModel(navigation));
         _loadPackageHandlers.Add(SummarySummaryCapabilities = new SummaryCapabilitiesViewModel(navigation));
@@ -80,7 +81,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
 
                 _pendingPackage = null;
 #pragma warning disable CS4014
-                LoadPackage(package, path);
+                LoadPackage(package, path, CancellationToken.None);
 #pragma warning restore CS4014
             }
         }
@@ -108,10 +109,11 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
 
     public string FilePath { get; private set; }
 
-    public async Task LoadPackage(AppxPackage model, string filePath)
+    public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         if (!IsActive)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             _pendingPackage = new Tuple<AppxPackage, string>(model, filePath);
             return;
         }
@@ -120,8 +122,8 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         Progress.IsLoading = true;
         try
         {
-            await Task.WhenAll(_loadPackageHandlers.Select(t => t.LoadPackage(model, filePath))).ConfigureAwait(false);
-            FilePath = filePath;
+            await Task.WhenAll(_loadPackageHandlers.Select(t => t.LoadPackage(model, filePath, cancellationToken))).ConfigureAwait(false);
+            this.FilePath = filePath;
             OnPropertyChanged(nameof(FilePath));
 
         }
@@ -131,11 +133,11 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         }
     }
 
-    public async Task LoadPackage(IAppxFileReader reader)
+    public async Task LoadPackage(IAppxFileReader reader, CancellationToken cancellationToken)
     {
         var originalProgress = Progress.IsLoading;
 
-        Progress.IsLoading = true;
+        this.Progress.IsLoading = true;
 
         try
         {
@@ -148,19 +150,19 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
             };
 
             var appxReader = new AppxManifestReader();
-            var pkg = await appxReader.Read(reader).ConfigureAwait(false);
-
-            await LoadPackage(pkg, path).ConfigureAwait(false);
+            var pkg = await appxReader.Read(reader, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            await LoadPackage(pkg, path, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
-            Progress.IsLoading = originalProgress;
+            this.Progress.IsLoading = originalProgress;
         }
     }
 
-    public Task LoadPackage(InstalledPackage installedPackage)
+    public Task LoadPackage(InstalledPackage installedPackage, CancellationToken cancellationToken)
     {
         using var reader = FileReaderFactory.CreateFileReader(installedPackage.ManifestLocation);
-        return LoadPackage(reader);
+        return LoadPackage(reader, cancellationToken);
     }
 }

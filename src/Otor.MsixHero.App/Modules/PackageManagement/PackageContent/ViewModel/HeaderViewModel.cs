@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -27,7 +28,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
         {
         }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             DisplayName = model.DisplayName;
             PublisherDisplayName = model.PublisherDisplayName;

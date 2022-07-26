@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryInstallationViewModel}">
+             d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryInstallationViewModel}">
 
     <cards:CardButton Command="{Binding Details}">
         <!-- Margin="0 0 0 8" -->
@@ -21,5 +21,8 @@
         <cards:CardButton.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
         </cards:CardButton.Icon>
+        <cards:CardButton.Content>
+            <TextBlock Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
+        </cards:CardButton.Content>
     </cards:CardButton>
 </UserControl>

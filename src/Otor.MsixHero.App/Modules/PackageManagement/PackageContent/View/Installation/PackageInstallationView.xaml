@@ -8,6 +8,8 @@
              xmlns:sources1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source"
              xmlns:installation="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance installation:PackageInstallationViewModel}">
     <UserControl.Resources>
@@ -136,14 +138,82 @@
                 <ContentControl Content="{Binding Path=Source}" />
 
                 <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="ADD-ONS + MODIFICATION PACKAGES" />
-                <cards:Card Header="test" />
-                <cards:Card Header="test" />
-                <cards:Card Header="test" />
+                <TextBlock Text="None" Visibility="{Binding HasAddOns, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+                <ItemsControl
+                    Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    ItemsSource="{Binding AddOns}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+
+                            <Border Background="{StaticResource CardBackgroundBrush}"
+                                    BorderBrush="{StaticResource CardBorderBrush}"
+                                    BorderThickness="{StaticResource CardBorderThickness}"
+                                    Margin="{StaticResource CardMargin}"
+                                    Padding="{StaticResource CardContentPadding}">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                        </Border>
+                                    </Border>
+
+                                    <StackPanel DockPanel.Dock="Right">
+                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0">
+                                        <TextBlock TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                        </TextBlock>
+                                        <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                            <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
                 <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="INSTALLED FOR" />
-                <cards:Card Header="test" />
-                <cards:Card Header="test" />
-                <cards:Card Header="test" Margin="0" />
+                <Grid>
+                    <Border 
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        Padding="{StaticResource CardContentPadding}"
+                        BorderThickness="{StaticResource CardBorderThickness}"
+                        Visibility="{Binding Users.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                        Background="#11ffff00">
+
+                        <StackPanel>
+                            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="{localization:Loc PackageExpert_Installations_UacPrompt}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
+                            <Button 
+                                Margin="0 8 0 0"
+                                Style="{StaticResource CardButton}"
+                                DockPanel.Dock="Top" 
+                                HorizontalAlignment="Center" 
+                                Command="{Binding FindUsers}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                                    <TextBlock Text="{localization:Loc PackageExpert_Installations_UacPrompt_Caption}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+
+                    <ItemsControl Visibility="{Binding Users.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Users.InstalledBy}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource CardBackgroundBrush}"
+                                        BorderBrush="{StaticResource CardBorderBrush}"
+                                        BorderThickness="{StaticResource CardBorderThickness}"
+                                        Margin="{StaticResource CardMargin}"
+                                        Padding="{StaticResource CardContentPadding}">
+                                    <TextBlock Text="{Binding Name}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
 
             </StackPanel>
         </ScrollViewer>

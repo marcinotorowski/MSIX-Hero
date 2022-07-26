@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -23,7 +24,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
 public class MoreViewModel : NotifyPropertyChanged, ILoadPackage
 {
-    public Task LoadPackage(AppxPackage model, string filePath)
+    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

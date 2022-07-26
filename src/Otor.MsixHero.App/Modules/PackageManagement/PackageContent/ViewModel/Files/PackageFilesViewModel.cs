@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
@@ -36,12 +37,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
             {
                 if (this.SetField(ref this._isActive, value) && value && this._pendingFile != null)
                 {
-                    this.LoadFiles();
+                    this.LoadFiles(CancellationToken.None);
                 }
             }
         }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this._pendingFile = filePath;
             if (!this.IsActive)
@@ -49,12 +50,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
                 return Task.CompletedTask;
             }
 
-            this.LoadFiles();
+            this.LoadFiles(cancellationToken);
             this.OnPropertyChanged(null);
             return Task.CompletedTask;
         }
 
-        private void LoadFiles()
+        private void LoadFiles(CancellationToken cancellationToken)
         {
             if (this._pendingFile == null)
             {

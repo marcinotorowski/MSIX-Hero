@@ -14,27 +14,33 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+using Otor.MsixHero.Elevation;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
 {
     public class SummaryInstallationViewModel : NotifyPropertyChanged, ILoadPackage
     {
-        public SummaryInstallationViewModel(IPackageContentItemNavigation navigation)
+        private readonly IUacElevation uacElevation;
+
+        public SummaryInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation)
         {
+            this.uacElevation = uacElevation;
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Installation));
         }
 
         public ICommand Details { get; }
 
-        public Task LoadPackage(AppxPackage model, string filePath)
+        public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             if (model.Source is NotInstalledSource)
             {
@@ -78,13 +84,27 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 this.SecondLine = "Unknown";
             }
             
-            this.OnPropertyChanged(null);
+            this.ThirdLine = this.AddOnsCount > 1 ? string.Format("{0} add-ons", this.AddOnsCount) : "one add-on";
 
-            return Task.CompletedTask;
+            this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);
+
+            this.OnPropertyChanged(null);
         }
         
         public string FirstLine { get; private set; }
 
         public string SecondLine { get; private set; }
+
+        public string ThirdLine { get; private set; }
+
+        public int AddOnsCount { get; private set; }
+
+        public bool HasAddOns => this.AddOnsCount > 0;
+        
+        private async Task<int> GetAddOnsCount(AppxPackage package, CancellationToken cancellationToken = default)
+        {
+            var results = await this.uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
+            return results.Count;
+        }
     }
 }

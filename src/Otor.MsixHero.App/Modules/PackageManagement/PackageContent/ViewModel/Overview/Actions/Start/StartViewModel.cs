@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
@@ -54,7 +55,7 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage
         }
     }
 
-    public Task LoadPackage(AppxPackage model, string filePath)
+    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         var apps = new ObservableCollection<ApplicationViewModel>();
 
@@ -62,11 +63,12 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage
         {
             foreach (var item in model.Applications)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 apps.Add(new ApplicationViewModel(item, model));
             }
         }
 
-        Applications = apps;
+        this.Applications = apps;
         OnPropertyChanged(nameof(Applications));
 
         return Task.CompletedTask;

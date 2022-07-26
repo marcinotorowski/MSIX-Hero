@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Hero;
@@ -38,7 +39,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 #pragma warning disable CS4014
-            ((PackageContentViewModel)this.DataContext).LoadPackage(this._context.Value);
+            ((PackageContentViewModel)this.DataContext).LoadPackage(this._context.Value, CancellationToken.None);
 #pragma warning restore CS4014
         }
     }

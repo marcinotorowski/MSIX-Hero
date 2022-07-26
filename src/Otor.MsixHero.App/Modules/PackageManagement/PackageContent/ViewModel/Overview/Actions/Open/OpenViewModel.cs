@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -29,7 +30,7 @@ public class OpenViewModel : NotifyPropertyChanged, ILoadPackage
 
     public string UserDirectory { get; private set; }
 
-    public Task LoadPackage(AppxPackage model, string filePath)
+    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         UserDirectory = Path.Combine("%localappdata%", "Packages", model.FamilyName, "LocalCache");
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Controls.TransitionContentControl;
 using Otor.MsixHero.App.Helpers;
@@ -39,8 +40,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             IConfigurationService configurationService,
             IEventAggregator eventAggregator,
             IUacElevation uacElevation,
-            PrismServices prismServices, 
-            IAppxFileViewer fileViewer, 
+            PrismServices prismServices,
+            IAppxFileViewer fileViewer,
             FileInvoker fileInvoker)
         {
             this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(eventAggregator, configurationService));
@@ -50,7 +51,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var packageOverview = new PackageOverviewViewModel(this, interactionService, configurationService, eventAggregator, uacElevation, prismServices);
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
             var packageDependencies = new PackageDependenciesViewModel(this);
-            var packageInstallation = new PackageInstallationViewModel(this);
+            var packageInstallation = new PackageInstallationViewModel(this, uacElevation);
             var packageFiles = new PackageFilesViewModel(this, fileViewer, fileInvoker);
             var packageRegistry = new PackageRegistryViewModel(this);
 
@@ -111,7 +112,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                 }
 
                 this.OnPropertyChanged(nameof(TransitionDirection));
-                
+
                 value.IsActive = true;
 
                 this._currentItem = value;
@@ -119,32 +120,32 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             }
         }
 
-        public async Task LoadPackage(object objectToLoad)
+        public async Task LoadPackage(object objectToLoad, CancellationToken cancellationToken = default)
         {
             if (objectToLoad is FileInfo fileInfo)
             {
-                await this.LoadPackage(fileInfo.FullName).ConfigureAwait(false);
+                await this.LoadPackage(fileInfo.FullName, cancellationToken).ConfigureAwait(false);
             }
             else if (objectToLoad is string filePathOrIdOrDirectory)
             {
                 if (File.Exists(filePathOrIdOrDirectory))
                 {
-                    await this.LoadPackage(filePathOrIdOrDirectory).ConfigureAwait(false);
+                    await this.LoadPackage(filePathOrIdOrDirectory, cancellationToken).ConfigureAwait(false);
                 }
                 else if (Directory.Exists(filePathOrIdOrDirectory))
                 {
                     using var reader = new DirectoryInfoFileReaderAdapter(filePathOrIdOrDirectory);
-                    await this.LoadPackage(reader).ConfigureAwait(false);
+                    await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
                     using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, filePathOrIdOrDirectory);
-                    await this.LoadPackage(reader).ConfigureAwait(false);
+                    await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
                 }
             }
             else if (objectToLoad is IAppxFileReader fileReader)
             {
-                await this.LoadPackage(fileReader).ConfigureAwait(false);
+                await this.LoadPackage(fileReader, cancellationToken).ConfigureAwait(false);
             }
             else if (objectToLoad is AppxPackage appxPackage)
             {
@@ -153,7 +154,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             else if (objectToLoad is InstalledPackage installedPackage)
             {
                 using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, installedPackage.PackageFullName);
-                await this.LoadPackage(reader).ConfigureAwait(false);
+                await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -161,16 +162,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             }
         }
 
-        public async Task LoadPackage(string filePath)
+        public async Task LoadPackage(string filePath, CancellationToken cancellationToken)
         {
             using var reader = FileReaderFactory.CreateFileReader(filePath);
-            await this.LoadPackage(reader);
+            await this.LoadPackage(reader, cancellationToken);
         }
 
-        public async Task LoadPackage(IAppxFileReader fileReader)
+        public async Task LoadPackage(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             var manifestReader = new AppxManifestReader();
-            var pkg = await manifestReader.Read(fileReader).ConfigureAwait(false);
+            var pkg = await manifestReader.Read(fileReader, cancellationToken).ConfigureAwait(false);
 
             var path = fileReader switch
             {
@@ -183,48 +184,80 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             await this.LoadPackage(pkg, path).ConfigureAwait(false);
         }
 
+        private readonly AutoResetEvent syncObject = new AutoResetEvent(true);
+
+        private CancellationTokenSource previousCancellationTokenSource;
+
+        private string lastPackageRequest;
+
         public async Task LoadPackage(AppxPackage model, string filePath)
         {
-            var originalProgress = this.Progress.IsLoading;
-            this.Progress.IsLoading = true;
+            this.lastPackageRequest = filePath;
+
+            var got = this.syncObject.WaitOne();
             try
             {
-                this.Logo = model.Logo;
-                this.DisplayName = model.DisplayName;
-
-                this.TileColor = null;
-
-                if (model.Applications != null)
+                this.previousCancellationTokenSource?.Cancel();
+                if (this.lastPackageRequest != filePath)
                 {
-                    foreach (var item in model.Applications)
+                    return;
+                }
+
+                this.previousCancellationTokenSource = new CancellationTokenSource();
+                var newCancellationToken = this.previousCancellationTokenSource.Token;
+
+                var originalProgress = this.Progress.IsLoading;
+                this.Progress.IsLoading = true;
+                try
+                {
+                    this.Logo = model.Logo;
+                    this.DisplayName = model.DisplayName;
+
+                    this.TileColor = null;
+
+                    if (model.Applications != null)
                     {
-                        if (string.IsNullOrEmpty(this.TileColor))
+                        foreach (var item in model.Applications)
                         {
-                            this.TileColor = item.BackgroundColor;
-                            break;
+                            if (string.IsNullOrEmpty(this.TileColor))
+                            {
+                                this.TileColor = item.BackgroundColor;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (string.IsNullOrEmpty(this.TileColor))
+                    if (string.IsNullOrEmpty(this.TileColor))
+                    {
+                        this.TileColor = "#666666";
+                    }
+
+                    this.OnPropertyChanged(nameof(this.DisplayName));
+                    this.OnPropertyChanged(nameof(this.TileColor));
+                    this.OnPropertyChanged(nameof(this.Logo));
+
+                    await Task.WhenAll(this._loadPackageHandlers.Select(t => t.LoadPackage(model, filePath, newCancellationToken))).ConfigureAwait(false);
+                }
+                finally
                 {
-                    this.TileColor = "#666666";
+                    this.Progress.IsLoading = originalProgress;
                 }
 
-                this.OnPropertyChanged(nameof(this.DisplayName));
-                this.OnPropertyChanged(nameof(this.TileColor));
-                this.OnPropertyChanged(nameof(this.Logo));
-
-                await Task.WhenAll(this._loadPackageHandlers.Select(t => t.LoadPackage(model, filePath))).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
             }
             finally
             {
-                this.Progress.IsLoading = originalProgress;
+                if (got)
+                {
+                    this.syncObject.Set();
+                }
             }
         }
-        
+
         public ActionsViewModel Actions { get; }
-        
+
         public string DisplayName { get; private set; }
 
         public byte[] Logo { get; private set; }

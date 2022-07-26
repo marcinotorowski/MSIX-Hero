@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
@@ -21,5 +22,5 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
 
 public interface ILoadPackage
 {
-    Task LoadPackage(AppxPackage model, string filePath);
+    Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken);
 }
