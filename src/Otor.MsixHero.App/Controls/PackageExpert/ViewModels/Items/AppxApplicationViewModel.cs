@@ -75,7 +75,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
                             return this.model.Executable;
                         }
 
-                        return this.model.Executable;
+                        return this.model.EntryPoint;
                 }
             }
         }

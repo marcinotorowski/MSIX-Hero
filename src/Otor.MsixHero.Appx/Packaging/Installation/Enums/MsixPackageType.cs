@@ -25,6 +25,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
         BridgeDirect = 2,
         BridgePsf = 4,
         Web = 8,
-        Framework = 16
+        Framework = 16,
+        ProgressiveWebApp = 32
     }
 }

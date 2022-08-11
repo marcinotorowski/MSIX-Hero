@@ -182,6 +182,9 @@
     <Compile Update="Modules\PackageManagement\Details\Views\PackagesSingleDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Applications\PackageApplicationsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\PackageManagement\PackageContent\View\Dependencies\PackageDependenciesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -376,6 +379,10 @@
     </Page>
     <Page Update="Modules\PackageManagement\PackageContent\Start\ActionsStartView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Applications\PackageApplicationsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\PackageManagement\PackageContent\View\Dependencies\PackageDependenciesView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

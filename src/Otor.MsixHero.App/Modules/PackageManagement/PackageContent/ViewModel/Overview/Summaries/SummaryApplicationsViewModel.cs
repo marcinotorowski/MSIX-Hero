@@ -15,12 +15,16 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
 {
@@ -28,23 +32,57 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
     {
         public SummaryApplicationsViewModel(IPackageContentItemNavigation navigation)
         {
+            this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Applications));
         }
 
-        public string SecondLine { get; private set; } = "Work in progress";
+        public ICommand Details { get; }
+        
+        public string SecondLine { get; private set; }
 
         public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
-            var apps = new ObservableCollection<ApplicationVisualSummaryViewModel>();
+            var promotedApplication = model.Applications.FirstOrDefault(ma => ma.Visible) ??
+                                      model.Applications.FirstOrDefault(a => a.ExecutionAlias?.Any(ea => !string.IsNullOrEmpty(ea)) == true) ??
+                                      model.Applications.FirstOrDefault();
 
-            foreach (var app in model.Applications.Where(a => a.Visible))
+            if (promotedApplication == null)
             {
-                apps.Add(new ApplicationVisualSummaryViewModel(app, model));
+                // no applications
+                this.SecondLine = "No applications";
+            }
+            else
+            {
+                var otherApps = model.Applications.Count - 1;
+                var promotedName = promotedApplication.DisplayName;
+                if (promotedApplication.EntryPoint == "Windows.FullTrustApplication")
+                {
+                    promotedName += " [" + Path.GetFileName(promotedApplication.Psf?.Executable ?? promotedApplication.Executable) + "]";
+                }
+
+                switch (otherApps)
+                {
+                    case 0:
+                        this.SecondLine = promotedName;
+                        break;
+                    case 1:
+                        this.SecondLine = string.Format("{0} and one another application", promotedName);
+                        break;
+                    default:
+                        this.SecondLine = string.Format("{0} and {1} other applications", promotedName, 1);
+                        break;
+                }
             }
 
-            this.Apps = apps;
+            this.AppCount = model.Applications.Count;
+            this.Apps = new ObservableCollection<ApplicationVisualSummaryViewModel>(model.Applications.Where(a => a.Visible).Select(app => new ApplicationVisualSummaryViewModel(app, model)));
+
             this.OnPropertyChanged(null);
             return Task.CompletedTask;
         }
+
+        public int AppCount { get; private set; }
+
+        public bool HasApplications => this.AppCount > 0;
 
         public ObservableCollection<ApplicationVisualSummaryViewModel> Apps { get; private set; }
 

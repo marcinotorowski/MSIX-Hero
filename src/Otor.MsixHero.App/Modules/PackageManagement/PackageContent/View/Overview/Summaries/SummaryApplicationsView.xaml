@@ -9,15 +9,23 @@
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryApplicationsViewModel}">
     
-    <cards:CardButton>
+    <cards:CardButton
+        Visibility="{Binding HasApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
+        Command="{Binding Details}">
         <cards:CardButton.Icon>
-            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDebugging}" />
+            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorBrowse}" />
         </cards:CardButton.Icon>
         <cards:CardButton.Header>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
-                Header="Applications + Package Support Framework" 
-                Content="{Binding SecondLine}" />
+                Content="{Binding SecondLine}">
+                <HeaderedContentControl.Header>
+                    <TextBlock>
+                        <Run Text="Applications" />
+                        <Run Text="{Binding AppCount, Mode=OneWay, FallbackValue='0'}"></Run>
+                    </TextBlock>
+                </HeaderedContentControl.Header>
+            </HeaderedContentControl>
         </cards:CardButton.Header>
         <cards:CardButton.Content>
             <ItemsControl ItemsSource="{Binding Apps}">

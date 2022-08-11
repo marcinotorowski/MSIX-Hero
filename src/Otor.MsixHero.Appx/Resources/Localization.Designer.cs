@@ -637,7 +637,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web.
+        ///   Looks up a localized string similar to PWA.
         /// </summary>
         public static string Packages_Types_Pwa {
             get {
@@ -646,7 +646,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web application.
+        ///   Looks up a localized string similar to Progressive Web Application.
         /// </summary>
         public static string Packages_Types_Pwa_Long {
             get {

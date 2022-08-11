@@ -288,10 +288,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                             EntryPoint = node.Attribute("EntryPoint")?.Value,
                             StartPage = node.Attribute("StartPage")?.Value,
                             Executable = node.Attribute("Executable")?.Value,
+                            Parameters = node.Attribute(uap10 + "Parameters")?.Value,
+                            HostId = node.Attribute(uap10 + "HostId")?.Value,
                             Id = node.Attribute("Id")?.Value,
                             Extensions = new List<AppxExtension>()
                         };
-
 
                         /*
                         <Extensions><desktop6:Extension Category="windows.service" Executable="VFS\ProgramFilesX86\RayPackStudio\FloatingLicenseServer\FloatingLicenseServer.exe" EntryPoint="Windows.FullTrustApplication"><desktop6:Service Name="PkgSuiteFloatingLicenseServer" StartupType="auto" StartAccount="networkService" /></desktop6:Extension></Extensions>

@@ -69,7 +69,8 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;
+            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web ||
+                        (packageType & MsixPackageType.ProgressiveWebApp) == MsixPackageType.ProgressiveWebApp;
             if (isWeb)
             {
                 switch (displayType)
@@ -107,13 +108,23 @@ namespace Otor.MsixHero.Appx.Packaging
             return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework), displayType);
         }
 
-        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework)
+        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage, bool isFramework, string hostId = null, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
         {
+            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework, hostId), displayType);
+        }
+
+        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework, string hostId = null)
+        {
+            if (hostId == "PWA")
+            {
+                return MsixPackageType.ProgressiveWebApp;
+            }
+
             if (isFramework)
             {
                 return MsixPackageType.Framework;
             }
-
+            
             if (!string.IsNullOrEmpty(entryPoint))
             {
                 switch (entryPoint)
@@ -145,6 +156,12 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
 
                 return 0;
+            }
+
+            if (executable?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                // workaround for MS Edge...
+                return MsixPackageType.BridgeDirect;
             }
 
             return string.IsNullOrEmpty(startPage) ? 0 : MsixPackageType.Web;

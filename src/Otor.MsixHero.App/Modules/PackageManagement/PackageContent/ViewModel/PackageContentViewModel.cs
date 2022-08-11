@@ -9,6 +9,7 @@ using Otor.MsixHero.App.Controls.TransitionContentControl;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies;
@@ -50,6 +51,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
 
             var packageOverview = new PackageOverviewViewModel(this, interactionService, configurationService, eventAggregator, uacElevation, prismServices);
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
+            var packageApplications = new PackageApplicationsViewModel(this);
             var packageDependencies = new PackageDependenciesViewModel(this);
             var packageInstallation = new PackageInstallationViewModel(this, uacElevation);
             var packageFiles = new PackageFilesViewModel(this, fileViewer, fileInvoker);
@@ -61,6 +63,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             this.Items.Add(packageInstallation);
             this.Items.Add(packageFiles);
             this.Items.Add(packageRegistry);
+            this.Items.Add(packageApplications);
 
             this._loadPackageHandlers.Add(this.Header);
             this._loadPackageHandlers.Add(packageOverview);
@@ -69,6 +72,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             this._loadPackageHandlers.Add(packageInstallation);
             this._loadPackageHandlers.Add(packageFiles);
             this._loadPackageHandlers.Add(packageRegistry);
+            this._loadPackageHandlers.Add(packageApplications);
 
             this.CurrentItem = packageOverview;
         }

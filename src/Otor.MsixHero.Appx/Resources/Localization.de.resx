@@ -310,10 +310,10 @@
 		<value>PSF</value>
 	</data>
 	<data name="Packages_Types_Pwa" xml:space="preserve">
-		<value>Web</value>
+		<value>PWA</value>
 	</data>
 	<data name="Packages_Types_Pwa_Long" xml:space="preserve">
-		<value>Webanwendung</value>
+		<value>Progressive Anwendung (PWA)</value>
 	</data>
 	<data name="Packages_Types_Unknown" xml:space="preserve">
 		<value>Unbekannt</value>

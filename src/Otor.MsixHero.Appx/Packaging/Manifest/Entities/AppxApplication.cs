@@ -55,6 +55,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 
         public bool Visible { get; set; }
 
+        public string HostId { get; set; }
+
+        public string Parameters { get; set; }
+
         public IList<string> ExecutionAlias { get; set; }
 
         public PsfApplicationDescriptor Psf { get; set; }

@@ -14,7 +14,7 @@
     xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start"
     mc:Ignorable="d" 
     MinWidth="250"
-    d:DataContext="{d:DesignInstance actions:StartViewModel}"
+    d:DataContext="{d:DesignInstance items:StartViewModel}"
     d:DesignHeight="300" d:DesignWidth="600">
     <StackPanel Margin="0">
         <StackPanel.Resources>
