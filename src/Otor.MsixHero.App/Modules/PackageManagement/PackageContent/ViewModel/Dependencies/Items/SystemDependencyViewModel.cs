@@ -19,7 +19,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items
 {
     public class SystemDependencyViewModel : NotifyPropertyChanged
     {
@@ -27,32 +27,32 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
 
         public SystemDependencyViewModel(AppxOperatingSystemDependency model)
         {
-            this._model = model;
+            _model = model;
         }
 
-        public WindowsVersion MinimumWindowsVersionType => this._model.Minimum?.WindowsVersion ?? WindowsVersion.Unspecified;
+        public WindowsVersion MinimumWindowsVersionType => _model.Minimum?.WindowsVersion ?? WindowsVersion.Unspecified;
 
-        public WindowsVersion TestedVersionType => this._model.Tested?.WindowsVersion ?? WindowsVersion.Unspecified;
+        public WindowsVersion TestedVersionType => _model.Tested?.WindowsVersion ?? WindowsVersion.Unspecified;
 
-        public AppxTargetOperatingSystemType IsMsixNativeSupported => this._model.Minimum?.IsNativeMsixPlatform ?? this._model.Tested?.IsNativeMsixPlatform ?? AppxTargetOperatingSystemType.Other;
+        public AppxTargetOperatingSystemType IsMsixNativeSupported => _model.Minimum?.IsNativeMsixPlatform ?? _model.Tested?.IsNativeMsixPlatform ?? AppxTargetOperatingSystemType.Other;
 
-        public string FamilyName => this._model.Minimum?.NativeFamilyName ?? this._model.Tested?.NativeFamilyName;
+        public string FamilyName => _model.Minimum?.NativeFamilyName ?? _model.Tested?.NativeFamilyName;
 
         public string MinimumDisplayName
         {
             get
             {
-                if (this._model.Minimum == null)
+                if (_model.Minimum == null)
                 {
                     return null;
                 }
 
-                if (string.IsNullOrEmpty(this._model.Minimum.MarketingCodename))
+                if (string.IsNullOrEmpty(_model.Minimum.MarketingCodename))
                 {
-                    return this._model.Minimum.Name;
+                    return _model.Minimum.Name;
                 }
 
-                return $"{this._model.Minimum.Name} ({this._model.Minimum.MarketingCodename})";
+                return $"{_model.Minimum.Name} ({_model.Minimum.MarketingCodename})";
             }
         }
 
@@ -60,12 +60,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         {
             get
             {
-                if (this._model.Minimum == null)
+                if (_model.Minimum == null)
                 {
                     return null;
                 }
 
-                return this._model.Minimum.TechnicalVersion;
+                return _model.Minimum.TechnicalVersion;
             }
         }
 
@@ -73,17 +73,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         {
             get
             {
-                if (this._model.Tested == null)
+                if (_model.Tested == null)
                 {
                     return null;
                 }
 
-                if (string.IsNullOrEmpty(this._model.Tested.MarketingCodename))
+                if (string.IsNullOrEmpty(_model.Tested.MarketingCodename))
                 {
-                    return this._model.Tested.Name;
+                    return _model.Tested.Name;
                 }
 
-                return $"{this._model.Tested.Name} ({this._model.Tested.MarketingCodename})";
+                return $"{_model.Tested.Name} ({_model.Tested.MarketingCodename})";
             }
         }
 
@@ -91,17 +91,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         {
             get
             {
-                if (this._model.Tested == null)
+                if (_model.Tested == null)
                 {
                     return null;
                 }
 
-                return this._model.Tested.TechnicalVersion;
+                return _model.Tested.TechnicalVersion;
             }
         }
 
-        public bool HasMinimumVersion => this._model.Minimum != null;
+        public bool HasMinimumVersion => _model.Minimum != null;
 
-        public bool HasTestedVersion => this._model.Tested != null;
+        public bool HasTestedVersion => _model.Tested != null;
     }
 }

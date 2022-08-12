@@ -4,14 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
-using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications
 {
-    public class PackageApplicationsViewModel : NotifyPropertyChanged, IPackageContentItem, ILoadPackage
+    public class PackageApplicationsViewModel : PackageLazyLoadingViewModel
     {
         public PackageApplicationsViewModel(IPackageContentItemNavigation navigation)
         {
@@ -20,18 +20,24 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
                 navigation.SetCurrentItem(PackageContentViewType.Overview);
             });
         }
+        
+        public override PackageContentViewType Type => PackageContentViewType.Applications;
+        
+        public ObservableCollection<ApplicationViewModel> StartMenuApplications { get; private set; }
 
-        private bool _isActive;
+        public ObservableCollection<ApplicationViewModel> CommandLineApplications { get; private set; }
 
-        public PackageContentViewType Type => PackageContentViewType.Applications;
+        public ObservableCollection<ApplicationViewModel> OtherApplications { get; private set; }
 
-        public bool IsActive
-        {
-            get => this._isActive;
-            set => this.SetField(ref this._isActive, value);
-        }
+        public bool HasStartMenuApplications => this.StartMenuApplications?.Any() == true;
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public bool HasCommandLineApplications => this.CommandLineApplications?.Any() == true;
+
+        public bool HasOtherApplications => this.OtherApplications?.Any() == true;
+
+        public ICommand GoBack { get; }
+
+        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             var startMenuApps = new ObservableCollection<ApplicationViewModel>();
             var commandLineApps = new ObservableCollection<ApplicationViewModel>();
@@ -59,20 +65,33 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             this.OtherApplications = otherApps;
             this.CommandLineApplications = commandLineApps;
 
+            if (this.StartMenuApplications.Count > 0)
+            {
+                if (this.StartMenuApplications.Count < 5)
+                {
+                    // Do not expand if there is more than 4 apps in the group.
+                    this.StartMenuApplications[0].IsExpanded = true;
+                }
+            }
+            else if (this.CommandLineApplications.Count > 0)
+            {
+                if (this.CommandLineApplications.Count < 5)
+                {
+                    // Do not expand if there is more than 4 apps in the group.
+                    this.CommandLineApplications[0].IsExpanded = true;
+                }
+            }
+            else if(this.OtherApplications.Count > 0)
+            {
+                if (this.OtherApplications.Count < 5)
+                {
+                    // Do not expand if there is more than 4 apps in the group.
+                    this.OtherApplications[0].IsExpanded = true;
+                }
+            }
+
             this.OnPropertyChanged(null);
             return Task.CompletedTask;
         }
-        
-        public ObservableCollection<ApplicationViewModel> StartMenuApplications { get; private set; }
-        public ObservableCollection<ApplicationViewModel> CommandLineApplications { get; private set; }
-        public ObservableCollection<ApplicationViewModel> OtherApplications { get; private set; }
-
-        public bool HasStartMenuApplications => this.StartMenuApplications?.Any() == true;
-
-        public bool HasCommandLineApplications => this.CommandLineApplications?.Any() == true;
-
-        public bool HasOtherApplications => this.OtherApplications?.Any() == true;
-
-        public ICommand GoBack { get; }
     }
 }

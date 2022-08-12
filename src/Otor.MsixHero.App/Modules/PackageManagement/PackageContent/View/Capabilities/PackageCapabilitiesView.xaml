@@ -8,17 +8,17 @@
              xmlns:entities="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Entities;assembly=Otor.MsixHero.Appx"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance capabilities:PackageCapabilitiesViewModel}">
     <DockPanel VerticalAlignment="Top">
         <DockPanel.Resources>
-            <DataTemplate DataType="{x:Type capabilities:CapabilityViewModel}">
+            <DataTemplate DataType="{x:Type items:CapabilityViewModel}">
                 <cards:Card 
-                    x:Name="Card"
-                    HorizontalContentAlignment="Right">
-                    <cards:Card.Header>
+                    x:Name="Card">
+                    <cards:Card.Content>
                         <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{Binding DisplayName}" Content="{Binding Name}" />
-                    </cards:Card.Header>
+                    </cards:Card.Content>
                     <cards:Card.Icon>
                         <Path Style="{StaticResource LargeIcon}" Data="{Binding VectorIcon}" />
                     </cards:Card.Icon>

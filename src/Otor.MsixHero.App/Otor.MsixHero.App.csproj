@@ -188,6 +188,9 @@
     <Compile Update="Modules\PackageManagement\PackageContent\View\Dependencies\PackageDependenciesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryPsfView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryCapabilitiesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -207,6 +210,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummarySignatureView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\PackageManagement\PackageContent\View\Psf\PackagePsfView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\PackageManagement\PackageContent\View\Registry\PackageRegistryView.xaml.cs">
@@ -394,6 +400,10 @@
     <Page Update="Modules\PackageManagement\PackageContent\View\Installation\Source\StoreSourceView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryPsfView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummaryCapabilitiesView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
@@ -419,6 +429,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\PackageManagement\PackageContent\View\Overview\Summaries\SummarySignatureView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageManagement\PackageContent\View\Psf\PackagePsfView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
@@ -489,6 +503,10 @@
     <Page Update="Themes\Converters.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\PackageExpert\Views\Psf\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

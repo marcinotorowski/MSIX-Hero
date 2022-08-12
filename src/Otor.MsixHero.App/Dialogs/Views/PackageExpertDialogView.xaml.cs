@@ -27,11 +27,5 @@ namespace Otor.MsixHero.App.Dialogs.Views
         {
             InitializeComponent();
         }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            Window.GetWindow(this).Close();
-        }
     }
 }

@@ -19,7 +19,7 @@
         <cards:Card.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
         </cards:Card.Icon>
-        <cards:Card.Header>
+        <cards:Card.Content>
             <HeaderedContentControl 
                     Style="{StaticResource CardHeader}">
                 <HeaderedContentControl.Header>
@@ -47,8 +47,8 @@
                     </TextBlock>
                 </HeaderedContentControl.Content>
             </HeaderedContentControl>
-        </cards:Card.Header>
-        <cards:Card.Content>
+        </cards:Card.Content>
+        <cards:Card.ContentRight>
             <Button Content="Trust this publisher" Command="{Binding TrustMeCommand}">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource CardButton}">
@@ -63,6 +63,6 @@
                     </Style>
                 </Button.Style>
             </Button>
-        </cards:Card.Content>
+        </cards:Card.ContentRight>
     </cards:Card>
 </UserControl>

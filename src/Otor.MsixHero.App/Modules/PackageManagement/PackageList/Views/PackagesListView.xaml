@@ -300,7 +300,6 @@
                 x:Name="ListBox"
                 ItemsSource="{Binding ItemsCollection}"
                 SelectionMode="Extended"
-                VirtualizingPanel.IsVirtualizing="False"
                 SelectedValuePath="PackageFullName"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ContextMenuOpening="PackageContextMenu_OnContextMenuOpening"

@@ -30,11 +30,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryInstallationViewModel : NotifyPropertyChanged, ILoadPackage
     {
-        private readonly IUacElevation uacElevation;
+        private readonly IUacElevation _uacElevation;
 
         public SummaryInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation)
         {
-            this.uacElevation = uacElevation;
+            this._uacElevation = uacElevation;
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Installation));
         }
 
@@ -42,6 +42,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
+            this.IsInstalled = true;
             if (model.Source is NotInstalledSource)
             {
                 this.FirstLine = "Installation status";
@@ -57,6 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             if (model.Source is NotInstalledSource)
             {
+                this.IsInstalled = false;
                 this.SecondLine = "Not installed";
             }
             else if (model.Source is StorePackageSource)
@@ -83,15 +85,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             {
                 this.SecondLine = "Unknown";
             }
-            
+
             this.ThirdLine = this.AddOnsCount > 1 ? string.Format("{0} add-ons", this.AddOnsCount) : "one add-on";
 
             this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);
 
             this.OnPropertyChanged(null);
         }
-        
+
         public string FirstLine { get; private set; }
+
+        public bool IsInstalled { get; private set; }
 
         public string SecondLine { get; private set; }
 
@@ -103,7 +107,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         
         private async Task<int> GetAddOnsCount(AppxPackage package, CancellationToken cancellationToken = default)
         {
-            var results = await this.uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
+            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
             return results.Count;
         }
     }

@@ -9,20 +9,20 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryInstallationViewModel}">
 
-    <cards:CardButton Command="{Binding Details}">
+    <cards:CardAction Command="{Binding Details}">
         <!-- Margin="0 0 0 8" -->
-        <cards:CardButton.Header>
+        <cards:CardAction.Content>
             <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{Binding SecondLine}">
                 <HeaderedContentControl.Header>
                     <TextBlock controls:SimpleTextMarkup.Markup="{Binding FirstLine}" />
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
-        </cards:CardButton.Header>
-        <cards:CardButton.Icon>
+        </cards:CardAction.Content>
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Content>
+        </cards:CardAction.Icon>
+        <cards:CardAction.ContentRight>
             <TextBlock Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
-        </cards:CardButton.Content>
-    </cards:CardButton>
+        </cards:CardAction.ContentRight>
+    </cards:CardAction>
 </UserControl>

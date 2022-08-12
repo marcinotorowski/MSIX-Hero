@@ -11,23 +11,12 @@
     xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
-    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
-    <mvvm:Dialog.WindowStyle>
-        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
-            <Setter Property="SizeToContent" Value="Manual" />
-            <Setter Property="Width" Value="970" />
-            <Setter Property="Height" Value="680" />
-            <Setter Property="MinWidth" Value="500" />
-            <Setter Property="MinHeight" Value="350" />
-        </Style>
-    </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <Style TargetType="packageExpert:PackageExpertControl">
             <Setter Property="Template">
                 <Setter.Value>
-
                     <ControlTemplate TargetType="packageExpert:PackageExpertControl">
                         <controls:ProgressOverlay 
                             Message="Reading..."
@@ -73,14 +62,14 @@
         </Style>
     </UserControl.Resources>
     <DockPanel>
-        <Border
+        <!--<Border
             TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
             Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
             DockPanel.Dock="Bottom">
             <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Padding="8 4" Margin="4" Content="{localization:Loc Dialogs_Close}" HorizontalAlignment="Right" Click="ButtonBase_OnClick" />
             </StackPanel>
-        </Border>
+        </Border>-->
 
         <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
             <ContentControl 

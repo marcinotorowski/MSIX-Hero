@@ -10,7 +10,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.InstalledBy;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source;
-using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
@@ -25,16 +25,17 @@ using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation
 {
-    public class PackageInstallationViewModel : NotifyPropertyChanged, IPackageContentItem, ILoadPackage
+    public class PackageInstallationViewModel : PackageLazyLoadingViewModel
     {
-        private readonly IUacElevation uacElevation;
-        private bool _isActive;
+        private readonly IUacElevation _uacElevation;
         private ICommand _findUsers;
         private string _filePath;
 
         public PackageInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation)
         {
-            this.uacElevation = uacElevation;
+            this._uacElevation = uacElevation;
+            this.Summary = new SummaryInstallationViewModel(navigation, uacElevation);
+
             this.GoBack = new DelegateCommand(() =>
             {
                 navigation.SetCurrentItem(PackageContentViewType.Overview);
@@ -43,21 +44,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
 
         public ICommand GoBack { get; }
 
-        public PackageContentViewType Type { get; } = PackageContentViewType.Installation;
+        public override PackageContentViewType Type { get; } = PackageContentViewType.Installation;
 
-        public bool IsActive
-        {
-            get => _isActive;
-            set => this.SetField(ref this._isActive, value);
-        }
-
-        public PackageSourceViewModel Source { get; private set; }
-
+        public SummaryInstallationViewModel Summary { get; }
+        
         public ObservableCollection<InstalledPackage> AddOns { get; private set; }
 
         public UserDetailsViewModel Users { get; private set; }
 
         public bool HasAddOns => this.AddOns?.Any() == true;
+
+        public PackageSourceViewModel ExtraSourceInformation { get; private set; }
+
+        public bool HasExtraSourceInformation => this.ExtraSourceInformation != null;
 
         public ICommand FindUsers
         {
@@ -78,25 +77,30 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             }
         }
 
-        public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override async Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
-            this._filePath = filePath;
-            this.Source = model.Source switch
-            {
-                NotInstalledSource nis => new NotInstalledSourceViewModel(nis),
-                AppInstallerPackageSource appInstaller => new AppInstallerSourceViewModel(appInstaller),
-                DeveloperSource developer => new DeveloperSourceViewModel(developer),
-                StandardSource standard => new StandardSourceViewModel(standard),
-                StorePackageSource store => new StorePackageSourceViewModel(store),
-                SystemSource system => new SystemSourceViewModel(system),
-                _ => null
-            };
+            await this.Summary.LoadPackage(model, filePath, cancellationToken).ConfigureAwait(false);
 
+            if (model.Source is StorePackageSource storePackageSource)
+            {
+                this.ExtraSourceInformation = new StorePackageSourceViewModel(storePackageSource);
+            }
+            else if (model.Source is AppInstallerPackageSource appInstallerPackageSource)
+            {
+                this.ExtraSourceInformation = new AppInstallerSourceViewModel(appInstallerPackageSource);
+            }
+            else
+            {
+                this.ExtraSourceInformation = null;
+            }
+
+            this._filePath = filePath;
+            
             var addOns = new ObservableCollection<InstalledPackage>();
-            var canElevate = await UserHelper.IsAdministratorAsync(cancellationToken);
+            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken);
 
             var usersTask = this.GetUsers(model, false, cancellationToken);
-            var addOnsTask = this.uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);
+            var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);
 
             await Task.WhenAll(usersTask, addOnsTask).ConfigureAwait(false);
             
@@ -123,11 +127,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
 
                 if (forceElevation)
                 {
-                    actualSource = this.uacElevation.AsAdministrator<IAppxPackageQuery>();
+                    actualSource = this._uacElevation.AsAdministrator<IAppxPackageQuery>();
                 }
                 else
                 {
-                    actualSource = this.uacElevation.AsHighestAvailable<IAppxPackageQuery>();
+                    actualSource = this._uacElevation.AsHighestAvailable<IAppxPackageQuery>();
                 }
 
                 var stateDetails = await actualSource.GetUsersForPackage(package.FullName, cancellationToken, progress).ConfigureAwait(false);

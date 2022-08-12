@@ -19,9 +19,19 @@ using System.Windows.Controls;
 
 namespace Otor.MsixHero.App.Controls.Cards;
 
-public class Card : HeaderedContentControl, ILoadingCard
+public class Card : ContentControl, ILoadingCard
 {
     public static readonly DependencyProperty FooterProperty = DependencyProperty.Register(nameof(Footer), typeof(object), typeof(Card), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty ContentRightTemplateProperty = DependencyProperty.Register(nameof(ContentRightTemplate), typeof(DataTemplate), typeof(Card), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty ContentRightTemplateSelectorProperty = DependencyProperty.Register(nameof(ContentRightTemplateSelector), typeof(DataTemplateSelector), typeof(Card), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty ContentRightProperty = DependencyProperty.Register(nameof(ContentRight), typeof(object), typeof(Card), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty VerticalContentRightAlignmentProperty = DependencyProperty.Register(nameof(VerticalContentRightAlignment), typeof(VerticalAlignment), typeof(Card), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty HorizontalContentRightAlignmentProperty = DependencyProperty.Register(nameof(HorizontalContentRightAlignment), typeof(HorizontalAlignment), typeof(Card), new PropertyMetadata(null));
 
     public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(object), typeof(Card), new PropertyMetadata(null));
 
@@ -35,6 +45,18 @@ public class Card : HeaderedContentControl, ILoadingCard
         set => SetValue(LoadingContentTemplateProperty, value);
     }
 
+    public DataTemplate ContentRightTemplate
+    {
+        get => (DataTemplate)GetValue(ContentRightTemplateProperty);
+        set => SetValue(ContentRightTemplateProperty, value);
+    }
+
+    public DataTemplateSelector ContentRightTemplateSelector
+    {
+        get => (DataTemplateSelector)GetValue(ContentRightTemplateSelectorProperty);
+        set => SetValue(ContentRightTemplateSelectorProperty, value);
+    }
+
     public bool IsLoading
     {
         get => (bool)GetValue(IsLoadingProperty);
@@ -45,6 +67,24 @@ public class Card : HeaderedContentControl, ILoadingCard
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+
+    public object ContentRight
+    {
+        get => GetValue(ContentRightProperty);
+        set => SetValue(ContentRightProperty, value);
+    }
+
+    public VerticalAlignment VerticalContentRightAlignment
+    {
+        get => (VerticalAlignment)GetValue(VerticalContentRightAlignmentProperty);
+        set => SetValue(VerticalContentRightAlignmentProperty, value);
+    }
+
+    public HorizontalAlignment HorizontalContentRightAlignment
+    {
+        get => (HorizontalAlignment)GetValue(HorizontalContentRightAlignmentProperty);
+        set => SetValue(HorizontalContentRightAlignmentProperty, value);
     }
 
     public object Footer

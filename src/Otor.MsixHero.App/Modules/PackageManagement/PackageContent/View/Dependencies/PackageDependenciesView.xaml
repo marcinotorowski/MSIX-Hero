@@ -7,18 +7,18 @@
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:dependencies="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Enums;assembly=Otor.MsixHero.Appx"
              xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Controls.WindowsVersion"
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance dependencies:PackageDependenciesViewModel}">
     <DockPanel VerticalAlignment="Top">
         <DockPanel.Resources>
-            <DataTemplate DataType="{x:Type dependencies:SystemDependencyViewModel}">
-                <cards:Card HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
+            <DataTemplate DataType="{x:Type items:SystemDependencyViewModel}">
+                <cards:Card VerticalContentAlignment="Center">
                     <cards:Card.Icon>
                         <Path x:Name="Icon1" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWindows}" />
                     </cards:Card.Icon>
-                    <cards:Card.Header>
+                    <cards:Card.Content>
                         <StackPanel>
                             <HeaderedContentControl
                                 x:Name="Text1"
@@ -43,26 +43,26 @@
                                 </TextBlock>
                             </HeaderedContentControl>
                         </StackPanel>
-                    </cards:Card.Header>
-                    <cards:Card.Content>
-                        <windowsVersion:WindowsVersionControl WindowsVersion="{Binding MinimumVersion}" HorizontalAlignment="Right" Margin="2" />
                     </cards:Card.Content>
+                    <cards:Card.ContentRight>
+                        <windowsVersion:WindowsVersionControl WindowsVersion="{Binding MinimumVersion}" HorizontalAlignment="Right" Margin="2" />
+                    </cards:Card.ContentRight>
                 </cards:Card>
 
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
-                        <Setter TargetName="Text1" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
-                        <Setter TargetName="Text2" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
+                        <Setter TargetName="Text1" Property="Content" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
+                        <Setter TargetName="Text2" Property="Content" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
                         <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type dependencies:SoftwareDependencyViewModel}">
+            <DataTemplate DataType="{x:Type items:SoftwareDependencyViewModel}">
                 <cards:Card HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
                     <cards:Card.Icon>
                         <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDocumentLink}" />
                     </cards:Card.Icon>
-                    <cards:Card.Header>
+                    <cards:Card.Content>
                         <HeaderedContentControl 
                             Style="{StaticResource CardHeader}">
                             <HeaderedContentControl.Header>
@@ -75,10 +75,10 @@
                                 <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" ToolTip="{Binding Publisher}" Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" />
                             </HeaderedContentControl.Content>
                         </HeaderedContentControl>
-                    </cards:Card.Header>
-                    <cards:Card.Content>
-                        <Button Margin="16 0 0 0" Style="{StaticResource CardButton}" Content="Open" VerticalAlignment="Center" />
                     </cards:Card.Content>
+                    <cards:Card.ContentRight>
+                        <Button Margin="16 0 0 0" Style="{StaticResource CardButton}" Content="Open" VerticalAlignment="Center" />
+                    </cards:Card.ContentRight>
                 </cards:Card>
             </DataTemplate>
         </DockPanel.Resources>

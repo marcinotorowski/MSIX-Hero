@@ -1365,6 +1365,9 @@
 	<data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Poza:</value>
   </data>
+  <data name="Psf_Redirection_Include" xml:space="preserve">
+    <value>Przekierowane pliki:</value>
+  </data>
 	<data name="Psf_Redirection_ForDir" xml:space="preserve">
     <value>W folderze **{0}**</value>
   </data>
@@ -3211,16 +3214,16 @@
     <value>Folder roboczy</value>
   </data>
 	<data name="PackageExpert_PsScripts_AfterFinish" xml:space="preserve">
-    <value>Po zakończeniu aplikacji</value>
+    <value>Po zakończeniu aplikacji **{0}**</value>
   </data>
 	<data name="PackageExpert_PsScripts_Args" xml:space="preserve">
     <value>Argumenty</value>
   </data>
 	<data name="PackageExpert_PsScripts_BeforeStart" xml:space="preserve">
-    <value>Przed startem aplikacji</value>
+    <value>Przed startem aplikacji **{0}**</value>
   </data>
 	<data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
-    <value>Uruchom</value>
+    <value>Wykonaj skrypt {0}</value>
   </data>
 	<data name="PackageExpert_PsScripts_Header" xml:space="preserve">
     <value>SKRYPTY POWERSHELL</value>

@@ -1093,7 +1093,7 @@
 		<value>Status</value>
 	</data>
 	<data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
-		<value>Ausführen</value>
+		<value>Führe {0} aus</value>
 	</data>
 	<data name="PackageExpert_Registry_Header_Name" xml:space="preserve">
 		<value>Name</value>
@@ -1946,6 +1946,9 @@
 	</data>
 	<data name="Psf_Redirection_ExceptOf" xml:space="preserve">
 		<value>Mit Ausnahme von:</value>
+	</data>
+	<data name="Psf_Redirection_Include" xml:space="preserve">
+		<value>Umgeleitete Dateien:</value>
 	</data>
 	<data name="Psf_Redirection_ForDir" xml:space="preserve">
 		<value>Im Verzeichnis **{0}**</value>
@@ -2917,10 +2920,10 @@
 		<value>Arbeitsverzeichnis</value>
 	</data>
 	<data name="PackageExpert_PsScripts_AfterFinish" xml:space="preserve">
-		<value>Nach Beendigung der Anwendung</value>
+		<value>Nach Beendigung der Anwendung **{0}**</value>
 	</data>
 	<data name="PackageExpert_PsScripts_BeforeStart" xml:space="preserve">
-		<value>Vor dem Start der Anwendung</value>
+		<value>Vor dem Start der Anwendung **{0}**</value>
 	</data>
 	<data name="PackageExpert_PsScripts_Header" xml:space="preserve">
 		<value>POWERSHELL-SKRIPTE</value>

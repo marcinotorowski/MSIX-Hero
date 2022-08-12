@@ -20,7 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;

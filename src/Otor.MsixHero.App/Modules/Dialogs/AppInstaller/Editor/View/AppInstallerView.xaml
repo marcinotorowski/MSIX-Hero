@@ -15,7 +15,7 @@
              d:DesignHeight="800"
              d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
+        <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="960" />
             <Setter Property="Height" Value="630" />

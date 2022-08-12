@@ -6,9 +6,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
     {
         public AppInstallerSourceViewModel(AppInstallerPackageSource src) : base(src)
         {
-            this.AppInstallerUri = src.AppInstallerUri?.ToString();
         }
 
-        public string AppInstallerUri { get; }
+        public string AppInstallerUri => ((AppInstallerPackageSource)this.Src).AppInstallerUri?.ToString();
     }
 }

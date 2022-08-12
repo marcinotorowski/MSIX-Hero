@@ -15,7 +15,7 @@
              d:DesignHeight="400"
              d:DataContext="{d:DesignInstance viewModel:DependencyViewerViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
+        <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="970" />
             <Setter Property="Height" Value="680" />

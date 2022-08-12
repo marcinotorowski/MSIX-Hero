@@ -3,9 +3,9 @@ using Otor.MsixHero.Appx.Packaging.Registry;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry.Items
 {
-    public class AppxRegistryValueViewModel : TreeNodeViewModel
+    public class RegistryValueViewModel : TreeNodeViewModel
     {
-        public AppxRegistryValueViewModel(AppxRegistryValue value)
+        public RegistryValueViewModel(AppxRegistryValue value)
         {
             this.Name = value.Name;
             this.Path = value.Path;

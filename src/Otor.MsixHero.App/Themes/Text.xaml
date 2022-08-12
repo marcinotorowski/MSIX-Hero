@@ -26,7 +26,7 @@
     <Style TargetType="{x:Type TextBox}" x:Key="TextBlock">
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Padding" Value="0" />
+        <Setter Property="Padding" Value="-2 0 0 0" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 

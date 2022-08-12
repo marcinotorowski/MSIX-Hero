@@ -5,33 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:applications="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications"
-             xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance applications:PackageApplicationsViewModel}">
     <DockPanel VerticalAlignment="Top">
         <DockPanel.Resources>
-            <converters:MsixPackageTypeConverter x:Key="MsixPackageTypeConverter" />
-            <DataTemplate DataType="{x:Type applications:ApplicationViewModel}">
+            <DataTemplate DataType="{x:Type items:ApplicationViewModel}">
                 <cards:CardExpander 
-                    x:Name="Card"
-                    HorizontalContentAlignment="Stretch">
-                    <cards:CardExpander.Header>
+                    IsExpanded="{Binding IsExpanded}"
+                    x:Name="Card">
+                    <cards:CardExpander.Content>
                         <HeaderedContentControl 
                             Style="{StaticResource CardHeader}" 
                             Header="{Binding DisplayName}" 
                             Content="{Binding ActualTarget}" />
-                    </cards:CardExpander.Header>
-                    <!--<cards:CardExpander.Content>
-                        <Border Background="{StaticResource MsixHero.Brushes.Accent.Light2}" Visibility="{Binding HasPsf, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="PSF" FontWeight="Bold" Foreground="{StaticResource MsixHero.Brushes.Contrast}" Margin="6 3" />
-                        </Border>
-                    </cards:CardExpander.Content>-->
+                    </cards:CardExpander.Content>
+
                     <cards:CardExpander.Icon>
                         <Border Width="32" Height="32" Background="{Binding TileColor, TargetNullValue={StaticResource MsixHero.Brushes.Accent.Light1}}">
                             <Image Width="24" Source="{Binding Image}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
                     </cards:CardExpander.Icon>
-                    <cards:CardExpander.Content>
+                    <cards:CardExpander.ContentExpanded>
                         <Grid HorizontalAlignment="Stretch" Margin="0 -4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -39,6 +34,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -55,45 +51,51 @@
                                 Text="Type" />
 
                             <TextBlock
-                                Visibility="{Binding HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="1" Grid.Column="0"
+                                Text="Application ID" />
+
+                            <TextBlock
+                                Visibility="{Binding HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                VerticalAlignment="Center"
+                                Margin="0 8"
+                                FontWeight="SemiBold" Grid.Row="2" Grid.Column="0"
                                 Text="Working directory" />
 
                             <TextBlock
                                 Visibility="{Binding HasOriginalTarget, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
-                                FontWeight="SemiBold" Grid.Row="2" Grid.Column="0"
-                                Text="Executable" />
+                                FontWeight="SemiBold" Grid.Row="3" Grid.Column="0"
+                                Text="Proxy executable" />
 
                             <TextBlock
                                 Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
-                                FontWeight="SemiBold" Grid.Row="3" Grid.Column="0"
+                                FontWeight="SemiBold" Grid.Row="4" Grid.Column="0"
                                 Text="Command-line arguments" />
 
                             <TextBlock
                                 Visibility="{Binding HasAlias, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
-                                FontWeight="SemiBold" Grid.Row="4" Grid.Column="0"
+                                FontWeight="SemiBold" Grid.Row="5" Grid.Column="0"
                                 Text="Alias" />
 
                             <TextBlock
                                 Visibility="{Binding HasEntryPoint, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
-                                FontWeight="SemiBold" Grid.Row="5" Grid.Column="0"
+                                FontWeight="SemiBold" Grid.Row="6" Grid.Column="0"
                                 Text="Entry point" />
 
                             <TextBlock
                                 Visibility="{Binding HasHostId, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
-                                FontWeight="SemiBold" Grid.Row="6" Grid.Column="0"
+                                FontWeight="SemiBold" Grid.Row="7" Grid.Column="0"
                                 Text="Host ID" />
 
                             <TextBlock 
@@ -101,37 +103,41 @@
                                 Text="{Binding DisplayedType}" TextWrapping="Wrap" Grid.Row="0" Grid.Column="2" Margin="0 4" />
 
                             <TextBox 
+                                VerticalAlignment="Center"
+                                Text="{Binding Id, Mode=OneWay}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
+
+                            <TextBox 
                                 Visibility="{Binding HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding WorkingDirectory, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
+                                Text="{Binding WorkingDirectory, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
 
                             <TextBox 
                                 Visibility="{Binding HasOriginalTarget, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding OriginalTarget, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="2" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
+                                Text="{Binding OriginalTarget, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="3" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
 
                             <TextBox 
                                 Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding Arguments, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="3" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
+                                Text="{Binding Arguments, FallbackValue='(auto)', Mode=OneWay}" TextWrapping="Wrap" Grid.Row="4" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
 
                             <TextBox 
                                 Visibility="{Binding HasAlias, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding Alias, Mode=OneWay}" TextWrapping="Wrap" Grid.Row="4" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
+                                Text="{Binding Alias, Mode=OneWay}" TextWrapping="Wrap" Grid.Row="5" Grid.Column="2" Style="{StaticResource TextBlock}" Margin="0 4" />
 
                             <TextBlock 
                                 Visibility="{Binding HasEntryPoint, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding EntryPoint}" TextWrapping="Wrap" Grid.Row="5" Grid.Column="2" Margin="0 4" />
+                                Text="{Binding EntryPoint}" TextWrapping="Wrap" Grid.Row="6" Grid.Column="2" Margin="0 4" />
                           
                             <TextBlock 
                                 Visibility="{Binding HasHostId, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
-                                Text="{Binding HostId}" TextWrapping="Wrap" Grid.Row="6" Grid.Column="2" Margin="0 4" />
+                                Text="{Binding HostId}" TextWrapping="Wrap" Grid.Row="7" Grid.Column="2" Margin="0 4" />
 
                         </Grid>
-                    </cards:CardExpander.Content>
+                    </cards:CardExpander.ContentExpanded>
                 </cards:CardExpander>
             </DataTemplate>
         </DockPanel.Resources>
@@ -147,7 +153,7 @@
             <cards:CardAction.Content>
                 <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Applications and Package Support Framework" FontWeight="SemiBold" />
+                        <TextBlock Text="Applications" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>

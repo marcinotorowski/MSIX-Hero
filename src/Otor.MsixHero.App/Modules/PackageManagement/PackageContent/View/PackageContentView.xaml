@@ -21,8 +21,10 @@
              xmlns:registryView="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Registry"
              xmlns:registry="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:psfView="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf"
              xmlns:applicationsView="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Applications"
              xmlns:applications="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications"
+             xmlns:psf="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf"
              mc:Ignorable="d" 
              Background="#FCFCFC"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}">
@@ -42,6 +44,10 @@
 
             <DataTemplate DataType="{x:Type applications:PackageApplicationsViewModel}">
                 <applicationsView:PackageApplicationsView Margin="8 0" />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type psf:PackagePsfViewModel}">
+                <psfView:PackagePsfView Margin="8 0" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type files:PackageFilesViewModel}">

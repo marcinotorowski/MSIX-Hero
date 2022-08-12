@@ -8197,7 +8197,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to After the application finishes.
+        ///   Looks up a localized string similar to After closing **{0}**.
         /// </summary>
         public static string PackageExpert_PsScripts_AfterFinish {
             get {
@@ -8215,7 +8215,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Before the application starts.
+        ///   Looks up a localized string similar to Before starting **{0}**.
         /// </summary>
         public static string PackageExpert_PsScripts_BeforeStart {
             get {
@@ -8224,7 +8224,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start.
+        ///   Looks up a localized string similar to Start script {0}.
         /// </summary>
         public static string PackageExpert_PsScripts_BeforeStart_Text {
             get {
@@ -9633,6 +9633,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Psf_Redirection_ForDir {
             get {
                 return ResourceManager.GetString("Psf_Redirection_ForDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirected files.
+        /// </summary>
+        public static string Psf_Redirection_Include {
+            get {
+                return ResourceManager.GetString("Psf_Redirection_Include", resourceCulture);
             }
         }
         

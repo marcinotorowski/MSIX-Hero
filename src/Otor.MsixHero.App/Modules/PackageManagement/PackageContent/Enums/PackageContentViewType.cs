@@ -8,6 +8,7 @@
         Installation,
         Files,
         Registry,
-        Applications
+        Applications,
+        Psf
     }
 }

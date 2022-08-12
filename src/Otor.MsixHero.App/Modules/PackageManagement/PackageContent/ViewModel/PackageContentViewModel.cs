@@ -17,6 +17,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
@@ -52,6 +53,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var packageOverview = new PackageOverviewViewModel(this, interactionService, configurationService, eventAggregator, uacElevation, prismServices);
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
             var packageApplications = new PackageApplicationsViewModel(this);
+            var packagePsf = new PackagePsfViewModel(this);
             var packageDependencies = new PackageDependenciesViewModel(this);
             var packageInstallation = new PackageInstallationViewModel(this, uacElevation);
             var packageFiles = new PackageFilesViewModel(this, fileViewer, fileInvoker);
@@ -64,6 +66,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             this.Items.Add(packageFiles);
             this.Items.Add(packageRegistry);
             this.Items.Add(packageApplications);
+            this.Items.Add(packagePsf);
 
             this._loadPackageHandlers.Add(this.Header);
             this._loadPackageHandlers.Add(packageOverview);
@@ -72,6 +75,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             this._loadPackageHandlers.Add(packageInstallation);
             this._loadPackageHandlers.Add(packageFiles);
             this._loadPackageHandlers.Add(packageRegistry);
+            this._loadPackageHandlers.Add(packagePsf);
             this._loadPackageHandlers.Add(packageApplications);
 
             this.CurrentItem = packageOverview;

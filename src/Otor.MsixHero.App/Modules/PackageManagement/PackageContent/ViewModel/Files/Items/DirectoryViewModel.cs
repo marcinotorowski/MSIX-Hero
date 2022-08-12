@@ -6,9 +6,9 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Commo
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items
 {
-    public class AppxDirectoryViewModel : TreeFolderViewModel
+    public class DirectoryViewModel : TreeFolderViewModel
     {
-        public AppxDirectoryViewModel(TreeViewModel parent, string fullPath, bool hasChildren) : base(parent)
+        public DirectoryViewModel(TreeViewModel parent, string fullPath, bool hasChildren) : base(parent)
         {
             this.Path = fullPath;
             this.Name = string.IsNullOrEmpty(fullPath) ? Resources.Localization.PackageExpert_Browser_Root : System.IO.Path.GetFileName(fullPath);
@@ -25,7 +25,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
             await foreach (var directory in reader.EnumerateDirectories(this.Path, cancellationToken))
             {
                 var hasChildren = await reader.EnumerateDirectories(directory, cancellationToken).AnyAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                var dir = new AppxDirectoryViewModel((FileTreeViewModel)this.Parent, directory, hasChildren);
+                var dir = new DirectoryViewModel((FileTreeViewModel)this.Parent, directory, hasChildren);
                 if (hasChildren)
                 {
                     dir.Containers.Add(null); // dummy element

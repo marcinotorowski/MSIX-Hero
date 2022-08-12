@@ -9,13 +9,13 @@
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryApplicationsViewModel}">
     
-    <cards:CardButton
+    <cards:CardAction
         Visibility="{Binding HasApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
         Command="{Binding Details}">
-        <cards:CardButton.Icon>
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorBrowse}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Header>
+        </cards:CardAction.Icon>
+        <cards:CardAction.Content>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
                 Content="{Binding SecondLine}">
@@ -26,8 +26,8 @@
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
-        </cards:CardButton.Header>
-        <cards:CardButton.Content>
+        </cards:CardAction.Content>
+        <cards:CardAction.ContentRight>
             <ItemsControl ItemsSource="{Binding Apps}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -45,6 +45,6 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </cards:CardButton.Content>
-    </cards:CardButton>
+        </cards:CardAction.ContentRight>
+    </cards:CardAction>
 </UserControl>

@@ -14,14 +14,20 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items
 {
-    public class NotInstalledSourceViewModel : PackageSourceViewModel
+    public class AppxServiceViewModel : NotifyPropertyChanged
     {
-        public NotInstalledSourceViewModel(NotInstalledSource src) : base(src)
+        private readonly AppxService _service;
+
+        public AppxServiceViewModel(AppxService service)
         {
+            _service = service;
         }
+
+        public string Name => _service.Name;
     }
 }

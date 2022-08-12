@@ -22,7 +22,7 @@
     </UserControl.CommandBindings>
 
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
+        <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="570" />
             <Setter Property="Height" Value="570" />

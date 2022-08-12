@@ -1,0 +1,193 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf.PackagePsfView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:psf="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf"
+             xmlns:psf1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf"
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance psf:PackagePsfViewModel}">
+    <DockPanel VerticalAlignment="Top">
+        <cards:CardAction 
+            DockPanel.Dock="Top"
+            ShowArrow="False"
+            Command="{Binding GoBack}" 
+            Margin="0">
+            <cards:CardAction.Icon>
+                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
+            </cards:CardAction.Icon>
+            <cards:CardAction.Content>
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                    <HeaderedContentControl.Header>
+                        <TextBlock Text="Package Support Framework" FontWeight="SemiBold" />
+                    </HeaderedContentControl.Header>
+                </HeaderedContentControl>
+            </cards:CardAction.Content>
+        </cards:CardAction>
+        <ScrollViewer
+            Visibility="{Binding HasPsf, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Padding="0"
+            Margin="0 8 0 0"
+            DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            <StackPanel>
+                <Label
+                    Visibility="{Binding HasScripts, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource FormLabelThin}" Margin="0 8" Content="Scripts" />
+                <ItemsControl
+                    Margin="0 0 0 16"
+                    Visibility="{Binding HasScripts, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    ItemsSource="{Binding Scripts}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type items:ScriptViewModel}">
+                            <cards:CardExpander>
+                                <cards:CardExpander.Icon>
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRight}" />
+                                </cards:CardExpander.Icon>
+                                <cards:CardExpander.Content>
+                                    <HeaderedContentControl Style="{StaticResource CardHeader}">
+                                        <HeaderedContentControl.Header>
+                                            <TextBlock x:Name="Header">
+                                                <controls:SimpleTextMarkup.Markup>
+                                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                        <localization:Loc StringName="PackageExpert_PsScripts_BeforeStart" />
+                                                        <Binding Path="ParentApplicationName" />
+                                                    </MultiBinding>
+                                                </controls:SimpleTextMarkup.Markup>
+                                            </TextBlock>
+                                        </HeaderedContentControl.Header>
+                                        <HeaderedContentControl.Content>
+                                            <TextBlock 
+                                                Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                                TextWrapping="Wrap">
+                                                <controls:SimpleTextMarkup.Markup>
+                                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                        <localization:Loc StringName="PackageExpert_PsScripts_BeforeStart_Text" />
+                                                        <Binding Path="Name" />
+                                                    </MultiBinding>
+                                                </controls:SimpleTextMarkup.Markup>
+                                            </TextBlock>
+                                        </HeaderedContentControl.Content>
+                                    </HeaderedContentControl>
+                                </cards:CardExpander.Content>
+                                <cards:CardExpander.ContentExpanded>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*" />
+                                            <ColumnDefinition Width="8" x:Name="MiddleColumn" />
+                                            <ColumnDefinition Width="5*" x:Name="LastColumn" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+
+                                            <DockPanel 
+                                                VerticalAlignment="Center" 
+                                                Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <TextBlock VerticalAlignment="Center" >
+                                                <Run Text="&#x2022;" />
+                                                <Run Text="{localization:Loc PackageExpert_PsScripts_Args}" /><Run Text=":" />
+                                                </TextBlock>
+
+                                                <TextBlock 
+                                                Text="{Binding Arguments, Mode=OneWay}" 
+                                                TextWrapping="Wrap" VerticalAlignment="Center" />
+                                            </DockPanel>
+
+                                            <TextBlock
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding OnlyOnce, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_RunOnce}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding OnlyOnce, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_RunAlways}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding InVirtualEnvironment, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_Inside}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding InVirtualEnvironment, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_Outside}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding ShowWindow, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_ShowWindow}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding ShowWindow, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_NoWindow}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_Wait}" />
+                                            </TextBlock>
+
+                                            <TextBlock 
+                                            Margin="0 8 0 0" 
+                                            Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                            VerticalAlignment="Center">
+                                            <Run Text="&#x2022;" />
+                                            <Run Text="{localization:Loc PackageExpert_PsScripts_RunAsync}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <GridSplitter x:Name="GridSplitter" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+                                        <TextBox x:Name="TextBox" MaxHeight="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text="{Binding Content, Mode=OneWay}" IsReadOnly="True" Grid.Column="2" />
+                                    </Grid>
+                                </cards:CardExpander.ContentExpanded>
+                            </cards:CardExpander>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Content}" Value="{x:Null}">
+                                    <Setter TargetName="MiddleColumn" Property="Width" Value="0" />
+                                    <Setter TargetName="LastColumn" Property="Width" Value="0" />
+                                    <Setter TargetName="GridSplitter" Property="Visibility" Value="Collapsed" />
+                                    <Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Timing}" Value="{x:Static descriptor:PsfScriptDescriptorTiming.Finish}">
+                                    <Setter TargetName="Header" Property="controls:SimpleTextMarkup.Markup">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                <localization:Loc StringName="PackageExpert_PsScripts_AfterFinish" />
+                                                <Binding Path="ParentApplicationName" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <psf1:PsfControl Visibility="{Binding HasPsf, Converter={StaticResource BooleanToVisibilityConverter}}" Psf="{Binding Psf}" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

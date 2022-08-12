@@ -7,9 +7,9 @@ using Otor.MsixHero.Appx.Packaging.Registry;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry.Items
 {
-    public class AppxRegistryKeyViewModel : TreeFolderViewModel
+    public class RegistryKeyViewModel : TreeFolderViewModel
     {
-        public AppxRegistryKeyViewModel(TreeViewModel parent, AppxRegistryKey model) : base(parent)
+        public RegistryKeyViewModel(TreeViewModel parent, AppxRegistryKey model) : base(parent)
         {
             Path = model.Path;
 
@@ -46,7 +46,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.R
             using var appxRegistryReader = new AppxRegistryReader(registry);
             await foreach (var key in appxRegistryReader.EnumerateKeys(Path, cancellationToken))
             {
-                yield return new AppxRegistryKeyViewModel((RegistryTreeViewModel)Parent, key);
+                yield return new RegistryKeyViewModel((RegistryTreeViewModel)Parent, key);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.R
 
             await foreach (var value in appxRegistryReader.EnumerateValues(Path, cancellationToken))
             {
-                yield return new AppxRegistryValueViewModel(value);
+                yield return new RegistryValueViewModel(value);
             }
         }
 

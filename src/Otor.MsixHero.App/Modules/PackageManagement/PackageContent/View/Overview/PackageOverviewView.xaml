@@ -20,6 +20,7 @@
         <Label Margin="0 16 0 8" Style="{StaticResource FormLabel}" Content="Package content" />
         <summaries:SummarySignatureView DataContext="{Binding SummarySummarySignature}" />
         <summaries:SummaryApplicationsView DataContext="{Binding SummaryApplications}" />
+        <summaries:SummaryPsfView DataContext="{Binding SummaryPsf}" />
         <summaries:SummaryFilesView DataContext="{Binding SummaryFiles}" />
         <summaries:SummaryRegistryView DataContext="{Binding SummaryRegistry}" />
         <summaries:SummaryPackagingInformation DataContext="{Binding SummaryPackagingInformation}" />

@@ -207,7 +207,7 @@ namespace Otor.MsixHero.App
 
             if (Environment.GetCommandLineArgs().Length < 2)
             {
-                containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
+                // containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
 
             this.Container.GetContainer().RegisterMediatorHandlers(typeof(App).Assembly);
@@ -327,7 +327,6 @@ namespace Otor.MsixHero.App
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 return null;
-                // return this.Container.Resolve<PackageExpertDialogView>();
             }
             else
             {

@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
@@ -22,12 +21,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
 
 public abstract class PackageSourceViewModel : NotifyPropertyChanged
 {
+    protected readonly AppxSource Src;
+
     protected PackageSourceViewModel(AppxSource src)
     {
-        this.RootDirectory = src.RootDirectory;
-        this.InstallDate = src.InstallDate;
+        this.Src = src;
     }
-
-    public string RootDirectory { get; }
-    public DateTime? InstallDate { get; }
 }

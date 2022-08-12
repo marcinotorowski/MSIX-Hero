@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
-using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies
 {
-    public class PackageDependenciesViewModel : NotifyPropertyChanged, IPackageContentItem, ILoadPackage
+    public class PackageDependenciesViewModel : PackageLazyLoadingViewModel
     {
         public PackageDependenciesViewModel(IPackageContentItemNavigation navigation)
         {
@@ -21,17 +21,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
                 navigation.SetCurrentItem(PackageContentViewType.Overview);
             });
         }
-
-        private bool _isActive;
-
-        public PackageContentViewType Type => PackageContentViewType.Dependencies;
-
-        public bool IsActive
-        {
-            get => this._isActive;
-            set => this.SetField(ref this._isActive, value);
-        }
-
+        
+        public override PackageContentViewType Type => PackageContentViewType.Dependencies;
+        
         public ObservableCollection<SoftwareDependencyViewModel> SoftwareDependencies { get; private set; }
 
         public ObservableCollection<SystemDependencyViewModel> SystemDependencies { get; private set; }
@@ -56,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         
         public bool HasSystemDependencies => this.SystemDependencies?.Any() == true;
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.SoftwareDependencies = new ObservableCollection<SoftwareDependencyViewModel>(model.PackageDependencies.Select(d => new SoftwareDependencyViewModel(d)));
             this.SystemDependencies = new ObservableCollection<SystemDependencyViewModel>(model.OperatingSystemDependencies.Select(d => new SystemDependencyViewModel(d)));

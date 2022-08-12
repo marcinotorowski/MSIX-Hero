@@ -1365,10 +1365,13 @@
 	<data name="Psf_Process_StartsWith" xml:space="preserve">
     <value>If process name starts with **{0}**</value>
   </data>
-	<data name="Psf_Redirection_ExceptOf" xml:space="preserve">
+  <data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Except of:</value>
   </data>
-	<data name="Psf_Redirection_ForDir" xml:space="preserve">
+  <data name="Psf_Redirection_Include" xml:space="preserve">
+    <value>Redirected files</value>
+  </data>
+  <data name="Psf_Redirection_ForDir" xml:space="preserve">
     <value>In directory **{0}**</value>
   </data>
 	<data name="Psf_Redirection_LocalAppData" xml:space="preserve">
@@ -3214,16 +3217,16 @@
     <value>Working directory</value>
   </data>
 	<data name="PackageExpert_PsScripts_AfterFinish" xml:space="preserve">
-    <value>After the application finishes</value>
+    <value>After closing **{0}**</value>
   </data>
 	<data name="PackageExpert_PsScripts_Args" xml:space="preserve">
     <value>Arguments</value>
   </data>
 	<data name="PackageExpert_PsScripts_BeforeStart" xml:space="preserve">
-    <value>Before the application starts</value>
+    <value>Before starting **{0}**</value>
   </data>
 	<data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
-    <value>Start</value>
+    <value>Start script {0}</value>
   </data>
 	<data name="PackageExpert_PsScripts_Header" xml:space="preserve">
     <value>POWERSHELL SCRIPTS</value>

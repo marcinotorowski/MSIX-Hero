@@ -13,6 +13,7 @@
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items"
              xmlns:files="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:filesViewModel="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content.Files"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance files:PackageFilesViewModel}">
 
@@ -52,7 +53,7 @@
                         <behaviors:MvvmSelectedItemBehavior SelectedItem="{Binding SelectedContainer}" />
                     </b:Interaction.Behaviors>
                     <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type items:AppxDirectoryViewModel}" ItemsSource="{Binding Containers}">
+                        <HierarchicalDataTemplate DataType="{x:Type items:DirectoryViewModel}" ItemsSource="{Binding Containers}">
                             <DockPanel>
                                 <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.FolderSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
                                 <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding}" />
@@ -111,7 +112,7 @@
                                                 Header="{localization:Loc PackageExpert_Files_Header_Name}"
                                                 Width="200">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate DataType="{x:Type items:AppxFileViewModel}">
                                             <DockPanel>
                                                 <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.DocumentSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
                                                 <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding Name}" />
@@ -123,7 +124,7 @@
                                                 Header="{localization:Loc PackageExpert_Files_Header_Size}"
                                                 Width="100">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate DataType="{x:Type filesViewModel:AppxFileViewModel}">
                                             <DockPanel>
                                                 <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding Size}" />
                                             </DockPanel>

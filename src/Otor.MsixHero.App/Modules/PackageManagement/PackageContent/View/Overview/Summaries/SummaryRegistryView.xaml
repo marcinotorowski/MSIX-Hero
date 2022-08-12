@@ -8,18 +8,18 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryRegistryViewModel}">
-    
-    <cards:CardButton
+
+    <cards:CardAction
         Command="{Binding Details}"
         Visibility="{Binding HasRegistry, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <cards:CardButton.Icon>
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRegistry}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Header>
+        </cards:CardAction.Icon>
+        <cards:CardAction.Content>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
                 Header="Registry" 
                 Content="{Binding SecondLine}" />
-        </cards:CardButton.Header>
-    </cards:CardButton>
+        </cards:CardAction.Content>
+    </cards:CardAction>
 </UserControl>

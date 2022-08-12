@@ -1,117 +1,24 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Installation.PackageInstallationView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             xmlns:source="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Installation.Source"
-             xmlns:sources1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source"
-             xmlns:installation="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation"
-             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
-             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
-             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance installation:PackageInstallationViewModel}">
-    <UserControl.Resources>
-        <DataTemplate DataType="{x:Type sources1:StorePackageSourceViewModel}">
-            <StackPanel>
-                <cards:Card>
-                    <cards:Card.Header>
-                        <HeaderedContentControl
-                            Header="{localization:Loc PackageExpert_Installation_Status}"
-                            Content="{localization:Loc PackageExpert_Installation_Installed}"
-                            Style="{StaticResource CardHeader}"></HeaderedContentControl>
-                    </cards:Card.Header>
-                </cards:Card>
-
-                <cards:Card>
-                    <cards:Card.Header>
-                        <HeaderedContentControl
-                            Header="{localization:Loc PackageExpert_Installation_Manifest}"
-                            Style="{StaticResource CardHeader}">
-                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource CardHeaderSecondLineBrush}">
-                                <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                    <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                </Hyperlink>
-                            </TextBlock>
-                        </HeaderedContentControl>
-                    </cards:Card.Header>
-                </cards:Card>
-
-                <source:StoreSourceView FamilyName="{Binding FamilyName}" />
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type sources1:AppInstallerSourceViewModel}">
-            <StackPanel>
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
-                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
-                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
-                                            <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                                <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                            </Hyperlink>
-                </TextBlock>
-
-                <source:AppInstallerSourceView />
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type sources1:DeveloperSourceViewModel}">
-            <StackPanel>
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
-                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
-                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
-                                            <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                                <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                            </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
-                <TextBlock Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_Installation_InstallType_Manifest}" TextWrapping="Wrap" Margin="0 0 0 10" />
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type sources1:StandardSourceViewModel}">
-            <StackPanel>
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
-                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
-                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
-                                            <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                                <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                            </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
-                <TextBlock Style="{StaticResource DataValue}" Text="Side-loaded package" TextWrapping="Wrap" Margin="0 0 0 10" />
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type sources1:SystemSourceViewModel}">
-            <StackPanel>
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
-                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
-                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
-                                            <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                                <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                            </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
-                <TextBlock Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_Installation_InstallType_System}" TextWrapping="Wrap" Margin="0 0 0 10" />
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type sources1:NotInstalledSourceViewModel}">
-            <StackPanel>
-                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
-                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_NotInstalled}" />
-            </StackPanel>
-        </DataTemplate>
-    </UserControl.Resources>
+﻿<UserControl 
+    x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Installation.PackageInstallationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:installation="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation"
+    xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+    xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:source="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source"
+    xmlns:sourceView="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Installation.Source"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance installation:PackageInstallationViewModel}">
     <DockPanel>
+        <DockPanel.Resources>
+            <system:Boolean x:Key="False">False</system:Boolean>
+        </DockPanel.Resources>
         <cards:CardAction 
             DockPanel.Dock="Top"
             ShowArrow="False"
@@ -135,7 +42,46 @@
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
-                <ContentControl Content="{Binding Path=Source}" />
+                <cards:Card 
+                    DataContext="{Binding Summary}">
+                    <cards:Card.Content>
+                        <HeaderedContentControl 
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource CardHeader}" 
+                            Content="{Binding SecondLine}">
+                            <HeaderedContentControl.Header>
+                                <TextBlock controls:SimpleTextMarkup.Markup="{Binding FirstLine}" />
+                            </HeaderedContentControl.Header>
+                        </HeaderedContentControl>
+                    </cards:Card.Content>
+                    <cards:Card.Icon>
+                        <Path>
+                            <Path.Style>
+                                <Style TargetType="Path" BasedOn="{StaticResource LargeIcon}">
+                                    <Setter Property="Data" Value="{StaticResource VectorOK}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsInstalled}" Value="{StaticResource False}">
+                                            <Setter Property="Data" Value="{StaticResource VectorCancel}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Path.Style>
+                        </Path>
+                    </cards:Card.Icon>
+                    <cards:Card.ContentRight>
+                        <TextBlock Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
+                    </cards:Card.ContentRight>
+                </cards:Card>
+                <ContentControl Content="{Binding ExtraSourceInformation}" Visibility="{Binding HasExtraSourceInformation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type source:AppInstallerSourceViewModel}">
+                            <sourceView:AppInstallerSourceView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type source:StorePackageSourceViewModel}">
+                            <sourceView:StoreSourceView />
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
 
                 <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="ADD-ONS + MODIFICATION PACKAGES" />
                 <TextBlock Text="None" Visibility="{Binding HasAddOns, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />

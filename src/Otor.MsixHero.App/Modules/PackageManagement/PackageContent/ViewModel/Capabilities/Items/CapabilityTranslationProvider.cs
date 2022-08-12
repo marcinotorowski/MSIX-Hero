@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items
 {
     public class CapabilityTranslationProvider
     {

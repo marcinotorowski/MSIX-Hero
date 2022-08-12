@@ -6,13 +6,13 @@
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryCapabilitiesViewModel}">
-  
-    <cards:CardButton Command="{Binding Details}">
-        <cards:CardButton.Icon>
+             d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryCapabilitiesViewModel}">
+
+    <cards:CardAction Command="{Binding Details}">
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCapability}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Header>
+        </cards:CardAction.Icon>
+        <cards:CardAction.Content>
             <HeaderedContentControl 
                     Style="{StaticResource CardHeader}">
                 <HeaderedContentControl.Content>
@@ -20,11 +20,11 @@
                 </HeaderedContentControl.Content>
                 <HeaderedContentControl.Header>
                     <TextBlock>
-                            <Run Text="Capabilities:" />
-                            <Run Text="{Binding Count, Mode=OneWay, FallbackValue=0}" FontWeight="Bold" />
+                        <Run Text="Capabilities:" />
+                        <Run Text="{Binding Count, Mode=OneWay, FallbackValue=0}" FontWeight="Bold" />
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
-        </cards:CardButton.Header>
-    </cards:CardButton>
+        </cards:CardAction.Content>
+    </cards:CardAction>
 </UserControl>

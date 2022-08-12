@@ -57,6 +57,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         _loadPackageHandlers.Add(SummarySummaryDependencies = new SummaryDependenciesViewModel(navigation));
         _loadPackageHandlers.Add(SummarySummaryInstallation = new SummaryInstallationViewModel(navigation, uacElevation));
         _loadPackageHandlers.Add(SummaryFiles = new SummaryFilesViewModel(navigation));
+        _loadPackageHandlers.Add(SummaryPsf = new SummaryPsfViewModel(navigation));
         _loadPackageHandlers.Add(SummaryRegistry = new SummaryRegistryViewModel(navigation));
         _loadPackageHandlers.Add(SummarySummaryCapabilities = new SummaryCapabilitiesViewModel(navigation));
         _loadPackageHandlers.Add(SummaryApplications = new SummaryApplicationsViewModel(navigation));
@@ -90,6 +91,8 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
     public SummaryPackageNameViewModel SummarySummaryPackageName { get; }
 
     public SummaryFilesViewModel SummaryFiles { get; }
+    
+    public SummaryPsfViewModel SummaryPsf { get; }
 
     public SummaryApplicationsViewModel SummaryApplications { get; }
 

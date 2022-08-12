@@ -13,7 +13,7 @@
         <cards:CardExpander.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorTransform}" />
         </cards:CardExpander.Icon>
-        <cards:CardExpander.Header>
+        <cards:CardExpander.Content>
             <DockPanel>
                 <windowsVersion:WindowsVersionControl WindowsVersion="{Binding WindowsVersion}" DockPanel.Dock="Right" />
                 <HeaderedContentControl Header="Packaging information" Style="{StaticResource CardHeader}" DockPanel.Dock="Left">
@@ -24,8 +24,8 @@
                     </TextBlock>
                 </HeaderedContentControl>
             </DockPanel>
-        </cards:CardExpander.Header>
-        <cards:CardExpander.Content>
+        </cards:CardExpander.Content>
+        <cards:CardExpander.ContentExpanded>
             <ItemsControl VerticalAlignment="Top" Grid.IsSharedSizeScope="True" ItemsSource="{Binding Components}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type summaries:SummaryPackagingInformationViewModel+PackagingInformationComponentViewModel}">
@@ -59,7 +59,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </cards:CardExpander.Content>
+        </cards:CardExpander.ContentExpanded>
     </cards:CardExpander>
 
 </UserControl>

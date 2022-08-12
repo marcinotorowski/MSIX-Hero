@@ -22,14 +22,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Prism.Commands;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files;
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items;
 
-public class FileTreeViewModel : TreeViewModel<AppxDirectoryViewModel, AppxFileViewModel>
+public class FileTreeViewModel : TreeViewModel<DirectoryViewModel, AppxFileViewModel>
 {
     private readonly IAppxFileViewer _fileViewer;
     private readonly FileInvoker _fileInvoker;
@@ -39,52 +38,52 @@ public class FileTreeViewModel : TreeViewModel<AppxDirectoryViewModel, AppxFileV
         IAppxFileViewer fileViewer,
         FileInvoker fileInvoker) : base(packageFile)
     {
-        this._fileViewer = fileViewer;
-        this._fileInvoker = fileInvoker;
-        var rootContainersTask = this.GetRootContainers();
+        _fileViewer = fileViewer;
+        _fileInvoker = fileInvoker;
+        var rootContainersTask = GetRootContainers();
         var nodesCollection = new ObservableCollection<AppxFileViewModel>();
-        this.Nodes = nodesCollection;
-        this.View = new DelegateCommand(this.OnView);
+        Nodes = nodesCollection;
+        View = new DelegateCommand(OnView);
 
-        var containers = new AsyncProperty<IList<AppxDirectoryViewModel>>();
-        this.Containers = containers;
+        var containers = new AsyncProperty<IList<DirectoryViewModel>>();
+        Containers = containers;
 #pragma warning disable 4014
-        containers.Loaded += this.OnContainersLoaded;
+        containers.Loaded += OnContainersLoaded;
         containers.Load(rootContainersTask);
 #pragma warning restore 4014
     }
 
     private async void OnView()
     {
-        var selectedFile = this.SelectedNode;
+        var selectedFile = SelectedNode;
         if (selectedFile == null)
         {
             return;
         }
 
-        using var reader = FileReaderFactory.CreateFileReader(this.PackageFile);
-        var path = await this._fileViewer.GetDiskPath(reader, selectedFile.Path).ConfigureAwait(false);
+        using var reader = FileReaderFactory.CreateFileReader(PackageFile);
+        var path = await _fileViewer.GetDiskPath(reader, selectedFile.Path).ConfigureAwait(false);
 
-        ExceptionGuard.Guard(() => { this._fileInvoker.Execute(path, true); });
+        ExceptionGuard.Guard(() => { _fileInvoker.Execute(path, true); });
     }
 
     private void OnContainersLoaded(object sender, EventArgs e)
     {
-        this.SelectedContainer = this.Containers.CurrentValue.FirstOrDefault();
+        SelectedContainer = Containers.CurrentValue.FirstOrDefault();
     }
 
     public override bool IsAvailable => true;
 
     public override ObservableCollection<AppxFileViewModel> Nodes { get; }
 
-    public override AsyncProperty<IList<AppxDirectoryViewModel>> Containers { get; }
+    public override AsyncProperty<IList<DirectoryViewModel>> Containers { get; }
 
-    public async Task<IList<AppxDirectoryViewModel>> GetRootContainers()
+    public async Task<IList<DirectoryViewModel>> GetRootContainers()
     {
-        var roots = new List<AppxDirectoryViewModel>();
-        using var appxReader = this.GetAppxReader();
+        var roots = new List<DirectoryViewModel>();
+        using var appxReader = GetAppxReader();
         var hasChildren = await appxReader.EnumerateDirectories().AnyAsync().ConfigureAwait(false);
-        roots.Add(new AppxDirectoryViewModel(this, null, hasChildren));
+        roots.Add(new DirectoryViewModel(this, null, hasChildren));
         return roots;
     }
 

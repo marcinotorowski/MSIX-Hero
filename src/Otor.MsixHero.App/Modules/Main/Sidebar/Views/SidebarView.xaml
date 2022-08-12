@@ -42,64 +42,9 @@
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <!--<MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsPressed" Value="True" />
-                                        <Condition Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="0" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="Opacity"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.EnterActions>
-                                </MultiTrigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsPressed" Value="True" />
-                                        <Condition Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="1" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                                <DoubleAnimationUsingKeyFrames 
-                                                    Storyboard.TargetProperty="Opacity"
-                                                    Storyboard.TargetName="PART_Background">
-                                                    <DiscreteDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.EnterActions>
-                                </MultiTrigger>-->
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsPressed" Value="True" />
-                                        <!--<Condition Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="2" />-->
                                     </MultiTrigger.Conditions>
                                     <MultiTrigger.EnterActions>
                                         <BeginStoryboard>
@@ -197,7 +142,11 @@
                                     <Border 
                                         Visibility="Collapsed"
                                         x:Name="PART_Border"
-                                        Background="#0173C7" Width="4" Height="60" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        Background="{StaticResource MsixHero.Brushes.Accent}" 
+                                        Width="3" CornerRadius="6" 
+                                        Margin="3"  
+                                        Height="60" 
+                                        VerticalAlignment="Center" HorizontalAlignment="Left">
                                     </Border>
 
                                     <Border 
@@ -227,7 +176,7 @@
                                                 <Storyboard>
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
-                                                        To="0.3"
+                                                        To="0.2"
                                                         From="0.0"
                                                         AccelerationRatio="0.5"
                                                         DecelerationRatio="0.5"
@@ -243,7 +192,7 @@
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
                                                         To="0.0"
-                                                        From="0.3"
+                                                        From="0.2"
                                                         AccelerationRatio="0.5"
                                                         DecelerationRatio="0.5"
                                                         Storyboard.TargetProperty="Opacity"

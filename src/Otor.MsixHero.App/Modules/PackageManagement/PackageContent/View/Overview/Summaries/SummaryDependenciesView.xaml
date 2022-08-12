@@ -7,14 +7,13 @@
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryDependenciesViewModel}">
+             d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryDependenciesViewModel}">
 
-    <cards:CardButton Command="{Binding Details}">
-        <!-- Margin="0 0 0 8" -->
-        <cards:CardButton.Icon>
+    <cards:CardAction Command="{Binding Details}">
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWindows}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Header>
+        </cards:CardAction.Icon>
+        <cards:CardAction.Content>
             <HeaderedContentControl 
                 Content="{Binding Summary, FallbackValue='This package contains no dependencies'}"
                 Style="{StaticResource CardHeader}">
@@ -25,9 +24,12 @@
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
-        </cards:CardButton.Header>
-        <cards:CardButton.Content>
-            <Button Content="Dependency graph..." Command="{x:Static hero:MsixHeroRoutedUICommands.DependencyViewer}" Style="{StaticResource CardButton}" />
-        </cards:CardButton.Content>
-    </cards:CardButton>
+        </cards:CardAction.Content>
+        <cards:CardAction.ContentRight>
+            <Button 
+                Content="Dependency graph..." 
+                Command="{x:Static hero:MsixHeroRoutedUICommands.DependencyViewer}" 
+                Style="{StaticResource CardButton}" />
+        </cards:CardAction.ContentRight>
+    </cards:CardAction>
 </UserControl>

@@ -8,11 +8,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="600">
     <cards:Card>
-        <cards:Card.Header>
+        <cards:Card.Icon>
+            <Path Data="{StaticResource VectorWindows}" Style="{StaticResource LargeIcon}" />
+        </cards:Card.Icon>
+        <cards:Card.Content>
             <HeaderedContentControl
                 Header="{localization:Loc PackageExpert_InstalledFromHeader}"
                 Content="{localization:Loc PackageExpert_MsStore}"
                 Style="{StaticResource CardHeader}" />
-        </cards:Card.Header>
+        </cards:Card.Content>
     </cards:Card>
 </UserControl>

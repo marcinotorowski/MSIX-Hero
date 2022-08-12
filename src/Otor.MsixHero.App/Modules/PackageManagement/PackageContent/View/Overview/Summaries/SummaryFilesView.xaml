@@ -9,12 +9,12 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryFilesViewModel}">
-    
-    <cards:CardButton Command="{Binding Details}">
-        <cards:CardButton.Icon>
+
+    <cards:CardAction Command="{Binding Details}">
+        <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDirectory}" />
-        </cards:CardButton.Icon>
-        <cards:CardButton.Header>
+        </cards:CardAction.Icon>
+        <cards:CardAction.Content>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
                 Content="{Binding SecondLine}">
@@ -22,6 +22,6 @@
                     <TextBlock controls:SimpleTextMarkup.Markup="{Binding FirstLine, Mode=OneWay}" />
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
-        </cards:CardButton.Header>
-    </cards:CardButton>
+        </cards:CardAction.Content>
+    </cards:CardAction>
 </UserControl>

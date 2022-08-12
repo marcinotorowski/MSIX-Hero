@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items
 {
     public class CapabilityViewModel
     {
@@ -28,20 +28,20 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
 
         public CapabilityViewModel(AppxCapability capability)
         {
-            this.Name = capability.Name;
-            this.Type = capability.Type;
+            Name = capability.Name;
+            Type = capability.Type;
         }
 
         public string Name { get; }
 
         public string DisplayName
         {
-            get => CapabilityTranslationProvider.ToDisplayName(this.Name);
+            get => CapabilityTranslationProvider.ToDisplayName(Name);
         }
 
         public Geometry VectorIcon
         {
-            get => GetCapabilityVectorPathFromEntity(this.Name);
+            get => GetCapabilityVectorPathFromEntity(Name);
         }
 
         public CapabilityType Type { get; }
@@ -50,10 +50,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
         {
             get
             {
-                switch (this.Type)
+                switch (Type)
                 {
                     case CapabilityType.Restricted:
-                        switch (this.Name.ToLowerInvariant())
+                        switch (Name.ToLowerInvariant())
                         {
                             case "allowelevation":
                                 return 1;
