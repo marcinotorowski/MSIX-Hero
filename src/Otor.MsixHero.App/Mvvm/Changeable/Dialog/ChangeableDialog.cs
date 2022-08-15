@@ -59,7 +59,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
 
         public static readonly DependencyProperty SupportsCommandLineBuildingProperty = DependencyProperty.Register("SupportsCommandLineBuilding", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
 
-        public static readonly DependencyProperty ShowHeaderProperty = DependencyProperty.Register("ShowHeader", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(true));
+        public static readonly DependencyProperty ShowHeaderProperty = DependencyProperty.Register("ShowHeader", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
 
         public static readonly DependencyProperty SilentCommandLineProperty = DependencyProperty.Register("SilentCommandLine", typeof(string), typeof(ChangeableDialog), new PropertyMetadata(null));
         

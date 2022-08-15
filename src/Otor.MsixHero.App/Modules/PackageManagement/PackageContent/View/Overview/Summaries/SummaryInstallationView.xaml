@@ -22,7 +22,9 @@
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
         </cards:CardAction.Icon>
         <cards:CardAction.ContentRight>
-            <TextBlock Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
+            <TextBlock 
+                VerticalAlignment="Center"
+                Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
         </cards:CardAction.ContentRight>
     </cards:CardAction>
 </UserControl>

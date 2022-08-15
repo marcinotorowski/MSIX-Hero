@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <None Remove="Controls\CertificateSelector\Images\microsoftlogo.png" />
+    <None Remove="Controls\WindowsVersion\Images\windows7.png" />
     <None Remove="Modules\Dialogs\Help\View\bundle-icon.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\sidebar.png" />
@@ -77,6 +78,7 @@
 
   <ItemGroup>
     <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
+    <Resource Include="Controls\WindowsVersion\Images\windows7.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\sidebar.png" />
     <Resource Include="Controls\WindowsVersion\Images\windows10.png">
@@ -261,9 +263,6 @@
     <Page Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\PackageExpert\Views\Start\Start.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Controls\PackageHeader\PackageHeader.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
@@ -503,10 +502,6 @@
     <Page Update="Themes\Converters.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controls\PackageExpert\Views\Psf\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

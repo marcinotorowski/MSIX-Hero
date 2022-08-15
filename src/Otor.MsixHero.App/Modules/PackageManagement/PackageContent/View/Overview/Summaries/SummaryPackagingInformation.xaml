@@ -6,33 +6,40 @@
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Controls.WindowsVersion"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryPackagingInformationViewModel}">
 
-    <cards:CardExpander Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+    <cards:CardExpander 
+        HorizontalContentExpandedAlignment="Stretch"
+        Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
         <cards:CardExpander.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorTransform}" />
         </cards:CardExpander.Icon>
         <cards:CardExpander.Content>
-            <DockPanel>
-                <windowsVersion:WindowsVersionControl WindowsVersion="{Binding WindowsVersion}" DockPanel.Dock="Right" />
-                <HeaderedContentControl Header="Packaging information" Style="{StaticResource CardHeader}" DockPanel.Dock="Left">
-                    <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
-                        <Run Text="Authored with" />
-                        <Run Text="{Binding BuildInfo.ProductName, Mode=OneWay, TargetNullValue='?'}" />
-                        <Run Text="{Binding BuildInfo.ProductVersion, Mode=OneWay}" />
-                    </TextBlock>
-                </HeaderedContentControl>
-            </DockPanel>
+            <HeaderedContentControl Header="{localization:Loc PackagingInformation}" Style="{StaticResource CardHeader}" DockPanel.Dock="Left">
+                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="PackageExpert_Packaging_Summary" />
+                            <Binding Mode="OneWay" Path="BuildInfo.ProductName" />
+                            <Binding Mode="OneWay" Path="BuildInfo.ProductVersion" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </HeaderedContentControl>
         </cards:CardExpander.Content>
+        <cards:CardExpander.ContentRight>
+            <windowsVersion:WindowsVersionControl WindowsVersion="{Binding WindowsVersion}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </cards:CardExpander.ContentRight>
         <cards:CardExpander.ContentExpanded>
-            <ItemsControl VerticalAlignment="Top" Grid.IsSharedSizeScope="True" ItemsSource="{Binding Components}">
+            <ItemsControl Grid.IsSharedSizeScope="True" VerticalAlignment="Top" ItemsSource="{Binding Components}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type summaries:SummaryPackagingInformationViewModel+PackagingInformationComponentViewModel}">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="GridCol1" />
-                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnWithName" />
+                                <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>

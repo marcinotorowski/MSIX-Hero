@@ -48,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else
                 {
-                    this.Summary = $"{model.OperatingSystemDependencies[0].Minimum.Name} and {this.Count - 1} other dependencies";
+                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, model.OperatingSystemDependencies[0].Minimum.Name, this.Count - 1);
                 }
             }
             else if (model.PackageDependencies.Any())
@@ -59,12 +59,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else
                 {
-                    this.Summary = $"{model.PackageDependencies[0].Name} and {this.Count - 1} other dependencies";
+                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, model.PackageDependencies[0].Name, this.Count - 1);
                 }
             }
             else
             {
-                this.Summary = "This package does not have dependencies.";
+                this.Summary = Resources.Localization.PackageExpert_Dependencies_Summary_None;
             }
             
             this.OnPropertyChanged(null);

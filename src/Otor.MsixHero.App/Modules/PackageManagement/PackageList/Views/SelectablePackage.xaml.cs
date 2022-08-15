@@ -8,6 +8,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
         public SelectablePackage()
         {
             InitializeComponent();
+            this.SetVisibility();
+
             this.Loaded += OnLoaded;
             this.Unloaded += OnUnloaded;
             this.SizeChanged += OnSizeChanged;

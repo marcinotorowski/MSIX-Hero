@@ -22,7 +22,7 @@ namespace Otor.MsixHero.App.Hero.Commands
     {
         static MsixHeroRoutedUICommands()
         {
-            SetVolumeAsDefault = new RoutedUICommand() { Text = "Set volume as default..." };
+            SetVolumeAsDefault = new RoutedUICommand() { Text = "Set volume as default…" };
             Deprovision = new RoutedUICommand { Text = "Deprovision for all users" };
             OpenStore = new RoutedUICommand { Text = "Open Store Product Page" };
             OpenExplorer = new RoutedUICommand { Text = "Open install location", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };

@@ -3,90 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="65" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HeaderViewModel}">
-    <Border>
+    <Border ClipToBounds="True">
+        <DockPanel Margin="8" VerticalAlignment="Top">
+            <Grid>
+                <Border 
+                    Opacity="0.1"
+                    Background="{StaticResource MsixHero.Brushes.Foreground}"
+                    Width="48" 
+                    Height="48" />
+                <Border 
+                    Background="{Binding TileColor, FallbackValue='#cccccc', TargetNullValue='#cccccc'}" />
+                <Image 
+                    Width="48"
+                    Height="48"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    Stretch="Uniform"
+                    Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
+            </Grid>
 
-        <Grid ClipToBounds="True">
-            <Border DockPanel.Dock="Top">
-                <Border.Resources>
-                    <Style TargetType="views:Pill">
-                        <Setter Property="Background" Value="White" />
-                        <Setter Property="BorderThickness" Value="2" />
-                        <Setter Property="Padding" Value="8 4" />
-                        <Setter Property="BorderBrush" Value="#999" />
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="Foreground" Value="#565656" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="views:Pill">
-                                    <Border
-                                        Padding="{TemplateBinding Padding}"
-                                        Background="{TemplateBinding Background}"
-                                        CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                        <StackPanel Orientation="Horizontal" Margin="-1 0">
-                                            <Path 
-                                                x:Name="PART_Icon"
-                                                Width="16"
-                                                Height="16"
-                                                Margin="1 0"
-                                                Fill="{TemplateBinding Foreground}"
-                                                Data="{TemplateBinding Icon}" />
-                                            <TextBlock 
-                                                x:Name="PART_Text"
-                                                Margin="1 0" 
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
-                                        </StackPanel>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="Icon" Value="{x:Null}">
-                                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
-                                        </Trigger>
-                                        <Trigger Property="Content" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Border.Resources>
-                <StackPanel Margin="8">
-                    <DockPanel VerticalAlignment="Top">
-                        <Grid>
-                            <Border 
-                                Opacity="0.1"
-                                Background="{StaticResource MsixHero.Brushes.Foreground}"
-                                Width="48" 
-                                Height="48" />
-                            <Border 
-                                Background="{Binding TileColor, FallbackValue='#cccccc', TargetNullValue='#cccccc'}" />
-                            <Image 
-                                Width="48"
-                                Height="48"
-                                SnapsToDevicePixels="True"
-                                UseLayoutRounding="True"
-                                Stretch="Uniform"
-                                Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
-                        </Grid>
-
-                        <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                            <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" />
-                            <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis">
-                                <Run Text="{localization:Loc PackageExpert_Version}" Foreground="#aa000000" />
-                                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
-                                <Run Text="|" Foreground="#aa000000" />
-                                <Run Text="{localization:Loc PackageExpert_Publisher}" Foreground="#aa000000" />
-                                <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
-                            </TextBlock>
-                        </StackPanel>
-                    </DockPanel>
-                </StackPanel>
-            </Border>
-        </Grid>
+            <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" />
+                <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis">
+                    <Run Text="{localization:Loc PackageExpert_Version}" Foreground="#aa000000" />
+                    <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
+                    <Run Text="|" Foreground="#aa000000" />
+                    <Run Text="{localization:Loc PackageExpert_Publisher}" Foreground="#aa000000" />
+                    <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
+                </TextBlock>
+            </StackPanel>
+        </DockPanel>
     </Border>
 </UserControl>

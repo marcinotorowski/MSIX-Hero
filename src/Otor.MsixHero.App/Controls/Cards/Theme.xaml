@@ -33,7 +33,7 @@
 
     <SolidColorBrush x:Key="CardDisabledBackgroundBrush" Color="{StaticResource CardDisabledBackgroundColor}" />
     <SolidColorBrush x:Key="CardHoveredBackgroundBrush" Color="{StaticResource CardHoveredBackgroundColor}" />
-    
+
     <ControlTemplate x:Key="CardExpanderToggleButtonStyle" TargetType="{x:Type ToggleButton}">
         <Border Background="{TemplateBinding Background}">
             <Grid Background="Transparent">
@@ -50,7 +50,7 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                     ContentSource="Content" />
-                
+
                 <Border
                     x:Name="Arrow"
                     Background="Transparent"
@@ -104,7 +104,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <DataTemplate x:Key="LoadingTemplate">
         <StackPanel VerticalAlignment="Center">
             <Border 
@@ -117,19 +117,27 @@
     <SolidColorBrush x:Key="CardHeaderSecondLineBrush" Color="#FF787878" />
     <Style x:Key="CardHeader" TargetType="{x:Type HeaderedContentControl}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="HeaderedContentControl">
-                    <StackPanel>
-                        <ContentPresenter 
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            ContentSource="Header" />
-                        <ContentPresenter 
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            ContentSource="Content"
-                            TextBlock.Foreground="{StaticResource CardHeaderSecondLineBrush}" />
-                    </StackPanel>
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                        <StackPanel Margin="{TemplateBinding Padding}">
+                            <ContentPresenter 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                ContentSource="Header" />
+                            <ContentPresenter 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                ContentSource="Content"
+                                TextBlock.Foreground="{StaticResource CardHeaderSecondLineBrush}" />
+                        </StackPanel>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -144,7 +152,7 @@
         <Setter Property="Border.CornerRadius" Value="2" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
-        
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -198,7 +206,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentRightAlignment" Value="Right" />
-        <Setter Property="VerticalContentRightAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentRightAlignment" Value="Center" />
         <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
         <Setter Property="Margin" Value="{StaticResource CardMargin}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -331,7 +339,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentRightAlignment" Value="Right" />
-        <Setter Property="VerticalContentRightAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentRightAlignment" Value="Center" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Margin" Value="{StaticResource CardMargin}" />
@@ -466,7 +474,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentRightAlignment" Value="Right" />
-        <Setter Property="VerticalContentRightAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentRightAlignment" Value="Center" />
         <Setter Property="IsExpanded" Value="False" />
         <Setter Property="Margin" Value="{StaticResource CardMargin}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -507,6 +515,7 @@
                                     <controls:Card 
                                         Icon="{TemplateBinding Icon}"
                                         Margin="-1"
+                                        IsLoading="{TemplateBinding IsLoading}"
                                         BorderThickness="0"
                                         BorderBrush="Transparent"
                                         Content="{TemplateBinding Content}"
@@ -528,6 +537,7 @@
                                 Background="{StaticResource CardFooterGradientBrush}"
                                 BorderBrush="{StaticResource CardBorderBrush}"
                                 BorderThickness="0 1 0 0"
+                                HorizontalAlignment="Stretch"
                                 Grid.Row="1"
                                 Opacity="0.0">
                                 <ContentPresenter
@@ -540,6 +550,7 @@
                                     <ScaleTransform ScaleY="0" />
                                 </Border.LayoutTransform>
                             </Border>
+
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

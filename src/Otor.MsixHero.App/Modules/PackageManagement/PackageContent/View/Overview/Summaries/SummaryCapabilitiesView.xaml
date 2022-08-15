@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryCapabilitiesViewModel}">
 
@@ -20,8 +22,12 @@
                 </HeaderedContentControl.Content>
                 <HeaderedContentControl.Header>
                     <TextBlock>
-                        <Run Text="Capabilities:" />
-                        <Run Text="{Binding Count, Mode=OneWay, FallbackValue=0}" FontWeight="Bold" />
+                        <controls:SimpleTextMarkup.Markup>
+                            <MultiBinding FallbackValue="Capabilities: 0" Converter="{StaticResource StringFormatConverter}">
+                                <localization:Loc StringName="PackageExpert_Summary_Capabilities" />
+                                <Binding Path="Count" Mode="OneWay" FallbackValue="0" />
+                            </MultiBinding>
+                        </controls:SimpleTextMarkup.Markup>
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>

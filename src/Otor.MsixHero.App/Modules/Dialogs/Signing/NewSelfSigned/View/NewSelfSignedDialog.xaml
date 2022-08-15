@@ -33,7 +33,7 @@
                     Margin="0 16 0 6" />
 
                 <DockPanel>
-                    <ToggleButton IsChecked="{Binding ElementName=DateTimePicker, Path=IsOpen, Mode=TwoWay}" Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" />
+                    <ToggleButton IsChecked="{Binding ElementName=DateTimePicker, Path=IsOpen, Mode=TwoWay}" Content="…" DockPanel.Dock="Right" Margin="4 0 0 0" />
                     <xctk:DateTimePicker 
                         x:Name="DateTimePicker"
                         ShowDropDownButton="False"
@@ -66,7 +66,7 @@
                     Text="{localization:Loc Dialogs_NewCert_OutputPath}" 
                     Margin="0 16 0 6" />
                 <DockPanel>
-                    <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                    <Button TabIndex="5" Padding="10 0" Content="…" DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
                     <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                 </DockPanel>
 

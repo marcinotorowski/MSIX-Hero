@@ -6,6 +6,7 @@
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:applications="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance applications:PackageApplicationsViewModel}">
     <DockPanel VerticalAlignment="Top">
@@ -48,55 +49,55 @@
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="0" Grid.Column="0"
-                                Text="Type" />
+                                Text="{localization:Loc PackageExpert_Applications_Type}" />
 
                             <TextBlock
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="1" Grid.Column="0"
-                                Text="Application ID" />
+                                Text="{localization:Loc PackageExpert_Applications_AppId}" />
 
                             <TextBlock
                                 Visibility="{Binding HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="2" Grid.Column="0"
-                                Text="Working directory" />
+                                Text="{localization:Loc PackageExpert_Psf_WkDir}" />
 
                             <TextBlock
                                 Visibility="{Binding HasOriginalTarget, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="3" Grid.Column="0"
-                                Text="Proxy executable" />
+                                Text="{localization:Loc PackageExpert_Applications_ProxyExe}" />
 
                             <TextBlock
                                 Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="4" Grid.Column="0"
-                                Text="Command-line arguments" />
+                                Text="{localization:Loc PackageExpert_Applications_CmdLine}" />
 
                             <TextBlock
                                 Visibility="{Binding HasAlias, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="5" Grid.Column="0"
-                                Text="Alias" />
+                                Text="{localization:Loc PackageExpert_AccessibleVia_ExecAlias}" />
 
                             <TextBlock
                                 Visibility="{Binding HasEntryPoint, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="6" Grid.Column="0"
-                                Text="Entry point" />
+                                Text="{localization:Loc PackageExpert_Psf_EntryPoint}" />
 
                             <TextBlock
                                 Visibility="{Binding HasHostId, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 Margin="0 8"
                                 FontWeight="SemiBold" Grid.Row="7" Grid.Column="0"
-                                Text="Host ID" />
+                                Text="{localization:Loc PackageExpert_Applications_HostID}" />
 
                             <TextBlock 
                                 VerticalAlignment="Center"
@@ -151,9 +152,9 @@
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
             <cards:CardAction.Content>
-                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Applications" FontWeight="SemiBold" />
+                        <TextBlock Text="{localization:Loc PackageExpert_Applications_Header}" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>
@@ -161,11 +162,13 @@
         <ScrollViewer
             Padding="0"
             Margin="0 8 0 0"
-            DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            DockPanel.Dock="Top" 
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
                 <Label 
                     Visibility="{Binding HasStartMenuApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="Applications in Start Menu" 
+                    Content="{localization:Loc PackageExpert_Applications_StartMenu}" 
                     Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />
                 <ItemsControl
                     Visibility="{Binding HasStartMenuApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -174,7 +177,7 @@
 
                 <Label 
                     Visibility="{Binding HasCommandLineApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="Command-line applications" 
+                    Content="{localization:Loc PackageExpert_Applications_Command}" 
                     Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />
                 <ItemsControl
                     Visibility="{Binding HasCommandLineApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -183,7 +186,7 @@
 
                 <Label 
                     Visibility="{Binding HasOtherApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="Other applications" 
+                    Content="{localization:Loc PackageExpert_Applications_Other}" 
                     Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />
                 <ItemsControl
                     Visibility="{Binding HasOtherApplications, Converter={StaticResource BooleanToVisibilityConverter}}"

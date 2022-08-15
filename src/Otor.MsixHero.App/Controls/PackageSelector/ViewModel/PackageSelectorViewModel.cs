@@ -152,15 +152,15 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
 
                 if (options.Count > 1)
                 {
-                    return Resources.Localization.PackageSelector_Caption_Start + " " + string.Join(", ", options.Take(options.Count - 1)) + " " + Resources.Localization.PackageSelector_Caption_Separator + " " + options[^1] + " " + Resources.Localization.PackageSelector_Caption_End;
+                    return Resources.Localization.PackageSelector_Caption_Start + " " + string.Join(", ", options.Take(options.Count - 1)) + " " + Resources.Localization.PackageSelector_Caption_Separator + " " + options[^1];
                 }
 
                 if (options.Count == 1)
                 {
-                    return Resources.Localization.PackageSelector_Caption_Start + " " + options[0] + " " + Resources.Localization.PackageSelector_Caption_End;
+                    return Resources.Localization.PackageSelector_Caption_Start + " " + options[0];
                 }
 
-                return Resources.Localization.PackageSelector_Caption_Start + " " + Resources.Localization.PackageSelector_Caption_End;
+                return Resources.Localization.PackageSelector_Caption_Start;
             }
         }
 

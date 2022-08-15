@@ -14,6 +14,7 @@
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Cards/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Star/Theme.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Controls/Switch/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/WindowsVersion/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -91,7 +92,7 @@
                         x:Name="PART_Overlay"
                         HorizontalAlignment="Stretch"
                         Margin="16 8" 
-                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0" />
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait…', FallbackValue='Please wait…'}" TextAlignment="Center" Opacity="0" />
                     <ProgressBar
                         VerticalAlignment="Top"
                         HorizontalAlignment="Stretch"

@@ -8,69 +8,10 @@
     xmlns:mvvm="http://prismlibrary.com/"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Dialogs.ViewModels"
     xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
-    xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
-    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-    xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
-    <UserControl.Resources>
-        <Style TargetType="packageExpert:PackageExpertControl">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="packageExpert:PackageExpertControl">
-                        <controls:ProgressOverlay 
-                            Message="Reading..."
-                            IsShown="{TemplateBinding IsLoading}">
-                            <Grid>
-                                <DockPanel
-                                    x:Name="PART_Package"
-                                    Visibility="Collapsed"
-                                    DataContext="{TemplateBinding Package}">
-                                    <views:Header DockPanel.Dock="Top" />
-                                    <views:Body DockPanel.Dock="Top"  />
-                                </DockPanel>
 
-                                <Border 
-                                    x:Name="PART_Error"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Margin="12 0 0 0" 
-                                    DockPanel.Dock="Top" 
-                                    Background="IndianRed" 
-                                    Padding="10">
-                                    <DockPanel>
-                                        <Path Width="32" Height="32" Fill="White" Data="{StaticResource VectorError}" VerticalAlignment="Center" Margin="6 -3 0 -3" SnapsToDevicePixels="True" UseLayoutRounding="True">
-                                            <Path.LayoutTransform>
-                                                <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
-                                            </Path.LayoutTransform>
-                                        </Path>
-                                        <TextBlock Text="{TemplateBinding ErrorMessage}" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Center" Margin="6 6 12 6" />
-                                    </DockPanel>
-                                </Border>
-                            </Grid>
-                        </controls:ProgressOverlay>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="ErrorMessage" Value="{x:Null}">
-                                <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
-                                <Setter TargetName="PART_Package" Property="Visibility" Value="Visible" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
     <DockPanel>
-        <!--<Border
-            TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
-            Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
-            DockPanel.Dock="Bottom">
-            <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Padding="8 4" Margin="4" Content="{localization:Loc Dialogs_Close}" HorizontalAlignment="Right" Click="ButtonBase_OnClick" />
-            </StackPanel>
-        </Border>-->
-
         <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
             <ContentControl 
                 mvvm:RegionManager.RegionContext="{Binding FilePath}"

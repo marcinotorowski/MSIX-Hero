@@ -40,6 +40,19 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
         public Guid? ActivityId => this.Model.ActivityId;
 
+        public string Header
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(this.ErrorCode))
+                {
+                    return $"Error {this.ErrorCode}";
+                }
+
+                return this.DisplayedLevel;
+            }
+        }
+
         public DateTime DateTime => this.Model.DateTime;
         
         public string ErrorCode => this.Model.ErrorCode;
@@ -51,9 +64,9 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
             get
             {
                 string msg;
-                if (this.Model.Message.IndexOf(System.Environment.NewLine, StringComparison.OrdinalIgnoreCase) != -1)
+                if (this.Model.Message.IndexOf(Environment.NewLine, StringComparison.OrdinalIgnoreCase) != -1)
                 {
-                    msg = this.Model.Message.Remove(this.Model.Message.IndexOf(System.Environment.NewLine, StringComparison.OrdinalIgnoreCase));
+                    msg = this.Model.Message.Remove(this.Model.Message.IndexOf(Environment.NewLine, StringComparison.OrdinalIgnoreCase));
                 }
                 else
                 {
@@ -82,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
             }
         }
         
-        public string Troubleshooting
+        public string TroubleshootingTitle
         {
             get
             {
@@ -93,9 +106,34 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
                 return ExceptionGuard.Guard(() =>
                 {
-                    if (ErrorCodes.TryGetDescription(Convert.ToUInt32(this.Model.ErrorCode, 16), out var translated))
+                    var hasTitle = ErrorCodes.TryGetTitle(Convert.ToUInt32(this.Model.ErrorCode, 16), out var translatedTitle);
+                    
+                    if (hasTitle)
                     {
-                        return translated;
+                        return translatedTitle;
+                    }
+
+                    return null;
+                });
+            }
+        }
+        
+        public string TroubleshootingDescription
+        {
+            get
+            {
+                if (this.Model.ErrorCode == null || !this.Model.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+
+                return ExceptionGuard.Guard(() =>
+                {
+                    var hasDescription = ErrorCodes.TryGetDescription(Convert.ToUInt32(this.Model.ErrorCode, 16), out var translatedDescription);
+                    
+                    if (hasDescription)
+                    {
+                        return translatedDescription;
                     }
 
                     return null;
@@ -128,7 +166,29 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
         public string FilePath => this.Model.FilePath;
 
+        public bool HasUniqueFilePath => !string.IsNullOrWhiteSpace(this.Model.FilePath) && this.Model.FilePath != this.Model.PackageName;
+
         public string Level => this.Model.Level;
+
+        public string DisplayedLevel
+        {
+            get
+            {
+                switch (this.Model.Level.ToLowerInvariant())
+                {
+                    case "error":
+                        return Resources.Localization.EventViewer_Filter_Log_Error;
+                    case "warning":
+                        return Resources.Localization.EventViewer_Filter_Log_Warn;
+                    case "verbose":
+                        return Resources.Localization.EventViewer_Filter_Log_Verbose;
+                    case "information":
+                        return Resources.Localization.EventViewer_Filter_Log_Info;
+                    default:
+                        return this.Model.Level;
+                }
+            }
+        }
 
         public string Source => this.Model.Source;
 
@@ -143,6 +203,11 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
         public string Title => this.PackageName ?? this.Source;
 
         public override string ToString()
+        {
+            return this.Message;
+        }
+
+        public string FormatAsString()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

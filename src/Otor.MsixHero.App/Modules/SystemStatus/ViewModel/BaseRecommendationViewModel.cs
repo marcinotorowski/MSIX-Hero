@@ -27,7 +27,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
     {
         private readonly Lazy<Geometry> _iconProvider;
         private bool _isExpanded;
-        private string _summary = "Checking your system...";
+        private string _summary = Resources.Localization.System_Checking;
         private RecommendationStatus _status;
         private bool _isLoading;
         protected BaseRecommendationViewModel()

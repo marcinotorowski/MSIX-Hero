@@ -396,12 +396,12 @@
 
                         <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PsfProcessMatch}" Margin="0 -5 0 8" />
 
-                        <cards:CardExpander Content="Inject custom fix-up with configuration" Margin="0 0 0 8">
+                        <cards:CardExpander HorizontalContentExpandedAlignment="Stretch" Content="{localization:Loc PackageExpert_PSF_CustomInject}" Margin="0 0 0 8">
                             <cards:CardExpander.Icon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorConsole}" />
                             </cards:CardExpander.Icon>
                             <cards:CardExpander.ContentExpanded>
-                                <TextBox Style="{StaticResource TextBlock}" TextWrapping="Wrap" Text="{Binding JsonContent, Mode=OneWay}" MaxHeight="300" />
+                                <TextBox TextAlignment="Left" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource TextBlock}" TextWrapping="Wrap" Text="{Binding JsonContent, Mode=OneWay}" MaxHeight="300" />
                             </cards:CardExpander.ContentExpanded>
                         </cards:CardExpander>
                     </StackPanel>

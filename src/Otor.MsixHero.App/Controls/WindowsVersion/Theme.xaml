@@ -4,9 +4,11 @@
     xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Controls.WindowsVersion">
 
     <Style TargetType="windowsVersion:WindowsVersionControl">
+        <Setter Property="Padding" Value="0" />
         <Setter Property="Windows10ImageSource" Value="Images/windows10.png" />
         <Setter Property="Windows11ImageSource" Value="Images/windows11.png" />
         <Setter Property="Windows8ImageSource" Value="Images/windows8.png" />
+        <Setter Property="Windows7ImageSource" Value="Images/windows7.png" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="windowsVersion:WindowsVersionControl">

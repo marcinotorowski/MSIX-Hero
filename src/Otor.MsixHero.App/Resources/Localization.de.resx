@@ -12,11 +12,11 @@
     
     Example:
     
-    ... ado.net/XML headers & schema ...
+    … ado.net/XML headers & schema …
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, …</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, …</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
@@ -118,10 +118,10 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Dashboard_CalculateNames" xml:space="preserve">
-    <value>Paketnamen ermitteln...</value>
+    <value>Paketnamen ermitteln…</value>
   </data>
 	<data name="PackageExpert_LoadingCertificate" xml:space="preserve">
-    <value>Zertifikat wird gelesen...</value>
+    <value>Zertifikat wird gelesen…</value>
   </data>
 	<data name="PackageExpert_SignedBy" xml:space="preserve">
     <value>Signiert von</value>
@@ -142,7 +142,7 @@
     <value>BENUTZER</value>
   </data>
 	<data name="Packages_Search_TextBox_Prompt" xml:space="preserve">
-    <value>In Applikationen suchen...</value>
+    <value>In Applikationen suchen…</value>
   </data>
 	<data name="Dashboard_CreateAppInstaller" xml:space="preserve">
 		<value>App-Installer erstellen</value>
@@ -163,13 +163,13 @@
 		<value>Zertifikate und Signierung</value>
 	</data>
 	<data name="Dashboard_OpenMsix" xml:space="preserve">
-		<value>MSIX-Paket öffnen...</value>
+		<value>MSIX-Paket öffnen…</value>
 	</data>
 	<data name="Dashboard_Search_TextBox_Prompt" xml:space="preserve">
-		<value>In Tools suchen...</value>
+		<value>In Tools suchen…</value>
 	</data>
 	<data name="Dashboard_ShowDeps" xml:space="preserve">
-		<value>MSIX-Abhängigkeiten anzeigen...</value>
+		<value>MSIX-Abhängigkeiten anzeigen…</value>
 	</data>
 	<data name="Dashboard_SignResign" xml:space="preserve">
 		<value>MSIX-Paket signieren oder neu signieren</value>
@@ -190,16 +190,16 @@
 		<value>Paket</value>
 	</data>
 	<data name="Dialog_AppInstaller_LoadButton" xml:space="preserve">
-		<value>Aus Datei laden...</value>
+		<value>Aus Datei laden…</value>
 	</data>
 	<data name="Dialog_AppInstaller_Never" xml:space="preserve">
 		<value>Nie</value>
 	</data>
 	<data name="Dialog_AppInstaller_OK" xml:space="preserve">
-		<value>App-Installer erstellen...</value>
+		<value>App-Installer erstellen…</value>
 	</data>
 	<data name="Sidebar_About" xml:space="preserve">
-		<value>Über MSIX Hero...</value>
+		<value>Über…</value>
 	</data>
 	<data name="Sidebar_Tools" xml:space="preserve">
 		<value>Werkzeuge</value>
@@ -211,7 +211,7 @@
 		<value>Pakete</value>
 	</data>
 	<data name="Sidebar_Settings" xml:space="preserve">
-		<value>Konfigurieren Sie die MSIX Hero-Einstellungen...</value>
+		<value>Einstellungen…</value>
 	</data>
 	<data name="Sidebar_SystemStatus" xml:space="preserve">
 		<value>System</value>
@@ -226,7 +226,7 @@
 		<value>Bereits installiert</value>
 	</data>
 	<data name="System_Apps_Discover" xml:space="preserve">
-		<value>Weitere Tools entdecken...</value>
+		<value>Weitere Tools entdecken…</value>
 	</data>
 	<data name="System_Apps_FromStore" xml:space="preserve">
 		<value>Aus dem Microsoft Store holen</value>
@@ -397,7 +397,7 @@
 		<value>Als Standard festlegen</value>
 	</data>
 	<data name="Volumes_Create" xml:space="preserve">
-		<value>Erstellen...</value>
+		<value>Erstellen…</value>
 	</data>
 	<data name="Volumes_DefaultVolume" xml:space="preserve">
 		<value>Dies ist das Standardvolume</value>
@@ -427,7 +427,7 @@
 		<value>Aktualisieren</value>
 	</data>
 	<data name="Volumes_Search_Prompt" xml:space="preserve">
-		<value>In Volumen suchen...</value>
+		<value>In Volumen suchen…</value>
 	</data>
 	<data name="Volumes_Sidebar_MultipleItems" xml:space="preserve">
 		<value>Mehrere Elemente ausgewählt</value>
@@ -463,7 +463,7 @@
 		<value>Abrechen</value>
 	</data>
 	<data name="Button_Browse" xml:space="preserve">
-		<value>Durchsuchen...</value>
+		<value>Durchsuchen…</value>
 	</data>
 	<data name="Button_Save" xml:space="preserve">
 		<value>Speichern</value>
@@ -538,7 +538,7 @@
 		<value>Alle Dateien</value>
 	</data>
 	<data name="Dialog_AppInstaller_ToggleButton_New_Browse" xml:space="preserve">
-		<value>Durchsuchen...</value>
+		<value>Durchsuchen…</value>
 	</data>
 	<data name="EventViewer_Details_PackageName" xml:space="preserve">
 		<value>Paketname</value>
@@ -550,7 +550,7 @@
 		<value>Aktualisieren</value>
 	</data>
 	<data name="Loading_Cancelling" xml:space="preserve">
-		<value>Wird abgebrochen...</value>
+		<value>Wird abgebrochen…</value>
 	</data>
 	<data name="PackageExpert_Publisher" xml:space="preserve">
 		<value>Herausgeber</value>
@@ -682,7 +682,7 @@
 		<value>Analysieren</value>
 	</data>
 	<data name="Dialogs_Dependencies_Browse" xml:space="preserve">
-		<value>Durchsuchen...</value>
+		<value>Durchsuchen…</value>
 	</data>
 	<data name="Dialogs_Dependencies_Title" xml:space="preserve">
 		<value>Abhängigkeiten analysieren</value>
@@ -757,7 +757,7 @@
 		<value>Lizenz</value>
 	</data>
 	<data name="Dialogs_About_WindowTitle" xml:space="preserve">
-		<value>Über MSIX Hero...</value>
+		<value>Über MSIX Hero…</value>
 	</data>
 	<data name="Dialogs_AppAttach_CmdLine_DirPlaceholder" xml:space="preserve">
 		<value>&lt;ausgabe-verzeichnis&gt;</value>
@@ -877,7 +877,7 @@
 		<value>Paketarchitektur</value>
 	</data>
 	<data name="PackageExpert_Reading" xml:space="preserve">
-		<value>Lesen...</value>
+		<value>Lesen…</value>
 	</data>
 	<data name="PackageExpert_Version" xml:space="preserve">
 		<value>Version</value>
@@ -928,7 +928,7 @@
 		<value>Version</value>
 	</data>
 	<data name="Packages_List_ContextMenu_Open" xml:space="preserve">
-		<value>Öffnen...</value>
+		<value>Öffnen…</value>
 	</data>
 	<data name="Packages_List_ContextMenu_Open_ManifestFile" xml:space="preserve">
 		<value>Manifest-Datei</value>
@@ -976,7 +976,7 @@
 		<value>URL</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_ReadingPackages" xml:space="preserve">
-		<value>Pakete lesen...</value>
+		<value>Pakete lesen…</value>
 	</data>
 	<data name="Dialogs_ExportCertificate_Cmd_InputPath_Placeholder" xml:space="preserve">
 		<value>&lt;input-pfad&gt;</value>
@@ -991,7 +991,7 @@
 		<value>Pfad</value>
 	</data>
 	<data name="Dialogs_NewVolume_Reading" xml:space="preserve">
-		<value>Volumen lesen...</value>
+		<value>Volumen lesen…</value>
 	</data>
 	<data name="CertificateSelector_Certificate_TimeStamp_Random2" xml:space="preserve">
 		<value>einer Liste der bekannten Server</value>
@@ -1141,7 +1141,7 @@
 		<value>Windows-Paketmanager</value>
 	</data>
 	<data name="Dashboard_OpenAppInstaller" xml:space="preserve">
-		<value>App-Installer-Datei öffnen...</value>
+		<value>App-Installer-Datei öffnen…</value>
 	</data>
 	<data name="Dashboard_OpenAppInstaller_TitleFormat" xml:space="preserve">
 		<value>App-Installer {0} öffnen</value>
@@ -1234,10 +1234,10 @@
 		<value>In App-Attach-Volumes zu konvertierende(s) Paket(e)</value>
 	</data>
 	<data name="Dialogs_AppAttach_Tabs_Packages_List_Add" xml:space="preserve">
-		<value>Paket(e) hinzufügen...</value>
+		<value>Paket(e) hinzufügen…</value>
 	</data>
 	<data name="Dialogs_AppAttach_Tabs_Packages_List_AddFolder" xml:space="preserve">
-		<value>Ordner hinzufügen...</value>
+		<value>Ordner hinzufügen…</value>
 	</data>
 	<data name="Dialogs_AppAttach_Tabs_Packages_List_DragDropHint" xml:space="preserve">
 		<value>Linke Maustaste loslassen, um die Dateien hier abzulegen</value>
@@ -1411,7 +1411,7 @@
 		<value>Ungültige Ressourcen-ID</value>
 	</data>
 	<data name="Dialogs_PackageName_LoadFile" xml:space="preserve">
-		<value>Aus Datei laden...</value>
+		<value>Aus Datei laden…</value>
 	</data>
 	<data name="Dialogs_PackageName_MissingFile" xml:space="preserve">
 		<value>Die Datei '{0}' existiert nicht.</value>
@@ -1432,19 +1432,19 @@
 		<value>Neue Version</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Blank_New_HelpText" xml:space="preserve">
-		<value>Die neuere Version des zu vergleichenden MSIX-Pakets wählen...</value>
+		<value>Die neuere Version des zu vergleichenden MSIX-Pakets wählen…</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Blank_Old" xml:space="preserve">
 		<value>Ältere Version</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Blank_Old_HelpText" xml:space="preserve">
-		<value>Die altäre Version des zu vergleichenden MSIX-Pakets wählen...</value>
+		<value>Die altäre Version des zu vergleichenden MSIX-Pakets wählen…</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Compare" xml:space="preserve">
 		<value>Vergleichen</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Compare_HelpText" xml:space="preserve">
-		<value>Drücken Sie die Taste, um den Vergleich der ausgewählten Pakete zu starten...</value>
+		<value>Drücken Sie die Taste, um den Vergleich der ausgewählten Pakete zu starten…</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_Duplicates_NamedFilePlusOne" xml:space="preserve">
 		<value>{0} (+1 andere Datei)</value>
@@ -1465,7 +1465,7 @@
 		<value>Fehlende Werte</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_ExportXML" xml:space="preserve">
-		<value>In XML exportieren...</value>
+		<value>In XML exportieren…</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_File1_HelpText" xml:space="preserve">
 		<value>Die vorherige Version eines aktualisierbaren Pakets wählen</value>
@@ -1543,7 +1543,7 @@
 		<value>Dieses Tool analysiert die Unterschiede zwischen zwei Versionen eines Pakets und ermittelt, wie sich die Änderungen und Ergänzungen auf den Aktualisierungsprozess auswirken können.</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_SelectAnotherFile_Tooltip" xml:space="preserve">
-		<value>Hier drücken, um eine andere Datei auszuwählen...</value>
+		<value>Hier drücken, um eine andere Datei auszuwählen…</value>
 	</data>
 	<data name="Dialogs_UpdateImpact_SizeComparison_AddedFiles" xml:space="preserve">
 		<value>Hinzugefügte Dateien</value>
@@ -1579,7 +1579,7 @@
 		<value>Ihre Version von MSIX Hero wurde soeben aktualisiert. Die aktuelle Version ist</value>
 	</data>
 	<data name="Dialogs_WhatsNew_AfterUpdate_ReadMore" xml:space="preserve">
-		<value>Lesen Sie die News auf der offiziellen Website, um mehr über dieses neue Update zu erfahren...</value>
+		<value>Lesen Sie die News auf der offiziellen Website, um mehr über dieses neue Update zu erfahren…</value>
 	</data>
 	<data name="Dialogs_WhatsNew_Docs" xml:space="preserve">
 		<value>Dokumentation und Anleitungen</value>
@@ -1675,7 +1675,7 @@
 		<value>URI zu einem Ort, wo das Hauptpaket verfügbar ist</value>
 	</data>
 	<data name="Dialog_AppInstaller_WhenNewVersionAvailable" xml:space="preserve">
-		<value>Wenn beim Starten der App eine neue Version verfügbar ist...</value>
+		<value>Wenn beim Starten der App eine neue Version verfügbar ist…</value>
 	</data>
 	<data name="Dialog_AppInstaller_WhenNewVersionAvailable_Force" xml:space="preserve">
 		<value>Über die Aktualisierung informieren und sie erzwingen, bevor die Anwendung gestartet werden kann.</value>
@@ -1726,7 +1726,7 @@
 		<value>Information</value>
 	</data>
 	<data name="EventViewer_Filter_Log_Verbose" xml:space="preserve">
-		<value>Ausführlich</value>
+		<value>Ausführliches Log</value>
 	</data>
 	<data name="EventViewer_Filter_OrderBy" xml:space="preserve">
 		<value>Sortieren nach</value>
@@ -1738,7 +1738,7 @@
 		<value>Stufe</value>
 	</data>
 	<data name="EventViewer_Search_Prompt" xml:space="preserve">
-		<value>In Ereignissen suchen...</value>
+		<value>In Ereignissen suchen…</value>
 	</data>
 	<data name="EventViewer_Sidebar_NoSelection_Hint" xml:space="preserve">
 		<value>Wählen Sie ein beliebiges Ereignisprotokoll aus, um dessen Eigenschaften anzuzeigen.</value>
@@ -1756,7 +1756,7 @@
 		<value>Heute</value>
 	</data>
 	<data name="Loading_PleaseWait" xml:space="preserve">
-		<value>Bitte warten...</value>
+		<value>Bitte warten…</value>
 	</data>
 	<data name="PackageExpert_App_CheckUpdates" xml:space="preserve">
 		<value>Nach Updates suchen</value>
@@ -1768,22 +1768,22 @@
 		<value>Andere</value>
 	</data>
 	<data name="PackageExpert_App_Other_ChangeVolume" xml:space="preserve">
-		<value>Volume ändern...</value>
+		<value>Volume ändern…</value>
 	</data>
 	<data name="PackageExpert_App_SendTo" xml:space="preserve">
-		<value>Senden an...</value>
+		<value>Senden an…</value>
 	</data>
 	<data name="PackageExpert_App_SendTo_AppInstaller" xml:space="preserve">
-		<value>App-Installer-Editor...</value>
+		<value>App-Installer-Editor…</value>
 	</data>
 	<data name="PackageExpert_App_SendTo_DependencyAnalyzer" xml:space="preserve">
-		<value>Abhängigkeitsanalysator...</value>
+		<value>Abhängigkeitsanalysator…</value>
 	</data>
 	<data name="PackageExpert_App_SendTo_ModPackage" xml:space="preserve">
-		<value>Modifikationspaket-Editor...</value>
+		<value>Modifikationspaket-Editor…</value>
 	</data>
 	<data name="PackageExpert_App_SendTo_Winget" xml:space="preserve">
-		<value>Winget (YAML) Editor...</value>
+		<value>Winget (YAML) Editor…</value>
 	</data>
 	<data name="PackageExpert_App_Uninstall" xml:space="preserve">
 		<value>Deinstallieren</value>
@@ -1798,7 +1798,7 @@
 		<value>Neutral</value>
 	</data>
 	<data name="PackageSelector_Caption_Start" xml:space="preserve">
-		<value>Laden von</value>
+		<value>Lade</value>
 	</data>
 	<data name="PackageSelector_DisplayBundleName" xml:space="preserve">
 		<value>Angezeigter Bündelname</value>
@@ -1822,10 +1822,10 @@
 		<value>Installieren</value>
 	</data>
 	<data name="Packages_Actions_Install_AllUsers" xml:space="preserve">
-		<value>Aus Datei (alle Benutzer - Provisionierung)...</value>
+		<value>Aus Datei (alle Benutzer - Provisionierung)…</value>
 	</data>
 	<data name="Packages_Actions_Install_CurrentUser" xml:space="preserve">
-		<value>Aus Datei (aktueller Benutzer)...</value>
+		<value>Aus Datei (aktueller Benutzer)…</value>
 	</data>
 	<data name="Packages_Filter_Activity" xml:space="preserve">
 		<value>Aktivität</value>
@@ -1870,13 +1870,13 @@
 		<value>Diese Anwendung läuft derzeit</value>
 	</data>
 	<data name="Packages_List_ContextMenu_ChangeVolume" xml:space="preserve">
-		<value>Volume ändern...</value>
+		<value>Volume ändern…</value>
 	</data>
 	<data name="Packages_List_ContextMenu_CheckUpdates" xml:space="preserve">
 		<value>Nach Updates suchen</value>
 	</data>
 	<data name="Packages_List_ContextMenu_Copy" xml:space="preserve">
-		<value>Kopieren...</value>
+		<value>Kopieren…</value>
 	</data>
 	<data name="Packages_List_ContextMenu_Copy_DisplayName" xml:space="preserve">
 		<value>Anzeigename</value>
@@ -1900,13 +1900,13 @@
 		<value>Benutzerordner</value>
 	</data>
 	<data name="Packages_List_ContextMenu_RemoveFor" xml:space="preserve">
-		<value>Entfernen für...</value>
+		<value>Entfernen für…</value>
 	</data>
 	<data name="Packages_List_ContextMenu_RemoveFor_CurrentUser" xml:space="preserve">
 		<value>Aktueller Benutzer</value>
 	</data>
 	<data name="Packages_List_ContextMenu_RunCommand" xml:space="preserve">
-		<value>Befehl im Kontext ausführen...</value>
+		<value>Befehl im Kontext ausführen…</value>
 	</data>
 	<data name="Packages_List_ContextMenu_StopApp" xml:space="preserve">
 		<value>App anhalten</value>
@@ -2026,13 +2026,13 @@
 		<value>standardmäßig</value>
 	</data>
 	<data name="Dialogs_Dependencies_Analyze_Hint" xml:space="preserve">
-		<value>Drücken Sie die Taste, um die Analyse des ausgewählten Pakets zu starten...</value>
+		<value>Drücken Sie die Taste, um die Analyse des ausgewählten Pakets zu starten…</value>
 	</data>
 	<data name="Dialogs_Dependencies_Error_Failed" xml:space="preserve">
 		<value>Das ausgewählte Paket konnte nicht analysiert werden.</value>
 	</data>
 	<data name="Dialogs_Dependencies_ExportButton" xml:space="preserve">
-		<value>Exportieren...</value>
+		<value>Exportieren…</value>
 	</data>
 	<data name="Dialogs_Dependencies_Legend" xml:space="preserve">
 		<value>Legende</value>
@@ -2041,19 +2041,19 @@
 		<value>Paket-Abhängigkeit</value>
 	</data>
 	<data name="Dialogs_Dependencies_PrintButton" xml:space="preserve">
-		<value>Drucken...</value>
+		<value>Drucken…</value>
 	</data>
 	<data name="Dialogs_Dependencies_Purpose" xml:space="preserve">
 		<value>Dieses Werkzeug analysiert die Abhängigkeiten und Beziehungen zwischen Paketen und anderen Komponenten, wobei ein ausgewähltes Paket als Basisobjekt verwendet wird.</value>
 	</data>
 	<data name="Dialogs_Dependencies_SelectAnotherFileButton_Tooltip" xml:space="preserve">
-		<value>Hier drücken, um eine andere Datei auszuwählen...</value>
+		<value>Hier drücken, um eine andere Datei auszuwählen…</value>
 	</data>
 	<data name="Dialogs_Dependencies_SelectedPackage" xml:space="preserve">
 		<value>Analysiertes Paket</value>
 	</data>
 	<data name="Dialogs_Dependencies_SelectMsix" xml:space="preserve">
-		<value>Wählen Sie ein MSIX-Paket oder eine Manifestdatei aus, die analysiert werden soll...</value>
+		<value>Wählen Sie ein MSIX-Paket oder eine Manifestdatei aus, die analysiert werden soll…</value>
 	</data>
 	<data name="Dialogs_Dependencies_SystemDependency" xml:space="preserve">
 		<value>System-Abhängigkeit</value>
@@ -2065,7 +2065,7 @@
 		<value>{0} Bilddateien ({1})</value>
 	</data>
 	<data name="Dialogs_Dependencies_Export_Title" xml:space="preserve">
-		<value>Diagramm als {0} Bild exportieren...</value>
+		<value>Diagramm als {0} Bild exportieren…</value>
 	</data>
 	<data name="Dialogs_Winget_AppMoniker_Hint" xml:space="preserve">
 		<value>Der allgemeine Name, den jemand bei der Suche nach dem Paket verwenden könnte</value>
@@ -2080,13 +2080,13 @@
 		<value>Unbekannt / nicht angegeben</value>
 	</data>
 	<data name="Dialogs_Winget_Button_HashFile" xml:space="preserve">
-		<value>Hash aus einer lokalen Datei berechnen...</value>
+		<value>Hash aus einer lokalen Datei berechnen…</value>
 	</data>
 	<data name="Dialogs_Winget_Button_HashUrl" xml:space="preserve">
 		<value>Hash von der URL des Installers abrufen</value>
 	</data>
 	<data name="Dialogs_Winget_Button_Load" xml:space="preserve">
-		<value>Daten aus MSI/MSIX/EXE laden...</value>
+		<value>Daten aus MSI/MSIX/EXE laden…</value>
 	</data>
 	<data name="Dialogs_Winget_Cmd_Basic" xml:space="preserve">
 		<value>Befehlszeile für die Standardinstallation (mit Fortschritt)</value>
@@ -2164,7 +2164,7 @@
 		<value>Winget-Manifest erstellen</value>
 	</data>
 	<data name="Dialogs_Winget_OpenButton" xml:space="preserve">
-		<value>YAML-Datei öffnen...</value>
+		<value>YAML-Datei öffnen…</value>
 	</data>
 	<data name="Dialogs_Winget_PackageIdentifier" xml:space="preserve">
 		<value>Identifikator des Pakets</value>
@@ -2239,16 +2239,16 @@
 		<value>Winget-Manifest erstellen</value>
 	</data>
 	<data name="Dialogs_Winget_Yaml_Saving_Format" xml:space="preserve">
-		<value>YAML-Manifest in {0} schreiben...</value>
+		<value>YAML-Manifest in {0} schreiben…</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_CurrentVolume" xml:space="preserve">
 		<value>Aktuelles Volume</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_GettingData" xml:space="preserve">
-		<value>Daten abrufen...</value>
+		<value>Daten abrufen…</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_Moving" xml:space="preserve">
-		<value>Verschieben auf das gewählte Volume...</value>
+		<value>Verschieben auf das gewählte Volume…</value>
 	</data>
 	<data name="Dialogs_ChangeVolume_OkButton" xml:space="preserve">
 		<value>Verschieben auf gewähltes Volume</value>
@@ -2320,10 +2320,10 @@
 		<value>Extrahieren oder Importieren eines Zertifikats</value>
 	</data>
 	<data name="Dialogs_NewVolume_Adding" xml:space="preserve">
-		<value>Ein Volume wird hinzugefügt...</value>
+		<value>Ein Volume wird hinzugefügt…</value>
 	</data>
 	<data name="Dialogs_NewVolume_ChangingDefault" xml:space="preserve">
-		<value>Standardvolume wird geändert...</value>
+		<value>Standardvolume wird geändert…</value>
 	</data>
 	<data name="Dialogs_NewVolume_DefaultVolume" xml:space="preserve">
 		<value>Standardvolume</value>
@@ -2332,7 +2332,7 @@
 		<value>Laufwerk</value>
 	</data>
 	<data name="Dialogs_NewVolume_GettingDrives" xml:space="preserve">
-		<value>Abfragen der verfügbaren Laufwerke...</value>
+		<value>Abfragen der verfügbaren Laufwerke…</value>
 	</data>
 	<data name="Dialogs_NewVolume_OkButton" xml:space="preserve">
 		<value>Volume hinzufügen</value>
@@ -2407,7 +2407,7 @@
 		<value>Device Guard</value>
 	</data>
 	<data name="CertificateSelector_DeviceGuard_Signing" xml:space="preserve">
-		<value>Anmeldung beim Device Guard-Dienst...</value>
+		<value>Anmeldung beim Device Guard-Dienst…</value>
 	</data>
 	<data name="CertificateSelector_Errors_LinkOpen" xml:space="preserve">
 		<value>Der Link konnte nicht geöffnet werden:</value>
@@ -2449,7 +2449,7 @@
 		<value>MSIX Modifikationspaket</value>
 	</data>
 	<data name="Dialogs_ModPack_OkButton" xml:space="preserve">
-		<value>Modifikationspaket erstellen...</value>
+		<value>Modifikationspaket erstellen…</value>
 	</data>
 	<data name="Dialogs_ModPack_OutputSuffix" xml:space="preserve">
 		<value>Modifikationspaket</value>
@@ -2494,10 +2494,10 @@
 		<value>Modifikationspaket erstellen</value>
 	</data>
 	<data name="Dialogs_Pack_Analyzing" xml:space="preserve">
-		<value>Analysieren des ausgewählten Ordners...</value>
+		<value>Analysieren des ausgewählten Ordners…</value>
 	</data>
 	<data name="Dialogs_Pack_CreatingManifest" xml:space="preserve">
-		<value>Erstellen der Manifestdatei...</value>
+		<value>Erstellen der Manifestdatei…</value>
 	</data>
 	<data name="Dialogs_Pack_FullPathFolder" xml:space="preserve">
 		<value>Vollständiger Pfad zu einem Ordner, in dem sich die extrahierten Dateien befinden</value>
@@ -2638,7 +2638,7 @@
 		<value>Upgrade-Befehl</value>
 	</data>
 	<data name="Dialogs_Winget_ValidatingCli" xml:space="preserve">
-		<value>Validierung mit winget CLI...</value>
+		<value>Validierung mit winget CLI…</value>
 	</data>
 	<data name="Dialogs_Winget_ValidatingCli_Body" xml:space="preserve">
 		<value>Winget-Validierung fehlgeschlagen. Ihr Paket wird möglicherweise nicht akzeptiert, nachdem Sie versucht haben, es in das offizielle Repo zu pushen. Klicken Sie auf "Details anzeigen", um detaillierte Warnungen anzuzeigen.</value>
@@ -2806,7 +2806,7 @@
 		<value>Dieses Paket hat keine installierten Add-ons oder Modifikationspakete</value>
 	</data>
 	<data name="PackageExpert_Applications_None" xml:space="preserve">
-		<value>Dieses Paket hat keine Anwendungen.</value>
+		<value>Keine Anwendungen</value>
 	</data>
 	<data name="PackageExpert_AppTypeToolTip_AppInstaller" xml:space="preserve">
 		<value>Diese Anwendung wurde von einer .appinstaller-Datei installiert</value>
@@ -2851,7 +2851,7 @@
 		<value>GERÄTEFAMILIEN</value>
 	</data>
 	<data name="PackageExpert_Dependencies_Link" xml:space="preserve">
-		<value>Abhängigkeitsdiagramm öffnen...</value>
+		<value>Abhängigkeitsdiagramm öffnen…</value>
 	</data>
 	<data name="PackageExpert_Dependencies_MinOs" xml:space="preserve">
 		<value>Mindestanforderungen an das Betriebssystem</value>
@@ -2862,12 +2862,6 @@
 	<data name="PackageExpert_Dependencies_Package_Header" xml:space="preserve">
 		<value>PAKETABHÄNGIGKEITEN</value>
 	</data>
-	<data name="PackageExpert_Dependencies_TestedOn" xml:space="preserve">
-		<value>Getestet auf</value>
-	</data>
-	<data name="PackageExpert_Dependencies_TestedOn_MsixCore" xml:space="preserve">
-		<value>[MSIX Core] Getestet auf</value>
-	</data>
 	<data name="PackageExpert_Installations_UacPrompt" xml:space="preserve">
 		<value>Um zu sehen, wer dieses Paket installiert hat, müssen Sie ein Administrator sein.</value>
 	</data>
@@ -2875,7 +2869,7 @@
 		<value>Drücken Sie hier, um die Pakete als lokaler Administrator abzufragen</value>
 	</data>
 	<data name="PackageExpert_Installation_ChangeDir" xml:space="preserve">
-		<value>Installationsverzeichnis ändern...</value>
+		<value>Installationsverzeichnis ändern…</value>
 	</data>
 	<data name="PackageExpert_Installation_Installed" xml:space="preserve">
 		<value>Installiert</value>
@@ -2890,7 +2884,7 @@
 		<value>Manifestdatei (Entwicklermodus)</value>
 	</data>
 	<data name="PackageExpert_Installation_InstallType_System" xml:space="preserve">
-		<value>System-Paket</value>
+		<value>als System-Paket</value>
 	</data>
 	<data name="PackageExpert_Installation_Manifest" xml:space="preserve">
 		<value>Pfad zum installierten Manifest</value>
@@ -2956,7 +2950,7 @@
 		<value>Daten</value>
 	</data>
 	<data name="PackageExpert_Registry_Loading" xml:space="preserve">
-		<value>Registry-Schlüssel werden geladen...</value>
+		<value>Registry-Schlüssel werden geladen…</value>
 	</data>
 	<data name="PackageExpert_Registry_None" xml:space="preserve">
 		<value>Dieses Paket enthält keine Registry-Einträge.</value>
@@ -3286,7 +3280,7 @@
 		<value>veröffentlicht am</value>
 	</data>
 	<data name="Dialogs_About_Update_Reading" xml:space="preserve">
-		<value>Informationen über die neue Version werden abgerufen...</value>
+		<value>Informationen über die neue Version werden abgerufen…</value>
 	</data>
 	<data name="Dialogs_About_Update_UpdateAvailable" xml:space="preserve">
 		<value>Eine neue Version von MSIX Hero ist verfügbar.</value>
@@ -3397,10 +3391,10 @@
 		<value>Den Herausgeber des Pakets mit dem Betreff des Zertifikats überschreiben (empfohlen)</value>
 	</data>
 	<data name="Dialogs_PackageSigning_Tabs_Packages_Button_Add" xml:space="preserve">
-		<value>Paket(e) hinzufügen...</value>
+		<value>Paket(e) hinzufügen…</value>
 	</data>
 	<data name="Dialogs_PackageSigning_Tabs_Packages_Button_AddFolder" xml:space="preserve">
-		<value>Ordner hinzufügen...</value>
+		<value>Ordner hinzufügen…</value>
 	</data>
 	<data name="Dialogs_PackageSigning_Tabs_Packages_Button_Remove" xml:space="preserve">
 		<value>Ausgewählte entfernen</value>
@@ -3424,7 +3418,7 @@
 		<value>URL von .appinstaller</value>
 	</data>
 	<data name="Dialogs_Settings_BrowseIcon" xml:space="preserve">
-		<value>Nach einem Symbol suchen...</value>
+		<value>Nach einem Symbol suchen…</value>
 	</data>
 	<data name="Dialogs_Settings_Certificate_Output" xml:space="preserve">
 		<value>Zertifikat-Ausgabepfad</value>
@@ -3592,7 +3586,7 @@
 		<value>Release Notes nach jedem Update von MSIX Hero anzeigen</value>
 	</data>
 	<data name="Dialogs_Settings_RemoveIcon" xml:space="preserve">
-		<value>Symbol entfernen...</value>
+		<value>Symbol entfernen…</value>
 	</data>
 	<data name="Dialogs_Settings_Title" xml:space="preserve">
 		<value>Einstellungen - MSIX Hero</value>
@@ -3701,5 +3695,240 @@
 	</data>
 	<data name="System_DeveloperOptions_SideLoading_OutOfTheBox" xml:space="preserve">
 		<value>Ihr System unterstützt standardmäßig die Installation von signierten Anwendungen.</value>
+	</data>
+	<data name="PackageExpert_Dependencies_TestedOn" xml:space="preserve">
+		<value>Deklarierte API-Kompatibilitätsstufe</value>
+	</data>
+	<data name="PackageExpert_Dependencies_TestedOn_MsixCore" xml:space="preserve">
+		<value>[MSIX Core] Deklarierte API-Kompatibilitätsstufe</value>
+	</data>
+	<data name="Volumes_No_Label" xml:space="preserve">
+		<value>Nein</value>
+	</data>
+	<data name="Volumes_Yes_Label" xml:space="preserve">
+		<value>Ja</value>
+	</data>
+	<data name="Volumes_Status" xml:space="preserve">
+		<value>Status</value>
+	</data>
+	<data name="PackageExpert_Summary_Applications" xml:space="preserve">
+		<value>Anwendungen: {0}</value>
+	</data>
+	<data name="PackageExpert_Summary_Capabilities" xml:space="preserve">
+		<value>Funktionen: {0}</value>
+	</data>
+	<data name="PackageExpert_Summary_Dependencies" xml:space="preserve">
+		<value>Paket- und OS-Voraussetzungen: {0}</value>
+	</data>
+	<data name="PackageExpert_Summary_Dependencies_OpenGraph" xml:space="preserve">
+		<value>Abhängigkeitsanalysator…</value>
+	</data>
+	<data name="PackagePublisher" xml:space="preserve">
+		<value>Herausgeber des Pakets</value>
+	</data>
+	<data name="PackagingInformation" xml:space="preserve">
+		<value>Informationen über die Paketierung</value>
+	</data>
+	<data name="PackageExpert_Packaging_Summary" xml:space="preserve">
+		<value>Generiert mit {0} {1}</value>
+	</data>
+	<data name="PackageExpert_Applications_Type" xml:space="preserve">
+		<value>Typ</value>
+	</data>
+	<data name="PackageExpert_Applications_AppId" xml:space="preserve">
+		<value>Anwendungs-ID</value>
+	</data>
+	<data name="PackageExpert_Applications_ProxyExe" xml:space="preserve">
+		<value>Direkt ausführbare Datei</value>
+	</data>
+	<data name="PackageExpert_Applications_CmdLine" xml:space="preserve">
+		<value>Kommandozeilen-Argumente</value>
+	</data>
+	<data name="PackageExpert_Applications_HostID" xml:space="preserve">
+		<value>Host-ID</value>
+	</data>
+	<data name="PackageExpert_BackToOverview" xml:space="preserve">
+		<value>Zurück zur Paketübersicht</value>
+	</data>
+	<data name="PackageExpert_Applications_Header" xml:space="preserve">
+		<value>Anwendungen</value>
+	</data>
+	<data name="PackageExpert_Applications_StartMenu" xml:space="preserve">
+		<value>Anwendungen im Startmenü</value>
+	</data>
+	<data name="PackageExpert_Applications_Command" xml:space="preserve">
+		<value>Globale Anwendungen (mit Alias)</value>
+	</data>
+	<data name="PackageExpert_Applications_Other" xml:space="preserve">
+		<value>Andere Anwendungen</value>
+	</data>
+	<data name="PackageExpert_Dependencies_Win10Link" xml:space="preserve">
+		<value>Windows 10-Updateverlauf</value>
+	</data>
+	<data name="PackageExpert_Dependencies_Win11Link" xml:space="preserve">
+		<value>Windows 11-Updateverlauf</value>
+	</data>
+	<data name="PackageExpert_Applications_OneExtra" xml:space="preserve">
+		<value>{0} und eine weitere Anwendung</value>
+	</data>
+	<data name="PackageExpert_Applications_XExtra" xml:space="preserve">
+		<value>{0} und {1} weitere Anwendungen</value>
+	</data>
+	<data name="PackageExpert_Capabilities_Summary_Trust" xml:space="preserve">
+		<value>läuft mit vollem Vertrauen</value>
+	</data>
+	<data name="PackageExpert_Capabilities_Summary_Elevation" xml:space="preserve">
+		<value>kann die Berechtigungen erhöhen</value>
+	</data>
+	<data name="PackageExpert_Capabilities_Summary_OneAnother" xml:space="preserve">
+		<value>und eine andere Funktion…</value>
+	</data>
+	<data name="PackageExpert_Capabilities_Summary_XOther" xml:space="preserve">
+		<value>und {0} andere Funktionen…</value>
+	</data>
+	<data name="PackageExpert_Capabilities_Summary_None" xml:space="preserve">
+		<value>Dieses Paket erfordert keine Funktionen.</value>
+	</data>
+	<data name="PackageExpert_Dependencies_Summary_XOther" xml:space="preserve">
+		<value>{0} und {1} weitere Abhängigkeiten</value>
+	</data>
+	<data name="PackageExpert_Dependencies_Summary_None" xml:space="preserve">
+		<value>Dieses Paket hat keine Abhängigkeiten.</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_Estimated" xml:space="preserve">
+		<value>mehr als **{0}** und **{1}**</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_Exact" xml:space="preserve">
+		<value>**{0}**, insgesamt **{1}**</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_None" xml:space="preserve">
+		<value>Das Paket beinhaltet keine Dateien.</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesGeneric" xml:space="preserve">
+		<value>{0} Dateien</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesGenericPlus" xml:space="preserve">
+		<value>Mehr als {0} Dateien</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesExe1" xml:space="preserve">
+		<value>{0} und mehr als {1} andere Dateien</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesExe1Plus" xml:space="preserve">
+		<value>{0} und {1} andere Dateien</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesExe2Plus" xml:space="preserve">
+		<value>{0}, {1} und mehr als {2} andere Dateien</value>
+	</data>
+	<data name="PackageExpert_Files_Summary_FilesExe2" xml:space="preserve">
+		<value>{0}, {1} und {2} andere Dateien</value>
+	</data>
+	<data name="PackageExpert_Installation_StatusDate" xml:space="preserve">
+		<value>Installiert am **{0}**</value>
+	</data>
+	<data name="PackageExpert_Installation_StatusDateUnknown" xml:space="preserve">
+		<value>Installiert</value>
+	</data>
+	<data name="PackageExpert_Installation_AppInstaller" xml:space="preserve">
+		<value>aus der .appinstaller Datei</value>
+	</data>
+	<data name="PackageExpert_Installation_Store" xml:space="preserve">
+		<value>aus Microsoft Store</value>
+	</data>
+	<data name="PackageExpert_Installation_InstallType_SideLoading" xml:space="preserve">
+		<value>aus Datei</value>
+	</data>
+	<data name="PackageExpert_Installation_InstallType_Dev" xml:space="preserve">
+		<value>im Entwicklungsmodus</value>
+	</data>
+	<data name="PackageExpert_Installation_InstallType_Unknown" xml:space="preserve">
+		<value>Unbekannt</value>
+	</data>
+	<data name="PackageExpert_Installation_AddOnX" xml:space="preserve">
+		<value>Hat {0} Add-ons</value>
+	</data>
+	<data name="PackageExpert_Installation_AddOn1" xml:space="preserve">
+		<value>Hat ein Add-on</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_General" xml:space="preserve">
+		<value>Registry-Schlüssel pro Maschine und pro Benutzer.</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_HKLM_Other" xml:space="preserve">
+		<value>HKLM\{0} und andere maschinenspezifische Registry-Schlüssel.</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_Machine" xml:space="preserve">
+		<value>Registry-Schlüssel pro Maschine.</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_HKCU_Other" xml:space="preserve">
+		<value>HKCU\{0} und andere benutzerspezifische Registry-Schlüssel.</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_User" xml:space="preserve">
+		<value>Registry-Schlüssel pro Benutzer.</value>
+	</data>
+	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
+		<value>Enthält Registry-Schlüssel.</value>
+	</data>
+	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
+		<value>Sind Sie sicher, dass Sie diesen Verlag zur Liste der vertrauenswürdigen Verlage (maschinenweit) hinzufügen möchten?</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Header" xml:space="preserve">
+		<value>Definiert</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Redirections" xml:space="preserve">
+		<value>Datei-Umleitungen</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Scripts" xml:space="preserve">
+		<value>Skripte</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Tracing" xml:space="preserve">
+		<value>Tracing</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Electron" xml:space="preserve">
+		<value>Electron fixup</value>
+	</data>
+	<data name="PackageExpert_PSF_SummaryBuilder_Custom" xml:space="preserve">
+		<value>eigene Fixups</value>
+	</data>
+	<data name="PackageExpert_PSF_Summary_Custom" xml:space="preserve">
+		<value>Eigene PSF-Definition</value>
+	</data>
+	<data name="PackageExpert_Signature_Summary_SignedTrusted" xml:space="preserve">
+		<value>Signatur: **Signiert** und **vertrauenswürdig**</value>
+	</data>
+	<data name="PackageExpert_Signature_Summary_Signed" xml:space="preserve">
+		<value>Signatur: Herausgeber ist **nicht vertrauenswürdig**</value>
+	</data>
+	<data name="PackageExpert_Signature_Summary" xml:space="preserve">
+		<value>Signatur:</value>
+	</data>
+	<data name="PackageExpert_Signature_Summary_NotSigned" xml:space="preserve">
+		<value>Signatur: **keine**</value>
+	</data>
+	<data name="PackageExpert_Signature_Summary_NotSigned2" xml:space="preserve">
+		<value>Dieses Paket ist unsigniert</value>
+	</data>
+	<data name="PackageExpert_NameCalculator_OpenButton" xml:space="preserve">
+		<value>Paketname Rechner öffnen…</value>
+	</data>
+	<data name="PackageExpert_Installation_For" xml:space="preserve">
+		<value>INSTALLIERT VON</value>
+	</data>
+	<data name="PackageExpert_Installation_NoAddons" xml:space="preserve">
+		<value>Für dieses Produkt wurden keine Add-Ons / Modifikationspakete installiert.</value>
+	</data>
+	<data name="System_Checking" xml:space="preserve">
+		<value>System wird geprüft…</value>
+	</data>
+	<data name="PackageExpert_PSF_CustomInject" xml:space="preserve">
+		<value>Benutzerdefinierte Fixup-Korrekturen mit eigener Konfiguration anwenden</value>
+	</data>
+	<data name="Package_Star_Tooltip" xml:space="preserve">
+		<value>Klicken Sie auf das Symbol, um dieses Paket mit einem Sternchen zu markieren.
+
+Pakete mit einem Sternchen werden immer am Anfang der Liste angezeigt, unabhängig von der Sortierung.</value>
+	</data>
+	<data name="Package_Unstar_Tooltip" xml:space="preserve">
+		<value>Dieses Paket ist mit einem Sternchen gekennzeichnet und wird daher immer am Anfang der Liste angezeigt, unabhängig von der Sortierung.
+
+Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
 	</data>
 </root>

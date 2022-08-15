@@ -23,7 +23,7 @@
                             <HeaderedContentControl
                                 x:Name="Text1"
                                 Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Header="Minimum required OS version"
+                                Header="{localization:Loc PackageExpert_Dependencies_MinOs}"
                                 Style="{StaticResource CardHeader}">
                                 <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
                                     <Run Text="{Binding MinimumDisplayName, Mode=OneWay}" />
@@ -34,7 +34,7 @@
                             <HeaderedContentControl
                                 x:Name="Text2"
                                 Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Header="Declared API compatibility level"
+                                Header="{localization:Loc PackageExpert_Dependencies_TestedOn}"
                                 Margin="0 8 0 0" Style="{StaticResource CardHeader}">
                                 <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
                                     <Run Text="{Binding TestedDisplayName, Mode=OneWay}" />
@@ -51,8 +51,8 @@
 
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
-                        <Setter TargetName="Text1" Property="Content" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
-                        <Setter TargetName="Text2" Property="Content" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
+                        <Setter TargetName="Text1" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
+                        <Setter TargetName="Text2" Property="Header" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
                         <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
@@ -91,9 +91,9 @@
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
             <cards:CardAction.Content>
-                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Dependencies" FontWeight="SemiBold" />
+                        <TextBlock Text="{localization:Loc PackageExpert_Tabs_Dependencies}" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>
@@ -118,14 +118,14 @@
                     Visibility="{Binding HasWindows10Dependency, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Link="https://msixhero.net/redirect/windows-10-version-history"
                     Background="Transparent"
-                    Topic="Windows 10 version history"
+                    Topic="{localization:Loc PackageExpert_Dependencies_Win10Link}"
                     Margin="0 -8 0 8" />
 
                 <controls:LearnMore 
                     Visibility="{Binding HasWindows11Dependency, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Link="https://msixhero.net/redirect/windows-11-version-history"
                     Background="Transparent"
-                    Topic="Windows 11 version history"
+                    Topic="{localization:Loc PackageExpert_Dependencies_Win11Link}"
                     Margin="0 -8 0 8" />
 
                 <Label 

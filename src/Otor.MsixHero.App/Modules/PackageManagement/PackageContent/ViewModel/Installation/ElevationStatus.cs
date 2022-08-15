@@ -14,10 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation
 {
-    public interface ISelectableItem
+    public enum ElevationStatus
     {
-        bool IsSelected { get; set; }
+        Ok,
+
+        ElevationRequired
     }
 }

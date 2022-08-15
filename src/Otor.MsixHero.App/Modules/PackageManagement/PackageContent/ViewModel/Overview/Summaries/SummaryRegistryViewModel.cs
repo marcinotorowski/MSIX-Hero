@@ -15,7 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -93,46 +92,44 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
                 if (hasMachine && hasUser)
                 {
-                    this.SecondLine = "Per-machine and per-user registry keys.";
+                    this.SecondLine = Resources.Localization.PackageExpert_Registry_SummaryBuilder_General;
                 }
                 else if (hasMachine)
                 {
                     var findKey = await appxRegistryReader
-                        .EnumerateKeys(AppxRegistryRoots.HKLM + "Software", cancellationToken).FirstOrDefaultAsync()
+                        .EnumerateKeys(AppxRegistryRoots.HKLM + "Software", cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken)
                         .ConfigureAwait(false);
                     if (findKey.Path != null)
                     {
-                        this.SecondLine = "HKLM\\" + findKey.Path.Substring(AppxRegistryRoots.HKLM.Length) +
-                                          " and other per-machine registry keys.";
+                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Registry_SummaryBuilder_HKLM_Other, findKey.Path.Substring(AppxRegistryRoots.HKLM.Length));
                     }
                     else
                     {
-                        this.SecondLine = "Per-machine registry keys.";
+                        this.SecondLine = Resources.Localization.PackageExpert_Registry_SummaryBuilder_Machine;
                     }
                 }
                 else if (hasUser)
                 {
                     var findKey = await appxRegistryReader
-                        .EnumerateKeys(AppxRegistryRoots.HKCU + "Software", cancellationToken).FirstOrDefaultAsync()
+                        .EnumerateKeys(AppxRegistryRoots.HKCU + "Software", cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken)
                         .ConfigureAwait(false);
                     if (findKey.Path != null)
                     {
-                        this.SecondLine = "HKCU\\" + findKey.Path.Substring(AppxRegistryRoots.HKCU.Length) +
-                                          " and other per-user registry keys.";
+                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Registry_SummaryBuilder_HKCU_Other, findKey.Path.Substring(AppxRegistryRoots.HKCU.Length));
                     }
                     else
                     {
-                        this.SecondLine = "Per-user registry keys.";
+                        this.SecondLine = Resources.Localization.PackageExpert_Registry_SummaryBuilder_User;
                     }
                 }
                 else
                 {
-                    this.SecondLine = "Contains registry keys.";
+                    this.SecondLine = Resources.Localization.PackageExpert_Registry_SummaryBuilder_Unknown;
                 }
             }
             catch (OperationCanceledException)
             {
-                this.SecondLine = "Contains registry keys.";
+                this.SecondLine = Resources.Localization.PackageExpert_Registry_SummaryBuilder_Unknown;
             }
             finally
             {

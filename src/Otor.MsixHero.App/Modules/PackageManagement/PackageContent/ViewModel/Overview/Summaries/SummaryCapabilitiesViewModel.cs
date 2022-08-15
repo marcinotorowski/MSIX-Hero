@@ -59,10 +59,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 switch (capability.Name)
                 {
                     case "runFullTrust":
-                        stringBuilder.Append("runs with full trust");
+                        stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Trust);
                         break;
                     case "allowElevation":
-                        stringBuilder.Append("can elevate");
+                        stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Elevation);
                         break;
                 }
             }
@@ -86,17 +86,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             
             if (model.Capabilities.Count - this.Count == 1)
             {
-                stringBuilder.Append(" and one another capability...");
+                stringBuilder.Append(' ');
+                stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_OneAnother);
             }
             else if (model.Capabilities.Count - this.Count > 0)
             {
-                stringBuilder.Append(" and " + (model.Capabilities.Count - this.Count) + " other capabilities...");
+                stringBuilder.Append(' ');
+                stringBuilder.AppendFormat(Resources.Localization.PackageExpert_Capabilities_Summary_XOther, model.Capabilities.Count - this.Count);
             }
 
             this.Count = model.Capabilities.Count;
             if (stringBuilder.Length == 0)
             {
-                this.Summary = "This package has no capabilities.";
+                this.Summary = Resources.Localization.PackageExpert_Capabilities_Summary_None;
             }
             else
             {

@@ -22,6 +22,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Events;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
@@ -79,7 +80,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             this._tools = new List<MenuItem>();
             var configuredTools = this._configService.GetCurrentConfiguration().Packages.Tools;
 
-            foreach (var item in configuredTools)
+            foreach (var item in configuredTools ?? Enumerable.Empty<ToolListConfiguration>())
             {
                 this._tools.Add(new MenuItem
                 {

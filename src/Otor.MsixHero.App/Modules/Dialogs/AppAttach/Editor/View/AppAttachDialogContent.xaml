@@ -102,13 +102,15 @@
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptions}" />
             </b:Interaction.Behaviors>
-            <ScrollViewer Margin="0 0 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer 
+                Margin="0 0 0 0" 
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Disabled">
                 <AdornerDecorator>
                     <StackPanel>
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}" 
-                            Text="{localization:Loc Dialogs_AppAttach_FileType}" 
-                            Margin="0 0 0 6" />
+                            Text="{localization:Loc Dialogs_AppAttach_FileType}" />
 
                         <StackPanel Orientation="Horizontal">
                             <RadioButton 

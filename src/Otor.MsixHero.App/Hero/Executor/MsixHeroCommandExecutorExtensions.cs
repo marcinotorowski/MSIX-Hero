@@ -136,7 +136,7 @@ namespace Otor.MsixHero.App.Hero.Executor
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
-                            Logger.Info().WriteLine("The user wanted to retry...");
+                            Logger.Info().WriteLine("The user wanted to retry…");
                             await this.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }
@@ -177,7 +177,7 @@ namespace Otor.MsixHero.App.Hero.Executor
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
-                            Logger.Info().WriteLine("The user wanted to retry...");
+                            Logger.Info().WriteLine("The user wanted to retry…");
                             return await this.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }

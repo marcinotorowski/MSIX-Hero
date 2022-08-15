@@ -7,15 +7,13 @@
              xmlns:mvvm1="http://prismlibrary.com/"
              xmlns:viewModels1="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.Converters"
-             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
-             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
+             Background="#FCFCFC"
+             d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
     <DockPanel DataContext="{Binding SelectedLog}">
         <DockPanel.Resources>
@@ -49,168 +47,280 @@
             </WrapPanel>
         </Border>
 
-        <Grid DockPanel.Dock="Top">
+        <background:AcrylicBackgroundControl
+            DockPanel.Dock="Top"
+            TintOpacity="0.24"
+            Margin="0 0 0 -155"
+            VerticalAlignment="Top"
+            TintBrush="{Binding Converter={StaticResource BrushConverter}}"
+            TintText="{Binding PackageName}"
+            Height="150">
+            <background:AcrylicBackgroundControl.OpacityMask>
+                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                    <GradientStop Color="#ffffff" Offset="0" />
+                    <GradientStop Color="#ffffff" Offset="0.7" />
+                    <GradientStop Color="#00000000" Offset="1" />
+                </LinearGradientBrush>
+            </background:AcrylicBackgroundControl.OpacityMask>
+            <background:AcrylicBackgroundControl.TintContent>
+                <Path 
+                    Fill="Black"
+                    Data="{Binding Converter={StaticResource IconConverter}}" 
+                    Style="{StaticResource LargeIcon}" />
+            </background:AcrylicBackgroundControl.TintContent>
+        </background:AcrylicBackgroundControl>
 
-            <background:AcrylicBackgroundControl
-                TintBrush="{Binding Converter={StaticResource BrushConverter}}"
-                TintText="{Binding PackageName}"
-                Height="155">
-                <background:AcrylicBackgroundControl.TintContent>
-                    <Path 
-                        Fill="Black"
-                        Data="{Binding Converter={StaticResource IconConverter}}" 
-                        Style="{StaticResource LargeIcon}" />
-                </background:AcrylicBackgroundControl.TintContent>
-            </background:AcrylicBackgroundControl>
+        <Border
+            Margin="8" 
+            ClipToBounds="True" DockPanel.Dock="Top">
+            <DockPanel Margin="8" VerticalAlignment="Top">
+                <Border 
+                    Background="{Binding Converter={StaticResource BrushConverter}}"
+                    Width="48" 
+                    Height="48">
+                    <Border>
+                        <Path 
+                            Fill="White"
+                            Data="{Binding Converter={StaticResource IconConverter}}" 
+                            Style="{StaticResource LargeIcon}" />
+                    </Border>
+                </Border>
 
-            <Border 
-                DockPanel.Dock="Top"
-                VerticalAlignment="Top">
-                <Grid ClipToBounds="True">
-                    <Border DockPanel.Dock="Top" Height="155" >
-                        <Border.Resources>
-                            <Style TargetType="views:Pill">
-                                <Setter Property="Background" Value="White" />
-                                <Setter Property="BorderThickness" Value="2" />
-                                <Setter Property="Padding" Value="8 4" />
-                                <Setter Property="BorderBrush" Value="#999" />
-                                <Setter Property="Margin" Value="2" />
-                                <Setter Property="Foreground" Value="#565656" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="views:Pill">
-                                            <Border
-                                                Padding="{TemplateBinding Padding}"
-                                                Background="{TemplateBinding Background}"
-                                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                                <StackPanel Orientation="Horizontal" Margin="-1 0">
-                                                    <Path 
-                                                        x:Name="PART_Icon"
-                                                        Width="16"
-                                                        Height="16"
-                                                        Margin="1 0"
-                                                        Fill="{TemplateBinding Foreground}"
-                                                        Data="{TemplateBinding Icon}" />
-                                                    <TextBlock 
-                                                        x:Name="PART_Text"
-                                                        Margin="1 0" 
-                                                        Foreground="{TemplateBinding Foreground}"
-                                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
-                                                </StackPanel>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="Icon" Value="{x:Null}">
-                                                    <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
-                                                </Trigger>
-                                                <Trigger Property="Content" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Border.Resources>
-                        <StackPanel Margin="12">
-                            <DockPanel VerticalAlignment="Top">
-                                <Border 
-                                    Background="{Binding Converter={StaticResource BrushConverter}}"
-                                    Width="48" 
-                                    Height="48">
-                                    <Border>
-                                        <Path 
-                                        Fill="White"
-                                        Data="{Binding Converter={StaticResource IconConverter}}" 
-                                        Style="{StaticResource LargeIcon}" />
-                                    </Border>
-                                </Border>
+                <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Header}" FontSize="16" FontFamily="{StaticResource SourceSansPro}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding DateTime}" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
-                                <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <AdornerDecorator>
+                <StackPanel Margin="8 0 8 8">
+                    <cards:Card Margin="0 0 0 8" HorizontalContentAlignment="Stretch">
+                        <cards:Card.Icon>
+                            <Path Data="{StaticResource VectorInfo}" Style="{StaticResource LargeIcon}" />
+                        </cards:Card.Icon>
+                        <cards:Card.Footer>
+                            <UniformGrid Columns="2" Rows="1" Margin="-8 ">
+                                <HeaderedContentControl 
+                                        Margin="8 "
+                                        Header="{localization:Loc EventViewer_Details_EventSource}" 
+                                        Style="{StaticResource CardHeader}">
+                                    <TextBlock 
+                                            HorizontalAlignment="Stretch"
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Text="{Binding Source, FallbackValue='n/a', Mode=OneWay}" />
+                                </HeaderedContentControl>
 
-                                </WrapPanel>
+                                <DockPanel
+                                    Visibility="Collapsed"
+                                    Margin="8">
+                                    <Path Data="{StaticResource SmallTimeLimit}" Style="{StaticResource SmallIcon}" Margin="0 0 4 0" />
 
-                                <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                                    <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding OpcodeDisplayName}" />
-                                    <TextBlock FontWeight="Bold" Text="{Binding Title}" FontFamily="{StaticResource SourceSansPro}" />
-                                </StackPanel>
+                                    <HeaderedContentControl
+                                        Header="Date and time"
+                                        Style="{StaticResource CardHeader}">
+                                        <TextBox 
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Style="{StaticResource TextBlock}" 
+                                            Text="{Binding DateTime, Mode=OneWay, FallbackValue='date and time', TargetNullValue='n/a'}" 
+                                        />
+                                    </HeaderedContentControl>
+                                </DockPanel>
 
+                                <HeaderedContentControl 
+                                        Header="{localization:Loc EventViewer_Details_OpcodeDisplayName}"
+                                        Margin="8"
+                                        Style="{StaticResource CardHeader}">
+                                    <TextBox 
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Style="{StaticResource TextBlock}" 
+                                            Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='error code', TargetNullValue='n/a'}" 
+                                        />
+                                </HeaderedContentControl>
+                            </UniformGrid>
+                        </cards:Card.Footer>
+                        
+                        <StackPanel>
+                            <HeaderedContentControl 
+                                Header="{localization:Loc EventViewer_Details_Message}" 
+                                Style="{StaticResource CardHeader}">
+                                <TextBox 
+                                    HorizontalAlignment="Stretch"
+                                    Style="{StaticResource TextBlock}"
+                                    VerticalScrollBarVisibility="Hidden"
+                                    MaxHeight="300"
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding Message, FallbackValue='n/a', Mode=OneWay}" />
+                            </HeaderedContentControl>
+                            <DockPanel
+                                Visibility="Collapsed"
+                                Margin="0 16 0 0">
+                                <UniformGrid Columns="2" Rows="2" Margin="-8 ">
+                                    <HeaderedContentControl 
+                                        Margin="8 "
+                                        Header="{localization:Loc EventViewer_Details_EventSource}" 
+                                        Style="{StaticResource CardHeader}">
+                                        <TextBlock 
+                                            HorizontalAlignment="Stretch"
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Text="{Binding Source, FallbackValue='n/a', Mode=OneWay}" />
+                                    </HeaderedContentControl>
+
+                                    <HeaderedContentControl 
+                                        Header="Date and time"
+                                        Margin="8"
+                                        Style="{StaticResource CardHeader}">
+                                        <TextBox 
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Style="{StaticResource TextBlock}" 
+                                            Text="{Binding DateTime, Mode=OneWay, FallbackValue='error code', TargetNullValue='n/a'}" 
+                                        />
+                                    </HeaderedContentControl>
+
+                                    <HeaderedContentControl 
+                                        Header="{localization:Loc EventViewer_Details_OpcodeDisplayName}"
+                                        Margin="8"
+                                        Style="{StaticResource CardHeader}">
+                                        <TextBox 
+                                            Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                            Style="{StaticResource TextBlock}" 
+                                            Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='error code', TargetNullValue='n/a'}" 
+                                        />
+                                    </HeaderedContentControl>
+                                </UniformGrid>
                             </DockPanel>
 
-                            <StackPanel Margin="0 12 0 0">
-                                <TextBlock TextWrapping="Wrap">
-                                <Run Text="{localization:Loc EventViewer_Details_FilePath}" FontWeight="SemiBold" />
-                                <Run Text="{Binding FilePath, Mode=OneWay, TargetNullValue='n/a'}" />
-                                </TextBlock>
-                                <TextBlock TextWrapping="Wrap">
-                                <Run Text="{localization:Loc EventViewer_Details_ErrorCode}" FontWeight="SemiBold" />
-                                <Run Text="{Binding ErrorCode, Mode=OneWay, TargetNullValue='n/a'}" />
-                                </TextBlock>
-                            </StackPanel>
-
-                            <WrapPanel Margin="-2 8 0 -2">
-                                <views:Pill
-                                    ToolTip="{localization:Loc EventViewer_Details_EventSource}"
-                                    Icon="{StaticResource SmallMicrosoftWindows}"
-                                    Content="{Binding Source}" />
-                                <views:Pill
-                                    Icon="{StaticResource SmallUserFolder}"
-                                    Content="{Binding User}" />
-                            </WrapPanel>
                         </StackPanel>
-                    </Border>
-                </Grid>
-            </Border>
-        </Grid>
+                    </cards:Card>
 
-        <TabControl Margin="12 0 0 0">
-            <TabItem Header="{localization:Loc EventViewer_Details_Properties}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <AdornerDecorator>
+                    <cards:Card Visibility="{Binding HasPackageName, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <cards:Card.Icon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
+                        </cards:Card.Icon>
                         <StackPanel>
-                            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_Message}" />
-                            <TextBox 
-                                Style="{StaticResource DataValueTextBlock}"
-                                VerticalScrollBarVisibility="Hidden"
-                                MaxHeight="300"
-                                VerticalContentAlignment="Top"
-                                TextWrapping="Wrap"
-                                Text="{Binding Message, Mode=OneWay}" />
+                            <HeaderedContentControl 
+                                Visibility="{Binding PackageName, Converter={StaticResource StringNonEmptyToVisibilityConverter}}"
+                                Header="{localization:Loc EventViewer_Details_PackageName}"
+                                Style="{StaticResource CardHeader}" >
+                                <TextBox 
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    Style="{StaticResource TextBlock}"
+                                    Text="{Binding PackageName, Mode=OneWay, FallbackValue='Package Name', TargetNullValue='n/a'}" />
 
-                            <TextBlock 
-                                Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_TroubleshootingInfo}" />
-                            <TextBox 
-                                Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Style="{StaticResource DataValueTextBlock}"
-                                VerticalScrollBarVisibility="Hidden"
-                                VerticalContentAlignment="Top"
-                                TextWrapping="Wrap"
-                                Text="{Binding Troubleshooting, Mode=OneWay}" />
+                            </HeaderedContentControl>
+                            
+                            <HeaderedContentControl 
+                                Visibility="{Binding HasUniqueFilePath, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="{localization:Loc EventViewer_Details_PackageFile}"
+                                Style="{StaticResource CardHeader}" 
+                                Margin="0 16 0 0" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_PackageName}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PackageName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                                <TextBox 
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    Style="{StaticResource TextBlock}" 
+                                    Text="{Binding FilePath, Mode=OneWay, FallbackValue='File path'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_PackageFile}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding FilePath, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_User}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding User, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ActivityId}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ActivityId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ThreadId}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ThreadId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_OpcodeDisplayName}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ErrorCode}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ErrorCode, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </StackPanel>
-                    </AdornerDecorator>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
+                    </cards:Card>
+                    
+                    <cards:Card>
+                        <cards:Card.Icon>
+                            <Path Data="{StaticResource VectorDebugging}" Style="{StaticResource LargeIcon}" />
+                        </cards:Card.Icon>
+                        <StackPanel>
+                            <UniformGrid Rows="1" Columns="2" Margin="-8 0">
+                                <HeaderedContentControl 
+                                Header="{localization:Loc EventViewer_Details_ActivityId}"
+                                Margin="8 0"
+                                Style="{StaticResource CardHeader}">
+                                    <TextBox 
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    Style="{StaticResource TextBlock}"
+                                    Text="{Binding ActivityId, Mode=OneWay, FallbackValue='activity ID', TargetNullValue='n/a'}" />
+
+                                </HeaderedContentControl>
+                                <HeaderedContentControl 
+                                Header="{localization:Loc EventViewer_Details_ThreadId}"
+                                Margin="8 0"
+                                Style="{StaticResource CardHeader}">
+                                    <TextBox 
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    Style="{StaticResource TextBlock}" 
+                                    Text="{Binding ThreadId, Mode=OneWay, FallbackValue='thread id', TargetNullValue='n/a'}" />
+
+                                </HeaderedContentControl>
+                            </UniformGrid>
+
+                            <Border
+                                Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Padding="0 8 0 0"
+                                Margin="0 8 0 0"
+                                BorderThickness="0 1 0 0"
+                                BorderBrush="{StaticResource CardBorderBrush}">
+
+                                <Border
+                                    CornerRadius="4"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    ToolTip="{Binding TranslatedErrorCode}"
+                                    Background="#eeeeee">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path 
+                                            Data="{StaticResource SmallError}" 
+                                            Style="{StaticResource SmallIcon}" 
+                                            Fill="#555" 
+                                            Margin="8 4 4 4" />
+
+                                        <TextBlock
+                                            Margin="0 4 8 4"
+                                            Foreground="#555">
+                                            <Run 
+                                                Text="ERROR CODE:"
+                                                FontWeight="SemiBold" />
+                                            <Run Text="{Binding ErrorCode, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+
+                            <HeaderedContentControl
+                                Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="{Binding TroubleshootingTitle, FallbackValue='n/a', Mode=OneWay}"
+                                Padding="0 8 0 0"
+                                Margin="0 8 0 0"
+                                BorderThickness="0 1 0 0"
+                                BorderBrush="{StaticResource CardBorderBrush}"
+                                Style="{StaticResource CardHeader}">
+
+                               <TextBox 
+                                    Style="{StaticResource TextBlock}"
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalScrollBarVisibility="Hidden"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding TroubleshootingDescription, FallbackValue='n/a', Mode=OneWay}" />
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </cards:Card>
+
+                    <cards:Card>
+                        <cards:Card.Icon>
+                            <Path Data="{StaticResource VectorUser}" Style="{StaticResource LargeIcon}" />
+                        </cards:Card.Icon>
+                        <HeaderedContentControl 
+                            Header="{localization:Loc EventViewer_Details_User}"
+                            Style="{StaticResource CardHeader}">
+                            <TextBox 
+                                Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                Style="{StaticResource TextBlock}" 
+                                Text="{Binding User, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                        </HeaderedContentControl>
+                    </cards:Card>
+                </StackPanel>
+            </AdornerDecorator>
+        </ScrollViewer>
+
     </DockPanel>
 </UserControl>

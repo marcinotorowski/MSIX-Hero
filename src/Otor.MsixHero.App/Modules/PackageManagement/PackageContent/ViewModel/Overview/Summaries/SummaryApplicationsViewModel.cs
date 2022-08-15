@@ -24,6 +24,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Infrastructure.Localization;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
@@ -48,7 +49,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             if (promotedApplication == null)
             {
                 // no applications
-                this.SecondLine = "No applications";
+                this.SecondLine = Resources.Localization.PackageExpert_Applications_None;
             }
             else
             {
@@ -65,10 +66,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                         this.SecondLine = promotedName;
                         break;
                     case 1:
-                        this.SecondLine = string.Format("{0} and one another application", promotedName);
+                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_OneExtra, promotedName);
                         break;
                     default:
-                        this.SecondLine = string.Format("{0} and {1} other applications", promotedName, 1);
+                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_XExtra, promotedName, 1);
                         break;
                 }
             }

@@ -25,11 +25,9 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         public PackagesConfiguration()
         {
             this.Sidebar = new SidebarListConfiguration();
-            this.Tools = new List<ToolListConfiguration>();
             this.Filter = new PackagesFilterConfiguration();
             this.Group = new PackagesGroupConfiguration();
             this.Sorting = new PackagesSortConfiguration();
-            this.StarredApps = new List<string>();
         }
         
         [DataMember(Name = "filter")]

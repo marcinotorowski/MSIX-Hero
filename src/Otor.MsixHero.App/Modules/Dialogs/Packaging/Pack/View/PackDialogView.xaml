@@ -25,7 +25,7 @@
                             Style="{StaticResource LabelTextBlock}"
                             Text="{localization:Loc Dialogs_Pack_FullPathFolder}" />
                         <DockPanel>
-                            <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                            <Button TabIndex="3" Padding="10 0" Content="…" DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
                             <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
 
@@ -34,7 +34,7 @@
                                         Style="{StaticResource LabelTextBlock}" 
                                         Text="{localization:Loc Dialogs_Pack_FullPathMSIX}" Margin="0 16 0 6" />
                         <DockPanel>
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                            <Button TabIndex="5" Padding="10 0" Content="…" DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
                             <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
 

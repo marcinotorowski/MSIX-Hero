@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement.ViewModels"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:VolumesSingleDetailsViewModel}">
@@ -55,12 +55,23 @@
             </WrapPanel>
         </Border>
 
-        <Grid VerticalAlignment="Top" ClipToBounds="True">
+        <DockPanel VerticalAlignment="Top" ClipToBounds="True">
 
             <background:AcrylicBackgroundControl
-                    TintBrush="#0173C7"
-                    TintText="{Binding Volume.DiskLabel}"
-                    Height="155">
+                DockPanel.Dock="Top"
+                TintOpacity="0.24"
+                Margin="0 0 0 -155"
+                VerticalAlignment="Top"
+                TintBrush="#0173C7"
+                TintText="{Binding Volume.DiskLabel}"
+                Height="150">
+                <background:AcrylicBackgroundControl.OpacityMask>
+                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                        <GradientStop Color="#ffffff" Offset="0" />
+                        <GradientStop Color="#ffffff" Offset="0.7" />
+                        <GradientStop Color="#00000000" Offset="1" />
+                    </LinearGradientBrush>
+                </background:AcrylicBackgroundControl.OpacityMask>
                 <background:AcrylicBackgroundControl.TintContent>
                     <Path 
                         Fill="Black"
@@ -69,122 +80,116 @@
                 </background:AcrylicBackgroundControl.TintContent>
             </background:AcrylicBackgroundControl>
 
-            <Border DockPanel.Dock="Top" Height="155" >
-                <Border.Resources>
-                    <Style TargetType="views:Pill">
-                        <Setter Property="Background" Value="White" />
-                        <Setter Property="BorderThickness" Value="2" />
-                        <Setter Property="Padding" Value="8 4" />
-                        <Setter Property="BorderBrush" Value="#999" />
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="Foreground" Value="#565656" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="views:Pill">
-                                    <Border
-                                        Padding="{TemplateBinding Padding}"
-                                        Background="{TemplateBinding Background}"
-                                        CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                        <StackPanel Orientation="Horizontal" Margin="-1 0">
-                                            <Path 
-                                                x:Name="PART_Icon"
-                                                Width="16"
-                                                Height="16"
-                                                Margin="1 0"
-                                                Fill="{TemplateBinding Foreground}"
-                                                Data="{TemplateBinding Icon}" />
-                                            <TextBlock 
-                                                x:Name="PART_Text"
-                                                Margin="1 0" 
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
-                                        </StackPanel>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="Icon" Value="{x:Null}">
-                                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
-                                        </Trigger>
-                                        <Trigger Property="Content" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Border.Resources>
-                <StackPanel Margin="12">
-                    <DockPanel VerticalAlignment="Top">
-                        <Border 
-                            Background="{StaticResource MsixHero.Brushes.Accent}"
-                            Width="48" 
-                            Height="48">
-                            <Border>
-                                <Path 
-                                    Fill="White"
-                                    Data="{StaticResource VectorDisk}" 
-                                    Style="{StaticResource LargeIcon}" />
-                            </Border>
-                        </Border>
 
-                        <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
-                            <views:Pill
-                                    Visibility="{Binding Volume.IsSystem, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="{localization:Loc Volumes_SystemVolume_Tooltip}"
-                                    Icon="{StaticResource SmallMicrosoftWindows}"
-                                    Content="{localization:Loc Volumes_SystemVolume_Caption}" />
-                            <views:Pill
-                                    Visibility="{Binding Volume.IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="{localization:Loc Volumes_DefaultVolume_Tooltip}"
-                                    Icon="{StaticResource SmallOk}"
-                                    Content="{localization:Loc Volumes_DefaultVolume_Caption}" />
-                        </WrapPanel>
+            <Border
+                Margin="8" 
+                ClipToBounds="True" DockPanel.Dock="Top">
+                <DockPanel Margin="8" VerticalAlignment="Top">
+                    <Border 
+                        Background="{StaticResource MsixHero.Brushes.Accent}"
+                        Width="48" 
+                        Height="48">
+                        <Path 
+                            Fill="White"
+                            Data="{StaticResource VectorDisk}" 
+                            Style="{StaticResource LargeIcon}" />
+                    </Border>
 
-                        <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                            <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding Volume.PackageStorePath}" />
-                            <TextBlock FontWeight="Bold" Text="{Binding Volume.Name}" FontFamily="{StaticResource SourceSansPro}" />
-                        </StackPanel>
-                    </DockPanel>
-
-                    <StackPanel Margin="0 12 0 0">
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding ConverterParameter="{x:Static converters:VolumeSizeCaptionConverterMode.OccupiedFree}">
-                                    <MultiBinding.Converter>
-                                        <converters:VolumeSizeCaptionConverter />
-                                    </MultiBinding.Converter>
-                                    <MultiBinding.Bindings>
-                                        <localization:Loc StringName="Volumes_SizeConverter_Caption_Format" />
-                                        <Binding Path="Volume.OccupiedSpace" Mode="OneWay" />
-                                        <Binding Path="Volume.AvailableFreeSpace" Mode="OneWay" />
-                                    </MultiBinding.Bindings>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <ProgressBar 
-                            Height="10" Margin="0 6 0 0" 
-                            Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
-                            Maximum="{Binding Volume.Capacity, Mode=OneWay}" 
-                            Background="{StaticResource MsixHero.Brushes.Accent.Light1}" 
-                            Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                    <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Volume.PackageStorePath}" FontSize="16" FontFamily="{StaticResource SourceSansPro}" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Volume.Name}" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
                     </StackPanel>
-
-                    <WrapPanel Margin="-2 8 0 -2">
-
-                        <views:Pill
-                            Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            ToolTip="{localization:Loc Volumes_DetachedVolume_Tooltip}"
-                            Icon="{StaticResource SmallPlugOut}"
-                            Content="{localization:Loc Volumes_DetachedVolume_Caption}" />
-
-                        <views:Pill
-                            Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                            ToolTip="{localization:Loc Volumes_OnlineVolume_Tooltip}"
-                            Icon="{StaticResource SmallPlugin}"
-                            Content="{localization:Loc Volumes_OnlineVolume_Caption}" />
-                    </WrapPanel>
-                </StackPanel>
+                </DockPanel>
             </Border>
-        </Grid>
+
+            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <AdornerDecorator>
+                    <StackPanel Margin="8 0 8 8">
+                        <cards:Card HorizontalContentAlignment="Stretch">
+                            <cards:Card.Icon>
+                                <Path Data="{StaticResource VectorDisk}" Style="{StaticResource LargeIcon}" />
+                            </cards:Card.Icon>
+                            <HeaderedContentControl Style="{StaticResource CardHeader}">
+                                <HeaderedContentControl.Header>
+                                    <MultiBinding FallbackValue="Occupied space" ConverterParameter="{x:Static converters:VolumeSizeCaptionConverterMode.OccupiedFree}">
+                                        <MultiBinding.Converter>
+                                            <converters:VolumeSizeCaptionConverter />
+                                        </MultiBinding.Converter>
+                                        <MultiBinding.Bindings>
+                                            <localization:Loc StringName="Volumes_SizeConverter_Caption_Format" />
+                                            <Binding Path="Volume.OccupiedSpace" Mode="OneWay" />
+                                            <Binding Path="Volume.AvailableFreeSpace" Mode="OneWay" />
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </HeaderedContentControl.Header>
+                                <HeaderedContentControl.Content>
+                                    <ProgressBar 
+                                        Height="10" Margin="0 6 0 0" 
+                                        Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
+                                        Maximum="{Binding Volume.Capacity, Mode=OneWay}" 
+                                        Background="{StaticResource MsixHero.Brushes.Accent.Light1}" 
+                                        Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                                </HeaderedContentControl.Content>
+                            </HeaderedContentControl>
+                            <cards:Card.Footer>
+                                <StackPanel Orientation="Horizontal" Margin="-16 0">
+
+                                    <!-- Online volume -->
+                                    <Border 
+                                        Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                                        ToolTip="{localization:Loc Volumes_SystemVolume_Tooltip}"
+                                        Background="Transparent"
+                                        Margin="16 0">
+                                        <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_Status}">
+                                            <controls:LabelWithIcon Foreground="Green" Icon16x16="{StaticResource SmallPlugin}" Margin="0 4 0 0" Content="{localization:Loc Volumes_OnlineVolume_Caption}" />
+                                        </HeaderedContentControl>
+                                    </Border>
+
+                                    <!-- Offline volume -->
+                                    <Border 
+                                        Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        ToolTip="{localization:Loc Volumes_DetachedVolume_Tooltip}"
+                                        Background="Transparent"
+                                        Margin="16 0">
+                                        <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_Status}">
+                                            <controls:LabelWithIcon Foreground="DarkGray" Icon16x16="{StaticResource SmallPlugOut}" Margin="0 4 0 0" Content="{localization:Loc Volumes_DetachedVolume_Caption}" />
+                                        </HeaderedContentControl>
+                                    </Border>
+
+                                    <!-- System volume -->
+                                    <Border 
+                                        Visibility="{Binding Volume.IsSystem, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        ToolTip="{localization:Loc Volumes_SystemVolume_Tooltip}"
+                                        Background="Transparent"
+                                        Margin="16 0">
+                                        <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_SystemVolume_Caption}">
+                                            <controls:LabelWithIcon Foreground="{StaticResource CardHeaderSecondLineBrush}" Icon16x16="{StaticResource SmallMicrosoftWindows}" Margin="0 4 0 0"
+                                                                    Content="{localization:Loc Volumes_Yes_Label}" />
+                                        </HeaderedContentControl>
+                                    </Border>
+
+                                    <!-- Default volume -->
+                                    <Border 
+                                        Visibility="{Binding Volume.IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        ToolTip="{localization:Loc Volumes_DefaultVolume_Tooltip}"
+                                        Background="Transparent"
+                                        Margin="16 0">
+                                        <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_DefaultVolume_Caption}">
+                                            <StackPanel 
+                                                Orientation="Horizontal">
+                                                <Path Data="{StaticResource SmallOk}" Fill="{StaticResource CardHeaderSecondLineBrush}" Style="{StaticResource SmallIcon}" />
+                                                <TextBlock 
+                                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                                    Text="{localization:Loc Volumes_Yes_Label}" />
+                                            </StackPanel>
+                                        </HeaderedContentControl>
+                                    </Border>
+                                </StackPanel>
+                            </cards:Card.Footer>
+                        </cards:Card>
+                    </StackPanel>
+                </AdornerDecorator>
+            </ScrollViewer>
+        </DockPanel>
     </DockPanel>
 </UserControl>

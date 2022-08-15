@@ -9,6 +9,7 @@ namespace Otor.MsixHero.App.Controls.WindowsVersion
     {
         public static readonly DependencyProperty Windows11ImageSourceProperty = DependencyProperty.Register(nameof(Windows11ImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
         public static readonly DependencyProperty Windows10ImageSourceProperty = DependencyProperty.Register(nameof(Windows10ImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
+        public static readonly DependencyProperty Windows7ImageSourceProperty = DependencyProperty.Register(nameof(Windows7ImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
         public static readonly DependencyProperty Windows8ImageSourceProperty = DependencyProperty.Register(nameof(Windows8ImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
         public static readonly DependencyProperty UnknownImageSourceProperty = DependencyProperty.Register(nameof(UnknownImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
         public static readonly DependencyPropertyKey ActualImageSourcePropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null));
@@ -33,6 +34,12 @@ namespace Otor.MsixHero.App.Controls.WindowsVersion
         {
             get => (ImageSource)GetValue(Windows8ImageSourceProperty);
             set => SetValue(Windows8ImageSourceProperty, value);
+        }
+
+        public ImageSource Windows7ImageSource
+        {
+            get => (ImageSource)GetValue(Windows7ImageSourceProperty);
+            set => SetValue(Windows7ImageSourceProperty, value);
         }
 
         public ImageSource UnknownImageSource
@@ -86,7 +93,11 @@ namespace Otor.MsixHero.App.Controls.WindowsVersion
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows11ImageSource;
                     break;
                 case Appx.Packaging.Manifest.Enums.WindowsVersion.Win8:
+                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win81:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows8ImageSource;
+                    break;
+                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win7:
+                    ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows7ImageSource;
                     break;
                 default:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).UnknownImageSource;

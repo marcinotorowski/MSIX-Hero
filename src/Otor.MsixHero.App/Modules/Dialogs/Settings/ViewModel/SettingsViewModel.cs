@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -529,8 +530,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (toolsTouched)
             {
-                newConfiguration.Packages.Tools.Clear();
-                newConfiguration.Packages.Tools.AddRange(this.Tools.Items.Select(t => (ToolListConfiguration)t));
+                newConfiguration.Packages.Tools = new List<ToolListConfiguration>(this.Tools.Items.Select(t => (ToolListConfiguration)t));
             }
 
             await this._configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);

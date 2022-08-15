@@ -166,10 +166,21 @@ namespace Otor.MsixHero.Infrastructure.Services
         {
             var result = new Configuration.Configuration();
             result.Packages.Sidebar.Visible = true;
-            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true });
-            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" });
-            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" });
-            result.Packages.Tools.Add(new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" });
+
+
+            result.Packages.StarredApps = new List<string>
+            {
+                "48548MarcinOtorowski.MSIXHero_0.0.0.0_Neutral__0ctrt0jrcjnrt"
+            };
+
+            result.Packages.Tools = new List<ToolListConfiguration>
+            {
+                new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true },
+                new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" },
+                new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" },
+                new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" }
+            };
+
             return result;
         }
 
@@ -227,9 +238,14 @@ namespace Otor.MsixHero.Infrastructure.Services
                 result.Packages = defaults.Packages;
             }
 
-            if (result.Packages.Tools == null || !result.Packages.Tools.Any())
+            if (result.Packages.Tools == null)
             {
                 result.Packages.Tools = defaults.Packages.Tools;
+            }
+
+            if (result.Packages.StarredApps == null)
+            {
+                result.Packages.StarredApps = defaults.Packages.StarredApps;
             }
 
             if (result.Packages.Sidebar == null)

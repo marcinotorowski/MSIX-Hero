@@ -22,7 +22,7 @@
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
             <cards:CardAction.Content>
-                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
                         <TextBlock Text="Package Support Framework" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>

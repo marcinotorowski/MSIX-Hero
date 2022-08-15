@@ -31,16 +31,9 @@
             x:Name="Star"
             Margin="8 4 4 4"
             DockPanel.Dock="Right"
-            IsChecked="{Binding HasStar, Mode=TwoWay}">
-            <star:StarControl.ToolTipStarred>
-                This package is starred and is displayed on the top of the list, regardless of the sorting.
-                Click the icon again to remove the star.
-            </star:StarControl.ToolTipStarred>
-            <star:StarControl.ToolTipNotStarred>
-                Click the icon to star this package.
-                Starred packages are displayed on the top of the list, regardless of the sorting.
-            </star:StarControl.ToolTipNotStarred>
-        </star:StarControl>
+            ToolTipNotStarred="{localization:Loc Package_Star_Tooltip}"
+            ToolTipStarred="{localization:Loc Package_Unstar_Tooltip}"
+            IsChecked="{Binding HasStar, Mode=TwoWay}" />
 
         <StackPanel 
             x:Name="Column2"

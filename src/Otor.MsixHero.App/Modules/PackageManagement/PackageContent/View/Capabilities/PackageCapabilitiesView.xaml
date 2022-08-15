@@ -45,9 +45,9 @@
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
             <cards:CardAction.Content>
-                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Capabilities" FontWeight="SemiBold" />
+                        <TextBlock Text="{localization:Loc PackageExpert_Tab_Capabilities}" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>
@@ -99,10 +99,6 @@
                     Topic="{localization:Loc PackageExpert_Tab_Capabilities_MoreLink}"
                     Margin="0 0 0 8" />
             </StackPanel>
-
-            <!--<ItemsControl
-                            Padding="0 0 0 1" 
-                            ItemsSource="{Binding Capabilities}" />-->
         </ScrollViewer>
     </DockPanel>
 </UserControl>

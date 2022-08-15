@@ -28,9 +28,9 @@
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
             <cards:CardAction.Content>
-                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="Go back to package overview">
+                <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Package installation" FontWeight="SemiBold" />
+                        <TextBlock Text="{localization:Loc PackageExpert_Tabs_Installation}" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>
@@ -78,13 +78,24 @@
                             <sourceView:AppInstallerSourceView />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type source:StorePackageSourceViewModel}">
-                            <sourceView:StoreSourceView />
                         </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>
 
-                <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="ADD-ONS + MODIFICATION PACKAGES" />
-                <TextBlock Text="None" Visibility="{Binding HasAddOns, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+                <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" 
+                       Content="{localization:Loc PackageExpert_Tabs_AddOns}" />
+                
+                <Border 
+                    Visibility="{Binding HasAddOns, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    Padding="{StaticResource CardContentPadding}"
+                    BorderThickness="{StaticResource CardBorderThickness}"
+                    Background="#FAFAFA">
+                    <TextBlock 
+                        Foreground="{StaticResource CardHeaderSecondLineBrush}" 
+                        Text="{localization:Loc PackageExpert_Installation_NoAddons}" />
+                </Border>
+
                 <ItemsControl
                     Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}"
                     ItemsSource="{Binding AddOns}">
@@ -121,45 +132,44 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="INSTALLED FOR" />
-                <Grid>
-                    <Border 
+                <Label Style="{StaticResource FormLabelThin}" Margin="0 16 0 8" Content="{localization:Loc PackageExpert_Installation_For}" />
+
+                <Border 
                         BorderBrush="{StaticResource CardBorderBrush}"
                         Padding="{StaticResource CardContentPadding}"
                         BorderThickness="{StaticResource CardBorderThickness}"
                         Visibility="{Binding Users.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
-                        Background="#11ffff00">
+                        Background="#FFF7CD">
 
-                        <StackPanel>
-                            <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="{localization:Loc PackageExpert_Installations_UacPrompt}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
-                            <Button 
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="{localization:Loc PackageExpert_Installations_UacPrompt}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
+                        <Button 
                                 Margin="0 8 0 0"
                                 Style="{StaticResource CardButton}"
                                 DockPanel.Dock="Top" 
                                 HorizontalAlignment="Center" 
                                 Command="{Binding FindUsers}">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
-                                    <TextBlock Text="{localization:Loc PackageExpert_Installations_UacPrompt_Caption}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </Border>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                                <TextBlock Text="{localization:Loc PackageExpert_Installations_UacPrompt_Caption}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
-                    <ItemsControl Visibility="{Binding Users.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Users.InstalledBy}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="{StaticResource CardBackgroundBrush}"
+                <ItemsControl Visibility="{Binding Users.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Users.InstalledBy}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource CardBackgroundBrush}"
                                         BorderBrush="{StaticResource CardBorderBrush}"
                                         BorderThickness="{StaticResource CardBorderThickness}"
                                         Margin="{StaticResource CardMargin}"
                                         Padding="{StaticResource CardContentPadding}">
-                                    <TextBlock Text="{Binding Name}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
+                                <TextBlock Text="{Binding Name}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
             </StackPanel>
         </ScrollViewer>

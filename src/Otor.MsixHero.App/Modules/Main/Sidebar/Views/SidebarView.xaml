@@ -23,67 +23,35 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
-                                <Ellipse 
-                                        Visibility="{TemplateBinding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Fill="#eeeeee"
-                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                </Ellipse>
 
-                                <Ellipse 
+                                <Border 
+                                    Visibility="Collapsed"
+                                    x:Name="PART_Border"
+                                    Background="{StaticResource MsixHero.Brushes.Accent}" 
+                                    Width="3" CornerRadius="6" 
+                                    Margin="3"  
+                                    Height="60" 
+                                    VerticalAlignment="Center" HorizontalAlignment="Left">
+                                </Border>
+
+                                <Border 
+                                    Visibility="{TemplateBinding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Background="#eeeeee"
+                                    Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                </Border>
+
+                                <Border 
                                     x:Name="PART_Background"
-                                    Fill="#0173C7"
+                                    Background="#0173C7"
                                     Opacity="0"
-                                    Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <Ellipse.RenderTransform>
-                                        <ScaleTransform ScaleX="0.0" ScaleY="0.0" CenterX="20.5" CenterY="20.5" />
-                                    </Ellipse.RenderTransform>
-                                </Ellipse>
+                                    Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                </Border>
 
-                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4 0 0 0">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    <TextBlock TextTrimming="CharacterEllipsis" Text="{TemplateBinding ToolTip}" FontSize="9" Opacity="0.8" Margin="0 3 0 0" />
+                                </StackPanel>
                             </Grid>
-                            <ControlTemplate.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsPressed" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
-                                                    Duration="00:00:0.3"
-                                                    To="1.0"
-                                                    From="0.0"
-                                                    AutoReverse="True"
-                                                    AccelerationRatio="0.5"
-                                                    DecelerationRatio="0.5"
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                    Storyboard.TargetName="PART_Background">
-                                                </DoubleAnimation>
-                                                <DoubleAnimation 
-                                                    Duration="00:00:0.3"
-                                                    To="1.0"
-                                                    From="0.0"
-                                                    AutoReverse="True"
-                                                    AccelerationRatio="0.5"
-                                                    DecelerationRatio="0.5"
-                                                    Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                    Storyboard.TargetName="PART_Background">
-                                                </DoubleAnimation>
-                                                <DoubleAnimation 
-                                                    Duration="00:00:0.3"
-                                                    To="0.3"
-                                                    From="0.0"
-                                                    AutoReverse="True"
-                                                    AccelerationRatio="0.5"
-                                                    DecelerationRatio="0.5"
-                                                    Storyboard.TargetProperty="Opacity"
-                                                    Storyboard.TargetName="PART_Background">
-                                                </DoubleAnimation>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.EnterActions>
-                                </MultiTrigger>
-                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -161,7 +129,6 @@
                                         Opacity="0"
                                         Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     </Border>
-                                    <!--Fill="#B1D6F0"-->
 
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4 0 0 0">
                                         <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />

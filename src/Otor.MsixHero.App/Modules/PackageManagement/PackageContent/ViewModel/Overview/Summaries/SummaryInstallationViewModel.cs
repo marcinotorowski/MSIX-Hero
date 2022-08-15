@@ -45,48 +45,48 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             this.IsInstalled = true;
             if (model.Source is NotInstalledSource)
             {
-                this.FirstLine = "Installation status";
+                this.FirstLine = Resources.Localization.PackageExpert_Installation_Status;
             }
             else if (model.Source.InstallDate != default)
             {
-                this.FirstLine = "Installed on **" + model.Source.InstallDate + "**";
+                this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, model.Source.InstallDate);
             }
             else
             {
-                this.FirstLine = "Installed";
+                this.FirstLine = Resources.Localization.PackageExpert_Installation_StatusDateUnknown;
             }
 
             if (model.Source is NotInstalledSource)
             {
                 this.IsInstalled = false;
-                this.SecondLine = "Not installed";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_NotInstalled;
             }
             else if (model.Source is StorePackageSource)
             {
-                this.SecondLine = "from Microsoft Store";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_Store;
             }
             else if (model.Source is AppInstallerPackageSource)
             {
-                this.SecondLine = "from .appinstaller file";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_AppInstaller;
             }
             else if (model.Source is SystemSource)
             {
-                this.SecondLine = "as system application";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_System;
             }
             else if (model.Source is DeveloperSource)
             {
-                this.SecondLine = "in development mode";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Dev;
             }
             else if (model.Source is StandardSource)
             {
-                this.SecondLine = "via side-loading";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_SideLoading;
             }
             else
             {
-                this.SecondLine = "Unknown";
+                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Unknown;
             }
 
-            this.ThirdLine = this.AddOnsCount > 1 ? string.Format("{0} add-ons", this.AddOnsCount) : "one add-on";
+            this.ThirdLine = this.AddOnsCount > 1 ? string.Format(Resources.Localization.PackageExpert_Installation_AddOnX, this.AddOnsCount) : Resources.Localization.PackageExpert_Installation_AddOn1;
 
             this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);
 

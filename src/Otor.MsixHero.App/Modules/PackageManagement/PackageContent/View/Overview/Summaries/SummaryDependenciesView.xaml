@@ -6,6 +6,8 @@
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryDependenciesViewModel}">
 
@@ -15,19 +17,23 @@
         </cards:CardAction.Icon>
         <cards:CardAction.Content>
             <HeaderedContentControl 
-                Content="{Binding Summary, FallbackValue='This package contains no dependencies'}"
+                Content="{Binding Summary}"
                 Style="{StaticResource CardHeader}">
                 <HeaderedContentControl.Header>
-                    <TextBlock>
-                        <Run Text="Software and OS requirements:" />
-                        <Run Text="{Binding Count, Mode=OneWay, FallbackValue=0}" FontWeight="Bold" />
+                    <TextBlock Tag="">
+                        <controls:SimpleTextMarkup.Markup>
+                            <MultiBinding FallbackValue="Dependencies: 0" Converter="{StaticResource StringFormatConverter}">
+                                <localization:Loc StringName="PackageExpert_Summary_Dependencies" />
+                                <Binding Path="Count" Mode="OneWay" FallbackValue="0" />
+                            </MultiBinding>
+                        </controls:SimpleTextMarkup.Markup>
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
         </cards:CardAction.Content>
         <cards:CardAction.ContentRight>
             <Button 
-                Content="Dependency graph..." 
+                Content="{localization:Loc PackageExpert_Summary_Dependencies_OpenGraph}" 
                 Command="{x:Static hero:MsixHeroRoutedUICommands.DependencyViewer}" 
                 Style="{StaticResource CardButton}" />
         </cards:CardAction.ContentRight>

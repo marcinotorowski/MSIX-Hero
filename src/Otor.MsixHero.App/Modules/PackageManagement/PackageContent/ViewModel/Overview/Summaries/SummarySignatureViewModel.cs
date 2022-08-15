@@ -65,7 +65,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                             return;
                         }
 
-                        if (this._interactionService.Confirm("Are you sure you want to add this publisher to the list of trusted publishers (machine-wide)?", type: InteractionType.Question, buttons: InteractionButton.YesNo) != InteractionResult.Yes)
+                        if (this._interactionService.Confirm(Resources.Localization.PackageExpert_Trust_Prompt, type: InteractionType.Question, buttons: InteractionButton.YesNo) != InteractionResult.Yes)
                         {
                             return;
                         }

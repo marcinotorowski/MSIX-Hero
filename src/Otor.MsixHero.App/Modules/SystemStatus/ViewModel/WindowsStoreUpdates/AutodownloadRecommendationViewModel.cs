@@ -47,24 +47,33 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates
 
         private void SetStatusAndSummary()
         {
-            this.autoDownloadStatus = this.WindowsStoreAutoDownloadConfigurator.Get();
+            this.IsLoading = true;
 
-            switch (this.AutoDownloadStatus)
+            try
             {
-                case WindowsStoreAutoDownload.Default:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option0;
-                    break;
-                case WindowsStoreAutoDownload.Always:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option1;
-                    break;
-                case WindowsStoreAutoDownload.Never:
-                    this.Status = RecommendationStatus.Success;
-                    this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option2;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                this.autoDownloadStatus = this.WindowsStoreAutoDownloadConfigurator.Get();
+
+                switch (this.AutoDownloadStatus)
+                {
+                    case WindowsStoreAutoDownload.Default:
+                        this.Status = RecommendationStatus.Success;
+                        this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option0;
+                        break;
+                    case WindowsStoreAutoDownload.Always:
+                        this.Status = RecommendationStatus.Success;
+                        this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option1;
+                        break;
+                    case WindowsStoreAutoDownload.Never:
+                        this.Status = RecommendationStatus.Success;
+                        this.Summary = Resources.Localization.System_AutoDownload_Recommendation_Option2;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            finally
+            {
+                this.IsLoading = false;
             }
         }
 

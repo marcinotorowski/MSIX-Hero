@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Users;
 

@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryApplicationsViewModel}">
@@ -21,8 +23,12 @@
                 Content="{Binding SecondLine}">
                 <HeaderedContentControl.Header>
                     <TextBlock>
-                        <Run Text="Applications" />
-                        <Run Text="{Binding AppCount, Mode=OneWay, FallbackValue='0'}"></Run>
+                        <controls:SimpleTextMarkup.Markup>
+                            <MultiBinding FallbackValue="Applications: 0" Converter="{StaticResource StringFormatConverter}">
+                                <localization:Loc StringName="PackageExpert_Summary_Applications" />
+                                <Binding Path="AppCount" Mode="OneWay" FallbackValue="0" />
+                            </MultiBinding>
+                        </controls:SimpleTextMarkup.Markup>
                     </TextBlock>
                 </HeaderedContentControl.Header>
             </HeaderedContentControl>
@@ -41,7 +47,6 @@
                             <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             <Image Source="{Binding Logo}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="32" MaxHeight="32" Stretch="Uniform" StretchDirection="DownOnly" ToolTip="{Binding Name}" />
                         </Grid>
-                        
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

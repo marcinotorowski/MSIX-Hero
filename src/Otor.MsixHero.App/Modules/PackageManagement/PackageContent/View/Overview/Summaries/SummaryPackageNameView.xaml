@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryPackageNameViewModel}">
 
@@ -14,8 +15,8 @@
         </cards:CardExpander.Icon>
         <cards:CardExpander.Content>
             <HeaderedContentControl 
-                    Header="Package name"
-                    Content="{Binding PackageFullName, FallbackValue='Full name'}"
+                    Header="{localization:Loc Dialogs_ModPack_Package}"
+                    Content="{Binding PackageFullName}"
                     Style="{StaticResource CardHeader}" />
         </cards:CardExpander.Content>
         <cards:CardExpander.ContentExpanded>
@@ -52,22 +53,22 @@
                     VerticalAlignment="Center"
                     Margin="0 8"
                     FontWeight="SemiBold" Grid.Row="1" Grid.Column="0"
-                    Text="Package name" />
+                    Text="{localization:Loc Dialogs_ModPack_Package}" />
                 <TextBlock
                     VerticalAlignment="Center"
                     Margin="0 8"
                     FontWeight="SemiBold" Grid.Row="2" Grid.Column="0"
-                    Text="Package family" />
+                    Text="{localization:Loc Dialogs_Winget_Installer_PFN}" />
                 <TextBlock
                     VerticalAlignment="Center"
                     Margin="0 8"
                     FontWeight="SemiBold" Grid.Row="3" Grid.Column="0"
-                    Text="Package publisher" />
+                    Text="{localization:Loc PackagePublisher}" />
                 <TextBlock
                     VerticalAlignment="Center"
                     Margin="0 8"
                     FontWeight="SemiBold" Grid.Row="4" Grid.Column="0"
-                    Text="Architecture" />
+                    Text="{localization:Loc Dialogs_PackageName_Architecture}" />
 
                 <TextBox 
                     VerticalAlignment="Center"
@@ -82,7 +83,7 @@
                     VerticalAlignment="Center"
                     Text="{Binding Architecture, FallbackValue='Architecture', Mode=OneWay}" Grid.Row="4" Grid.Column="2" Margin="0 4" />
 
-                <Button Command="{Binding OpenPackageNameCalculator}" Content="Open package name calculator..." Grid.Row="5" Margin="0 8 0 4" Style="{StaticResource CardButton}" HorizontalAlignment="Left" Grid.Column="2" />
+                <Button Command="{Binding OpenPackageNameCalculator}" Content="{localization:Loc PackageExpert_NameCalculator_OpenButton}" Grid.Row="5" Margin="0 8 0 4" Style="{StaticResource CardButton}" HorizontalAlignment="Left" Grid.Column="2" />
             </Grid>
         </cards:CardExpander.ContentExpanded>
     </cards:CardExpander>

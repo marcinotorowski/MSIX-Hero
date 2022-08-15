@@ -78,7 +78,7 @@
                             controls1:RequiredAdorner.IsRequired="True"
                             Text="{localization:Loc Dialogs_ModPack_SourceLabel}" Margin="0 0 0 6" Style="{StaticResource DataHeader}" />
                             <DockPanel>
-                                <Button Content="..." Command="{Binding SourcePath.Browse}" DockPanel.Dock="Right" Margin="6 0 0 0" />
+                                <Button Content="…" Command="{Binding SourcePath.Browse}" DockPanel.Dock="Right" Margin="6 0 0 0" />
                                 <TextBox 
                                     IsReadOnly="True" 
                                     Text="{Binding SourcePath.CurrentValue, Mode=TwoWay, 
@@ -153,14 +153,14 @@
                         <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                    Text="{localization:Loc Dialogs_ModPack_AdditionalContent_Files_Hint}" TextWrapping="Wrap" Margin="22 0 0 6" />
                         <DockPanel Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="22 0 0 16">
-                            <Button Command="{Binding SourceFolder.Browse}" Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" />
+                            <Button Command="{Binding SourceFolder.Browse}" Content="…" DockPanel.Dock="Right" Margin="4 0 0 0" />
                             <TextBox 
                                 Text="{Binding SourceFolder.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                         </DockPanel>
                         <CheckBox Content="{localization:Loc Dialogs_ModPack_AdditionalContent_Registry}" Margin="0 3 0 3" IsChecked="{Binding IncludeRegistry.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                         <TextBlock Style="{StaticResource DataHeader}" Margin="22 0 0 6" Text="{localization:Loc Dialogs_ModPack_AdditionalContent_Registry_Hint}" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <DockPanel Margin="22 0 0 16" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" Command="{Binding SourceRegistryFile.Browse}" />
+                            <Button Content="…" DockPanel.Dock="Right" Margin="4 0 0 0" Command="{Binding SourceRegistryFile.Browse}" />
                             <TextBox 
                         Text="{Binding SourceRegistryFile.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                         </DockPanel>

@@ -27,10 +27,7 @@
     <globalSetting name="CreateNewFileForm.newLanguageComboBox.SelectedIndex">-1</globalSetting>
     <globalSetting name="CreateNewFileForm.copyTextsCheckBox.Checked">False</globalSetting>
     <globalSetting name="CreateNewFileForm.automaticallyTranslateCheckBox.Checked">False</globalSetting>
-    <globalSetting name="projectMruItems">&lt;?xml version='1.0' encoding='utf-8'?&gt;&lt;items&gt;&lt;item type="2" checksum="2657057764" /&gt;&lt;item type="2" checksum="3815873961" /&gt;&lt;item type="2" checksum="5357772078" /&gt;&lt;item type="2" checksum="4172551155" /&gt;&lt;item type="2" checksum="1532146354" /&gt;&lt;/items&gt;</globalSetting>
     <userSetting name="marci@DESKTOP-5162GQS.filesInitialDir">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources</userSetting>
-    <userSetting name="marci@DESKTOP-5162GQS.FindText">System_DeveloperOptions_SideLoading</userSetting>
-    <userSetting name="marci@DESKTOP-5162GQS.RecentFiles">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources\Localization.pl.resx###***###C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.pl.resx</userSetting>
     <description>
     </description>
   </configuration>
@@ -42,6 +39,13 @@
       <remarks>
       </remarks>
     </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="7f6aa1f1-80b7-436b-873b-8e75472b6ffe" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="51701718-0293-444e-9474-49c3f322be47">
+      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx" uniqueID="76288700-eb0e-4ebf-b66b-ff0ebdc5afdb" />
+      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx" uniqueID="7fc7bc3d-121a-47d9-8a0c-82b70e1e618a" />
+      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx" uniqueID="88d58c73-3708-45d5-89a7-281a05942fba" />
+      <remarks>
+      </remarks>
+    </fileGroup>
     <fileGroup name="" projectFolderUniqueID="b4be7d8d-4962-4f1b-a46e-dc93773b4fc9" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="50b45657-0ff5-40dd-a569-4fa1e0ca3ace">
       <file filePath="..\src\Otor.MsixHero.App\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.resx" uniqueID="8e4e0412-60a4-4309-a40c-0a78e5423723" />
       <file filePath="..\src\Otor.MsixHero.App\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.de.resx" uniqueID="61bdf427-92c9-4f5e-b4b0-c44de82d7e3b" />
@@ -49,24 +53,10 @@
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="eee9b861-50f3-43f8-be2f-0eca423702fb" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="8f34f0c0-0d32-4acd-981a-398b0f36af92">
-      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.resx" uniqueID="87806115-8461-41bd-a325-7fb4337b279c" />
-      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.de.resx" uniqueID="4c6817bd-78bd-443b-a52c-ec16ad5be629" />
-      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.pl.resx" uniqueID="4fd55f77-8495-4858-8431-392203ca2eb2" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="eee9b861-50f3-43f8-be2f-0eca423702fb" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="ce74b6c3-3667-49b3-a9e2-723a8d4419fb">
-      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.resx" uniqueID="e8753b5a-2e04-4093-8f48-d9f3cada1516" />
-      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.de.resx" uniqueID="f431913a-34a0-407d-874d-66e06c106e9b" />
-      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.pl.resx" uniqueID="368e07a8-a78f-4b5b-b121-2461d822c54b" />
-      <remarks>
-      </remarks>
-    </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="7f6aa1f1-80b7-436b-873b-8e75472b6ffe" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="51701718-0293-444e-9474-49c3f322be47">
-      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.resx" uniqueID="76288700-eb0e-4ebf-b66b-ff0ebdc5afdb" />
-      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.de.resx" uniqueID="7fc7bc3d-121a-47d9-8a0c-82b70e1e618a" />
-      <file filePath="..\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.AppInstaller\Resources\Localization.pl.resx" uniqueID="88d58c73-3708-45d5-89a7-281a05942fba" />
+    <fileGroup name="" projectFolderUniqueID="7f6aa1f1-80b7-436b-873b-8e75472b6ffe" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="f1de4f3a-23f7-443b-b915-42144d170896">
+      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx" uniqueID="8129f0a6-b219-462f-a819-9c2b0601088a" />
+      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx" uniqueID="c6033784-dc3c-4d18-a3a6-ec46682d4061" />
+      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx" uniqueID="e6dddb06-1726-41c8-917c-db7de1f6f857" />
       <remarks>
       </remarks>
     </fileGroup>
@@ -77,10 +67,17 @@
       <remarks>
       </remarks>
     </fileGroup>
-    <fileGroup name="" projectFolderUniqueID="7f6aa1f1-80b7-436b-873b-8e75472b6ffe" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="f1de4f3a-23f7-443b-b915-42144d170896">
-      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.resx" uniqueID="8129f0a6-b219-462f-a819-9c2b0601088a" />
-      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.de.resx" uniqueID="c6033784-dc3c-4d18-a3a6-ec46682d4061" />
-      <file filePath="..\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Appx.Editor\Resources\Localization.pl.resx" uniqueID="e6dddb06-1726-41c8-917c-db7de1f6f857" />
+    <fileGroup name="" projectFolderUniqueID="eee9b861-50f3-43f8-be2f-0eca423702fb" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="ce74b6c3-3667-49b3-a9e2-723a8d4419fb">
+      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.resx" uniqueID="e8753b5a-2e04-4093-8f48-d9f3cada1516" />
+      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.de.resx" uniqueID="f431913a-34a0-407d-874d-66e06c106e9b" />
+      <file filePath="..\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli.Verbs\Resources\Localization.pl.resx" uniqueID="368e07a8-a78f-4b5b-b121-2461d822c54b" />
+      <remarks>
+      </remarks>
+    </fileGroup>
+    <fileGroup name="" projectFolderUniqueID="eee9b861-50f3-43f8-be2f-0eca423702fb" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="8f34f0c0-0d32-4acd-981a-398b0f36af92">
+      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.resx" uniqueID="87806115-8461-41bd-a325-7fb4337b279c" />
+      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.de.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.de.resx" uniqueID="4c6817bd-78bd-443b-a52c-ec16ad5be629" />
+      <file filePath="..\src\Otor.MsixHero.Cli\Resources\Localization.pl.resx" absoluteFilePath="C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Cli\Resources\Localization.pl.resx" uniqueID="4fd55f77-8495-4858-8431-392203ca2eb2" />
       <remarks>
       </remarks>
     </fileGroup>

@@ -7,49 +7,61 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummarySignatureViewModel}">
+             d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummarySignatureViewModel}">
     <UserControl.Resources>
         <system:Boolean x:Key="False">False</system:Boolean>
         <system:Boolean x:Key="True">True</system:Boolean>
     </UserControl.Resources>
 
-    <cards:Card IsLoading="{Binding TrustStatus.IsLoading, FallbackValue={StaticResource True}}">
+    <cards:Card 
+        IsLoading="{Binding TrustStatus.IsLoading, FallbackValue={StaticResource True}}">
         <!-- Margin="0 0 0 8" -->
         <cards:Card.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
         </cards:Card.Icon>
         <cards:Card.Content>
-            <HeaderedContentControl 
-                    Style="{StaticResource CardHeader}">
+            <HeaderedContentControl>
                 <HeaderedContentControl.Header>
                     <TextBlock>
                         <TextBlock.Style>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="controls:SimpleTextMarkup.Markup" Value="Signature: **Signed** and **trusted**" />
+                                <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_SignedTrusted}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding TrustStatus.CurrentValue.IsTrusted}" Value="{StaticResource False}">
-                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="Signature: publisher is **not trusted**" />
+                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_Signed}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding TrustStatus.CurrentValue, FallbackValue={x:Null}}" Value="{x:Null}">
-                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="Signature:" />
+                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned2}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
                 </HeaderedContentControl.Header>
-                <HeaderedContentControl.Content>
-                    <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
-                        <Hyperlink Command="{Binding Path=ShowPropertiesCommand}">
-                            <Run Text="{Binding Path=TrustStatus.CurrentValue.Trustee, FallbackValue='Unsigned package', Mode=OneWay}" />
-                        </Hyperlink>
-                    </TextBlock>
-                </HeaderedContentControl.Content>
+                <HeaderedContentControl.Style>
+                    <Style TargetType="HeaderedContentControl" BasedOn="{StaticResource CardHeader}">
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
+                                    <Hyperlink Command="{Binding Path=ShowPropertiesCommand}">
+                                        <Run Text="{Binding Path=TrustStatus.CurrentValue.Trustee, Mode=OneWay}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TrustStatus.CurrentValue}" Value="{x:Null}">
+                                <Setter Property="Content" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </HeaderedContentControl.Style>
             </HeaderedContentControl>
         </cards:Card.Content>
         <cards:Card.ContentRight>
-            <Button Content="Trust this publisher" Command="{Binding TrustMeCommand}">
+            <Button Content="{localization:Loc PackageExpert_SignedBy_TrustButton}" Command="{Binding TrustMeCommand}">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource CardButton}">
                         <Style.Triggers>

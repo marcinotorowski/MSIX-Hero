@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -74,9 +75,18 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
         
         public override Task Refresh(CancellationToken cancellationToken = default)
         {
-            this.SetStatusAndSummary();
-            this.OnPropertyChanged(nameof(this.IsActive));
-            return Task.FromResult(true);
+            try
+            {
+                this.IsLoading = true;
+
+                this.SetStatusAndSummary();
+                this.OnPropertyChanged(nameof(this.IsActive));
+                return Task.FromResult(true);
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         protected override Geometry GetIcon()

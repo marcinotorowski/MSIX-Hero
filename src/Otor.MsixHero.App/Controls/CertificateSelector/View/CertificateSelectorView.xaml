@@ -202,7 +202,7 @@
                     DockPanel.Dock="Top" 
                     Text="{localization:Loc CertificateSelector_PfxPath}" Margin="0 16 0 6" />
                 <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
+                    <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="…" DockPanel.Dock="Right" />
                     <TextBox 
                         Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                 </DockPanel>

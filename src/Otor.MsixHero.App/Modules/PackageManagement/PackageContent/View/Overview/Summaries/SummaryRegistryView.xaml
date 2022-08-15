@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryRegistryViewModel}">
@@ -18,7 +19,7 @@
         <cards:CardAction.Content>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
-                Header="Registry" 
+                Header="{localization:Loc PackageExpert_Tabs_Registry}" 
                 Content="{Binding SecondLine}" />
         </cards:CardAction.Content>
     </cards:CardAction>

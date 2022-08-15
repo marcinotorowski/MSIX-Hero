@@ -47,7 +47,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             var hasScripts = model.Applications.Select(a => a.Psf).Any(psf => psf?.Scripts?.Any() == true);
 
-            var secondLine = new StringBuilder("Defines ");
+            var secondLine = new StringBuilder(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Header);
+            secondLine.Append(" ");
             var count = 0;
             if (hasRedirections)
             {
@@ -57,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     secondLine.Append(", ");
                 }
 
-                secondLine.Append("file redirections");
+                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Redirections);
             }
 
             if (hasScripts)
@@ -67,7 +68,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     secondLine.Append(", ");
                 }
 
-                secondLine.Append("scripts");
+                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Scripts);
             }
 
             if (hasTracing)
@@ -77,7 +78,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     secondLine.Append(", ");
                 }
 
-                secondLine.Append("tracing");
+                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Tracing);
             }
 
             if (hasElectron)
@@ -87,7 +88,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     secondLine.Append(", ");
                 }
 
-                secondLine.Append("Electron fix-up");
+                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Electron);
             }
 
             if (hasOtherFixUps)
@@ -97,12 +98,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     secondLine.Append(", ");
                 }
 
-                secondLine.Append("custom fix-ups");
+                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Custom);
             }
 
             if (count == 0)
             {
-                this.SecondLine = "Custom PSF definition";
+                this.SecondLine = Resources.Localization.PackageExpert_PSF_Summary_Custom;
             }
             else
             {

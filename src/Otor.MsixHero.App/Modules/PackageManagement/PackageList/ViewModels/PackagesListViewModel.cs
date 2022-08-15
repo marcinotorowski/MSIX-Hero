@@ -30,10 +30,8 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Localization;
@@ -233,11 +231,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 var options = this._application.ConfigurationService.GetCurrentConfiguration();
                 this.Items.Clear();
 
-                var starCalculator = new PackageStarCalculator(options);
+                var starCalculator = new PackageStarHelper(options);
                 
                 foreach (var item in eventPayload.Result)
                 {
-                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.PackageFullName), starCalculator.IsStarred(item)));
+                    var isStarred = starCalculator.IsStarred(item.Publisher, item.Name, item.Version, item.Architecture, item.ResourceId);
+                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.PackageFullName), isStarred));
                 }
             }
             finally
@@ -526,73 +525,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         this.ItemsCollection.SortDescriptions.Insert(0, new SortDescription(gpn, ListSortDirection.Ascending));
                     }
                 }
-            }
-        }
-
-        internal class PackageStarCalculator
-        {
-            private static readonly Version WildcardVersion = new Version(0, 0, 0, 0);
-
-            private readonly Configuration _configuration;
-            private readonly Dictionary<string, string> _cachedPublisherHashes = new();
-            private Dictionary<string, IList<PackageIdentity>> _starred;
-
-            public PackageStarCalculator(Configuration configuration)
-            {
-                _configuration = configuration;
-            }
-
-            public bool IsStarred(InstalledPackage installedPackage)
-            {
-                if (this._starred == null)
-                {
-                    this._starred = new Dictionary<string, IList<PackageIdentity>>();
-
-                    foreach (var item in this._configuration?.Packages?.StarredApps ?? new List<string>())
-                    {
-                        if (!PackageIdentity.TryFromFullName(item, out var identity))
-                        {
-                            continue;
-                        }
-
-                        if (!this._starred.TryGetValue(identity.AppName, out var appIdentities))
-                        {
-                            appIdentities = new List<PackageIdentity>();
-                            this._starred[identity.AppName] = appIdentities;
-                        }
-
-                        appIdentities.Add(identity);
-                    }
-                }
-
-                var isStarred = false;
-                if (this._starred.TryGetValue(installedPackage.Name, out var similarIdentities))
-                {
-                    if (similarIdentities.Any(appIdentity =>
-                    {
-                        if ((appIdentity.AppVersion == WildcardVersion || installedPackage.Version == appIdentity.AppVersion) &&
-                            installedPackage.ResourceId == appIdentity.ResourceId &&
-                            installedPackage.Architecture == appIdentity.Architecture)
-                        {
-                            // do the publisher comparison only at the very end, in most cases one of the previous conditions will make it
-                            // obsolete, and we do not have to calculate familyName and publisherHash.
-                            if (!this._cachedPublisherHashes.TryGetValue(installedPackage.Publisher, out var publisherHashId))
-                            {
-                                publisherHashId = AppxPackaging.GetPublisherHash(installedPackage.Publisher);
-                                this._cachedPublisherHashes[installedPackage.Publisher] = publisherHashId;
-                            }
-
-                            return publisherHashId == appIdentity.PublisherHash;
-                        }
-
-                        return false;
-                    }))
-                    {
-                        isStarred = true;
-                    }
-                }
-
-                return isStarred;
             }
         }
     }

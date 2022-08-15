@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryPsfViewModel}">
 
@@ -14,7 +15,7 @@
         </cards:CardAction.Icon>
         <cards:CardAction.Content>
             <HeaderedContentControl 
-                Header="Package Support Framework"
+                Header="{localization:Loc PackageExpert_Psf}"
                 Content="{Binding SecondLine}"
                 Style="{StaticResource CardHeader}" />
         </cards:CardAction.Content>

@@ -5,6 +5,15 @@
         <ResourceDictionary Source="Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="Hyperlink">
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="ButtonBase" x:Key="BaseButton">
         <Setter Property="MinHeight" Value="{StaticResource MsixHero.Button.Height}" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />

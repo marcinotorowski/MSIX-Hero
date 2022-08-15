@@ -63,8 +63,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             this.Estimating.IsLoading = true;
-            this.FirstLine = "Files";
-            this.SecondLine = "Calculating...";
+            this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
+            this.SecondLine = Resources.Localization.Loading_PleaseWait;
             this.OnPropertyChanged(nameof(SecondLine));
 
             try
@@ -98,15 +98,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
                 if (count == 0)
                 {
-                    this.FirstLine = "Files";
+                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
                 }
                 else if (this.IsEstimated)
                 {
-                    this.FirstLine = "Files: more than **" + count + "** and **" + Convert(size) + "**";
+                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + "" + string.Format(Resources.Localization.PackageExpert_Files_Summary_Estimated, count, Convert(size));
                 }
                 else
                 {
-                    this.FirstLine = "Files: **" + count + "**, total **" + Convert(size) + "**";
+                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Exact, count, Convert(size));
                 }
                 
                 switch (executables.Length)
@@ -114,30 +114,30 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     case 0:
                         if (this.OtherFilesCount == 0)
                         {
-                            this.SecondLine = "This package contains no files.";
+                            this.SecondLine = Resources.Localization.PackageExpert_Files_Summary_None;
                         }
                         else
                         {
                             this.SecondLine =
                                 this.IsEstimated
-                                    ? string.Format("{0}+ files", this.OtherFilesCount)
-                                    : string.Format("{0} files", this.OtherFilesCount);
+                                    ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGenericPlus, this.OtherFilesCount)
+                                    : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGeneric, this.OtherFilesCount);
                         }
                         break;
                     case 1:
                         this.OtherFilesCount--;
                         this.SecondLine =
                             this.IsEstimated
-                                ? string.Format("{0} and {1}+ other files", Path.GetFileName(executables[0]), this.OtherFilesCount)
-                                : string.Format("{0} and {1} other files", Path.GetFileName(executables[0]), this.OtherFilesCount);
+                                ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1Plus, Path.GetFileName(executables[0]), this.OtherFilesCount)
+                                : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1, Path.GetFileName(executables[0]), this.OtherFilesCount);
                         break;
 
                     default:
                         this.OtherFilesCount -= 2;
                         this.SecondLine =
                             this.IsEstimated
-                                ? string.Format("{0}, {1} and {2}+ other files", Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount)
-                                : string.Format("{0}, {1} and {2} other files", Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount);
+                                ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2Plus, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount)
+                                : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount);
                         break;
                 }
             }
@@ -162,7 +162,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public bool IsEstimated { get; private set; }
 
-        public ProgressProperty Estimating { get; } = new ProgressProperty();
+        public ProgressProperty Estimating { get; } = new();
 
         private static string Convert(long value)
         {

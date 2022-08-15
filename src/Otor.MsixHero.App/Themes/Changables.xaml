@@ -7,7 +7,8 @@
                     xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers"
                     xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
-                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization">
+                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+                    xmlns:switch="clr-namespace:Otor.MsixHero.App.Controls.Switch">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -76,7 +77,7 @@
 
     <Style TargetType="dialog:ChangeableDialog">
         <Setter Property="ShowShield" Value="False" />
-        <Setter Property="Background" Value="#ffffff" />
+        <Setter Property="Background" Value="#FBFBFB" />
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="OkButtonLabel" Value="{localization:Loc Dialogs_OK}" />
         <Setter Property="CloseButtonLabel" Value="{localization:Loc Dialogs_Close}" />
@@ -158,21 +159,34 @@
                                 IsShown="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.IsLoading}" 
                                 Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Progress, Mode=OneWay}"
                                 Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
-                                <DockPanel>
+                                <DockPanel
+                                    Margin="0 15 0 0">
                                     <Border 
+                                        BorderThickness="0 1 0 0"
+                                        SnapsToDevicePixels="True"
+                                        UseLayoutRounding="True"
+                                        BorderBrush="#E3E3E3"
                                         TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
                                         Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
                                         DockPanel.Dock="Bottom">
                                         <DockPanel>
-                                            <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
+                                            <StackPanel
+                                                Margin="7.5"
+                                                IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
                                                 <CheckBox
+                                                    Visibility="Collapsed"
+                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="{localization:Loc Dialogs_CmdLineCheckbox}" Margin="7.5" VerticalAlignment="Center" />
+                                                <switch:SwitchControl
                                                     Visibility="{TemplateBinding SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="{localization:Loc Dialogs_CmdLineCheckbox}" Margin="0 0 4 0" VerticalAlignment="Center" />
-                                                <ContentPresenter Content="{TemplateBinding Footer}" VerticalAlignment="Center" />
+                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" 
+                                                    Content="{localization:Loc Dialogs_CmdLineCheckbox}" Margin="7.5" VerticalAlignment="Center" />
+                                                <ContentPresenter Margin="7.5" Content="{TemplateBinding Footer}" VerticalAlignment="Center" />
                                             </StackPanel>
 
-                                            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                <Button Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" x:Name="PART_ButtonOK" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
+                                            <StackPanel Orientation="Horizontal" Margin="7.5" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                                <Button 
+                                                    Height="30"
+                                                    Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" x:Name="PART_ButtonOK" Padding="8 4" Margin="7.5" SnapsToDevicePixels="True" UseLayoutRounding="True" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                         <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers1:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
                                                         <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
@@ -202,14 +216,17 @@
                                                         </Style>
                                                     </Button.Style>
                                                 </Button>
-                                                <Button x:Name="PART_Close"  Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="{TemplateBinding CloseButtonLabel}" />
+                                                <Button
+                                                    Height="30"
+                                                    x:Name="PART_Close"  
+                                                    Padding="8 4" Margin="7.5" SnapsToDevicePixels="True" UseLayoutRounding="True"  Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="{TemplateBinding CloseButtonLabel}" />
                                             </StackPanel>
                                         </DockPanel>
                                     </Border>
 
                                     <Border
                                         CornerRadius="6"
-                                        Margin="8 0"
+                                        Margin="15 0 15 7.5"
                                         Background="{StaticResource MsixHero.Dialog.Console.Background}" 
                                         TextBlock.Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
                                         MaxHeight="60"
