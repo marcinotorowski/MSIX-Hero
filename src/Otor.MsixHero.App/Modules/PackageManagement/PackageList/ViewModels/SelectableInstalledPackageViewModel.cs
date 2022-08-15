@@ -24,11 +24,32 @@ public class SelectableInstalledPackageViewModel : InstalledPackageViewModel
 {
     private readonly IMsixHeroCommandExecutor _commandExecutor;
     private bool _isSelected;
+    private bool _hasStar;
 
-    public SelectableInstalledPackageViewModel(InstalledPackage package, IMsixHeroCommandExecutor commandExecutor, bool isSelected = false) : base(package)
+    public SelectableInstalledPackageViewModel(InstalledPackage package, IMsixHeroCommandExecutor commandExecutor, bool isSelected = false, bool star = false) : base(package)
     {
         this._commandExecutor = commandExecutor;
         this._isSelected = isSelected;
+        this._hasStar = star;
+    }
+
+    public bool HasStar
+    {
+        get => this._hasStar;
+        set
+        {
+            if (this.SetField(ref this._hasStar, value))
+            {
+                if (value)
+                {
+                    this._commandExecutor.Invoke(this, new StarPackageCommand(this.PackageFullName));
+                }
+                else
+                {
+                    this._commandExecutor.Invoke(this, new UnstarPackageCommand(this.PackageFullName));
+                }
+            }
+        }
     }
 
     public bool IsSelected

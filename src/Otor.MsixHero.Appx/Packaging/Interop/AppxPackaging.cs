@@ -66,7 +66,7 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             return packageFullName;
         }
 
-        private static string GetPublisherHash(string publisherId)
+        public static string GetPublisherHash(string publisherId)
         {
             using var sha = HashAlgorithm.Create(HashAlgorithmNames.Sha256);
             // ReSharper disable once PossibleNullReferenceException

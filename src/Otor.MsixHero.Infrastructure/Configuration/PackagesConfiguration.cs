@@ -29,11 +29,12 @@ namespace Otor.MsixHero.Infrastructure.Configuration
             this.Filter = new PackagesFilterConfiguration();
             this.Group = new PackagesGroupConfiguration();
             this.Sorting = new PackagesSortConfiguration();
+            this.StarredApps = new List<string>();
         }
         
         [DataMember(Name = "filter")]
         public PackagesFilterConfiguration Filter { get; set; }
-
+        
         [DataMember(Name = "group")]
         public PackagesGroupConfiguration Group { get; set; }
 
@@ -45,5 +46,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "tools")]
         public List<ToolListConfiguration> Tools { get; set; }
+
+        [DataMember(Name = "starredApps")]
+        public List<string> StarredApps { get; set; }
     }
 }

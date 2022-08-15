@@ -56,6 +56,46 @@ namespace Otor.MsixHero.Appx.Packaging
             return obj;
         }
 
+        public static bool TryFromFullName(string packageFullName, out PackageIdentity identity)
+        {
+            if (packageFullName == null)
+            {
+                identity = default;
+                return false;
+            }
+
+            var split = packageFullName.Split('_');
+            if (split.Length < 5)
+            {
+                identity = default;
+                return false;
+            }
+
+            identity = new PackageIdentity
+            {
+                AppName = split[0],
+                ResourceId = split[3],
+                PublisherHash = split[4]
+            };
+
+            if (!Version.TryParse(split[1], out var parsedVersion))
+            {
+                return false;
+            }
+
+            if (!Enum.TryParse(split[2], true, out AppxPackageArchitecture parsedArchitecture))
+            {
+                return false;
+            }
+
+            identity.AppVersion = parsedVersion;
+            identity.Architecture = parsedArchitecture;
+
+            return true;
+
+
+        }
+
         public override string ToString()
         {
             return $"{this.AppName}_{this.AppVersion}_{this.Architecture:G}_{this.ResourceId}_{this.PublisherHash}";

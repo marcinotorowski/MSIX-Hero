@@ -30,8 +30,11 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging.Interop;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
@@ -71,6 +74,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
             // selecting packages
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesExecuted);
+
+            // starring and unstarring
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<StarPackageCommand>>().Subscribe(this.OnStarPackageExecuted, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<UnstarPackageCommand>>().Subscribe(this.OnUnstarPackageExecuted, ThreadOption.UIThread);
 
             // filtering
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand, ThreadOption.UIThread);
@@ -168,6 +175,40 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             this.ItemsCollection.Refresh();
         }
 
+        private void OnStarPackageExecuted(UiExecutedPayload<StarPackageCommand> obj)
+        {
+            var findPackage = this.Items.FirstOrDefault(item => item.PackageFullName == obj.Request.FullName);
+            if (findPackage == null)
+            {
+                return;
+            }
+
+            if (!findPackage.HasStar)
+            {
+                findPackage.HasStar = true;
+                return;
+            }
+
+            this.ItemsCollection.Refresh();
+        }
+
+        private void OnUnstarPackageExecuted(UiExecutedPayload<UnstarPackageCommand> obj)
+        {
+            var findPackage = this.Items.FirstOrDefault(item => item.PackageFullName == obj.Request.FullName);
+            if (findPackage == null)
+            {
+                return;
+            }
+
+            if (findPackage.HasStar)
+            {
+                findPackage.HasStar = false;
+                return;
+            }
+
+            this.ItemsCollection.Refresh();
+        }
+
         private void OnSelectPackagesExecuted(UiExecutedPayload<SelectPackagesCommand> obj)
         {
             this._selectedManifests.Clear();
@@ -182,18 +223,21 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 package.IsSelected = this._selectedManifests.Contains(package.PackageFullName);
             }
         }
-
+        
         private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> eventPayload)
         {
             this._packagesSync.EnterWriteLock();
 
             try
             {
+                var options = this._application.ConfigurationService.GetCurrentConfiguration();
                 this.Items.Clear();
 
+                var starCalculator = new PackageStarCalculator(options);
+                
                 foreach (var item in eventPayload.Result)
                 {
-                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.PackageFullName)));
+                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.PackageFullName), starCalculator.IsStarred(item)));
                 }
             }
             finally
@@ -262,9 +306,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             var packageFilterPlatformFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
             if (packageFilterPlatformFlags != PackageFilter.AllArchitectures && packageFilterPlatformFlags != 0)
             {
-                switch (item.Model.Architecture?.ToLowerInvariant())
+                switch (item.Model.Architecture)
                 {
-                    case "x86":
+                    case AppxPackageArchitecture.x86:
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.x86) == 0)
                             {
@@ -274,7 +318,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                             break;
                         }
-                    case "x64":
+                    case AppxPackageArchitecture.x64:
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.x64) == 0)
                             {
@@ -284,7 +328,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                             break;
                         }
-                    case "arm":
+                    case AppxPackageArchitecture.Arm:
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Arm) == 0)
                             {
@@ -294,7 +338,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                             break;
                         }
-                    case "arm64":
+                    case AppxPackageArchitecture.Arm64:
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Arm64) == 0)
                             {
@@ -304,7 +348,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                             break;
                         }
-                    case "neutral":
+                    case AppxPackageArchitecture.Neutral:
                         {
                             if ((packageFilterPlatformFlags & PackageFilter.Neutral) == 0)
                             {
@@ -465,15 +509,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 if (sortProperty == null)
                 {
                     this.ItemsCollection.SortDescriptions.Clear();
+                    this.ItemsCollection.SortDescriptions.Add(new SortDescription(nameof(SelectableInstalledPackageViewModel.HasStar), ListSortDirection.Descending));
                 }
                 else
                 {
-                    var sd = this.ItemsCollection.SortDescriptions.FirstOrDefault();
-                    if (sd.PropertyName != sortProperty || sd.Direction != (currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
-                    {
-                        this.ItemsCollection.SortDescriptions.Clear();
-                        this.ItemsCollection.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
-                    }
+                    this.ItemsCollection.SortDescriptions.Clear();
+                    this.ItemsCollection.SortDescriptions.Add(new SortDescription(nameof(SelectableInstalledPackageViewModel.HasStar), ListSortDirection.Descending));
+                    this.ItemsCollection.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
                 }
 
                 if (this.ItemsCollection.GroupDescriptions.Any())
@@ -484,6 +526,73 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         this.ItemsCollection.SortDescriptions.Insert(0, new SortDescription(gpn, ListSortDirection.Ascending));
                     }
                 }
+            }
+        }
+
+        internal class PackageStarCalculator
+        {
+            private static readonly Version WildcardVersion = new Version(0, 0, 0, 0);
+
+            private readonly Configuration _configuration;
+            private readonly Dictionary<string, string> _cachedPublisherHashes = new();
+            private Dictionary<string, IList<PackageIdentity>> _starred;
+
+            public PackageStarCalculator(Configuration configuration)
+            {
+                _configuration = configuration;
+            }
+
+            public bool IsStarred(InstalledPackage installedPackage)
+            {
+                if (this._starred == null)
+                {
+                    this._starred = new Dictionary<string, IList<PackageIdentity>>();
+
+                    foreach (var item in this._configuration?.Packages?.StarredApps ?? new List<string>())
+                    {
+                        if (!PackageIdentity.TryFromFullName(item, out var identity))
+                        {
+                            continue;
+                        }
+
+                        if (!this._starred.TryGetValue(identity.AppName, out var appIdentities))
+                        {
+                            appIdentities = new List<PackageIdentity>();
+                            this._starred[identity.AppName] = appIdentities;
+                        }
+
+                        appIdentities.Add(identity);
+                    }
+                }
+
+                var isStarred = false;
+                if (this._starred.TryGetValue(installedPackage.Name, out var similarIdentities))
+                {
+                    if (similarIdentities.Any(appIdentity =>
+                    {
+                        if ((appIdentity.AppVersion == WildcardVersion || installedPackage.Version == appIdentity.AppVersion) &&
+                            installedPackage.ResourceId == appIdentity.ResourceId &&
+                            installedPackage.Architecture == appIdentity.Architecture)
+                        {
+                            // do the publisher comparison only at the very end, in most cases one of the previous conditions will make it
+                            // obsolete, and we do not have to calculate familyName and publisherHash.
+                            if (!this._cachedPublisherHashes.TryGetValue(installedPackage.Publisher, out var publisherHashId))
+                            {
+                                publisherHashId = AppxPackaging.GetPublisherHash(installedPackage.Publisher);
+                                this._cachedPublisherHashes[installedPackage.Publisher] = publisherHashId;
+                            }
+
+                            return publisherHashId == appIdentity.PublisherHash;
+                        }
+
+                        return false;
+                    }))
+                    {
+                        isStarred = true;
+                    }
+                }
+
+                return isStarred;
             }
         }
     }

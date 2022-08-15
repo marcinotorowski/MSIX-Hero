@@ -15,10 +15,13 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using Otor.MsixHero.App.Hero.Commands.Packages;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
@@ -43,7 +46,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public string Version => this.Model.Version.ToString();
 
-        public string Architecture => this.Model.Architecture;
+        public AppxPackageArchitecture Architecture => this.Model.Architecture;
 
         public string DisplayPublisherName => this.Model.DisplayPublisherName;
 

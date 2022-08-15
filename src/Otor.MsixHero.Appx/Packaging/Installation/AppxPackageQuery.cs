@@ -36,6 +36,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -47,13 +48,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
 
         private static readonly LogSource Logger = new();
-        private readonly IRegistryManager registryManager;
-        private readonly IConfigurationService configurationService;
+        private readonly IRegistryManager _registryManager;
+        public readonly IConfigurationService ConfigurationService;
 
         public AppxPackageQuery(IRegistryManager registryManager, IConfigurationService configurationService)
         {
-            this.registryManager = registryManager;
-            this.configurationService = configurationService;
+            this._registryManager = registryManager;
+            this.ConfigurationService = configurationService;
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -250,7 +251,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             var all = allPackages.Count;
 
             var tasks = new HashSet<Task<InstalledPackage>>();
-            var config = await configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
+            var config = await ConfigurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
 
             int maxThreads;
             if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
@@ -365,7 +366,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             else
             {
                 details = await GetVisualsFromManifest(installLocation, cancellationToken).ConfigureAwait(false);
-                hasRegistry = await registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
+                hasRegistry = await _registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
             }
 
             var pkg = new InstalledPackage
@@ -379,7 +380,8 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 Description = details.Description,
                 DisplayPublisherName = details.DisplayPublisherName,
                 Publisher = item.Id.Publisher,
-                Architecture = item.Id.Architecture.ToString(),
+                ResourceId = item.Id.ResourceId,
+                Architecture = Enum.Parse<AppxPackageArchitecture>(item.Id.Architecture.ToString(), true),
                 IsFramework = item.IsFramework,
                 IsOptional = item.IsOptional,
                 TileColor = details.Color,
@@ -390,12 +392,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 InstallDate = installDate,
                 AppInstallerUri = item.GetAppInstallerInfo()?.Uri
             };
-
-            if (pkg.Architecture[0] == 'X')
-            {
-                pkg.Architecture = "x" + pkg.Architecture.Substring(1);
-            }
-
+            
             if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                             pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                             pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))

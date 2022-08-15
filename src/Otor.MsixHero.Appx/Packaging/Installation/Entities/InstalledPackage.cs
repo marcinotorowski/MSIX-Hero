@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
 {
@@ -38,11 +39,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
 
         public string Publisher { get; set; }
 
+        public string ResourceId { get; set; }
+
         public DateTime InstallDate { get; set; }
 
         public Version Version { get; set; }
 
-        public string Architecture { get; set; }
+        public AppxPackageArchitecture Architecture { get; set; }
 
         public MsixPackageType PackageType { get; set; }
 
