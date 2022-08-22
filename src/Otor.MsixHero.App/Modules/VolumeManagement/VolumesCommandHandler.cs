@@ -88,11 +88,11 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             {
                 var options = new List<string>
                 {
-                    "Remove selected volume",
-                    "Do not remove"
+                    Resources.Localization.Volumes_RemoveSelected,
+                    Resources.Localization.Volumes_DoNotRemove
                 };
 
-                if (this._interactionService.ShowMessage($"Are you sure you want to remove volume '{selected.PackageStorePath}'? Removing of volumes affects only registration and does not delete any physical files.", options) != 0)
+                if (this._interactionService.ShowMessage(string.Format(Resources.Localization.Volumes_ConfirmRemoval, selected.PackageStorePath), options) != 0)
                 {
                     return;
                 }
@@ -121,7 +121,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not delete the volume.", exception);
+                this._interactionService.ShowError(Resources.Localization.Volumes_RemovalError, exception);
             }
         }
 
@@ -140,13 +140,13 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             var context = this._busyManager.Begin();
             try
             {
-                context.Message = "Setting the default volume...";
+                context.Message = Resources.Localization.Volumes_SettingDefault;
                 var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
                 await manager.SetDefault(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not set the volume as the default volume.", exception);
+                this._interactionService.ShowError(Resources.Localization.Volumes_SettingDefaultError, exception);
             }
             finally
             {
@@ -178,13 +178,13 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             var context = this._busyManager.Begin();
             try
             {
-                context.Message = "Mounting volume...";
+                context.Message = Resources.Localization.Volumes_Mounting;
                 var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
                 await manager.Mount(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not mount the volume.", exception);
+                this._interactionService.ShowError(Resources.Localization.Volumes_MountingError, exception);
             }
             finally
             {
@@ -216,13 +216,13 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             var context = this._busyManager.Begin();
             try
             {
-                context.Message = "Dismounting volume...";
+                context.Message = Resources.Localization.Volumes_Dismounting;
                 var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
                 await manager.Dismount(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not dismount the volume.", exception);
+                this._interactionService.ShowError(Resources.Localization.Volumes_DismountingError, exception);
             }
             finally
             {

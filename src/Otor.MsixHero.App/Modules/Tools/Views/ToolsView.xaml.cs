@@ -18,9 +18,9 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Events.Base;
+using Otor.MsixHero.App.Modules.Main.Events;
 using Prism.Events;
 using Prism.Regions;
 

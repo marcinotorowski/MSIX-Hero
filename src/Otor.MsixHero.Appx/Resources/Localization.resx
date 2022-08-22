@@ -118,31 +118,31 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Events_PleaseWait" xml:space="preserve">
-    <value>Getting events, please wait...</value>
+    <value>Getting events, please wait…</value>
   </data>
 	<data name="Packages_Analyzing" xml:space="preserve">
-    <value>Analyzing {0}...</value>
+    <value>Analyzing {0}…</value>
   </data>
 	<data name="Packages_AppAttach_ApplyingACL" xml:space="preserve">
-    <value>Applying ACLs...</value>
+    <value>Applying ACLs…</value>
   </data>
 	<data name="Packages_AppAttach_CreatingJson" xml:space="preserve">
-    <value>Creating JSON file...</value>
+    <value>Creating JSON file…</value>
   </data>
 	<data name="Packages_AppAttach_CreatingScripts" xml:space="preserve">
-    <value>Creating scripts...</value>
+    <value>Creating scripts…</value>
   </data>
 	<data name="Packages_AppAttach_Expanding" xml:space="preserve">
-    <value>Expanding MSIX...</value>
+    <value>Expanding MSIX…</value>
   </data>
 	<data name="Packages_AppAttach_Initializing" xml:space="preserve">
-    <value>Initializing...</value>
+    <value>Initializing…</value>
   </data>
 	<data name="Packages_AppAttach_UnpackingMsix" xml:space="preserve">
-    <value>Unpacking MSIX...</value>
+    <value>Unpacking MSIX…</value>
   </data>
 	<data name="Packages_AppAttach_Unpacking_Format" xml:space="preserve">
-    <value>Unpacking {0}...</value>
+    <value>Unpacking {0}…</value>
   </data>
 	<data name="Packages_Deprovision_AllUsers" xml:space="preserve">
     <value>De-provisioning for all users</value>
@@ -151,7 +151,7 @@
     <value>Cannot use the flag AllBundleResources with non-bundle packages.</value>
   </data>
 	<data name="Packages_Error_AppAttachFinishing" xml:space="preserve">
-    <value>Finishing...</value>
+    <value>Finishing…</value>
   </data>
 	<data name="Packages_Error_AppInstallerAllUsers" xml:space="preserve">
     <value>Cannot install a package from .appinstaller for all users.</value>
@@ -253,16 +253,16 @@
     <value>Extracting certificate…</value>
   </data>
 	<data name="Packages_ExtractingCertFrom_Format" xml:space="preserve">
-    <value>Extracting certificate from {0}...</value>
+    <value>Extracting certificate from {0}…</value>
   </data>
 	<data name="Packages_GettingApps" xml:space="preserve">
-    <value>Getting installed apps...</value>
+    <value>Getting installed apps…</value>
   </data>
 	<data name="Packages_InstallingFrom_Format" xml:space="preserve">
-    <value>Installing from {0}...</value>
+    <value>Installing from {0}…</value>
   </data>
 	<data name="Packages_Installing_Format" xml:space="preserve">
-    <value>Installing {0}...</value>
+    <value>Installing {0}…</value>
   </data>
 	<data name="Packages_ModPackage_DefaultDescription_Format" xml:space="preserve">
     <value>Modification Package for {0}</value>
@@ -283,16 +283,16 @@
     <value>Could not get the list of running processes.</value>
   </data>
 	<data name="Packages_Provisioning_Format" xml:space="preserve">
-    <value>Provisioning {0} {1}...</value>
+    <value>Provisioning {0} {1}…</value>
   </data>
 	<data name="Packages_Psf_FilesWithExt_Format" xml:space="preserve">
     <value>Files with extension {0}</value>
   </data>
 	<data name="Packages_Removing" xml:space="preserve">
-    <value>Removing...</value>
+    <value>Removing…</value>
   </data>
 	<data name="Packages_Removing_Format" xml:space="preserve">
-    <value>Removing {0}...</value>
+    <value>Removing {0}…</value>
   </data>
 	<data name="Packages_Types_App" xml:space="preserve">
     <value>App</value>
@@ -340,37 +340,37 @@
     <value>Classic Win32 app</value>
   </data>
 	<data name="Packages_UpdateImpact_AnalyzingAdded" xml:space="preserve">
-    <value>Analyzing added files...</value>
+    <value>Analyzing added files…</value>
   </data>
 	<data name="Packages_UpdateImpact_AnalyzingChanges" xml:space="preserve">
-    <value>Analyzing changed files...</value>
+    <value>Analyzing changed files…</value>
   </data>
 	<data name="Packages_UpdateImpact_AnalyzingDeleted" xml:space="preserve">
-    <value>Analyzing deleted files...</value>
+    <value>Analyzing deleted files…</value>
   </data>
 	<data name="Packages_UpdateImpact_AnalyzingUnchanged" xml:space="preserve">
-    <value>Analyzing unchanged files...</value>
+    <value>Analyzing unchanged files…</value>
   </data>
 	<data name="Packages_UpdateImpact_Calculating1" xml:space="preserve">
-    <value>Calculating file status (1/2)...</value>
+    <value>Calculating file status (1/2)…</value>
   </data>
 	<data name="Packages_UpdateImpact_Calculating2" xml:space="preserve">
-    <value>Calculating file status (2/2)...</value>
+    <value>Calculating file status (2/2)…</value>
   </data>
 	<data name="Packages_UpdateImpact_ComparingFiles" xml:space="preserve">
-    <value>Comparing files...</value>
+    <value>Comparing files…</value>
   </data>
 	<data name="Packages_UpdateImpact_Deduplicating" xml:space="preserve">
-    <value>Finding duplicates...</value>
+    <value>Finding duplicates…</value>
   </data>
 	<data name="Packages_UpdateImpact_DeduplicatingImpact1" xml:space="preserve">
-    <value>Analyzing duplication impact (1/3)...</value>
+    <value>Analyzing duplication impact (1/3)…</value>
   </data>
 	<data name="Packages_UpdateImpact_DeduplicatingImpact2" xml:space="preserve">
-    <value>Analyzing duplication impact (2/3)...</value>
+    <value>Analyzing duplication impact (2/3)…</value>
   </data>
 	<data name="Packages_UpdateImpact_DeduplicatingImpact3" xml:space="preserve">
-    <value>Analyzing duplication impact (3/3)...</value>
+    <value>Analyzing duplication impact (3/3)…</value>
   </data>
 	<data name="Packages_UpdateImpact_Error_BundleMismatch" xml:space="preserve">
     <value>A bundle can be only compared to another bundle.</value>
@@ -397,19 +397,19 @@
     <value>Package '{0}' version '{1}' cannot update the package '{2}' version '{3}'. The version of the upgrade package must be higher than '{3}'.</value>
   </data>
 	<data name="Packages_UpdateImpact_Reading1" xml:space="preserve">
-    <value>Reading the first package...</value>
+    <value>Reading the first package…</value>
   </data>
 	<data name="Packages_UpdateImpact_Reading2" xml:space="preserve">
-    <value>Reading the second package...</value>
+    <value>Reading the second package…</value>
   </data>
 	<data name="Packages_UpdateImpact_ReadingBlock" xml:space="preserve">
-    <value>Reading AppxBlockMap.xml...</value>
+    <value>Reading AppxBlockMap.xml…</value>
   </data>
 	<data name="Packages_UpdateImpact_ReadingFiles" xml:space="preserve">
-    <value>Reading files...</value>
+    <value>Reading files…</value>
   </data>
 	<data name="Packages_UpdateImpact_Wait" xml:space="preserve">
-    <value>Please wait...</value>
+    <value>Please wait…</value>
   </data>
 	<data name="Packages_Update_CheckError" xml:space="preserve">
     <value>Checking for updates failed from an unspecified reason.</value>
@@ -452,5 +452,56 @@
   </data>
 	<data name="System_Service_wuauserv" xml:space="preserve">
     <value>This service may update, install and uninstall software which is not related to the app being repackaged.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_NoUpdates_Multiple" xml:space="preserve">
+    <value>No updates are available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple" xml:space="preserve">
+    <value>An optional update is available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple" xml:space="preserve">
+    <value>A required update is available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple" xml:space="preserve">
+    <value>Could not check for updates for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_WrongSource_Multiple" xml:space="preserve">
+    <value>These package were not installed via {0} file:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved1_Multiple" xml:space="preserve">
+    <value>Apps removed</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved2_Multiple" xml:space="preserve">
+    <value>{0} apps has been just removed.</value>
+  </data>
+	<data name="PackageExpert_Commands_ConfirmRemovalMultiple" xml:space="preserve">
+    <value>Are you sure you want to remove {0} packages? This operation is irreversible.</value>
+  </data>
+	<data name="PackageExpert_Commands_Deprovisioning" xml:space="preserve">
+    <value>De-provisioning {0}…</value>
+  </data>
+	<data name="PackageExpert_Commands_UpdatesAvailable" xml:space="preserve">
+    <value>Updates are available for the following packages:</value>
+  </data>
+	<data name="Events_Reading" xml:space="preserve">
+    <value>Reading {0}…</value>
+  </data>
+	<data name="Psf_Descriptor_AllFiles" xml:space="preserve">
+    <value>All files</value>
+  </data>
+	<data name="Signing_AlgNotSupported" xml:space="preserve">
+    <value>Signature algorithm {0} is not supported.</value>
+  </data>
+	<data name="Signing_DeviceGuard_LoggingIn" xml:space="preserve">
+    <value>Signing-in…</value>
+  </data>
+	<data name="Signing_DeviceGuard_Signing" xml:space="preserve">
+    <value>Signing with Device Guard…</value>
+  </data>
+	<data name="Signing_DeviceGuard_Validation" xml:space="preserve">
+    <value>Validating signing capabilities…</value>
+  </data>
+	<data name="Signing_Signing" xml:space="preserve">
+    <value>Signing…</value>
   </data>
 </root>

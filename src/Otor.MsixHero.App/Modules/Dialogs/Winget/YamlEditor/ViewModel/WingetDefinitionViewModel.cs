@@ -21,10 +21,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Packaging;
 using Dapplo.Log;
+using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Winget.Yaml;
@@ -36,19 +37,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
     public class WingetDefinitionViewModel : ChangeableContainer
     {
         private static readonly LogSource Logger = new();
-        private readonly IInteractionService interactionService;
-        protected readonly YamlWriter YamlWriter = new YamlWriter();
-        protected readonly YamlReader YamlReader = new YamlReader();
-        protected readonly YamlUtils YamlUtils = new YamlUtils();
-        private bool isLoading;
-        private YamlManifest model = new YamlManifest();
-        private bool autoId = true;
-        private ICommand loadFromSetup;
-        private ICommand generateSha256, openSha256;
+        private readonly IInteractionService _interactionService;
+        protected readonly YamlWriter YamlWriter = new();
+        protected readonly YamlReader YamlReader = new();
+        protected readonly YamlUtils YamlUtils = new();
+        private YamlManifest _model = new();
+        private bool _isLoading;
+        private bool _autoId = true;
+        private bool _isGenerateHashShown;
+        private ICommand _loadFromSetup, _generateSha256, _openSha256;
 
         public WingetDefinitionViewModel(IInteractionService interactionService)
         {
-            this.interactionService = interactionService;
+            this._interactionService = interactionService;
 
             this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_PackageName, true, WingetValidators.GetPackageNameError);
             this.Publisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Publisher, true, WingetValidators.GetPublisherError);
@@ -72,7 +73,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             this.TabIdentity = new ChangeableContainer(this.Name, this.Publisher, this.Version, this.Id, this.ManifestVersion1, this.ManifestVersion2, this.ManifestVersion3);
             this.TabMetadata = new ChangeableContainer(this.AppMoniker, this.Tags, this.PackageUrl, this.Description, this.ShortDescription, this.MinOSVersion);
             this.TabDownloads = new ChangeableContainer(this.Url, this.Sha256);
-            this.TabInstaller = new WingetInstallerViewModel(this.YamlUtils, this.interactionService) { Url = this.Url.CurrentValue };
+            this.TabInstaller = new WingetInstallerViewModel(this.YamlUtils, this._interactionService) { Url = this.Url.CurrentValue };
             this.TabLicense = new ChangeableContainer(this.License, this.LicenseUrl, this.Copyright, this.CopyrightUrl);
 
             this.AddChildren(
@@ -102,11 +103,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         public ProgressProperty HashingProgress { get; } = new ProgressProperty();
 
-        private bool isGenerateHashShown;
         public bool IsGenerateHashShown
         {
-            get => this.isGenerateHashShown;
-            set => this.SetField(ref this.isGenerateHashShown, value);
+            get => this._isGenerateHashShown;
+            set => this.SetField(ref this._isGenerateHashShown, value);
         }
         
         public ValidatedChangeableProperty<string> Name { get; }
@@ -150,11 +150,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         public bool IsLoading
         {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
+            get => this._isLoading;
+            set => this.SetField(ref this._isLoading, value);
         }
 
-        public ICommand LoadFromSetup => this.loadFromSetup ??= new DelegateCommand(this.OnLoadFromSetup);
+        public ICommand LoadFromSetup => this._loadFromSetup ??= new DelegateCommand(this.OnLoadFromSetup);
 
         public async Task LoadFromYaml(string file, CancellationToken cancellationToken = default)
         {
@@ -184,7 +184,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_LoadFailed, e);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_LoadFailed, e);
             }
             finally
             {
@@ -203,30 +203,30 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         private void NameOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (!this.autoId)
+            if (!this._autoId)
             {
                 return;
             }
 
             this.Id.CurrentValue = $"{this.Publisher.CurrentValue}.{this.Name.CurrentValue}".Replace(" ", string.Empty);
-            this.autoId = true;
+            this._autoId = true;
         }
 
         private void PublisherOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (!this.autoId)
+            if (!this._autoId)
             {
                 return;
             }
 
             this.Id.CurrentValue = $"{this.Publisher.CurrentValue}.{this.Name.CurrentValue}".Replace(" ", string.Empty);
-            this.autoId = true;
+            this._autoId = true;
         }
 
         private void IdOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            Logger.Debug().WriteLine("Package ID is not touched manually and will not auto update...");
-            this.autoId = false;
+            Logger.Debug().WriteLine("Package ID is not touched manually and will not auto update…");
+            this._autoId = false;
         }
         private void UrlOnValueChanged(object sender, ValueChangedEventArgs e)
         {
@@ -237,7 +237,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             var settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*.exe", "*.msi").BuildFilter());
             // ReSharper disable once StringLiteralTypo
-            if (!this.interactionService.SelectFile(settings, out var selected))
+            if (!this._interactionService.SelectFile(settings, out var selected))
             {
                 return;
             }
@@ -249,7 +249,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             get
             {
-                return this.generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
+                return this._generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
             }
         }
         
@@ -257,7 +257,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             get
             {
-                return this.openSha256 ??= new DelegateCommand<string>(this.OpenHash);
+                return this._openSha256 ??= new DelegateCommand<string>(this.OpenHash);
             }
         }
 
@@ -265,11 +265,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (string.IsNullOrEmpty(this.Url.CurrentValue))
             {
-                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_InstallerUrlRequired);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_InstallerUrlRequired);
                 return;
             }
 
-            if (this.interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_DownloadHash_Info_Format, this.Url.CurrentValue), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+            if (this._interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_DownloadHash_Info_Format, this.Url.CurrentValue), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
             {
                 return;
             }
@@ -298,13 +298,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, e);
+                this._interactionService.ShowError(e.Message, e);
             }
         }
 
         private async void OpenHash(string parameter)
         {
-            if (!this.interactionService.SelectFile(out var path))
+            if (!this._interactionService.SelectFile(out var path))
             {
                 return;
             }
@@ -320,15 +320,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 }
                 catch (Exception e)
                 {
-                    this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_HashingFailed + " " + e.Message, e);
+                    this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_HashingFailed + " " + e.Message, e);
                 }
             }
         }
 
         private void SetData(YamlManifest manifest, bool useNullValues = true)
         {
-            this.autoId = true;
-            this.model = manifest;
+            this._autoId = true;
+            this._model = manifest;
 
             if (useNullValues || !string.IsNullOrEmpty(manifest.License))
             {
@@ -448,24 +448,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 return false;
             }
 
-            this.model.PackageName = this.Name.CurrentValue;
-            this.model.Moniker = this.AppMoniker.CurrentValue;
-            this.model.ShortDescription = this.ShortDescription.CurrentValue;
-            this.model.Description = this.Description.CurrentValue;
-            this.model.License = this.License.CurrentValue;
-            this.model.Copyright = this.Copyright.CurrentValue;
-            this.model.PackageUrl = this.PackageUrl.CurrentValue;
-            this.model.PackageIdentifier = this.Id.CurrentValue;
-            this.model.Publisher = this.Publisher.CurrentValue;
-            this.model.MinimumOperatingSystemVersion = string.IsNullOrEmpty(this.MinOSVersion.CurrentValue) ? null : System.Version.Parse(this.MinOSVersion.CurrentValue);
-            this.model.Tags = this.Tags.CurrentValue == null ? new List<string>() : this.Tags.CurrentValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            this.model.PackageVersion = this.Version.CurrentValue;
-            this.model.CopyrightUrl = this.CopyrightUrl.CurrentValue;
-            this.model.LicenseUrl = this.LicenseUrl.CurrentValue;
+            this._model.PackageName = this.Name.CurrentValue;
+            this._model.Moniker = this.AppMoniker.CurrentValue;
+            this._model.ShortDescription = this.ShortDescription.CurrentValue;
+            this._model.Description = this.Description.CurrentValue;
+            this._model.License = this.License.CurrentValue;
+            this._model.Copyright = this.Copyright.CurrentValue;
+            this._model.PackageUrl = this.PackageUrl.CurrentValue;
+            this._model.PackageIdentifier = this.Id.CurrentValue;
+            this._model.Publisher = this.Publisher.CurrentValue;
+            this._model.MinimumOperatingSystemVersion = string.IsNullOrEmpty(this.MinOSVersion.CurrentValue) ? null : System.Version.Parse(this.MinOSVersion.CurrentValue);
+            this._model.Tags = this.Tags.CurrentValue == null ? new List<string>() : this.Tags.CurrentValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            this._model.PackageVersion = this.Version.CurrentValue;
+            this._model.CopyrightUrl = this.CopyrightUrl.CurrentValue;
+            this._model.LicenseUrl = this.LicenseUrl.CurrentValue;
 
-            if (!this.model.Tags.Any())
+            if (!this._model.Tags.Any())
             {
-                this.model.Tags = null;
+                this._model.Tags = null;
             }
             
             if (!string.IsNullOrEmpty(this.ManifestVersion1.CurrentValue) || !string.IsNullOrEmpty(this.ManifestVersion2.CurrentValue) || !string.IsNullOrEmpty(this.ManifestVersion3.CurrentValue))
@@ -489,13 +489,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                     v3 = "0";
                 }
 
-                this.model.ManifestVersion = System.Version.Parse($"{v1}.{v2}.{v3}");
-                Logger.Info().WriteLine(Resources.Localization.Dialogs_Winget_ManifestVersionChanged_Format, (object) this.model.ManifestVersion);
+                this._model.ManifestVersion = System.Version.Parse($"{v1}.{v2}.{v3}");
+                Logger.Info().WriteLine(Resources.Localization.Dialogs_Winget_ManifestVersionChanged_Format, this._model.ManifestVersion);
             }
             
             this.TabInstaller.Commit();
-            this.model.Installers[0].InstallerUrl = this.Url.CurrentValue;
-            this.model.Installers[0].InstallerSha256 = this.Sha256.CurrentValue;
+            this._model.Installers[0].InstallerUrl = this.Url.CurrentValue;
+            this._model.Installers[0].InstallerSha256 = this.Sha256.CurrentValue;
             
             var fileInfo = new FileInfo(fileName);
             if (fileInfo.Directory != null && !fileInfo.Directory.Exists)
@@ -505,7 +505,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
             await using var fs = File.OpenWrite(fileName);
             Logger.Info().WriteLine(Resources.Localization.Dialogs_Winget_Yaml_Saving_Format, fileName);
-            await this.YamlWriter.WriteAsync(model, fs, cancellationToken).ConfigureAwait(false);
+            await this.YamlWriter.WriteAsync(_model, fs, cancellationToken).ConfigureAwait(false);
 
             return true;
         }

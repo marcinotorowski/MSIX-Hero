@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                 if (File.Exists(this._package))
                 {
-                    // This is a file...
+                    // This is a file…
                     if (string.Equals(Path.GetFileName(this._package), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                     {
                         // .. a manifest file

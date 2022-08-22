@@ -370,7 +370,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
                 if (!this.Verb.NoPublisherUpdate)
                 {
-                    await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
+                    await this.Console.WriteInfo(Resources.Localization.Signing_DeviceGuard_Reading).ConfigureAwait(false);
                     cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json).ConfigureAwait(false);
                     await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Sign_NewName_Format, cfg.Subject)).ConfigureAwait(false);
                 }
@@ -384,7 +384,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                await this.Console.WriteError($"Signing failed: {e.Message}");
+                await this.Console.WriteError(string.Format(Resources.Localization.Signing_Failed, e.Message));
                 return StandardExitCodes.ErrorGeneric;
             }
             finally

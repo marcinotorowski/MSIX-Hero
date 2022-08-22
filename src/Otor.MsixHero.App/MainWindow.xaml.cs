@@ -19,7 +19,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Helpers.DragAndDrop;
 using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
@@ -33,17 +34,17 @@ namespace Otor.MsixHero.App
     /// </summary>
     public partial class MainWindow
     {
-        private readonly IModuleManager moduleManager;
-        private readonly IDialogService dialogService;
-        private readonly DialogOpener dialogOpener;
+        private readonly IModuleManager _moduleManager;
+        private readonly IDialogService _dialogService;
+        private readonly DialogOpener _dialogOpener;
 
         public MainWindow(IModuleManager moduleManager, IDialogService dialogService, IInteractionService interactionService)
         {
-            this.moduleManager = moduleManager;
-            this.dialogService = dialogService;
+            this._moduleManager = moduleManager;
+            this._dialogService = dialogService;
             InitializeComponent();
             this.Loaded += OnLoaded;
-            this.dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
+            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -53,15 +54,15 @@ namespace Otor.MsixHero.App
 
         private void HelpExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Help);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.About);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Help);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.About);
         }
 
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             // ReSharper disable once StringLiteralTypo
             var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*" + FileConstants.WingetExtension, "*" + FileConstants.AppInstallerExtension);
-            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
+            this._dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
         private void OnFileDropped(object sender, DragEventArgs e)
@@ -80,7 +81,7 @@ namespace Otor.MsixHero.App
             }
 
             var dropped = new FileInfo(data.First());
-            this.dialogOpener.OpenFile(dropped);
+            this._dialogOpener.OpenFile(dropped);
         }
 
         private void OnDragEnter(object sender, DragEventArgs e)

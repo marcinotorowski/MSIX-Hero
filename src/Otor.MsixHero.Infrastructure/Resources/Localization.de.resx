@@ -121,13 +121,13 @@
 		<value>Die Datei {0} konnte nicht geöffnet werden.</value>
 	</data>
 	<data name="Infrastructure_Hashing_Format" xml:space="preserve">
-		<value>Berechnung von Hash {0}%...</value>
+		<value>Berechnung von Hash {0}%…</value>
 	</data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipeFor_Format" xml:space="preserve">
-		<value>Named Pipe für {0} wird erstellt...</value>
+		<value>Named Pipe für {0} wird erstellt…</value>
 	</data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipe_Format" xml:space="preserve">
-		<value>Named Pipe {0} wird erstellt...</value>
+		<value>Named Pipe {0} wird erstellt…</value>
 	</data>
 	<data name="Infrastructure_Ipc_Error_CouldNotStart" xml:space="preserve">
 		<value>Der Helper konnte nicht gestartet werden.</value>
@@ -145,31 +145,31 @@
 		<value>Kein Receiver für Typ {0} wurde registriert.</value>
 	</data>
 	<data name="Infrastructure_Ipc_ReadingCmd" xml:space="preserve">
-		<value>Befehl aus Stream wird gelesen...</value>
+		<value>Befehl aus Stream wird gelesen…</value>
 	</data>
 	<data name="Infrastructure_Ipc_RequestedNonVoid_Format" xml:space="preserve">
-		<value>Angefordert: {0} mit Rückgabewert vom Typ {1}...</value>
+		<value>Angefordert: {0} mit Rückgabewert vom Typ {1}…</value>
 	</data>
 	<data name="Infrastructure_Ipc_RequestedVoid_Format" xml:space="preserve">
-		<value>Angefordert: {0} ohne Rückgabewert...</value>
+		<value>Angefordert: {0} ohne Rückgabewert…</value>
 	</data>
 	<data name="Infrastructure_Ipc_ReturningResults" xml:space="preserve">
-		<value>Rückgabe der Ergebnisse über named pipe...</value>
+		<value>Rückgabe der Ergebnisse über named pipe…</value>
 	</data>
 	<data name="Infrastructure_Ipc_Sending" xml:space="preserve">
-		<value>Rückgabe der aktuellen Ergebnisse über named pipe...</value>
+		<value>Rückgabe der aktuellen Ergebnisse über named pipe…</value>
 	</data>
 	<data name="Infrastructure_Ipc_SID" xml:space="preserve">
 		<value>Die Sicherheits-SID ist {0}.</value>
 	</data>
 	<data name="Infrastructure_Ipc_Waiting" xml:space="preserve">
-		<value>Warten auf eine Client-Verbindung...</value>
+		<value>Warten auf eine Client-Verbindung…</value>
 	</data>
 	<data name="Infrastructure_Sdk_CreatingVolume_Format" xml:space="preserve">
-		<value>Volume '{0}' mit erforderlicher Größe {1} wird erstellt...</value>
+		<value>Volume '{0}' mit erforderlicher Größe {1} wird erstellt…</value>
 	</data>
 	<data name="Infrastructure_Sdk_DeletingFile_Format" xml:space="preserve">
-		<value>Datei '{0}' wird gelöscht...</value>
+		<value>Datei '{0}' wird gelöscht…</value>
 	</data>
 	<data name="Infrastructure_Sdk_DiskPartCommand_Format" xml:space="preserve">
 		<value>DISKPART.EXE Befehl in Datei '{0}':</value>
@@ -235,10 +235,10 @@
 		<value>Ausführen von {0} {1}</value>
 	</data>
 	<data name="Infrastructure_Sdk_FormattingAndAssigning" xml:space="preserve">
-		<value>Laufwerk wird formatiert und Laufwerksbuchstaben wird zugewiesen...</value>
+		<value>Laufwerk wird formatiert und Laufwerksbuchstaben wird zugewiesen…</value>
 	</data>
 	<data name="Infrastructure_Sdk_KillingPid_Format" xml:space="preserve">
-		<value>Beenden des Prozesses PID={0}...</value>
+		<value>Beenden des Prozesses PID={0}…</value>
 	</data>
 	<data name="Infrastructure_Sdk_MakeAppx_EditCodeError_Format" xml:space="preserve">
 		<value>MakeAppx.exe hat Exit Code {0} wegen Fehler {1} zurückgegeben.</value>
@@ -247,10 +247,10 @@
 		<value>MakeAppx.exe hat den Exit-Code {0} zurückgegeben.</value>
 	</data>
 	<data name="Infrastructure_Sdk_MakeAppx_ExtractingFile_Format" xml:space="preserve">
-		<value>Extrahieren von Datei {0}...</value>
+		<value>Extrahieren von Datei {0}…</value>
 	</data>
 	<data name="Infrastructure_Sdk_MsixMgr_CopyingFile" xml:space="preserve">
-		<value>Kopieren von {0} nach {1}...</value>
+		<value>Kopieren von {0} nach {1}…</value>
 	</data>
 	<data name="Infrastructure_Sdk_MsixMgr_Error_AdminRights" xml:space="preserve">
 		<value>Dieser Vorgang erfordert Administratorrechte.</value>
@@ -265,7 +265,7 @@
 		<value>Der Prozess hat den Exit-Code {0} zurückgegeben.</value>
 	</data>
 	<data name="Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format" xml:space="preserve">
-		<value>Der temporaräre Ordner {0} wird gelöscht...</value>
+		<value>Der temporaräre Ordner {0} wird gelöscht…</value>
 	</data>
 	<data name="Infrastructure_Sdk_MsixMgr_RunningWithIdentity" xml:space="preserve">
 		<value>Das Programm mit Paketidentität ausgeführt wird. MSIXMGR muss von einem temporären Ordner gestartet werden.</value>
@@ -286,10 +286,10 @@
 		<value>Der Prozess wurde beendet und hat die folgende Standardausgabe zurückgegeben:</value>
 	</data>
 	<data name="Infrastructure_Sdk_VhdDismount" xml:space="preserve">
-		<value>Volume wird ausgehängt...</value>
+		<value>Volume wird ausgehängt…</value>
 	</data>
 	<data name="Infrastructure_Sdk_VhdMount_Format" xml:space="preserve">
-		<value>Datenträger '{0}' wird gemountet...</value>
+		<value>Datenträger '{0}' wird gemountet…</value>
 	</data>
 	<data name="Infrastructure_Settings_Error_UseDefault" xml:space="preserve">
 		<value>Die Einstellungen konnten nicht gelesen werden. Es werden die Standardeinstellungen verwendet.</value>
@@ -297,4 +297,7 @@
 	<data name="Infrastructure_WrongVersion_Format" xml:space="preserve">
 		<value>Version '{0}' konnte nicht als Versionsstring geparst werden.</value>
 	</data>
+	<data name="MakeAppx_Compressing" xml:space="preserve">
+    <value>Komprimieren von {0}…</value>
+  </data>
 </root>

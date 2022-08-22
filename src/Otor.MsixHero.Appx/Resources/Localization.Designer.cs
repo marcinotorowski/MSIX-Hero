@@ -61,7 +61,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting events, please wait....
+        ///   Looks up a localized string similar to Getting events, please wait….
         /// </summary>
         public static string Events_PleaseWait {
             get {
@@ -70,7 +70,106 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing {0}....
+        ///   Looks up a localized string similar to Reading {0}….
+        /// </summary>
+        public static string Events_Reading {
+            get {
+                return ResourceManager.GetString("Events_Reading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No updates are available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_NoUpdates_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_NoUpdates_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An optional update is available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A required update is available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check for updates for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These package were not installed via {0} file:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_WrongSource_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_WrongSource_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apps removed.
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved1_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved1_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} apps has been just removed..
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved2_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved2_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove {0} packages? This operation is irreversible..
+        /// </summary>
+        public static string PackageExpert_Commands_ConfirmRemovalMultiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_ConfirmRemovalMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to De-provisioning {0}….
+        /// </summary>
+        public static string PackageExpert_Commands_Deprovisioning {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Deprovisioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates are available for the following packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_UpdatesAvailable {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_UpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analyzing {0}….
         /// </summary>
         public static string Packages_Analyzing {
             get {
@@ -79,7 +178,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applying ACLs....
+        ///   Looks up a localized string similar to Applying ACLs….
         /// </summary>
         public static string Packages_AppAttach_ApplyingACL {
             get {
@@ -88,7 +187,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating JSON file....
+        ///   Looks up a localized string similar to Creating JSON file….
         /// </summary>
         public static string Packages_AppAttach_CreatingJson {
             get {
@@ -97,7 +196,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating scripts....
+        ///   Looks up a localized string similar to Creating scripts….
         /// </summary>
         public static string Packages_AppAttach_CreatingScripts {
             get {
@@ -106,7 +205,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expanding MSIX....
+        ///   Looks up a localized string similar to Expanding MSIX….
         /// </summary>
         public static string Packages_AppAttach_Expanding {
             get {
@@ -115,7 +214,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initializing....
+        ///   Looks up a localized string similar to Initializing….
         /// </summary>
         public static string Packages_AppAttach_Initializing {
             get {
@@ -124,7 +223,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unpacking {0}....
+        ///   Looks up a localized string similar to Unpacking {0}….
         /// </summary>
         public static string Packages_AppAttach_Unpacking_Format {
             get {
@@ -133,7 +232,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unpacking MSIX....
+        ///   Looks up a localized string similar to Unpacking MSIX….
         /// </summary>
         public static string Packages_AppAttach_UnpackingMsix {
             get {
@@ -160,7 +259,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Finishing....
+        ///   Looks up a localized string similar to Finishing….
         /// </summary>
         public static string Packages_Error_AppAttachFinishing {
             get {
@@ -466,7 +565,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting certificate from {0}....
+        ///   Looks up a localized string similar to Extracting certificate from {0}….
         /// </summary>
         public static string Packages_ExtractingCertFrom_Format {
             get {
@@ -475,7 +574,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting installed apps....
+        ///   Looks up a localized string similar to Getting installed apps….
         /// </summary>
         public static string Packages_GettingApps {
             get {
@@ -484,7 +583,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing {0}....
+        ///   Looks up a localized string similar to Installing {0}….
         /// </summary>
         public static string Packages_Installing_Format {
             get {
@@ -493,7 +592,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing from {0}....
+        ///   Looks up a localized string similar to Installing from {0}….
         /// </summary>
         public static string Packages_InstallingFrom_Format {
             get {
@@ -556,7 +655,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provisioning {0} {1}....
+        ///   Looks up a localized string similar to Provisioning {0} {1}….
         /// </summary>
         public static string Packages_Provisioning_Format {
             get {
@@ -574,7 +673,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing....
+        ///   Looks up a localized string similar to Removing….
         /// </summary>
         public static string Packages_Removing {
             get {
@@ -583,7 +682,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing {0}....
+        ///   Looks up a localized string similar to Removing {0}….
         /// </summary>
         public static string Packages_Removing_Format {
             get {
@@ -736,7 +835,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing added files....
+        ///   Looks up a localized string similar to Analyzing added files….
         /// </summary>
         public static string Packages_UpdateImpact_AnalyzingAdded {
             get {
@@ -745,7 +844,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing changed files....
+        ///   Looks up a localized string similar to Analyzing changed files….
         /// </summary>
         public static string Packages_UpdateImpact_AnalyzingChanges {
             get {
@@ -754,7 +853,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing deleted files....
+        ///   Looks up a localized string similar to Analyzing deleted files….
         /// </summary>
         public static string Packages_UpdateImpact_AnalyzingDeleted {
             get {
@@ -763,7 +862,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing unchanged files....
+        ///   Looks up a localized string similar to Analyzing unchanged files….
         /// </summary>
         public static string Packages_UpdateImpact_AnalyzingUnchanged {
             get {
@@ -772,7 +871,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Calculating file status (1/2)....
+        ///   Looks up a localized string similar to Calculating file status (1/2)….
         /// </summary>
         public static string Packages_UpdateImpact_Calculating1 {
             get {
@@ -781,7 +880,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Calculating file status (2/2)....
+        ///   Looks up a localized string similar to Calculating file status (2/2)….
         /// </summary>
         public static string Packages_UpdateImpact_Calculating2 {
             get {
@@ -790,7 +889,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comparing files....
+        ///   Looks up a localized string similar to Comparing files….
         /// </summary>
         public static string Packages_UpdateImpact_ComparingFiles {
             get {
@@ -799,7 +898,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Finding duplicates....
+        ///   Looks up a localized string similar to Finding duplicates….
         /// </summary>
         public static string Packages_UpdateImpact_Deduplicating {
             get {
@@ -808,7 +907,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing duplication impact (1/3)....
+        ///   Looks up a localized string similar to Analyzing duplication impact (1/3)….
         /// </summary>
         public static string Packages_UpdateImpact_DeduplicatingImpact1 {
             get {
@@ -817,7 +916,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing duplication impact (2/3)....
+        ///   Looks up a localized string similar to Analyzing duplication impact (2/3)….
         /// </summary>
         public static string Packages_UpdateImpact_DeduplicatingImpact2 {
             get {
@@ -826,7 +925,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analyzing duplication impact (3/3)....
+        ///   Looks up a localized string similar to Analyzing duplication impact (3/3)….
         /// </summary>
         public static string Packages_UpdateImpact_DeduplicatingImpact3 {
             get {
@@ -907,7 +1006,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading the first package....
+        ///   Looks up a localized string similar to Reading the first package….
         /// </summary>
         public static string Packages_UpdateImpact_Reading1 {
             get {
@@ -916,7 +1015,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading the second package....
+        ///   Looks up a localized string similar to Reading the second package….
         /// </summary>
         public static string Packages_UpdateImpact_Reading2 {
             get {
@@ -925,7 +1024,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading AppxBlockMap.xml....
+        ///   Looks up a localized string similar to Reading AppxBlockMap.xml….
         /// </summary>
         public static string Packages_UpdateImpact_ReadingBlock {
             get {
@@ -934,7 +1033,7 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading files....
+        ///   Looks up a localized string similar to Reading files….
         /// </summary>
         public static string Packages_UpdateImpact_ReadingFiles {
             get {
@@ -943,11 +1042,65 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please wait....
+        ///   Looks up a localized string similar to Please wait….
         /// </summary>
         public static string Packages_UpdateImpact_Wait {
             get {
                 return ResourceManager.GetString("Packages_UpdateImpact_Wait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All files.
+        /// </summary>
+        public static string Psf_Descriptor_AllFiles {
+            get {
+                return ResourceManager.GetString("Psf_Descriptor_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature algorithm {0} is not supported..
+        /// </summary>
+        public static string Signing_AlgNotSupported {
+            get {
+                return ResourceManager.GetString("Signing_AlgNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing-in….
+        /// </summary>
+        public static string Signing_DeviceGuard_LoggingIn {
+            get {
+                return ResourceManager.GetString("Signing_DeviceGuard_LoggingIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing with Device Guard….
+        /// </summary>
+        public static string Signing_DeviceGuard_Signing {
+            get {
+                return ResourceManager.GetString("Signing_DeviceGuard_Signing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validating signing capabilities….
+        /// </summary>
+        public static string Signing_DeviceGuard_Validation {
+            get {
+                return ResourceManager.GetString("Signing_DeviceGuard_Validation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing….
+        /// </summary>
+        public static string Signing_Signing {
+            get {
+                return ResourceManager.GetString("Signing_Signing", resourceCulture);
             }
         }
         

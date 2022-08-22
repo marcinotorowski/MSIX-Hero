@@ -14,7 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Events;
+using Otor.MsixHero.App.Modules.Main.Events;
 using Prism.Events;
 using Prism.Regions;
 

@@ -85,7 +85,7 @@ namespace Otor.MsixHero.Appx.Signing
                     }
                     catch (Exception e)
                     {
-                        // This will be probably WindowsCryptographicException but we do not want to expose too much...
+                        // This will be probably WindowsCryptographicException but we do not want to expose too much…
                         Logger.Debug().WriteLine("Selected file {0} is not signed and no certificate could be exported from it (exception of type {1}).", msixFile, e.GetType().Name);
                         return null;
                     }
@@ -108,7 +108,7 @@ namespace Otor.MsixHero.Appx.Signing
                     case ".dll":
                     case FileConstants.AppxBundleExtension:
                     case FileConstants.MsixBundleExtension:
-                        Logger.Info().WriteLine("Verifying certificate from a signable file {0}...", certificateFileOrSignedFile);
+                        Logger.Info().WriteLine("Verifying certificate from a signable file {0}…", certificateFileOrSignedFile);
 
                         try
                         {
@@ -130,7 +130,7 @@ namespace Otor.MsixHero.Appx.Signing
                     case ".p12":
                     case ".pfx":
                     case ".p7x":
-                        Logger.Info().WriteLine("Verifying certificate file {0}...", certificateFileOrSignedFile);
+                        Logger.Info().WriteLine("Verifying certificate file {0}…", certificateFileOrSignedFile);
 
                         try
                         {
@@ -152,7 +152,7 @@ namespace Otor.MsixHero.Appx.Signing
                     default:
                         try
                         {
-                            Logger.Info().WriteLine("Trying to verify the certificate from a potentially signable file {0}...", certificateFileOrSignedFile);
+                            Logger.Info().WriteLine("Trying to verify the certificate from a potentially signable file {0}…", certificateFileOrSignedFile);
                             // certObject = X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile);
                             certObject = new X509Certificate2Collection();
                             certObject.Import(certificateFileOrSignedFile);
@@ -164,7 +164,7 @@ namespace Otor.MsixHero.Appx.Signing
                         catch (Exception)
                         {
                             Logger.Warn().WriteLine("The file {0} does not seem to be signed.", certificateFileOrSignedFile);
-                            Logger.Info().WriteLine("Trying to verify the certificate from a potential certificate file {0}...", certificateFileOrSignedFile);
+                            Logger.Info().WriteLine("Trying to verify the certificate from a potential certificate file {0}…", certificateFileOrSignedFile);
 
                             try
                             {
@@ -282,7 +282,7 @@ namespace Otor.MsixHero.Appx.Signing
 
             foreach (var certificate in col)
             {
-                Logger.Debug().WriteLine("Processing certificate {0}...", certificate);
+                Logger.Debug().WriteLine("Processing certificate {0}…", certificate);
                 cancellationToken.ThrowIfCancellationRequested();
                 list.Add(CreateFromX509(certificate, certStoreType));
             }
@@ -409,23 +409,23 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 else
                 {
-                    throw new NotSupportedException($"Signature algorithm {x509[0].SignatureAlgorithm.FriendlyName} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.Signing_AlgNotSupported, x509[0].SignatureAlgorithm.FriendlyName));
                 }
 
                 Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
 
                 var sdk = new SignToolWrapper();
-                progress?.Report(new ProgressData(25, "Signing..."));
+                progress?.Report(new ProgressData(25, Resources.Localization.Signing_Signing));
 
                 timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                 await sdk.SignPackageWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
 
-                progress?.Report(new ProgressData(75, "Signing..."));
+                progress?.Report(new ProgressData(75, Resources.Localization.Signing_Signing));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                 Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
-                progress?.Report(new ProgressData(95, "Signing..."));
+                progress?.Report(new ProgressData(95, Resources.Localization.Signing_Signing));
             }
             finally
             {
@@ -471,16 +471,16 @@ namespace Otor.MsixHero.Appx.Signing
                     cancellationToken.ThrowIfCancellationRequested();
                     
                     var sdk = new SignToolWrapper();
-                    progress?.Report(new ProgressData(25, "Signing with Device Guard..."));
+                    progress?.Report(new ProgressData(25, Resources.Localization.Signing_DeviceGuard_Signing));
 
                     timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                     await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
-                    progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
+                    progress?.Report(new ProgressData(75, Resources.Localization.Signing_DeviceGuard_Signing));
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                     Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                     File.Copy(localCopy, package, true);
-                    progress?.Report(new ProgressData(95, "Signing with Device Guard..."));
+                    progress?.Report(new ProgressData(95, Resources.Localization.Signing_DeviceGuard_Signing));
                 }
                 finally
                 {
@@ -544,7 +544,7 @@ namespace Otor.MsixHero.Appx.Signing
                 throw new FileNotFoundException($"File {pfxPath} does not exit.");
             }
 
-            Logger.Debug().WriteLine("Analyzing given certificate...");
+            Logger.Debug().WriteLine("Analyzing given certificate…");
             var x509 = new X509Certificate2(await File.ReadAllBytesAsync(pfxPath, cancellationToken).ConfigureAwait(false), password);
 
             var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, x509, cancellationToken).ConfigureAwait(false);
@@ -567,15 +567,15 @@ namespace Otor.MsixHero.Appx.Signing
                 Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);
 
                 var sdk = new SignToolWrapper();
-                progress?.Report(new ProgressData(25, "Signing..."));
+                progress?.Report(new ProgressData(25, Resources.Localization.Signing_Signing));
                 timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                 await sdk.SignPackageWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
-                progress?.Report(new ProgressData(75, "Signing..."));
+                progress?.Report(new ProgressData(75, Resources.Localization.Signing_Signing));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                 Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
-                progress?.Report(new ProgressData(95, "Signing..."));
+                progress?.Report(new ProgressData(95, Resources.Localization.Signing_Signing));
             }
             finally
             {
@@ -740,7 +740,7 @@ namespace Otor.MsixHero.Appx.Signing
             if (updatePublisher)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Logger.Info().WriteLine("Updating Publisher property based on the PFX file...");
+                Logger.Info().WriteLine("Updating Publisher property based on the PFX file…");
 
                 var tempDirectory = Path.Combine(Path.GetTempPath(), "MSIX-Hero", Guid.NewGuid().ToString("N").Substring(0, 8).ToUpperInvariant());
 

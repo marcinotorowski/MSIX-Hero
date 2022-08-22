@@ -64,7 +64,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Logger.Info().WriteLine("Getting users who installed package {0}...", packageName);
+            Logger.Info().WriteLine("Getting users who installed package {0}…", packageName);
             if (!await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
             {
                 Logger.Info().WriteLine("The user is not administrator. Returning an empty list.");
@@ -79,13 +79,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 },
                 cancellationToken).ConfigureAwait(false);
 
-            Logger.Info().WriteLine("Returning {0} users...", result.Count);
+            Logger.Info().WriteLine("Returning {0} users…", result.Count);
             return result;
         }
         
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return GetInstalledPackages(null, mode, cancellationToken, progress);
+            return this.QueryInstalledPackages(null, mode, cancellationToken, progress);
         }
 
         public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -137,8 +137,14 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
             return package;
         }
-        
-        private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+
+        public async Task<InstalledPackage> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var pkgs = await this.QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
+            return pkgs.FirstOrDefault();
+        }
+
+        private async Task<List<InstalledPackage>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<InstalledPackage>();
             var provisioned = new HashSet<string>();
@@ -153,7 +159,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             if (isAdmin)
             {
-                Logger.Info().WriteLine("Getting provisioned packages...");
+                Logger.Info().WriteLine("Getting provisioned packages…");
                 var tempFile = Path.GetTempFileName();
                 try
                 {
@@ -317,13 +323,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             sw.Stop();
 
-            Logger.Info().WriteLine("Returning {0} packages (the operation took {1})...", list.Count, sw.Elapsed);
+            Logger.Info().WriteLine("Returning {0} packages (the operation took {1})…", list.Count, sw.Elapsed);
             return list;
         }
 
         private async Task<InstalledPackage> ConvertFrom(Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
-            Logger.Debug().WriteLine("Getting details about package {0}...", item.Id.Name);
+            Logger.Debug().WriteLine("Getting details about package {0}…", item.Id.Name);
             string installLocation;
             DateTime installDate;
             try

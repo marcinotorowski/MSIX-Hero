@@ -16,6 +16,7 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/TreeView.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Themes.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Modules/Common/Themes.xaml" />
         <ResourceDictionary Source="/msixhero;component/Modules/PackageManagement/PackageContent/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

@@ -21,7 +21,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
@@ -35,13 +34,13 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Localization;
 using Dapplo.Log;
+using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Services.Dialogs;
-using LogManager = Otor.MsixHero.Infrastructure.Logging.LogManager;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel
 {

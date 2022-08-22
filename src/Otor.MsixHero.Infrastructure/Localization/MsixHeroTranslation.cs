@@ -95,7 +95,7 @@ namespace Otor.MsixHero.Infrastructure.Localization
                     return;
                 }
 
-                Logger.Info().WriteLine("Changing current culture from '{0}' to '{1}'...", this.CurrentCulture.Name, value.Name);
+                Logger.Info().WriteLine("Changing current culture from '{0}' to '{1}'…", this.CurrentCulture.Name, value.Name);
 
                 Thread.CurrentThread.CurrentCulture = value;
                 Thread.CurrentThread.CurrentUICulture = value;

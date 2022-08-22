@@ -142,7 +142,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
                 try
                 {
-                    Logger.Debug().WriteLine("Getting drives (NTFS, ready) and volumes...");
+                    Logger.Debug().WriteLine("Getting drives (NTFS, ready) and volumes…");
                     var allDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveFormat == "NTFS").Select(d => d.Name.ToLowerInvariant()).ToArray();
                     foreach (var item in allDrives)
                     {
@@ -202,7 +202,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             if (serviceController.Status != ServiceControllerStatus.Running)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Logger.Info().WriteLine("Starting service ShellHWDetection...");
+                Logger.Info().WriteLine("Starting service ShellHWDetection…");
 
                 try
                 {
@@ -218,7 +218,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             }
             else
             {
-                Logger.Debug().WriteLine("Service ShellHWDetection is already started...");
+                Logger.Debug().WriteLine("Service ShellHWDetection is already started…");
             }
 
             return Task.CompletedTask;
@@ -231,7 +231,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 throw new ArgumentNullException(nameof(sourcePath), Resources.Localization.Packages_Error_EmptyPath);
             }
 
-            Logger.Info().WriteLine("Expanding MSIX...");
+            Logger.Info().WriteLine("Expanding MSIX…");
             progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_AppAttach_Expanding));
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -243,7 +243,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
             var result = dir.EnumerateDirectories().Single(d => !existing.Contains(d.Name.ToLowerInvariant()));
 
-            Logger.Info().WriteLine("Applying ACLs...");
+            Logger.Info().WriteLine("Applying ACLs…");
             progressReporter?.Report(new ProgressData(80, Resources.Localization.Packages_AppAttach_ApplyingACL));
             await this.MsixMgr.ApplyAcls(result.FullName, cancellationToken).ConfigureAwait(false);
             progressReporter?.Report(new ProgressData(100, Resources.Localization.Packages_AppAttach_ApplyingACL));
@@ -251,17 +251,17 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
         private static Task<bool> StopService(IProgress<ProgressData> progressReporter = default)
         {
-            Logger.Debug().WriteLine("Trying to stop service ShellHWDetection...");
+            Logger.Debug().WriteLine("Trying to stop service ShellHWDetection…");
             progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_AppAttach_Initializing));
             var serviceController = new ServiceController("ShellHWDetection");
             if (serviceController.Status == ServiceControllerStatus.Running)
             {
                 serviceController.Stop();
-                Logger.Debug().WriteLine("Service ShellHWDetection has been stopped...");
+                Logger.Debug().WriteLine("Service ShellHWDetection has been stopped…");
                 return Task.FromResult(true);
             }
 
-            Logger.Debug().WriteLine("Service ShellHWDetection did not require stopping...");
+            Logger.Debug().WriteLine("Service ShellHWDetection did not require stopping…");
             return Task.FromResult(false);
         }
 

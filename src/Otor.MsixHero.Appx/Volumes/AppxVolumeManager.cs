@@ -259,7 +259,7 @@ namespace Otor.MsixHero.Appx.Volumes
             command.AddParameter("Package", packageFullName);
             command.AddParameter("Volume", volumePackagePath);
 
-            Logger.Debug().WriteLine($"Executing Move-AppxPackage -Package \"{packageFullName}\" -Volume \"{volumePackagePath}\"...");
+            Logger.Debug().WriteLine($"Executing Move-AppxPackage -Package \"{packageFullName}\" -Volume \"{volumePackagePath}\"…");
             await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
@@ -331,7 +331,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var command = session.AddCommand("Set-AppxDefaultVolume");
             command.AddParameter("Volume", volume.Name);
-            Logger.Info().WriteLine("Setting volume {0} as default...", volume.Name);
+            Logger.Info().WriteLine("Setting volume {0} as default…", volume.Name);
             await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
@@ -343,7 +343,7 @@ namespace Otor.MsixHero.Appx.Volumes
             var allVolumes = await this.GetAll(cancellationToken, p1).ConfigureAwait(false);
 
             drivePath = GetDriveLetterFromPath(drivePath);
-            Logger.Info().WriteLine("Looking for volume {0}...", drivePath);
+            Logger.Info().WriteLine("Looking for volume {0}…", drivePath);
             foreach (var item in allVolumes)
             {
                 Logger.Debug().WriteLine(" * Found volume '{0}'", item.PackageStorePath);

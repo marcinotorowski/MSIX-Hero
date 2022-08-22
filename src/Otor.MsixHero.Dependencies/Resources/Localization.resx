@@ -121,12 +121,12 @@
     <value>main package</value>
   </data>
 	<data name="Dependencies_ReadingOptionalPackages" xml:space="preserve">
-    <value>Reading optional packages...</value>
+    <value>Reading optional packages…</value>
   </data>
 	<data name="Dependencies_ReadingRelations" xml:space="preserve">
     <value>Reading relations…</value>
   </data>
 	<data name="Dependencies_Reading_Format" xml:space="preserve">
-    <value>Reading {0}...</value>
+    <value>Reading {0}…</value>
   </data>
 </root>

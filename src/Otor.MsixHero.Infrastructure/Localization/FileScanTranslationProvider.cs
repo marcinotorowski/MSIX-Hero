@@ -48,7 +48,7 @@ public class FileScanTranslationProvider : ITranslationProvider
                 continue;
             }
 
-            // Check if any of these contains at least one MSIX-Hero satellite resource...
+            // Check if any of these contains at least one MSIX-Hero satellite resource…
             var anyFile = dir.EnumerateFiles("*MsixHero*.Resources.dll").Any();
             if (anyFile)
             {

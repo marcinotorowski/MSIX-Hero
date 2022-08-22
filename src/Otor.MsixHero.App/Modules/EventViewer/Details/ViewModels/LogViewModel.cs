@@ -75,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
                 if (msg.Length > 300)
                 {
-                    return msg + " [...]";
+                    return msg + " […]";
                 }
 
                 return msg;

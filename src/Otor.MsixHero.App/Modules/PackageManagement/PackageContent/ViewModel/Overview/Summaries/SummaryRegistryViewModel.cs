@@ -69,7 +69,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             this.Estimating.IsLoading = true;
-            this.SecondLine = "Calculating...";
+            this.SecondLine = Resources.Localization.Packages_Calculating;
             this.OnPropertyChanged(nameof(SecondLine));
 
             try

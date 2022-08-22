@@ -35,7 +35,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
         private static readonly LogSource Logger = new();
         public async Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Logger.Info().WriteLine("Getting last {0} log files...", maxCount);
+            Logger.Info().WriteLine("Getting last {0} log files…", maxCount);
 
             var allLogs = new List<Log>();
 
@@ -119,7 +119,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
             cancellationToken.ThrowIfCancellationRequested();
             var logName = (string)provider.BaseObject;
 
-            itemProgress?.Report(new ProgressData(0, "Reading " + logName + "..."));
+            itemProgress?.Report(new ProgressData(0, string.Format(Resources.Localization.Events_Reading, logName)));
 
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -118,7 +118,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Winget_Downloading_Format" xml:space="preserve">
-    <value>Downloading... ({0}%)</value>
+    <value>Downloading… ({0}%)</value>
   </data>
 	<data name="Winget_Error_CouldNotStart" xml:space="preserve">
     <value>Could not start winget.</value>

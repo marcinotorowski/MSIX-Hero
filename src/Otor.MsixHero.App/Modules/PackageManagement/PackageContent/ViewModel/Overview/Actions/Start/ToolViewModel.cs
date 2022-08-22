@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Windows.Media;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Interop;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start
@@ -24,7 +24,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
     {
         public ToolViewModel(ToolListConfiguration model)
         {
-            this.Icon = ShellIcon.GetIconFor(string.IsNullOrEmpty(model.Icon) ? model.Path : model.Icon);
+            this.Icon = WindowsIcons.GetIconFor(string.IsNullOrEmpty(model.Icon) ? model.Path : model.Icon);
             this.Model = model;
             this.Header = model.Name;
             this.Description = model.Path == null ? null : model.Path;

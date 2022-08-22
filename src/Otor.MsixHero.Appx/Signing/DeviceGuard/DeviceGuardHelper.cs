@@ -57,7 +57,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
         public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, CancellationToken cancellationToken = default)
         {
-            Logger.Info().WriteLine("Getting certificate subject for Device Guard signing...");
+            Logger.Info().WriteLine("Getting certificate subject for Device Guard signing…");
 
             var tempFilePath = Path.Combine(Path.GetTempPath(), "msix-hero-" + Guid.NewGuid().ToString("N") + ".cat");
             try

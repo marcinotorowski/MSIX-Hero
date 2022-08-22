@@ -475,6 +475,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentRightAlignment" Value="Right" />
         <Setter Property="VerticalContentRightAlignment" Value="Center" />
+        <Setter Property="HorizontalContentExpandedAlignment" Value="Stretch" />
         <Setter Property="IsExpanded" Value="False" />
         <Setter Property="Margin" Value="{StaticResource CardMargin}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -524,7 +525,8 @@
                                         ContentRight="{TemplateBinding ContentRight}"
                                         ContentRightTemplate="{TemplateBinding ContentRightTemplate}"
                                         ContentRightTemplateSelector="{TemplateBinding ContentRightTemplateSelector}"
-                                        HorizontalContentAlignment="Stretch"
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                         VerticalContentRightAlignment="{TemplateBinding VerticalContentRightAlignment}"
                                         HorizontalContentRightAlignment="{TemplateBinding HorizontalContentRightAlignment}"
                                         Background="Transparent" 

@@ -144,7 +144,7 @@ public abstract class SimpleElevationBase
             }
         }
 
-        return $"Executing {targetMethod.DeclaringType.Name}.{targetMethod.Name} with parameters ({argsFormat})...";
+        return $"Executing {targetMethod.DeclaringType.Name}.{targetMethod.Name} with parameters ({argsFormat})…";
     }
 
     protected T Resolve<T>()

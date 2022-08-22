@@ -19,9 +19,10 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
@@ -39,14 +40,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
 
     public class UpdateImpactViewModel : ChangeableDialogViewModel
     {
-        private readonly IAppxUpdateImpactAnalyzer updateImpactAnalyzer;
-        private readonly IInteractionService interactionService;
+        private readonly IAppxUpdateImpactAnalyzer _updateImpactAnalyzer;
+        private readonly IInteractionService _interactionService;
 
         public UpdateImpactViewModel(IAppxUpdateImpactAnalyzer updateImpactAnalyzer, IInteractionService interactionService) : base(Resources.Localization.Dialogs_UpdateImpact_Title, interactionService)
         {
             MsixHeroTranslation.Instance.CultureChanged += OnCultureChange;
-            this.updateImpactAnalyzer = updateImpactAnalyzer;
-            this.interactionService = interactionService;
+            this._updateImpactAnalyzer = updateImpactAnalyzer;
+            this._interactionService = interactionService;
             this.Path1 = new ChangeableFileProperty(() => Resources.Localization.Dialogs_UpdateImpact_File1_Path, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
@@ -80,7 +81,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                 return;
             }
             
-            if (!this.interactionService.SaveFile(FileDialogSettings.FromFilterString("XML files|*.xml"), out var selectedFile))
+            if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString("XML files|*.xml"), out var selectedFile))
             {
                 return;
             }
@@ -145,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
 
             if (!this.IsValid)
             {
-                this.interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, Resources.Localization.Dialogs_UpdateImpact_Errors_MissingValues);
+                this._interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, Resources.Localization.Dialogs_UpdateImpact_Errors_MissingValues);
                 return;
             }
 
@@ -162,7 +163,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                 var task2 = manifestParser.Read(file2, cts.Token);
 
                 var progress = new Progress<ProgressData>();
-                var taskCompare = this.updateImpactAnalyzer.Analyze(this.Path1.CurrentValue, this.Path2.CurrentValue, ignorePackageVersionError, cts.Token, progress);
+                var taskCompare = this._updateImpactAnalyzer.Analyze(this.Path1.CurrentValue, this.Path2.CurrentValue, ignorePackageVersionError, cts.Token, progress);
 
                 var taskComplete = Task.WhenAll(task1, task2, taskCompare);
 
@@ -181,11 +182,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                     case UpgradeImpactError.WrongPackageVersion:
                         if (ignorePackageVersionError)
                         {
-                            this.interactionService.ShowError(updateImpactException.Message);
+                            this._interactionService.ShowError(updateImpactException.Message);
                             return;
                         }
 
-                        var result = this.interactionService.ShowError(updateImpactException.Message + "\r\n" + Resources.Localization.Dialogs_UpdateImpact_Errors_IgnoreRetry, InteractionResult.Retry | InteractionResult.Close, Resources.Localization.Dialogs_UpdateImpact_Errors_InvalidVersions);
+                        var result = this._interactionService.ShowError(updateImpactException.Message + "\r\n" + Resources.Localization.Dialogs_UpdateImpact_Errors_IgnoreRetry, InteractionResult.Retry | InteractionResult.Close, Resources.Localization.Dialogs_UpdateImpact_Errors_InvalidVersions);
                         if (result == InteractionResult.Retry) 
                         {
                             await this.ComparePackages(true).ConfigureAwait(false);
@@ -193,7 +194,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                         
                         break;
                     default:
-                        this.interactionService.ShowError(updateImpactException.Message);
+                        this._interactionService.ShowError(updateImpactException.Message);
                         return;
                 }
             }
@@ -202,7 +203,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(Resources.Localization.Dialogs_UpdateImpact_Errors + " " + e.Message, e);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_UpdateImpact_Errors + " " + e.Message, e);
             }
             finally
             {

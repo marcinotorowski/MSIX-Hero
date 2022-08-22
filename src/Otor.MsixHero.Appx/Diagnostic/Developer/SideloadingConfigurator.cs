@@ -81,19 +81,19 @@ namespace Otor.MsixHero.Appx.Diagnostic.Developer
             if (version.Build >= 22000)
             {
                 // we are on Windows 11
-                Logger.Info().WriteLine("Initializing sideloading checker for Windows 11...");
+                Logger.Info().WriteLine("Initializing sideloading checker for Windows 11…");
                 this.sideloadingConfigurator = new Windows11SideloadingConfigurator();
             }
             else if (version.Build >= 19041)
             {
                 // we are on Windows 10 2004 (May 2002 Update) or newer
-                Logger.Info().WriteLine("Initializing sideloading checker for Windows 10 2004 (May Update) or newer...");
+                Logger.Info().WriteLine("Initializing sideloading checker for Windows 10 2004 (May Update) or newer…");
                 this.sideloadingConfigurator = new Windows10From2004SideloadingConfigurator();
             }
             else
             {
                 // we are on Windows 10
-                Logger.Info().WriteLine("Initializing sideloading checker for Windows 10 versions below 2004 (May Update)...");
+                Logger.Info().WriteLine("Initializing sideloading checker for Windows 10 versions below 2004 (May Update)…");
                 this.sideloadingConfigurator = new Windows10Below2004SideloadingConfigurator();
             }
         }

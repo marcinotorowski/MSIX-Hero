@@ -86,7 +86,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             Logger.Info().WriteLine("The package appears to have currently {0} associated running processes with the following PIDs: {1}.", processIds.Length, string.Join(", ", processIds));
             foreach (var pid in processIds)
             {
-                Logger.Info().WriteLine("Killing process PID = " + pid + " and its children...");
+                Logger.Info().WriteLine("Killing process PID = " + pid + " and its children…");
 
                 try
                 {

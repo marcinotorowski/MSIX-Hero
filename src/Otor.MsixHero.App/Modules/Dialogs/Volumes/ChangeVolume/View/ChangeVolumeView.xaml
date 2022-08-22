@@ -9,10 +9,10 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel.Items"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:volume="clr-namespace:Otor.MsixHero.App.Modules.Common.Volume"
              d:DataContext="{d:DesignInstance viewModel:ChangeVolumeViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>

@@ -9,7 +9,8 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:pkgMgmtCommands="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             d:DataContext="{d:DesignInstance actions:MoreViewModel}"
+             xmlns:more="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.More"
+             d:DataContext="{d:DesignInstance more:MoreViewModel}"
              mc:Ignorable="d" >
 
     <StackPanel>

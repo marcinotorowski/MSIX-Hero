@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;

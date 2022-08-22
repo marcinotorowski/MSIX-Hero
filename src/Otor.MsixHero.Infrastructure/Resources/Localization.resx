@@ -121,13 +121,13 @@
     <value>Could not open the file {0}.</value>
   </data>
 	<data name="Infrastructure_Hashing_Format" xml:space="preserve">
-    <value>Calculating hash {0}%...</value>
+    <value>Calculating hash {0}%…</value>
   </data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipeFor_Format" xml:space="preserve">
     <value>Creating named pipe for {0}…</value>
   </data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipe_Format" xml:space="preserve">
-    <value>Creating named pipe {0}...</value>
+    <value>Creating named pipe {0}…</value>
   </data>
 	<data name="Infrastructure_Ipc_Error_CouldNotStart" xml:space="preserve">
     <value>Could not start the helper.</value>
@@ -157,16 +157,16 @@
     <value>Returning results via named pipe…</value>
   </data>
 	<data name="Infrastructure_Ipc_Sending" xml:space="preserve">
-    <value>Returning actual results via named pipe...</value>
+    <value>Returning actual results via named pipe…</value>
   </data>
 	<data name="Infrastructure_Ipc_SID" xml:space="preserve">
     <value>Security SID is {0}.</value>
   </data>
 	<data name="Infrastructure_Ipc_Waiting" xml:space="preserve">
-    <value>Waiting for a client connection...</value>
+    <value>Waiting for a client connection…</value>
   </data>
 	<data name="Infrastructure_Sdk_CreatingVolume_Format" xml:space="preserve">
-    <value>Creating volume '{0}' with required size {1}...</value>
+    <value>Creating volume '{0}' with required size {1}…</value>
   </data>
 	<data name="Infrastructure_Sdk_DeletingFile_Format" xml:space="preserve">
     <value>Deleting file '{0}'…</value>
@@ -238,7 +238,7 @@
     <value>Formatting drive and assigning drive letter…</value>
   </data>
 	<data name="Infrastructure_Sdk_KillingPid_Format" xml:space="preserve">
-    <value>Killing the process PID={0}...</value>
+    <value>Killing the process PID={0}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MakeAppx_EditCodeError_Format" xml:space="preserve">
     <value>MakeAppx.exe returned exit code {0} due to error {1}.</value>
@@ -265,7 +265,7 @@
     <value>Process returned exit code {0}.</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format" xml:space="preserve">
-    <value>Removing temporary folder {0}...</value>
+    <value>Removing temporary folder {0}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_RunningWithIdentity" xml:space="preserve">
     <value>Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location…</value>
@@ -289,12 +289,15 @@
     <value>Dismounting volume…</value>
   </data>
 	<data name="Infrastructure_Sdk_VhdMount_Format" xml:space="preserve">
-    <value>Mounting volume '{0}'...</value>
+    <value>Mounting volume '{0}'…</value>
   </data>
 	<data name="Infrastructure_Settings_Error_UseDefault" xml:space="preserve">
     <value>Could not read the settings. Default settings will be used.</value>
   </data>
 	<data name="Infrastructure_WrongVersion_Format" xml:space="preserve">
     <value>Version '{0}' could not be parsed as a version string.</value>
+  </data>
+	<data name="MakeAppx_Compressing" xml:space="preserve">
+    <value>Compressing {0}…</value>
   </data>
 </root>

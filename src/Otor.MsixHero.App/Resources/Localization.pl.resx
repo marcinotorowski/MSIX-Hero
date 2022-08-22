@@ -12,11 +12,11 @@
     
     Example:
     
-    … ado.net/XML headers & schema …
+    ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, …</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, …</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
@@ -336,12 +336,6 @@
 	<data name="Dialogs_AppInstaller_Architecture_64" xml:space="preserve">
     <value>64-bitowa</value>
   </data>
-	<data name="Dialogs_AppInstaller_Architecture_ARM" xml:space="preserve">
-    <value>ARM</value>
-  </data>
-	<data name="Dialogs_AppInstaller_Architecture_ARM64" xml:space="preserve">
-    <value>ARM 64-bitowa</value>
-  </data>
 	<data name="Dialogs_AppInstaller_Architecture_Neutral" xml:space="preserve">
     <value>Neutralna</value>
   </data>
@@ -350,9 +344,6 @@
   </data>
 	<data name="Dialogs_AppInstaller_Errors_Opening" xml:space="preserve">
     <value>Otwieranie zaznaczonego pakietu nie powiodło się.</value>
-  </data>
-	<data name="Dialogs_AppInstaller_Filter_AllFiles" xml:space="preserve">
-    <value>Wszystkie pliki</value>
   </data>
 	<data name="Dialogs_AppInstaller_Filter_AppInstallerFiles" xml:space="preserve">
     <value>Pliki instalatora aplikacji</value>
@@ -408,9 +399,6 @@
 	<data name="Dialogs_AppInstaller_Version" xml:space="preserve">
     <value>Wersja</value>
   </data>
-	<data name="Dialogs_Browse_AllFiles" xml:space="preserve">
-    <value>Wszystkie pliki</value>
-  </data>
 	<data name="Dialogs_Close" xml:space="preserve">
     <value>Zamknij</value>
   </data>
@@ -440,9 +428,6 @@
   </data>
 	<data name="Dialogs_FilePicker_Validation_Missing" xml:space="preserve">
     <value>Plik o podanej ścieżce nie istnieje.</value>
-  </data>
-	<data name="Dialogs_Filter_AllFiles" xml:space="preserve">
-    <value>Wszystkie pliki</value>
   </data>
 	<data name="Dialogs_Filter_AllSupportedFiles" xml:space="preserve">
     <value>Wszystkie wspierane pliki</value>
@@ -1085,9 +1070,6 @@
   </data>
 	<data name="PackageSelector_Architecture_Arm" xml:space="preserve">
     <value>ARM</value>
-  </data>
-	<data name="PackageSelector_Architecture_Arm64" xml:space="preserve">
-    <value>ARM 64-bitowa</value>
   </data>
 	<data name="PackageSelector_Architecture_Neutral" xml:space="preserve">
     <value>Neutralna</value>
@@ -1807,7 +1789,7 @@
     <value>AppMoniker</value>
   </data>
 	<data name="Dialogs_Winget_AppMoniker_Hint" xml:space="preserve">
-    <value>Typowa nazwa, która może zostać wykorzystana do wyszukania paczki</value>
+    <value>Typowa nazwa, która może zostać wykorzystana do wyszukania pakietu</value>
   </data>
 	<data name="Dialogs_Winget_Architecture" xml:space="preserve">
     <value>Architektura instalatora</value>
@@ -2011,7 +1993,7 @@
     <value>Tagi</value>
   </data>
 	<data name="Dialogs_Winget_Tags_Hint" xml:space="preserve">
-    <value>Dodatkowe nazwy, które mogą zostać wykorzystane do wyszukania paczki.</value>
+    <value>Dodatkowe nazwy, które mogą zostać wykorzystane do wyszukania pakietu.</value>
   </data>
 	<data name="Dialogs_Winget_Url" xml:space="preserve">
     <value>URL</value>
@@ -2352,9 +2334,6 @@
 	<data name="Dialogs_Settings_Certificate_Output" xml:space="preserve">
     <value>Wyjściowy folder certyfikatów</value>
   </data>
-	<data name="Dialogs_Settings_CloseButton" xml:space="preserve">
-    <value>Zamknij</value>
-  </data>
 	<data name="Dialogs_Settings_Commands" xml:space="preserve">
     <value>Komendy</value>
   </data>
@@ -2484,7 +2463,7 @@
 	<data name="Dialogs_Settings_Language_Auto" xml:space="preserve">
     <value>Automatyczny</value>
   </data>
-	<data name="Dialogs_Settings_OkButton" xml:space="preserve">
+	<data name="Dialogs_Apply" xml:space="preserve">
     <value>Zastosuj</value>
   </data>
 	<data name="Dialogs_Settings_Other" xml:space="preserve">
@@ -2758,10 +2737,10 @@
     <value>Podpisz pakiet</value>
   </data>
 	<data name="Dialogs_Pack_PackagePublisher" xml:space="preserve">
-    <value>Nazwa wydawcy paczki</value>
+    <value>Nazwa wydawcy pakietu</value>
   </data>
 	<data name="Dialogs_Pack_PackagePublisherOverride" xml:space="preserve">
-    <value>Nadpisz wydawcę paczki nazwą z certyfikatu (zalecane)</value>
+    <value>Nadpisz wydawcę pakietu nazwą z certyfikatu (zalecane)</value>
   </data>
 	<data name="Dialogs_Pack_RegFileAction" xml:space="preserve">
     <value>MSIX Hero znalazł przynajmniej jeden plik z rozszerzeniem .reg. Czy chcesz skonwertować ten plik do natywnego pliku rejestru w paczce?</value>
@@ -2791,13 +2770,13 @@
     <value>Spakuj pakiet MSIX</value>
   </data>
 	<data name="Dialogs_Pack_UnpackedMsixInfo" xml:space="preserve">
-    <value>Ten folder jest wypakowaną paczką MSIX. Plik manifestu (AppxManifest.xml) zostanie uwzględniony w obecnej postaci.</value>
+    <value>Ten folder jest wypakowanym pakietem MSIX. Plik manifestu (AppxManifest.xml) zostanie uwzględniony w obecnej postaci.</value>
   </data>
 	<data name="Dialogs_Unpack_Cmd_Placeholder_OutputDir" xml:space="preserve">
     <value>&lt;folder-docelowy&gt;</value>
   </data>
 	<data name="Dialogs_Unpack_Cmd_Placeholder_SourcePkg" xml:space="preserve">
-    <value>&lt;zrodlowa-paczka&gt;</value>
+    <value>&lt;zrodlowy-pakiet&gt;</value>
   </data>
 	<data name="Dialogs_Unpack_FullFolderPath" xml:space="preserve">
     <value>Pełna ścieżka do folderu z wypakowanymi plikami</value>
@@ -3080,6 +3059,9 @@
   </data>
 	<data name="PackageExpert_AccessibleVia_StartMenu" xml:space="preserve">
     <value>Kafelek w menu Start</value>
+  </data>
+	<data name="PackageExpert_PackageContent" xml:space="preserve">
+    <value>Zawartość pakietu</value>
   </data>
 	<data name="PackageExpert_AddOns_None" xml:space="preserve">
     <value>Ten pakiet nie zawiera dodatków ani pakietów modyfikujących</value>
@@ -3586,349 +3568,499 @@
     <value>Wczytywanie szczegółów nie powiodło się. {0}</value>
   </data>
 	<data name="Dialogs_ExportCertificate_Output_Import_Press_Hint" xml:space="preserve">
-		<value>Wciśnij **Importuj certyfikat** aby zaimportować certyfikat. Po zaimportowaniu do magazynu zaufanych osób, wszystkie aplikacje podpisane za pomocą tego certyfikatu będą zaufane na tym komputerze.</value>
-	</data>
+    <value>Wciśnij **Importuj certyfikat** aby zaimportować certyfikat. Po zaimportowaniu do magazynu zaufanych osób, wszystkie aplikacje podpisane za pomocą tego certyfikatu będą zaufane na tym komputerze.</value>
+  </data>
 	<data name="EventViewer_Details_Properties" xml:space="preserve">
-		<value>Właściwości</value>
-	</data>
+    <value>Właściwości</value>
+  </data>
 	<data name="Capability_CameraProcExt" xml:space="preserve">
-		<value>Rozszerzenie przetwarzania kamery</value>
-	</data>
+    <value>Rozszerzenie przetwarzania kamery</value>
+  </data>
 	<data name="Capability_CustomDevices" xml:space="preserve">
-		<value>Własne urządzenia</value>
-	</data>
+    <value>Własne urządzenia</value>
+  </data>
 	<data name="Capability_DevelopmentModeNetwork" xml:space="preserve">
-		<value>Sieć w trybie deweloperskim</value>
-	</data>
+    <value>Sieć w trybie deweloperskim</value>
+  </data>
 	<data name="Capability_EnterpriseSharedStorage" xml:space="preserve">
-		<value>Współdzielony magazyn firmowy</value>
-	</data>
+    <value>Współdzielony magazyn firmowy</value>
+  </data>
 	<data name="Capability_EnterpriseSSO" xml:space="preserve">
-		<value>Pojedyncze logowanie w chmurze firmowej</value>
-	</data>
+    <value>Pojedyncze logowanie w chmurze firmowej</value>
+  </data>
 	<data name="Capability_ExtendedBgTaskTime" xml:space="preserve">
-		<value>Rozszerzony czas dla zadań w tle</value>
-	</data>
+    <value>Rozszerzony czas dla zadań w tle</value>
+  </data>
 	<data name="Capability_ExtendedExecBgAudio" xml:space="preserve">
-		<value>Rozszerzone wykonywanie odtwarzania w tle</value>
-	</data>
+    <value>Rozszerzone wykonywanie odtwarzania w tle</value>
+  </data>
 	<data name="Capability_FirstTimeSignIn" xml:space="preserve">
-		<value>Ustawienia pierwszego logowania</value>
-	</data>
+    <value>Ustawienia pierwszego logowania</value>
+  </data>
 	<data name="Capability_ForegroundObservation" xml:space="preserve">
-		<value>Obserwacja na pierwszym tle</value>
-	</data>
+    <value>Obserwacja na pierwszym tle</value>
+  </data>
 	<data name="Capability_GameDvr" xml:space="preserve">
-		<value>Ustawienia DVR gier</value>
-	</data>
+    <value>Ustawienia DVR gier</value>
+  </data>
 	<data name="Capability_HID" xml:space="preserve">
-		<value>Human interface device (HID)</value>
-	</data>
+    <value>Human interface device (HID)</value>
+  </data>
 	<data name="Capability_HidTelephony" xml:space="preserve">
-		<value>Telefonia HID</value>
-	</data>
+    <value>Telefonia HID</value>
+  </data>
 	<data name="Capability_InProcMediaExt" xml:space="preserve">
-		<value>Rozszerzenie in-processs mediów</value>
-	</data>
+    <value>Rozszerzenie in-processs mediów</value>
+  </data>
 	<data name="Capability_ManageEmailAccount" xml:space="preserve">
-		<value>Dodawanie i zarządzanie kontami poczty (MO)</value>
-	</data>
+    <value>Dodawanie i zarządzanie kontami poczty (MO)</value>
+  </data>
 	<data name="Capability_MdmCspInf" xml:space="preserve">
-		<value>Dostęp do infrastruktury MDM CSP</value>
-	</data>
+    <value>Dostęp do infrastruktury MDM CSP</value>
+  </data>
 	<data name="Capability_ObserveInput" xml:space="preserve">
-		<value>Śledzenie wprowadzania</value>
-	</data>
+    <value>Śledzenie wprowadzania</value>
+  </data>
 	<data name="Capability_OemDeploy" xml:space="preserve">
-		<value>Dostęp do współdzielonego folderu aplikacji (OEM)</value>
-	</data>
+    <value>Dostęp do współdzielonego folderu aplikacji (OEM)</value>
+  </data>
 	<data name="Capability_PackagePolicyControl" xml:space="preserve">
-		<value>Kontrola polityki pakietów</value>
-	</data>
+    <value>Kontrola polityki pakietów</value>
+  </data>
 	<data name="Capability_PenWorkspace" xml:space="preserve">
-		<value>Obszar roboczy technologii Pen</value>
-	</data>
+    <value>Obszar roboczy technologii Pen</value>
+  </data>
 	<data name="Capability_POS" xml:space="preserve">
-		<value>Point of Service (POS)</value>
-	</data>
+    <value>Point of Service (POS)</value>
+  </data>
 	<data name="Capability_ProvisionConfigureOmaDm" xml:space="preserve">
-		<value>Prowizjonowanie i konfiguracja MO OMA-DM</value>
-	</data>
+    <value>Prowizjonowanie i konfiguracja MO OMA-DM</value>
+  </data>
 	<data name="Capability_RadioState" xml:space="preserve">
-		<value>Status radio</value>
-	</data>
+    <value>Status radio</value>
+  </data>
 	<data name="Capability_ReserveVoIP" xml:space="preserve">
-		<value>Rezerwowanie zasobów dla telefonii VoIP</value>
-	</data>
+    <value>Rezerwowanie zasobów dla telefonii VoIP</value>
+  </data>
 	<data name="Capability_SerialCommunication" xml:space="preserve">
-		<value>Komunikacja serialowa</value>
-	</data>
+    <value>Komunikacja serialowa</value>
+  </data>
 	<data name="Capability_SoftwareLicensing" xml:space="preserve">
-		<value>Licencjonowanie oprogramowania</value>
-	</data>
+    <value>Licencjonowanie oprogramowania</value>
+  </data>
 	<data name="Capability_SpeechRecognition" xml:space="preserve">
-		<value>Rozpoznawanie mowy dla akcesoriów</value>
-	</data>
+    <value>Rozpoznawanie mowy dla akcesoriów</value>
+  </data>
 	<data name="Capability_SuppressInput" xml:space="preserve">
-		<value>Zawieszenie wprowadzania</value>
-	</data>
+    <value>Zawieszenie wprowadzania</value>
+  </data>
 	<data name="Capability_SysInputInjection" xml:space="preserve">
-		<value>Wstrzykiwanie inputu systemowego</value>
-	</data>
+    <value>Wstrzykiwanie inputu systemowego</value>
+  </data>
 	<data name="Capability_UserSignIn" xml:space="preserve">
-		<value>Wsparcie dla logowania</value>
-	</data>
+    <value>Wsparcie dla logowania</value>
+  </data>
 	<data name="Capability_WindowsTeamAppView" xml:space="preserve">
-		<value>Widok aplikacji sesji Windows Team</value>
-	</data>
+    <value>Widok aplikacji sesji Windows Team</value>
+  </data>
 	<data name="Capability_WindowsTeamDeviceCreds" xml:space="preserve">
-		<value>Zarządzanie uprawnieniami sesji Windows Team</value>
-	</data>
+    <value>Zarządzanie uprawnieniami sesji Windows Team</value>
+  </data>
 	<data name="System_DeveloperOptions_Option1_Short" xml:space="preserve">
-		<value>Instalowanie jedynie aplikacji ze Sklepu Microsoft</value>
-	</data>
+    <value>Instalowanie jedynie aplikacji ze Sklepu Microsoft</value>
+  </data>
 	<data name="System_DeveloperOptions_Option2_Short" xml:space="preserve">
-		<value>Instalowanie podpisanych aplikacji i ze Sklepu Microsoft</value>
-	</data>
+    <value>Instalowanie podpisanych aplikacji i ze Sklepu Microsoft</value>
+  </data>
 	<data name="System_DeveloperOptions_Option3a_Short" xml:space="preserve">
-		<value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
-	</data>
+    <value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
+  </data>
 	<data name="System_DeveloperOptions_Option3b_Short" xml:space="preserve">
-		<value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
-	</data>
+    <value>Instalowanie wszystkich aplikacji (tryb deweloperski)</value>
+  </data>
 	<data name="System_DeveloperOptions_SideLoading" xml:space="preserve">
-		<value>Sideloading</value>
-	</data>
+    <value>Sideloading</value>
+  </data>
 	<data name="System_DeveloperOptions_SideLoading_OutOfTheBox" xml:space="preserve">
-		<value>Twój system wspiera natywnie instalowanie aplikacji z podpisanych plików.</value>
-	</data>
+    <value>Twój system wspiera natywnie instalowanie aplikacji z podpisanych plików.</value>
+  </data>
 	<data name="Volumes_No_Label" xml:space="preserve">
-		<value>Nie</value>
-	</data>
+    <value>Nie</value>
+  </data>
 	<data name="Volumes_Yes_Label" xml:space="preserve">
-		<value>Tak</value>
-	</data>
+    <value>Tak</value>
+  </data>
 	<data name="Volumes_Status" xml:space="preserve">
-		<value>Status</value>
-	</data>
+    <value>Status</value>
+  </data>
 	<data name="PackageExpert_Summary_Applications" xml:space="preserve">
-		<value>Aplikacje: {0}</value>
-	</data>
+    <value>Aplikacje: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Capabilities" xml:space="preserve">
-		<value>Funkcje: {0}</value>
-	</data>
+    <value>Funkcje: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Dependencies" xml:space="preserve">
-		<value>Wymagane pakiety i systemy operacyjne: {0}</value>
-	</data>
+    <value>Wymagane pakiety i systemy operacyjne: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Dependencies_OpenGraph" xml:space="preserve">
-		<value>Analiza zależności…</value>
-	</data>
+    <value>Analiza zależności…</value>
+  </data>
 	<data name="PackagePublisher" xml:space="preserve">
-		<value>Wydawca pakietu</value>
-	</data>
+    <value>Wydawca pakietu</value>
+  </data>
 	<data name="PackagingInformation" xml:space="preserve">
-		<value>Informacje odnośnie pakietowania</value>
-	</data>
+    <value>Informacje odnośnie pakietowania</value>
+  </data>
 	<data name="PackageExpert_Packaging_Summary" xml:space="preserve">
-		<value>Stworzony za pomocą {0} {1}</value>
-	</data>
+    <value>Stworzony za pomocą {0} {1}</value>
+  </data>
 	<data name="PackageExpert_Applications_Type" xml:space="preserve">
-		<value>Typ</value>
-	</data>
+    <value>Typ</value>
+  </data>
 	<data name="PackageExpert_Applications_AppId" xml:space="preserve">
-		<value>Identyfikator aplikacji</value>
-	</data>
+    <value>Identyfikator aplikacji</value>
+  </data>
 	<data name="PackageExpert_Applications_ProxyExe" xml:space="preserve">
-		<value>Pośredni plik wykonawczy</value>
-	</data>
+    <value>Pośredni plik wykonawczy</value>
+  </data>
 	<data name="PackageExpert_Applications_CmdLine" xml:space="preserve">
-		<value>Argumenty linii komend</value>
-	</data>
+    <value>Argumenty linii komend</value>
+  </data>
 	<data name="PackageExpert_Applications_HostID" xml:space="preserve">
-		<value>Identyfikator hosta</value>
-	</data>
+    <value>Identyfikator hosta</value>
+  </data>
 	<data name="PackageExpert_BackToOverview" xml:space="preserve">
-		<value>Z powrotem do przeglądu paczki</value>
-	</data>
+    <value>Z powrotem do przeglądu pakietu</value>
+  </data>
 	<data name="PackageExpert_Applications_Header" xml:space="preserve">
-		<value>Aplikacje</value>
-	</data>
+    <value>Aplikacje</value>
+  </data>
 	<data name="PackageExpert_Applications_StartMenu" xml:space="preserve">
-		<value>Aplikacje w menu Start</value>
-	</data>
+    <value>Aplikacje w menu Start</value>
+  </data>
 	<data name="PackageExpert_Applications_Command" xml:space="preserve">
-		<value>Aplikacje globalne (z aliasem)</value>
-	</data>
+    <value>Aplikacje globalne (z aliasem)</value>
+  </data>
 	<data name="PackageExpert_Applications_Other" xml:space="preserve">
-		<value>Pozostałe aplikacje</value>
-	</data>
+    <value>Pozostałe aplikacje</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Win10Link" xml:space="preserve">
-		<value>Historia systemu Windows 10</value>
-	</data>
+    <value>Historia systemu Windows 10</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Win11Link" xml:space="preserve">
-		<value>Historia systemu Windows 11</value>
-	</data>
+    <value>Historia systemu Windows 11</value>
+  </data>
 	<data name="PackageExpert_Applications_OneExtra" xml:space="preserve">
-		<value>{0} i jeszcze jedna aplikacja</value>
-	</data>
+    <value>{0} i jeszcze jedna aplikacja</value>
+  </data>
 	<data name="PackageExpert_Applications_XExtra" xml:space="preserve">
-		<value>{0} i jeszcze {1} aplikacje/i</value>
-	</data>
+    <value>{0} i jeszcze {1} aplikacje/i</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_Trust" xml:space="preserve">
-		<value>działa z pełnym zaufaniem</value>
-	</data>
+    <value>działa z pełnym zaufaniem</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_Elevation" xml:space="preserve">
-		<value>może podwyższyć uprawnienia</value>
-	</data>
+    <value>może podwyższyć uprawnienia</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_OneAnother" xml:space="preserve">
-		<value>i jeszcze jedna funkcja…</value>
-	</data>
+    <value>i jeszcze jedna funkcja…</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_XOther" xml:space="preserve">
-		<value>i jeszcze {0} funkcji…</value>
-	</data>
+    <value>i jeszcze {0} funkcji…</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_None" xml:space="preserve">
-		<value>Ten pakiet nie wymaga żadnych funkcji</value>
-	</data>
+    <value>Ten pakiet nie wymaga żadnych funkcji</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Summary_XOther" xml:space="preserve">
-		<value>{0} i jeszcze {1} innych zależności</value>
-	</data>
+    <value>{0} i jeszcze {1} innych zależności</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Summary_None" xml:space="preserve">
-		<value>Ten pakiet nie ma zależności.</value>
-	</data>
+    <value>Ten pakiet nie ma zależności.</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_Estimated" xml:space="preserve">
-		<value>ponad **{0}** oraz **{1}**</value>
-	</data>
+    <value>ponad **{0}** oraz **{1}**</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_Exact" xml:space="preserve">
-		<value>**{0}**, łącznie **{1}**</value>
-	</data>
+    <value>**{0}**, łącznie **{1}**</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_None" xml:space="preserve">
-		<value>Ten pakiet nie zawiera plików.</value>
-	</data>
+    <value>Ten pakiet nie zawiera plików.</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesGeneric" xml:space="preserve">
-		<value>{0} plików</value>
-	</data>
+    <value>{0} plików</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesGenericPlus" xml:space="preserve">
-		<value>Ponad {0} plików</value>
-	</data>
+    <value>Ponad {0} plików</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe1" xml:space="preserve">
-		<value>{0} oraz ponad {1} pozostałych plików</value>
-	</data>
+    <value>{0} oraz ponad {1} pozostałych plików</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe1Plus" xml:space="preserve">
-		<value>{0} oraz {1} pozostałych plików</value>
-	</data>
+    <value>{0} oraz {1} pozostałych plików</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe2Plus" xml:space="preserve">
-		<value>{0}, {1} oraz ponad {2} pozostałych plików</value>
-	</data>
+    <value>{0}, {1} oraz ponad {2} pozostałych plików</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe2" xml:space="preserve">
-		<value>{0}, {1} oraz {2} pozostałych plików</value>
-	</data>
+    <value>{0}, {1} oraz {2} pozostałych plików</value>
+  </data>
 	<data name="PackageExpert_Installation_StatusDate" xml:space="preserve">
-		<value>Zainstalowany **{0}**</value>
-	</data>
+    <value>Zainstalowany **{0}**</value>
+  </data>
 	<data name="PackageExpert_Installation_StatusDateUnknown" xml:space="preserve">
-		<value>Zainstalowany</value>
-	</data>
+    <value>Zainstalowany</value>
+  </data>
 	<data name="PackageExpert_Installation_AppInstaller" xml:space="preserve">
-		<value>z pliku .appinstaller</value>
-	</data>
+    <value>z pliku .appinstaller</value>
+  </data>
 	<data name="PackageExpert_Installation_Store" xml:space="preserve">
-		<value>ze Sklepu Microsoft</value>
-	</data>
+    <value>ze Sklepu Microsoft</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_SideLoading" xml:space="preserve">
-		<value>z pliku</value>
-	</data>
+    <value>z pliku</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_Dev" xml:space="preserve">
-		<value>w trybie deweloperskim</value>
-	</data>
+    <value>w trybie deweloperskim</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_Unknown" xml:space="preserve">
-		<value>Nieznany</value>
-	</data>
+    <value>Nieznany</value>
+  </data>
 	<data name="PackageExpert_Installation_AddOnX" xml:space="preserve">
-		<value>Posiada {0} dodatków</value>
-	</data>
+    <value>Posiada {0} dodatków</value>
+  </data>
 	<data name="PackageExpert_Installation_AddOn1" xml:space="preserve">
-		<value>Posiada jeden dodatek</value>
-	</data>
+    <value>Posiada jeden dodatek</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_General" xml:space="preserve">
-		<value>Klucze rejestru per-maszyna i per-użytkownik</value>
-	</data>
+    <value>Klucze rejestru per-maszyna i per-użytkownik</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_HKLM_Other" xml:space="preserve">
-		<value>HKLM\{0} i inne klucze rejestru per-maszyna</value>
-	</data>
+    <value>HKLM\{0} i inne klucze rejestru per-maszyna</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Machine" xml:space="preserve">
-		<value>Klucze rejestru per-maszyna</value>
-	</data>
+    <value>Klucze rejestru per-maszyna</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_HKCU_Other" xml:space="preserve">
-		<value>HKCU\{0} i inne klucze rejestru per-użytkownik</value>
-	</data>
+    <value>HKCU\{0} i inne klucze rejestru per-użytkownik</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_User" xml:space="preserve">
-		<value>Klucze rejestru per-użytkownik</value>
-	</data>
+    <value>Klucze rejestru per-użytkownik</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
-		<value>Pusty rejestr systemu Windows</value>
-	</data>
+    <value>Pusty rejestr systemu Windows</value>
+  </data>
 	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
-		<value>Czy jesteś pewien, że chcesz dodać tego wydawcę to listy zaufanych wydawców (ustawienie per-maszyna)?</value>
-	</data>
+    <value>Czy jesteś pewien, że chcesz dodać tego wydawcę to listy zaufanych wydawców (ustawienie per-maszyna)?</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Header" xml:space="preserve">
-		<value>Definiuje</value>
-	</data>
+    <value>Definiuje</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Redirections" xml:space="preserve">
-		<value>przekierowania</value>
-	</data>
+    <value>przekierowania</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Scripts" xml:space="preserve">
-		<value>skrypty</value>
-	</data>
+    <value>skrypty</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Tracing" xml:space="preserve">
-		<value>logowanie</value>
-	</data>
+    <value>logowanie</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Electron" xml:space="preserve">
-		<value>fixup Electron</value>
-	</data>
+    <value>fixup Electron</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Custom" xml:space="preserve">
-		<value>własne fixupy</value>
-	</data>
+    <value>własne fixupy</value>
+  </data>
 	<data name="PackageExpert_PSF_Summary_Custom" xml:space="preserve">
-		<value>Własna definicja PSF</value>
-	</data>
+    <value>Własna definicja PSF</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_SignedTrusted" xml:space="preserve">
-		<value>Podpis cyfrowy: **Podpisany** i **zaufany**</value>
-	</data>
+    <value>Podpis cyfrowy: **Podpisany** i **zaufany**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_Signed" xml:space="preserve">
-		<value>Podpis cyfrowy: wydawca jest **niezaufany**</value>
-	</data>
+    <value>Podpis cyfrowy: wydawca jest **niezaufany**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary" xml:space="preserve">
-		<value>Podpis cyfrowy:</value>
-	</data>
+    <value>Podpis cyfrowy:</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_NotSigned" xml:space="preserve">
-		<value>Podpis cyfrowy: **brak**</value>
-	</data>
+    <value>Podpis cyfrowy: **brak**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_NotSigned2" xml:space="preserve">
-		<value>Ta paczka nie jest podpisana cyfrowo</value>
-	</data>
+    <value>Ten pakiet nie jest podpisany cyfrowo</value>
+  </data>
 	<data name="PackageExpert_NameCalculator_OpenButton" xml:space="preserve">
-		<value>Otwórz kalkulator nazw pakietów…</value>
-	</data>
+    <value>Otwórz kalkulator nazw pakietów…</value>
+  </data>
 	<data name="PackageExpert_Installation_For" xml:space="preserve">
-		<value>ZAINSTALOWANE PRZEZ</value>
-	</data>
+    <value>ZAINSTALOWANE PRZEZ</value>
+  </data>
 	<data name="PackageExpert_Installation_NoAddons" xml:space="preserve">
-		<value>Dla tego produktu nie zostały zainstalowane żadne dodatki lub pakiety modyfikujące.</value>
-	</data>
+    <value>Dla tego produktu nie zostały zainstalowane żadne dodatki lub pakiety modyfikujące.</value>
+  </data>
 	<data name="System_Checking" xml:space="preserve">
-		<value>Sprawdzanie systemu…</value>
-	</data>
+    <value>Sprawdzanie systemu…</value>
+  </data>
 	<data name="PackageExpert_PSF_CustomInject" xml:space="preserve">
-		<value>Wstrzyknij własną konfigurację poprawki fixup</value>
-	</data>
+    <value>Wstrzyknij własną konfigurację poprawki fixup</value>
+  </data>
 	<data name="Package_Star_Tooltip" xml:space="preserve">
-		<value>Kliknij ikonę, aby oznaczyć ten pakiet gwiazdką.
+    <value>Kliknij ikonę, aby oznaczyć ten pakiet gwiazdką.
 
 Pakiety z gwiazdką są wyświetlana zawsze na górze listy, niezależnie od sortowania.</value>
-	</data>
+  </data>
 	<data name="Package_Unstar_Tooltip" xml:space="preserve">
-		<value>Ta paczka jest oznaczona gwiazdką, i wyświetlana przez to zawsze na górze listy, niezależnie od sortowania.
+    <value>Ten pakiet jest oznaczony gwiazdką, i przez to wyświetlany zawsze na górze listy, niezależnie od sortowania.
 
 Kliknij ikonę, aby usunąć gwiazdkę.</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_Success1" xml:space="preserve">
+    <value>Aplikacja zainstalowana</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_Success2" xml:space="preserve">
+    <value>Aplikacja {0} została zainstalowana</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_SuccessFile2" xml:space="preserve">
+    <value>Nowa aplikacja została zainstalowana z pliku {0}.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_NoUpdates" xml:space="preserve">
+    <value>Brak dostępnych aktualizacji.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_NoUpdates_Multiple" xml:space="preserve">
+    <value>Brak dostępnych aktualizacji dla poniższych pakietów:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable" xml:space="preserve">
+    <value>Dostępna opcjonalna aktualizacja.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple" xml:space="preserve">
+    <value>Opcjonalna aktualizacja dostępna dla poniższych pakietów:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable" xml:space="preserve">
+    <value>Dostępna wymagana aktualizacja.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple" xml:space="preserve">
+    <value>Wymagalna aktualizacja dostępna dla poniższych pakietów:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed" xml:space="preserve">
+    <value>Sprawdzanie aktualizacji nie powiodło się.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple" xml:space="preserve">
+    <value>Sprawdzanie aktualizacji nie powiodło się dla poniższych pakietów:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheck_Result" xml:space="preserve">
+    <value>Rezultat sprawdzania aktualizacji</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateNow" xml:space="preserve">
+    <value>Zaktualizuj teraz</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_WrongSource" xml:space="preserve">
+    <value>Pakiet nie został zainstalowany przy pomocy pliku {0}.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_WrongSource_Multiple" xml:space="preserve">
+    <value>Poniższe pakiety mogą nie zostały zainstalowane za pomocą pliku {0}:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemovalFailed" xml:space="preserve">
+    <value>Usuwanie pakietu nie powiodło się.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved1" xml:space="preserve">
+    <value>Aplikacja usunięta</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved1_Multiple" xml:space="preserve">
+    <value>Pakiety usunięte</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved2" xml:space="preserve">
+    <value>Aplikacja {0} została usunięta.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved2_Multiple" xml:space="preserve">
+    <value>{0} pakietów zostało usuniętych.</value>
+  </data>
+	<data name="PackageExpert_Commands_ConfirmRemovalMultiple" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć {0} pakietów? Ta operacja jest nieodwracalna.</value>
+  </data>
+	<data name="PackageExpert_Commands_ConfirmRemovalSingle" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć {0} {1}? Ta operacja jest nieodwracalna</value>
+  </data>
+	<data name="PackageExpert_Commands_Deprovisioning" xml:space="preserve">
+    <value>Usuwanie dla wszystkich użytkowników pakietu {0}…</value>
+  </data>
+	<data name="PackageExpert_Commands_DismountRegistry_Error" xml:space="preserve">
+    <value>Odmontowywanie rejestru nie powiodło się.</value>
+  </data>
+	<data name="PackageExpert_Commands_DoNotRemove" xml:space="preserve">
+    <value>Nie usuwaj</value>
+  </data>
+	<data name="PackageExpert_Commands_LeaveRunning" xml:space="preserve">
+    <value>Pozostaw aplikację uruchomioną.</value>
+  </data>
+	<data name="PackageExpert_Commands_MountRegistry_Error" xml:space="preserve">
+    <value>Zamontowywanie rejestru nie powiodło się.</value>
+  </data>
+	<data name="PackageExpert_Commands_RemoveAllUsers" xml:space="preserve">
+    <value>Usuń dla wszystkich użytkowników</value>
+  </data>
+	<data name="PackageExpert_Commands_RemoveCurrentUser" xml:space="preserve">
+    <value>Usuń dla obecnego użytkownika</value>
+  </data>
+	<data name="PackageExpert_Commands_Removing" xml:space="preserve">
+    <value>Usuwanie pakietu</value>
+  </data>
+	<data name="PackageExpert_Commands_StartApp_Error" xml:space="preserve">
+    <value>Uruchamianie aplikacji nie powiodło się.</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp" xml:space="preserve">
+    <value>Zatrzymaj tę aplikację systemową.</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp_Remark" xml:space="preserve">
+    <value>To jest aplikacja systemowa. Czy na pewno chcesz ją zatrzymać?   &lt;&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt; Zatrzymanie aplikacji systemowej może mieć niepożądane efekty.</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp_Title" xml:space="preserve">
+    <value>Zatrzymywanie aplikacji systemowej…</value>
+  </data>
+	<data name="PackageExpert_Commands_UpdatesAvailable" xml:space="preserve">
+    <value>Aktualizacje są dostępne dla poniższych pakietów:</value>
+  </data>
+	<data name="Volumes_ConfirmRemoval" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć wolumin '{0}'? Usunięcie woluminu ma wpływ jedynie na powiązania i nie usuwa fizycznie plików.</value>
+  </data>
+	<data name="Volumes_Dismounting" xml:space="preserve">
+    <value>Odmontowywanie woluminu…</value>
+  </data>
+	<data name="Volumes_DismountingError" xml:space="preserve">
+    <value>Odmontowanie woluminu nie powiodło się.</value>
+  </data>
+	<data name="Volumes_DoNotRemove" xml:space="preserve">
+    <value>Nie usuwaj</value>
+  </data>
+	<data name="Volumes_Mounting" xml:space="preserve">
+    <value>Montowanie woluminu…</value>
+  </data>
+	<data name="Volumes_MountingError" xml:space="preserve">
+    <value>Montowanie woluminu nie powiodło się.</value>
+  </data>
+	<data name="Volumes_RemovalError" xml:space="preserve">
+    <value>Usuwanie woluminu nie powiodło się.</value>
+  </data>
+	<data name="Volumes_RemoveSelected" xml:space="preserve">
+    <value>Usuń zaznaczone woluminy</value>
+  </data>
+	<data name="Volumes_SettingDefault" xml:space="preserve">
+    <value>Ustawianie domyślnego woluminu…</value>
+  </data>
+	<data name="Volumes_SettingDefaultError" xml:space="preserve">
+    <value>Ustawianie domyślnego woluminu nie powiodło się.</value>
+  </data>
+	<data name="Packages_MoreCommands" xml:space="preserve">
+    <value>Więcej komend</value>
+  </data>
+	<data name="Packages_Calculating" xml:space="preserve">
+    <value>Obliczanie…</value>
+  </data>
+	<data name="Architecture_ARM" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Architecture_ARM64" xml:space="preserve">
+		<value>ARM 64-bit</value>
+	</data>
+	<data name="AllFiles" xml:space="preserve">
+		<value>wszystkie pliki</value>
 	</data>
 </root>

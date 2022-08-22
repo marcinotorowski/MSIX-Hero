@@ -12,11 +12,11 @@
     
     Example:
     
-    … ado.net/XML headers & schema …
+    ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, …</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, …</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
@@ -336,12 +336,6 @@
 	<data name="Dialogs_AppInstaller_Architecture_64" xml:space="preserve">
     <value>64-bit</value>
   </data>
-	<data name="Dialogs_AppInstaller_Architecture_ARM" xml:space="preserve">
-    <value>ARM</value>
-  </data>
-	<data name="Dialogs_AppInstaller_Architecture_ARM64" xml:space="preserve">
-    <value>ARM 64-bit</value>
-  </data>
 	<data name="Dialogs_AppInstaller_Architecture_Neutral" xml:space="preserve">
     <value>Neutral</value>
   </data>
@@ -350,9 +344,6 @@
   </data>
 	<data name="Dialogs_AppInstaller_Errors_Opening" xml:space="preserve">
     <value>Could not open selected package.</value>
-  </data>
-	<data name="Dialogs_AppInstaller_Filter_AllFiles" xml:space="preserve">
-    <value>All files</value>
   </data>
 	<data name="Dialogs_AppInstaller_Filter_AppInstallerFiles" xml:space="preserve">
     <value>App installer files</value>
@@ -408,9 +399,6 @@
 	<data name="Dialogs_AppInstaller_Version" xml:space="preserve">
     <value>Version</value>
   </data>
-	<data name="Dialogs_Browse_AllFiles" xml:space="preserve">
-    <value>All files</value>
-  </data>
 	<data name="Dialogs_Close" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -440,9 +428,6 @@
   </data>
 	<data name="Dialogs_FilePicker_Validation_Missing" xml:space="preserve">
     <value>The file does not exist.</value>
-  </data>
-	<data name="Dialogs_Filter_AllFiles" xml:space="preserve">
-    <value>All files</value>
   </data>
 	<data name="Dialogs_Filter_AllSupportedFiles" xml:space="preserve">
     <value>All supported files</value>
@@ -1088,9 +1073,6 @@
   </data>
 	<data name="PackageSelector_Architecture_Arm" xml:space="preserve">
     <value>ARM</value>
-  </data>
-	<data name="PackageSelector_Architecture_Arm64" xml:space="preserve">
-    <value>ARM 64-bit</value>
   </data>
 	<data name="PackageSelector_Architecture_Neutral" xml:space="preserve">
     <value>Neutral</value>
@@ -2355,9 +2337,6 @@
 	<data name="Dialogs_Settings_Certificate_Output" xml:space="preserve">
     <value>Certificate output path</value>
   </data>
-	<data name="Dialogs_Settings_CloseButton" xml:space="preserve">
-    <value>Close</value>
-  </data>
 	<data name="Dialogs_Settings_Commands" xml:space="preserve">
     <value>Commands</value>
   </data>
@@ -2487,7 +2466,7 @@
 	<data name="Dialogs_Settings_Language_Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
-	<data name="Dialogs_Settings_OkButton" xml:space="preserve">
+	<data name="Dialogs_Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
 	<data name="Dialogs_Settings_Other" xml:space="preserve">
@@ -3083,6 +3062,9 @@
   </data>
 	<data name="PackageExpert_AccessibleVia_StartMenu" xml:space="preserve">
     <value>Start menu tile</value>
+  </data>
+	<data name="PackageExpert_PackageContent" xml:space="preserve">
+    <value>Package content</value>
   </data>
 	<data name="PackageExpert_AddOns_None" xml:space="preserve">
     <value>This package has no installed add-ons or modification packages.</value>
@@ -3712,223 +3694,373 @@
     <value>Status</value>
   </data>
 	<data name="PackageExpert_Summary_Applications" xml:space="preserve">
-		<value>Applications: {0}</value>
-	</data>
+    <value>Applications: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Capabilities" xml:space="preserve">
-		<value>Capabilities: {0}</value>
-	</data>
+    <value>Capabilities: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Dependencies" xml:space="preserve">
-		<value>Package and OS requirements: {0}</value>
-	</data>
+    <value>Package and OS requirements: {0}</value>
+  </data>
 	<data name="PackageExpert_Summary_Dependencies_OpenGraph" xml:space="preserve">
-		<value>Dependency analyzer…</value>
-	</data>
+    <value>Dependency analyzer…</value>
+  </data>
 	<data name="PackagePublisher" xml:space="preserve">
-		<value>Package publisher</value>
-	</data>
+    <value>Package publisher</value>
+  </data>
 	<data name="PackagingInformation" xml:space="preserve">
-		<value>Packaging information</value>
-	</data>
+    <value>Packaging information</value>
+  </data>
 	<data name="PackageExpert_Packaging_Summary" xml:space="preserve">
-		<value>Authored with {0} {1}</value>
-	</data>
+    <value>Authored with {0} {1}</value>
+  </data>
 	<data name="PackageExpert_Applications_Type" xml:space="preserve">
-		<value>Type</value>
-	</data>
+    <value>Type</value>
+  </data>
 	<data name="PackageExpert_Applications_AppId" xml:space="preserve">
-		<value>Application ID</value>
-	</data>
+    <value>Application ID</value>
+  </data>
 	<data name="PackageExpert_Applications_ProxyExe" xml:space="preserve">
-		<value>Proxy executable</value>
-	</data>
+    <value>Proxy executable</value>
+  </data>
 	<data name="PackageExpert_Applications_CmdLine" xml:space="preserve">
-		<value>Command-line arguments</value>
-	</data>
+    <value>Command-line arguments</value>
+  </data>
 	<data name="PackageExpert_Applications_HostID" xml:space="preserve">
-		<value>Host ID</value>
-	</data>
+    <value>Host ID</value>
+  </data>
 	<data name="PackageExpert_BackToOverview" xml:space="preserve">
-		<value>Back to package overview</value>
-	</data>
+    <value>Back to package overview</value>
+  </data>
 	<data name="PackageExpert_Applications_Header" xml:space="preserve">
-		<value>Applications</value>
-	</data>
+    <value>Applications</value>
+  </data>
 	<data name="PackageExpert_Applications_StartMenu" xml:space="preserve">
-		<value>Applications in Start Menu</value>
-	</data>
+    <value>Applications in Start Menu</value>
+  </data>
 	<data name="PackageExpert_Applications_Command" xml:space="preserve">
-		<value>Global applications (with alias)</value>
-	</data>
+    <value>Global applications (with alias)</value>
+  </data>
 	<data name="PackageExpert_Applications_Other" xml:space="preserve">
-		<value>Other applications</value>
-	</data>
+    <value>Other applications</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Win10Link" xml:space="preserve">
-		<value>Windows 10 version history</value>
-	</data>
+    <value>Windows 10 version history</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Win11Link" xml:space="preserve">
-		<value>Windows 11 version history</value>
-	</data>
+    <value>Windows 11 version history</value>
+  </data>
 	<data name="PackageExpert_Applications_OneExtra" xml:space="preserve">
-		<value>{0} and one another application</value>
-	</data>
+    <value>{0} and one another application</value>
+  </data>
 	<data name="PackageExpert_Applications_XExtra" xml:space="preserve">
-		<value>{0} and {1} other applications</value>
-	</data>
+    <value>{0} and {1} other applications</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_Trust" xml:space="preserve">
-		<value>runs with full trust</value>
-	</data>
+    <value>runs with full trust</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_Elevation" xml:space="preserve">
-		<value>can elevate</value>
-	</data>
+    <value>can elevate</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_OneAnother" xml:space="preserve">
-		<value>and one another capability…</value>
-	</data>
+    <value>and one another capability…</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_XOther" xml:space="preserve">
-		<value>and {0} other capabilities…</value>
-	</data>
+    <value>and {0} other capabilities…</value>
+  </data>
 	<data name="PackageExpert_Capabilities_Summary_None" xml:space="preserve">
-		<value>This package requires no capabilities.</value>
-	</data>
+    <value>This package requires no capabilities.</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Summary_XOther" xml:space="preserve">
-		<value>{0} and {1} other dependencies</value>
-	</data>
+    <value>{0} and {1} other dependencies</value>
+  </data>
 	<data name="PackageExpert_Dependencies_Summary_None" xml:space="preserve">
-		<value>This package does not have dependencies.</value>
-	</data>
+    <value>This package does not have dependencies.</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_Estimated" xml:space="preserve">
-		<value>more than **{0}** and **{1}**</value>
-	</data>
+    <value>more than **{0}** and **{1}**</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_Exact" xml:space="preserve">
-		<value>**{0}**, together **{1}**</value>
-	</data>
+    <value>**{0}**, together **{1}**</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_None" xml:space="preserve">
-		<value>This package contains no files.</value>
-	</data>
+    <value>This package contains no files.</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesGeneric" xml:space="preserve">
-		<value>{0} files</value>
-	</data>
+    <value>{0} files</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesGenericPlus" xml:space="preserve">
-		<value>{0}+ files</value>
-	</data>
+    <value>{0}+ files</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe1" xml:space="preserve">
-		<value>{0} and more than {1} other files</value>
-	</data>
+    <value>{0} and more than {1} other files</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe1Plus" xml:space="preserve">
-		<value>{0} and {1} other files</value>
-	</data>
+    <value>{0} and {1} other files</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe2Plus" xml:space="preserve">
-		<value>{0}, {1} and {2}+ other files</value>
-	</data>
+    <value>{0}, {1} and {2}+ other files</value>
+  </data>
 	<data name="PackageExpert_Files_Summary_FilesExe2" xml:space="preserve">
-		<value>{0}, {1} and {2} other files</value>
-	</data>
+    <value>{0}, {1} and {2} other files</value>
+  </data>
 	<data name="PackageExpert_Installation_StatusDate" xml:space="preserve">
-		<value>Installed on **{0}**</value>
-	</data>
+    <value>Installed on **{0}**</value>
+  </data>
 	<data name="PackageExpert_Installation_StatusDateUnknown" xml:space="preserve">
-		<value>Installed</value>
-	</data>
+    <value>Installed</value>
+  </data>
 	<data name="PackageExpert_Installation_AppInstaller" xml:space="preserve">
-		<value>from .appinstaller file</value>
-	</data>
+    <value>from .appinstaller file</value>
+  </data>
 	<data name="PackageExpert_Installation_Store" xml:space="preserve">
-		<value>from Microsoft Store</value>
-	</data>
+    <value>from Microsoft Store</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_SideLoading" xml:space="preserve">
-		<value>via side-loading</value>
-	</data>
+    <value>via side-loading</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_Dev" xml:space="preserve">
-		<value>in development mode</value>
-	</data>
+    <value>in development mode</value>
+  </data>
 	<data name="PackageExpert_Installation_InstallType_Unknown" xml:space="preserve">
-		<value>Unknown</value>
-	</data>
+    <value>Unknown</value>
+  </data>
 	<data name="PackageExpert_Installation_AddOnX" xml:space="preserve">
-		<value>Has {0} add-ons</value>
-	</data>
+    <value>Has {0} add-ons</value>
+  </data>
 	<data name="PackageExpert_Installation_AddOn1" xml:space="preserve">
-		<value>Has one add-on</value>
-	</data>
+    <value>Has one add-on</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Header" xml:space="preserve">
-		<value>Defines</value>
-	</data>
+    <value>Defines</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Redirections" xml:space="preserve">
-		<value>file redirections</value>
-	</data>
+    <value>file redirections</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Scripts" xml:space="preserve">
-		<value>scripts</value>
-	</data>
+    <value>scripts</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Tracing" xml:space="preserve">
-		<value>tracing</value>
-	</data>
+    <value>tracing</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Electron" xml:space="preserve">
-		<value>Electron fix-up</value>
-	</data>
+    <value>Electron fix-up</value>
+  </data>
 	<data name="PackageExpert_PSF_SummaryBuilder_Custom" xml:space="preserve">
-		<value>custom fix-ups</value>
-	</data>
+    <value>custom fix-ups</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_General" xml:space="preserve">
-		<value>Per-machine and per-user registry keys.</value>
-	</data>
+    <value>Per-machine and per-user registry keys.</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_HKLM_Other" xml:space="preserve">
-		<value>HKLM\{0} and other per-machine registry keys.</value>
-	</data>
+    <value>HKLM\{0} and other per-machine registry keys.</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Machine" xml:space="preserve">
-		<value>Per-machine registry keys.</value>
-	</data>
+    <value>Per-machine registry keys.</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_HKCU_Other" xml:space="preserve">
-		<value>HKCU\{0} and other per-user registry keys.</value>
-	</data>
+    <value>HKCU\{0} and other per-user registry keys.</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_User" xml:space="preserve">
-		<value>Per-user registry keys.</value>
-	</data>
+    <value>Per-user registry keys.</value>
+  </data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
-		<value>Empty Windows registry.</value>
-	</data>
+    <value>Empty Windows registry.</value>
+  </data>
 	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
-		<value>Are you sure you want to add this publisher to the list of trusted publishers (machine-wide)?</value>
-	</data>
+    <value>Are you sure you want to add this publisher to the list of trusted publishers (machine-wide)?</value>
+  </data>
 	<data name="PackageExpert_PSF_Summary_Custom" xml:space="preserve">
-		<value>Custom PSF definition</value>
-	</data>
+    <value>Custom PSF definition</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_SignedTrusted" xml:space="preserve">
-		<value>Signature: **Signed** and **trusted**</value>
-	</data>
+    <value>Signature: **Signed** and **trusted**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_Signed" xml:space="preserve">
-		<value>Signature: publisher is **not trusted**</value>
-	</data>
+    <value>Signature: publisher is **not trusted**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_NotSigned" xml:space="preserve">
-		<value>Signature: **none**</value>
-	</data>
+    <value>Signature: **none**</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary_NotSigned2" xml:space="preserve">
-		<value>This package is not signed</value>
-	</data>
+    <value>This package is not signed</value>
+  </data>
 	<data name="PackageExpert_Signature_Summary" xml:space="preserve">
-		<value>Signature:</value>
-	</data>
+    <value>Signature:</value>
+  </data>
 	<data name="PackageExpert_NameCalculator_OpenButton" xml:space="preserve">
-		<value>Open package name calculator…</value>
-	</data>
+    <value>Open package name calculator…</value>
+  </data>
 	<data name="PackageExpert_Installation_For" xml:space="preserve">
-		<value>INSTALLED FOR</value>
-	</data>
+    <value>INSTALLED FOR</value>
+  </data>
 	<data name="PackageExpert_Installation_NoAddons" xml:space="preserve">
-		<value>No add-ons / modification packages are installed for this product.</value>
-	</data>
+    <value>No add-ons / modification packages are installed for this product.</value>
+  </data>
 	<data name="System_Checking" xml:space="preserve">
-		<value>Checking your system…</value>
-	</data>
+    <value>Checking your system…</value>
+  </data>
 	<data name="PackageExpert_PSF_CustomInject" xml:space="preserve">
-		<value>Inject custom fix-up with configuration</value>
-	</data>
+    <value>Inject custom fix-up with configuration</value>
+  </data>
 	<data name="Package_Star_Tooltip" xml:space="preserve">
-		<value>Click the icon to star this package.
+    <value>Click the icon to star this package.
 
 Starred packages are displayed on the top of the list, regardless of the sorting.</value>
-	</data>
+  </data>
 	<data name="Package_Unstar_Tooltip" xml:space="preserve">
-		<value>This package is starred and is displayed on the top of the list, regardless of the sorting.
+    <value>This package is starred and is displayed on the top of the list, regardless of the sorting.
 
 Click the icon again to remove the star.</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_Success1" xml:space="preserve">
+    <value>App installed</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_Success2" xml:space="preserve">
+    <value>Application {0} has been just installed.</value>
+  </data>
+	<data name="PackageExpert_Commands_Add_SuccessFile2" xml:space="preserve">
+    <value>A new app has been just installed from {0}.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_NoUpdates" xml:space="preserve">
+    <value>No updates are available.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable" xml:space="preserve">
+    <value>An optional update is available.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable" xml:space="preserve">
+    <value>A required update is available.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed" xml:space="preserve">
+    <value>Could not check for updates.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheck_Result" xml:space="preserve">
+    <value>Update check result</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateNow" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_WrongSource" xml:space="preserve">
+    <value>This package was not installed via {0} file.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemovalFailed" xml:space="preserve">
+    <value>Could not remove the package.</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved1" xml:space="preserve">
+    <value>App removed</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved2" xml:space="preserve">
+    <value>Application {0} has been just removed.</value>
+  </data>
+	<data name="PackageExpert_Commands_ConfirmRemovalSingle" xml:space="preserve">
+    <value>Are you sure you want to remove {0} {1}? This operation is irreversible.</value>
+  </data>
+	<data name="PackageExpert_Commands_DismountRegistry_Error" xml:space="preserve">
+    <value>Could not dismount the registry.</value>
+  </data>
+	<data name="PackageExpert_Commands_DoNotRemove" xml:space="preserve">
+    <value>Do not remove</value>
+  </data>
+	<data name="PackageExpert_Commands_LeaveRunning" xml:space="preserve">
+    <value>Leave the app running</value>
+  </data>
+	<data name="PackageExpert_Commands_MountRegistry_Error" xml:space="preserve">
+    <value>Could not mount the registry</value>
+  </data>
+	<data name="PackageExpert_Commands_RemoveAllUsers" xml:space="preserve">
+    <value>Remove for all users</value>
+  </data>
+	<data name="PackageExpert_Commands_RemoveCurrentUser" xml:space="preserve">
+    <value>Remove for current user</value>
+  </data>
+	<data name="PackageExpert_Commands_Removing" xml:space="preserve">
+    <value>Removing package</value>
+  </data>
+	<data name="PackageExpert_Commands_StartApp_Error" xml:space="preserve">
+    <value>Could not start the app.</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp" xml:space="preserve">
+    <value>Stop this system app</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp_Remark" xml:space="preserve">
+    <value>This is a system app. Are you sure you want to stop it?   &lt;&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt; Stopping a system app may have unexpected side-effects.</value>
+  </data>
+	<data name="PackageExpert_Commands_StopSystemApp_Title" xml:space="preserve">
+    <value>Stopping a system app</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_NoUpdates_Multiple" xml:space="preserve">
+    <value>No updates are available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple" xml:space="preserve">
+    <value>An optional update is available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple" xml:space="preserve">
+    <value>A required update is available for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple" xml:space="preserve">
+    <value>Could not check for updates for these packages:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppInstaller_WrongSource_Multiple" xml:space="preserve">
+    <value>These package were not installed via {0} file:</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved1_Multiple" xml:space="preserve">
+    <value>Apps removed</value>
+  </data>
+	<data name="PackageExpert_Commands_AppRemoved2_Multiple" xml:space="preserve">
+    <value>{0} apps has been just removed.</value>
+  </data>
+	<data name="PackageExpert_Commands_ConfirmRemovalMultiple" xml:space="preserve">
+    <value>Are you sure you want to remove {0} packages? This operation is irreversible.</value>
+  </data>
+	<data name="PackageExpert_Commands_Deprovisioning" xml:space="preserve">
+    <value>De-provisioning {0}…</value>
+  </data>
+	<data name="PackageExpert_Commands_UpdatesAvailable" xml:space="preserve">
+    <value>Updates are available for the following packages:</value>
+  </data>
+	<data name="Volumes_ConfirmRemoval" xml:space="preserve">
+    <value>Are you sure you want to remove volume '{0}'? Removing of volumes affects only registration and does not delete any physical files.</value>
+  </data>
+	<data name="Volumes_Dismounting" xml:space="preserve">
+    <value>Dismounting volume…</value>
+  </data>
+	<data name="Volumes_DismountingError" xml:space="preserve">
+    <value>Could not dismount the volume.</value>
+  </data>
+	<data name="Volumes_DoNotRemove" xml:space="preserve">
+    <value>Do not remove</value>
+  </data>
+	<data name="Volumes_Mounting" xml:space="preserve">
+    <value>Mounting volume…</value>
+  </data>
+	<data name="Volumes_MountingError" xml:space="preserve">
+    <value>Could not mount the volume.</value>
+  </data>
+	<data name="Volumes_RemovalError" xml:space="preserve">
+    <value>Could not delete the volume.</value>
+  </data>
+	<data name="Volumes_RemoveSelected" xml:space="preserve">
+    <value>Remove selected volume</value>
+  </data>
+	<data name="Volumes_SettingDefault" xml:space="preserve">
+    <value>Setting the default volume…</value>
+  </data>
+	<data name="Volumes_SettingDefaultError" xml:space="preserve">
+    <value>Could not set the volume as the default volume.</value>
+  </data>
+	<data name="Packages_MoreCommands" xml:space="preserve">
+    <value>More commands…</value>
+  </data>
+	<data name="Packages_Calculating" xml:space="preserve">
+    <value>Calculating…</value>
+  </data>
+	<data name="Architecture_ARM" xml:space="preserve">
+		<value>ARM</value>
+	</data>
+	<data name="Architecture_ARM64" xml:space="preserve">
+		<value>ARM 64-bit</value>
+	</data>
+	<data name="AllFiles" xml:space="preserve">
+		<value>all files</value>
 	</data>
 </root>

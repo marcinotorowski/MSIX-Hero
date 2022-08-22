@@ -25,6 +25,7 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Ookii.Dialogs.Wpf;
+using Otor.MsixHero.App.Helpers.Interop;
 using Otor.MsixHero.Infrastructure.Services;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
@@ -35,11 +36,11 @@ namespace Otor.MsixHero.App.Services
 {
     public class InteractionService : IInteractionService
     {
-        private readonly SynchronizationContext context;
+        private readonly SynchronizationContext _context;
 
         public InteractionService()
         {
-            this.context = SynchronizationContext.Current;
+            this._context = SynchronizationContext.Current;
         }
 
         public InteractionResult Confirm(string body, string title = null, InteractionType type = InteractionType.Asterisk, InteractionButton buttons = InteractionButton.OK)
@@ -119,7 +120,7 @@ namespace Otor.MsixHero.App.Services
             {
                 taskDialog.ButtonClicked += handler;
 
-                if (this.context == null)
+                if (this._context == null)
                 {
                     taskDialog.ShowDialog(GetActiveWindow());
                 }
@@ -129,7 +130,7 @@ namespace Otor.MsixHero.App.Services
                 {
                     dispatcher.Invoke(() =>
                     {
-                        this.context.Send(
+                        this._context.Send(
                             _ => taskDialog.ShowDialog(GetActiveWindow()),
                             null);
                     },
@@ -211,7 +212,7 @@ namespace Otor.MsixHero.App.Services
 
             taskDialog.WindowTitle = title ?? "MSIX Hero - " + Resources.Localization.Dialogs_Error_Title;
 
-            if (this.context == null)
+            if (this._context == null)
             {
                 return (InteractionResult)(int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType;
             }
@@ -223,7 +224,7 @@ namespace Otor.MsixHero.App.Services
             {
                 dispatcher.Invoke(() =>
                 {
-                    this.context.Send(
+                    this._context.Send(
                         _ => result = (int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType,
                         null);
                 },
@@ -281,7 +282,7 @@ namespace Otor.MsixHero.App.Services
 
             taskDialog.WindowTitle = title ?? "MSIX Hero";
 
-            if (this.context == null)
+            if (this._context == null)
             {
                 return (InteractionResult)(int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType;
             }
@@ -293,7 +294,7 @@ namespace Otor.MsixHero.App.Services
             {
                 dispatcher.Invoke(() =>
                 {
-                    this.context.Send(
+                    this._context.Send(
                         _ => result = (int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType,
                         null);
                 },
@@ -411,7 +412,7 @@ namespace Otor.MsixHero.App.Services
         {
             if (string.IsNullOrEmpty(filterString))
             {
-                return Resources.Localization.Dialogs_Browse_AllFiles + " (*.*)|*.*";
+                return Resources.Localization.AllFiles + " (*.*)|*.*";
             }
 
             return filterString;
@@ -419,7 +420,7 @@ namespace Otor.MsixHero.App.Services
         
         private static Window GetActiveWindow()
         {
-            var ptrActiveWindow = User32Interop.GetActiveWindow();
+            var ptrActiveWindow = User32.GetActiveWindow();
             var activeWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(window => new WindowInteropHelper(window).Handle == ptrActiveWindow) ?? Application.Current.MainWindow;
             return activeWindow;
         }

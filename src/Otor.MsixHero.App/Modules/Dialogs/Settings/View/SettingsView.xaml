@@ -14,10 +14,10 @@
              xmlns:tools="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools"
              xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
-             xmlns:view1="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.View"
              xmlns:commands1="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.View"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
              d:DesignWidth="800"
@@ -46,7 +46,7 @@
     </UserControl.CommandBindings>
 
     <DockPanel>
-        <Border Background="Transparent" TextBlock.Foreground="Black" DockPanel.Dock="Top">
+        <Border Visibility="Collapsed" Background="Transparent" TextBlock.Foreground="Black" DockPanel.Dock="Top">
             <DockPanel>
                 <Border 
                     Width="42"
@@ -99,17 +99,19 @@
         </Border>
 
         <Border
+            BorderThickness="0 1 0 0"
+            BorderBrush="#E3E3E3"
             TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}"
             Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
             DockPanel.Dock="Bottom">
-            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-                <Button Padding="8 4" Margin="4" Command="Save" Content="OK">
+            <StackPanel Orientation="Horizontal" Margin="7.5" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                <Button Height="30" Padding="8 4" Margin="7.5" Command="Save" Content="{localization:Loc Dialogs_OK}">
                     <Button.CommandParameter>
                         <system:Boolean>True</system:Boolean>
                     </Button.CommandParameter>
                 </Button>
-                <Button Padding="8 4" Margin="4" Command="Save" Content="{localization:Loc Dialogs_Settings_OkButton}" />
-                <Button Padding="8 4" Margin="4" Command="Close" Content="{localization:Loc Dialogs_Settings_CloseButton}" />
+                <Button Height="30" Padding="8 4" Margin="7.5" Command="Save" Content="{localization:Loc Dialogs_Apply}" />
+                <Button Height="30" Padding="8 4" Margin="7.5" Command="Close" Content="{localization:Loc Dialogs_Close}" />
             </StackPanel>
         </Border>
 
@@ -129,7 +131,7 @@
             
         </Border>
 
-        <Border Background="{StaticResource MsixHero.Brushes.Background}">
+        <Border Background="#FBFBFB">
             <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
                 <TabItem Header="{localization:Loc Dialogs_Settings_Interface}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -201,11 +203,11 @@
                             <ComboBox 
                                 SelectedValuePath="Tag"
                                 SelectedValue="{Binding DefaultScreen.CurrentValue}">
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Tools}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Tools}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Packages}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Volumes}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}" Content="{localization:Loc Dialogs_Settings_InitialScreen_EventViewer}" />
                                 <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.System}" Content="{localization:Loc Dialogs_Settings_InitialScreen_SystemState}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Tools}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Tools}" />
                             </ComboBox>
 
                             <TextBlock Text="{localization:Loc Dialogs_Settings_ReleaseNotes}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
@@ -234,13 +236,25 @@
                             <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_ManifestFiles}" />
                             <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_ManifestFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
-                            <ComboBox SelectedValue="{Binding ManifestEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
-                            </ComboBox>
+                            <StackPanel>
+                                <RadioButton 
+                                    GroupName="rt1"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <RadioButton 
+                                    GroupName="rt2"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                                <RadioButton 
+                                    GroupName="rt3"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                            </StackPanel>
 
-                            <DockPanel Margin="0 6 0 0" Visibility="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <DockPanel Margin="22 0 0 8" Visibility="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
                                 <Button DockPanel.Dock="Right" Content="…" Command="{Binding ManifestEditorPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox IsEnabled="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding ManifestEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
@@ -248,52 +262,103 @@
                             <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles}" Margin="0 16 0 6" />
                             <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
-                            <ComboBox SelectedValue="{Binding AppinstallerEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultTxt}" />
-                                <ComboBoxItem x:Name="ComboAppinstallerCustom" Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
-                            </ComboBox>
+                            <StackPanel>
+                                <RadioButton 
+                                    GroupName="rt4"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <RadioButton 
+                                    GroupName="rt5"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                                <RadioButton 
+                                    GroupName="rt6"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                            </StackPanel>
 
-                            <DockPanel Margin="0 6 0 0" Visibility="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <DockPanel Margin="22 0 0 8" Visibility="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
                                 <Button DockPanel.Dock="Right" Content="…" Command="{Binding AppinstallerEditorPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox IsEnabled="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding AppinstallerEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
                             <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_CompressedPackages}" Margin="0 16 0 6" />
                             <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_CompressedPackages_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                            <ComboBox SelectedValue="{Binding MsixEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
-                            </ComboBox>
 
-                            <DockPanel Margin="0 6 0 0" Visibility="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <StackPanel>
+                                <RadioButton 
+                                    GroupName="rt7"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <RadioButton 
+                                    GroupName="rt8"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                                <RadioButton 
+                                    GroupName="rt9"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                            </StackPanel>
+
+                            <DockPanel Margin="22 0 0 8" Visibility="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
                                 <Button DockPanel.Dock="Right" Content="…" Command="{Binding MsixEditorPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox IsEnabled="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding MsixEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
                             <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_Psf}" Margin="0 16 0 6" />
                             <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_Psf_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                            <ComboBox SelectedValue="{Binding PsfEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultJson}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
-                            </ComboBox>
 
-                            <DockPanel Margin="0 6 0 0" Visibility="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <StackPanel>
+                                <RadioButton 
+                                    GroupName="rt10"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <RadioButton 
+                                    GroupName="rt11"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                                <RadioButton 
+                                    GroupName="rt12"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                            </StackPanel>
+
+                            <DockPanel Margin="22 0 0 8" Visibility="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
                                 <Button DockPanel.Dock="Right" Content="…" Command="{Binding PsfEditorPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
                             <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_PowerShell}" Margin="0 16 0 6" />
                             <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_PowerShell_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                            <ComboBox SelectedValue="{Binding PowerShellEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_Default}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
-                            </ComboBox>
 
-                            <DockPanel Margin="0 6 0 0" Visibility="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <StackPanel>
+                                <RadioButton 
+                                    GroupName="rt13"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <RadioButton 
+                                    GroupName="rt14"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                                <RadioButton 
+                                    GroupName="rt15"
+                                    Margin="0 0 0 8"
+                                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                            </StackPanel>
+
+                            <DockPanel Margin="22 0 0 8" Visibility="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
                                 <Button DockPanel.Dock="Right" Content="…" Command="{Binding PowerShellEditorPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox IsEnabled="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PowerShellEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
@@ -344,119 +409,122 @@
                             </WrapPanel>
                         </Border>
 
-                        <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 6 0 0">
-                            <DockPanel DockPanel.Dock="Bottom">
-                                <Path Data="{StaticResource VectorBulb}" Style="{StaticResource MediumIcon}" />
-                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Reorder_Hint}" Margin="4" TextWrapping="Wrap" />
-                            </DockPanel>
-                            <ListBox
-                                BorderThickness="0"
-                                DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
-                                ItemsSource="{Binding Items}" BorderBrush="#ccc" 
-                                SnapsToDevicePixels="True" UseLayoutRounding="True"
-                                dd:DragDrop.IsDragSource="True"
-                                dd:DragDrop.IsDropTarget="True"
-                                dd:DragDrop.DropHandler="{Binding}">
-                                <ListBox.Resources>
-                                    <system:Boolean x:Key="False">False</system:Boolean>
-                                    <system:Boolean x:Key="True">True</system:Boolean>
-                                </ListBox.Resources>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type tools:ToolViewModel}">
-                                        <DockPanel>
-                                            <Image x:Name="PART_Image" Width="24" Height="24" 
-                                               Stretch="UniformToFill" 
-                                               SnapsToDevicePixels="True" 
-                                               UseLayoutRounding="True" 
-                                               VerticalAlignment="Center" 
-                                               Margin="0 0 6 0">
-                                                <Image.Source>
-                                                    <Binding Path="Image" />
-                                                </Image.Source>
-                                            </Image>
-
-                                            <Viewbox 
-                                                Visibility="Collapsed" 
-                                                Width="24" 
-                                                Height="24" 
-                                                x:Name="PART_ImageFallback"
-                                                SnapsToDevicePixels="True" 
-                                                UseLayoutRounding="True" 
-                                                VerticalAlignment="Center" 
-                                                Margin="0 0 6 0">
-                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
-                                            </Viewbox>
-
-                                            <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
-                                                ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
-                                                ToolTipService.ShowDuration="10000" 
-                                                Margin="6 -4 0 -4" Width="24" Height="24" 
-                                                Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
-
-                                                <Border
-                                                    VerticalAlignment="Center"
-                                                    Margin="0 0 0 0"
-                                                    CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
-                                                    <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
-                                                </Border>
-                                            </Border>
-
-                                            <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
-                                        </DockPanel>
-                                        <DataTemplate.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=PART_Image, Path=Source}" Value="{x:Null}">
-                                                <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
-                                                <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
-                                                    <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
-                                                    <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.Setters>
-                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger.Setters>
-                                            </MultiDataTrigger>
-
-                                            <!--<DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
-                                                <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
-                                                <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                            </DataTrigger>-->
-                                        </DataTemplate.Triggers>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_Remove}" Command="Delete">
-                                            <MenuItem.Icon>
-                                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator />
-                                        <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_New}" Command="New">
-                                            <MenuItem.Icon>
-                                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorAdd}" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </ListBox.ContextMenu>
-                            </ListBox>
-                        </DockPanel>
 
                         <Border
+                            Background="White" 
                             SnapsToDevicePixels="True" 
                             UseLayoutRounding="True"
-                            Background="{StaticResource MsixHero.Brushes.Light4}" 
-                            Width="1" 
-                            HorizontalAlignment="Left" 
-                            VerticalAlignment="Stretch"
-                            Grid.Column="1" 
-                            Grid.Row="0" 
-                            Grid.RowSpan="2" />
+                            BorderBrush="{StaticResource CardBorderBrush}"
+                            BorderThickness="{StaticResource CardBorderThickness}"
+                            Grid.Row="1" 
+                            Grid.Column="0" >
+
+                            <DockPanel Margin="0 6 0 0">
+                                <DockPanel DockPanel.Dock="Bottom">
+                                    <controls1:LabelWithIcon 
+                                        Margin="7.5"
+                                        Icon16x16="{StaticResource SmallHelp}">
+                                        <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Reorder_Hint}" TextWrapping="Wrap" />
+                                    </controls1:LabelWithIcon>
+                                </DockPanel>
+                                <ListBox
+                                    BorderThickness="0"
+                                    DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
+                                    ItemsSource="{Binding Items}" BorderBrush="#ccc" 
+                                    SnapsToDevicePixels="True" UseLayoutRounding="True"
+                                    dd:DragDrop.IsDragSource="True"
+                                    dd:DragDrop.IsDropTarget="True"
+                                    dd:DragDrop.DropHandler="{Binding}">
+                                    <ListBox.Resources>
+                                        <system:Boolean x:Key="False">False</system:Boolean>
+                                        <system:Boolean x:Key="True">True</system:Boolean>
+                                    </ListBox.Resources>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type tools:ToolViewModel}">
+                                            <DockPanel>
+                                                <Image x:Name="PART_Image" Width="24" Height="24" 
+                                                   Stretch="UniformToFill" 
+                                                   SnapsToDevicePixels="True" 
+                                                   UseLayoutRounding="True" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="0 0 6 0">
+                                                    <Image.Source>
+                                                        <Binding Path="Image" />
+                                                    </Image.Source>
+                                                </Image>
+
+                                                <Viewbox 
+                                                    Visibility="Collapsed" 
+                                                    Width="24" 
+                                                    Height="24" 
+                                                    x:Name="PART_ImageFallback"
+                                                    SnapsToDevicePixels="True" 
+                                                    UseLayoutRounding="True" 
+                                                    VerticalAlignment="Center" 
+                                                    Margin="0 0 6 0">
+                                                    <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
+                                                </Viewbox>
+
+                                                <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
+                                                    ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
+                                                    ToolTipService.ShowDuration="10000" 
+                                                    Margin="6 -4 0 -4" Width="24" Height="24" 
+                                                    Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
+
+                                                    <Border
+                                                        VerticalAlignment="Center"
+                                                        Margin="0 0 0 0"
+                                                        CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                                                        <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                                                    </Border>
+                                                </Border>
+
+                                                <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
+                                            </DockPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=PART_Image, Path=Source}" Value="{x:Null}">
+                                                    <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
+                                                    <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
+                                                        <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
+                                                        <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+
+                                                <!--<DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
+                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
+                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>-->
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_Remove}" Command="Delete">
+                                                <MenuItem.Icon>
+                                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_New}" Command="New">
+                                                <MenuItem.Icon>
+                                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorAdd}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
 
                         <GridSplitter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                   ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />

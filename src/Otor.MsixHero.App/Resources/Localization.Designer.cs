@@ -61,6 +61,33 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to all files.
+        /// </summary>
+        public static string AllFiles {
+            get {
+                return ResourceManager.GetString("AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ARM.
+        /// </summary>
+        public static string Architecture_ARM {
+            get {
+                return ResourceManager.GetString("Architecture_ARM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ARM 64-bit.
+        /// </summary>
+        public static string Architecture_ARM64 {
+            get {
+                return ResourceManager.GetString("Architecture_ARM64", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse….
         /// </summary>
         public static string Button_Browse {
@@ -2302,24 +2329,6 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ARM.
-        /// </summary>
-        public static string Dialogs_AppInstaller_Architecture_ARM {
-            get {
-                return ResourceManager.GetString("Dialogs_AppInstaller_Architecture_ARM", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ARM 64-bit.
-        /// </summary>
-        public static string Dialogs_AppInstaller_Architecture_ARM64 {
-            get {
-                return ResourceManager.GetString("Dialogs_AppInstaller_Architecture_ARM64", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Neutral.
         /// </summary>
         public static string Dialogs_AppInstaller_Architecture_Neutral {
@@ -2343,15 +2352,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_AppInstaller_Errors_Opening {
             get {
                 return ResourceManager.GetString("Dialogs_AppInstaller_Errors_Opening", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All files.
-        /// </summary>
-        public static string Dialogs_AppInstaller_Filter_AllFiles {
-            get {
-                return ResourceManager.GetString("Dialogs_AppInstaller_Filter_AllFiles", resourceCulture);
             }
         }
         
@@ -2518,11 +2518,11 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All files.
+        ///   Looks up a localized string similar to Apply.
         /// </summary>
-        public static string Dialogs_Browse_AllFiles {
+        public static string Dialogs_Apply {
             get {
-                return ResourceManager.GetString("Dialogs_Browse_AllFiles", resourceCulture);
+                return ResourceManager.GetString("Dialogs_Apply", resourceCulture);
             }
         }
         
@@ -3063,15 +3063,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_FilePicker_Validation_Missing {
             get {
                 return ResourceManager.GetString("Dialogs_FilePicker_Validation_Missing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All files.
-        /// </summary>
-        public static string Dialogs_Filter_AllFiles {
-            get {
-                return ResourceManager.GetString("Dialogs_Filter_AllFiles", resourceCulture);
             }
         }
         
@@ -4624,15 +4615,6 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
-        /// </summary>
-        public static string Dialogs_Settings_CloseButton {
-            get {
-                return ResourceManager.GetString("Dialogs_Settings_CloseButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Commands.
         /// </summary>
         public static string Dialogs_Settings_Commands {
@@ -5016,15 +4998,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_Settings_Language_Auto {
             get {
                 return ResourceManager.GetString("Dialogs_Settings_Language_Auto", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Apply.
-        /// </summary>
-        public static string Dialogs_Settings_OkButton {
-            get {
-                return ResourceManager.GetString("Dialogs_Settings_OkButton", resourceCulture);
             }
         }
         
@@ -7940,6 +7913,321 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App installed.
+        /// </summary>
+        public static string PackageExpert_Commands_Add_Success1 {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Add_Success1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application {0} has been just installed..
+        /// </summary>
+        public static string PackageExpert_Commands_Add_Success2 {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Add_Success2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new app has been just installed from {0}..
+        /// </summary>
+        public static string PackageExpert_Commands_Add_SuccessFile2 {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Add_SuccessFile2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No updates are available..
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_NoUpdates {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_NoUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No updates are available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_NoUpdates_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_NoUpdates_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An optional update is available..
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An optional update is available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A required update is available..
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A required update is available for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update check result.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_UpdateCheck_Result {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_UpdateCheck_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check for updates..
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_UpdateCheckFailed {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_UpdateCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check for updates for these packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update now.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_UpdateNow {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_UpdateNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package was not installed via {0} file..
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_WrongSource {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_WrongSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These package were not installed via {0} file:.
+        /// </summary>
+        public static string PackageExpert_Commands_AppInstaller_WrongSource_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppInstaller_WrongSource_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not remove the package..
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemovalFailed {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemovalFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App removed.
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved1 {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apps removed.
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved1_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved1_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application {0} has been just removed..
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved2 {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} apps has been just removed..
+        /// </summary>
+        public static string PackageExpert_Commands_AppRemoved2_Multiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_AppRemoved2_Multiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove {0} packages? This operation is irreversible..
+        /// </summary>
+        public static string PackageExpert_Commands_ConfirmRemovalMultiple {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_ConfirmRemovalMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove {0} {1}? This operation is irreversible..
+        /// </summary>
+        public static string PackageExpert_Commands_ConfirmRemovalSingle {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_ConfirmRemovalSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to De-provisioning {0}….
+        /// </summary>
+        public static string PackageExpert_Commands_Deprovisioning {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Deprovisioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not dismount the registry..
+        /// </summary>
+        public static string PackageExpert_Commands_DismountRegistry_Error {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_DismountRegistry_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not remove.
+        /// </summary>
+        public static string PackageExpert_Commands_DoNotRemove {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_DoNotRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave the app running.
+        /// </summary>
+        public static string PackageExpert_Commands_LeaveRunning {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_LeaveRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not mount the registry.
+        /// </summary>
+        public static string PackageExpert_Commands_MountRegistry_Error {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_MountRegistry_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove for all users.
+        /// </summary>
+        public static string PackageExpert_Commands_RemoveAllUsers {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_RemoveAllUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove for current user.
+        /// </summary>
+        public static string PackageExpert_Commands_RemoveCurrentUser {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_RemoveCurrentUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing package.
+        /// </summary>
+        public static string PackageExpert_Commands_Removing {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_Removing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start the app..
+        /// </summary>
+        public static string PackageExpert_Commands_StartApp_Error {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_StartApp_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop this system app.
+        /// </summary>
+        public static string PackageExpert_Commands_StopSystemApp {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_StopSystemApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a system app. Are you sure you want to stop it?   &lt;&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt; Stopping a system app may have unexpected side-effects..
+        /// </summary>
+        public static string PackageExpert_Commands_StopSystemApp_Remark {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_StopSystemApp_Remark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping a system app.
+        /// </summary>
+        public static string PackageExpert_Commands_StopSystemApp_Title {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_StopSystemApp_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates are available for the following packages:.
+        /// </summary>
+        public static string PackageExpert_Commands_UpdatesAvailable {
+            get {
+                return ResourceManager.GetString("PackageExpert_Commands_UpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy the path to clipboard.
         /// </summary>
         public static string PackageExpert_CopyPath {
@@ -8494,6 +8782,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_PackageArchitecture {
             get {
                 return ResourceManager.GetString("PackageExpert_PackageArchitecture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package content.
+        /// </summary>
+        public static string PackageExpert_PackageContent {
+            get {
+                return ResourceManager.GetString("PackageExpert_PackageContent", resourceCulture);
             }
         }
         
@@ -9299,6 +9596,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Calculating….
+        /// </summary>
+        public static string Packages_Calculating {
+            get {
+                return ResourceManager.GetString("Packages_Calculating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activity.
         /// </summary>
         public static string Packages_Filter_Activity {
@@ -9749,6 +10055,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More commands….
+        /// </summary>
+        public static string Packages_MoreCommands {
+            get {
+                return ResourceManager.GetString("Packages_MoreCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MACHINE.
         /// </summary>
         public static string Packages_Search_Badge_Machine {
@@ -9907,15 +10222,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageSelector_Architecture_Arm {
             get {
                 return ResourceManager.GetString("PackageSelector_Architecture_Arm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ARM 64-bit.
-        /// </summary>
-        public static string PackageSelector_Architecture_Arm64 {
-            get {
-                return ResourceManager.GetString("PackageSelector_Architecture_Arm64", resourceCulture);
             }
         }
         
@@ -11279,6 +11585,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove volume &apos;{0}&apos;? Removing of volumes affects only registration and does not delete any physical files..
+        /// </summary>
+        public static string Volumes_ConfirmRemoval {
+            get {
+                return ResourceManager.GetString("Volumes_ConfirmRemoval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dismount.
         /// </summary>
         public static string Volumes_ContextMenu_Dismount {
@@ -11369,6 +11684,51 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismounting volume….
+        /// </summary>
+        public static string Volumes_Dismounting {
+            get {
+                return ResourceManager.GetString("Volumes_Dismounting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not dismount the volume..
+        /// </summary>
+        public static string Volumes_DismountingError {
+            get {
+                return ResourceManager.GetString("Volumes_DismountingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not remove.
+        /// </summary>
+        public static string Volumes_DoNotRemove {
+            get {
+                return ResourceManager.GetString("Volumes_DoNotRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mounting volume….
+        /// </summary>
+        public static string Volumes_Mounting {
+            get {
+                return ResourceManager.GetString("Volumes_Mounting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not mount the volume..
+        /// </summary>
+        public static string Volumes_MountingError {
+            get {
+                return ResourceManager.GetString("Volumes_MountingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         public static string Volumes_No_Label {
@@ -11414,11 +11774,47 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not delete the volume..
+        /// </summary>
+        public static string Volumes_RemovalError {
+            get {
+                return ResourceManager.GetString("Volumes_RemovalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove selected volume.
+        /// </summary>
+        public static string Volumes_RemoveSelected {
+            get {
+                return ResourceManager.GetString("Volumes_RemoveSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search volumes….
         /// </summary>
         public static string Volumes_Search_Prompt {
             get {
                 return ResourceManager.GetString("Volumes_Search_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting the default volume….
+        /// </summary>
+        public static string Volumes_SettingDefault {
+            get {
+                return ResourceManager.GetString("Volumes_SettingDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not set the volume as the default volume..
+        /// </summary>
+        public static string Volumes_SettingDefaultError {
+            get {
+                return ResourceManager.GetString("Volumes_SettingDefaultError", resourceCulture);
             }
         }
         

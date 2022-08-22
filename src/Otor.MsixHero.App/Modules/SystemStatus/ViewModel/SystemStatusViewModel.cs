@@ -17,7 +17,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Events;
+using Otor.MsixHero.App.Modules.Main.Events;
 using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode;
 using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging;
 using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Tooling;

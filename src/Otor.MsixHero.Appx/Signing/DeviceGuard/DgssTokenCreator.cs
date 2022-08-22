@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 refreshToken = s;
             };
 
-            progress?.Report(new ProgressData(0, "Signing-in..."));
+            progress?.Report(new ProgressData(0, Resources.Localization.Signing_DeviceGuard_LoggingIn));
 
             try
             {
@@ -57,7 +57,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
                 if (validateSubject)
                 {
-                    progress?.Report(new ProgressData(50, "Validating signing capabilities..."));
+                    progress?.Report(new ProgressData(50, Resources.Localization.Signing_DeviceGuard_Validation));
 
                     var dgh = new DeviceGuardHelper();
                     var json = await this.CreateDeviceGuardJsonTokenFile(new DeviceGuardConfig(result.AccessToken, refreshToken), cancellationToken).ConfigureAwait(false);

@@ -179,7 +179,7 @@ namespace Otor.MsixHero.Appx.Packaging
 
             if (executable?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true)
             {
-                // workaround for MS Edge...
+                // workaround for MS Edge…
                 return MsixPackageType.Win32;
             }
 

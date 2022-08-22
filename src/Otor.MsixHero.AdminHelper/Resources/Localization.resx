@@ -124,10 +124,10 @@
     <value>Unhandled exception {0}.</value>
   </data>
 	<data name="AdminHelper_Error_UnsupportedArgument" xml:space="preserve">
-    <value>Unsupported command line arguments, terminating...</value>
+    <value>Unsupported command line arguments, terminating…</value>
   </data>
 	<data name="AdminHelper_PipeServerStarting" xml:space="preserve">
-    <value>Preparing to start the pipe server...</value>
+    <value>Preparing to start the pipe server…</value>
   </data>
 	<data name="AdminHelper_WaitingForUser" xml:space="preserve">
     <value>Waiting for the user to press a key…</value>

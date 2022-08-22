@@ -79,7 +79,7 @@ namespace Otor.MsixHero.AdminHelper.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsupported command line arguments, terminating....
+        ///   Looks up a localized string similar to Unsupported command line arguments, terminating….
         /// </summary>
         public static string AdminHelper_Error_UnsupportedArgument {
             get {
@@ -88,7 +88,7 @@ namespace Otor.MsixHero.AdminHelper.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preparing to start the pipe server....
+        ///   Looks up a localized string similar to Preparing to start the pipe server….
         /// </summary>
         public static string AdminHelper_PipeServerStarting {
             get {

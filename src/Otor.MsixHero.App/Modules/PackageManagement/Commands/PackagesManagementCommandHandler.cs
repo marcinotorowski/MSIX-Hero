@@ -23,7 +23,6 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
@@ -39,6 +38,7 @@ using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -158,12 +158,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 var buttons = new[]
                 {
-                    "Stop this system app",
-                    "Leave the app running"
+                    Resources.Localization.PackageExpert_Commands_StopSystemApp,
+                    Resources.Localization.PackageExpert_Commands_LeaveRunning
                 };
 
-                if (this._interactionService.ShowMessage("This is a system app. Are you sure you want to stop it?\r\nStopping a system app may have unexpected side-effects.",
-                    buttons, "Stopping a system app", systemButtons: InteractionResult.None) != 0)
+                if (this._interactionService.ShowMessage(Resources.Localization.PackageExpert_Commands_StopSystemApp_Remark,
+                    buttons, Resources.Localization.PackageExpert_Commands_StopSystemApp_Title, systemButtons: InteractionResult.None) != 0)
                 {
                     return;
                 }
@@ -175,37 +175,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             await executor.Invoke(this, new StopPackageCommand(package), CancellationToken.None).ConfigureAwait(false);
         }
-
-        //private async void OnStartApp()
-        //{
-        //    var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
-        //    if (package == null)
-        //    {
-        //        return;
-        //    }
-
-        //    try
-        //    {
-        //        var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
-        //        await manager.Run(package.ManifestLocation).ConfigureAwait(false);
-        //    }
-        //    catch (InvalidOperationException exception)
-        //    {
-        //        this.interactionService.ShowError("Could not start the app. " + exception.Message, exception);
-        //    }
-
-        //    catch (Exception exception)
-        //    {
-        //        this.interactionService.ShowError("Could not start the app.", exception);
-        //    }
-        //}
-
-        //private bool CanStartApp()
-        //{
-        //    var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
-        //    return package?.InstallLocation != null;
-        //}
-
+        
         private bool CanStopApp()
         {
             if (this._application.ApplicationState.Packages.ActivePackageNames == null)
@@ -337,7 +307,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not mount the registry.", exception);
+                this._interactionService.ShowError(Resources.Localization.PackageExpert_Commands_MountRegistry_Error, exception);
             }
         }
 
@@ -361,7 +331,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not dismount the registry.", exception);
+                this._interactionService.ShowError(Resources.Localization.PackageExpert_Commands_DismountRegistry_Error, exception);
             }
         }
 
@@ -474,13 +444,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 
 #pragma warning disable 4014
-                    this._interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.");
+                    this._interactionService.ShowToast(Resources.Localization.PackageExpert_Commands_Add_Success1, string.Format(Resources.Localization.PackageExpert_Commands_Add_Success2, appxIdentity.Name));
 #pragma warning restore 4014
                 }
                 else
                 {
 #pragma warning disable 4014
-                    this._interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.");
+                    this._interactionService.ShowToast(Resources.Localization.PackageExpert_Commands_Add_Success1, string.Format(Resources.Localization.PackageExpert_Commands_Add_SuccessFile2, Path.GetFileName(packagePath)));
 #pragma warning restore 4014
                 }
 
@@ -491,9 +461,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var selected = allPackages.FirstOrDefault(p => p.Name == appxIdentity.Name);
                     if (selected != null)
                     {
-                        //this.application.ApplicationState.Packages.SelectedPackages.Clear();
-                        //this.application.ApplicationState.Packages.SelectedPackages.Add(selected);
-
                         await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.PackageFullName)).ConfigureAwait(false);
                     }
                 }
@@ -538,12 +505,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (InvalidOperationException exception)
             {
-                this._interactionService.ShowError("Could not start the app. " + exception.Message, exception);
+                this._interactionService.ShowError(Resources.Localization.PackageExpert_Commands_StartApp_Error + ". " + exception.Message, exception);
             }
 
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not start the app.", exception);
+                this._interactionService.ShowError(Resources.Localization.PackageExpert_Commands_StartApp_Error, exception);
             }
         }
 
@@ -617,34 +584,34 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 switch (updateResult)
                 {
                     case AppInstallerUpdateAvailabilityResult.Unknown:
-                        msg = "This package was not installed via " + FileConstants.AppInstallerExtension + " file.";
+                        msg = string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource, FileConstants.AppInstallerExtension);
                         break;
                     case AppInstallerUpdateAvailabilityResult.NoUpdates:
-                        msg = "No updates are available.";
+                        msg = Resources.Localization.PackageExpert_Commands_AppInstaller_NoUpdates;
                         break;
                     case AppInstallerUpdateAvailabilityResult.Available:
-                        msg = "An optional update is available.";
+                        msg = Resources.Localization.PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable;
                         askForUpdate = true;
                         break;
                     case AppInstallerUpdateAvailabilityResult.Required:
-                        msg = "A required update is available.";
+                        msg = Resources.Localization.PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable;
                         askForUpdate = true;
                         break;
                     case AppInstallerUpdateAvailabilityResult.Error:
-                        msg = "Could not check for updates.";
+                        msg = Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheckFailed;
                         break;
                     default:
-                        msg = "Could not check for updates.";
+                        msg = Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheckFailed;
                         break;
                 }
 
                 if (!askForUpdate)
                 {
-                    this._interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+                    this._interactionService.ShowInfo(msg, InteractionResult.OK, Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheck_Result);
                 }
                 else
                 {
-                    if (this._interactionService.ShowMessage(msg, new[] { "Update now" }, "Update check result", systemButtons: InteractionResult.Close) == 0)
+                    if (this._interactionService.ShowMessage(msg, new[] { Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateNow }, Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheck_Result, systemButtons: InteractionResult.Close) == 0)
                     {
                         this.OnAddPackage(appInstallers[0].AppInstallerUri.ToString(), false);
                     }
@@ -674,22 +641,22 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     switch (key)
                     {
                         case AppInstallerUpdateAvailabilityResult.Unknown:
-                            stringBuilder.AppendLine("These package were not installed via " + FileConstants.AppInstallerExtension + " file:");
+                            stringBuilder.AppendLine(string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource_Multiple, FileConstants.AppInstallerExtension));
                             break;
                         case AppInstallerUpdateAvailabilityResult.NoUpdates:
-                            stringBuilder.AppendLine("No updates are available for these packages:");
+                            stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_NoUpdates_Multiple);
                             break;
                         case AppInstallerUpdateAvailabilityResult.Available:
-                            stringBuilder.AppendLine("An optional update is available for these packages:");
+                            stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple);
                             break;
                         case AppInstallerUpdateAvailabilityResult.Required:
-                            stringBuilder.AppendLine("A required update is available for these packages:");
+                            stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple);
                             break;
                         case AppInstallerUpdateAvailabilityResult.Error:
-                            stringBuilder.AppendLine("Could not check for updates for these packages:");
+                            stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple);
                             break;
                         default:
-                            stringBuilder.AppendLine("Could not check for updates for these packages:");
+                            stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple);
                             break;
                     }
 
@@ -705,16 +672,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     k == AppInstallerUpdateAvailabilityResult.Required ||
                     k == AppInstallerUpdateAvailabilityResult.Available))
                 {
-                    var msg = "Updates are available for the following packages:\r\n" + string.Join("\r\n",
+                    var msg = Resources.Localization.PackageExpert_Commands_UpdatesAvailable + "\r\n" + string.Join("\r\n",
                         updateResults
                             .Where(k => k.Key == AppInstallerUpdateAvailabilityResult.Available ||
                                         k.Key == AppInstallerUpdateAvailabilityResult.Required).SelectMany(kv => kv.Value));
 
-                    this._interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+                    this._interactionService.ShowInfo(msg, InteractionResult.OK, Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheck_Result);
                 }
                 else
                 {
-                    this._interactionService.ShowInfo("There are no updates available.", InteractionResult.OK, "Update check result");
+                    this._interactionService.ShowInfo(Resources.Localization.PackageExpert_Commands_AppInstaller_NoUpdates, InteractionResult.OK, Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheck_Result);
                 }
             }
         }
@@ -776,16 +743,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 var options = new List<string>
                 {
-                    forAllUsers ? "Remove for all users" : "Remove for current user",
-                    "Do not remove"
+                    forAllUsers ? Resources.Localization.PackageExpert_Commands_RemoveAllUsers : Resources.Localization.PackageExpert_Commands_RemoveCurrentUser,
+                    Resources.Localization.PackageExpert_Commands_DoNotRemove
                 };
 
                 var singleSelection = this.GetSingleOrDefaultSelection();
                 if (singleSelection != null)
                 {
-                    var caption = "Are you sure you want to remove " + singleSelection.DisplayName + " " + singleSelection.Version + "? This operation is irreversible.";
+                    var caption = string.Format(Resources.Localization.PackageExpert_Commands_ConfirmRemovalSingle, singleSelection.DisplayName, singleSelection.Version);
 
-                    var selectedOption = this._interactionService.ShowMessage(caption, options, "Removing package", systemButtons: InteractionResult.Cancel);
+                    var selectedOption = this._interactionService.ShowMessage(caption, options, Resources.Localization.PackageExpert_Commands_Removing, systemButtons: InteractionResult.Cancel);
                     if (selectedOption != 0)
                     {
                         return;
@@ -794,9 +761,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 else
                 {
                     var selection = this._application.ApplicationState.Packages.SelectedPackages;
-                    var caption = "Are you sure you want to remove " + selection.Count + " packages? This operation is irreversible.";
+                    var caption = string.Format(Resources.Localization.PackageExpert_Commands_ConfirmRemovalMultiple, selection.Count);
 
-                    var selectedOption = this._interactionService.ShowMessage(caption, options, "Removing package", systemButtons: InteractionResult.Cancel);
+                    var selectedOption = this._interactionService.ShowMessage(caption, options, Resources.Localization.PackageExpert_Commands_Removing, systemButtons: InteractionResult.Cancel);
                     if (selectedOption != 0)
                     {
                         return;
@@ -822,7 +789,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
                     foreach (var item in this._application.ApplicationState.Packages.SelectedPackages)
                     {
-                        p0.Report(new ProgressData((int)(100.0 * processed / toProcess), $"De-provisioning {item.Name}..."));
+                        p0.Report(new ProgressData((int)(100.0 * processed / toProcess), string.Format(Resources.Localization.PackageExpert_Commands_Deprovisioning, item.Name)));
                         await adminManager.Deprovision(item.PackageFamilyName, CancellationToken.None).ConfigureAwait(false);
                         processed++;
                     }
@@ -839,12 +806,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 {
                     case 1:
 #pragma warning disable 4014
-                        this._interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.");
+                        this._interactionService.ShowToast(Resources.Localization.PackageExpert_Commands_AppRemoved1, string.Format(Resources.Localization.PackageExpert_Commands_AppRemoved2, removedPackageNames.FirstOrDefault()));
 #pragma warning restore 4014
                         break;
                     default:
 #pragma warning disable 4014
-                        this._interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.");
+                        this._interactionService.ShowToast(Resources.Localization.PackageExpert_Commands_AppRemoved1_Multiple, string.Format(Resources.Localization.PackageExpert_Commands_AppRemoved2_Multiple, removedPackages.Length));
 #pragma warning restore 4014
                         break;
                 }
@@ -853,7 +820,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (Exception exception)
             {
-                this._interactionService.ShowError("Could not remove the package.", exception);
+                this._interactionService.ShowError(Resources.Localization.PackageExpert_Commands_AppRemovalFailed, exception);
             }
             finally
             {

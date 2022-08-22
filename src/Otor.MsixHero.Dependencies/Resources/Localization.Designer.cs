@@ -70,7 +70,7 @@ namespace Otor.MsixHero.Dependencies.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading {0}....
+        ///   Looks up a localized string similar to Reading {0}….
         /// </summary>
         public static string Dependencies_Reading_Format {
             get {
@@ -79,7 +79,7 @@ namespace Otor.MsixHero.Dependencies.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading optional packages....
+        ///   Looks up a localized string similar to Reading optional packages….
         /// </summary>
         public static string Dependencies_ReadingOptionalPackages {
             get {

@@ -4,11 +4,11 @@
                     xmlns:dialogs="http://prismlibrary.com/"
                     xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-                    xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers"
                     xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
                     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-                    xmlns:switch="clr-namespace:Otor.MsixHero.App.Controls.Switch">
+                    xmlns:switch="clr-namespace:Otor.MsixHero.App.Controls.Switch"
+                    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -159,13 +159,12 @@
                                 IsShown="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.IsLoading}" 
                                 Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Progress, Mode=OneWay}"
                                 Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
-                                <DockPanel
-                                    Margin="0 15 0 0">
+                                <DockPanel>
                                     <Border 
+                                        BorderBrush="#E3E3E3"
                                         BorderThickness="0 1 0 0"
                                         SnapsToDevicePixels="True"
                                         UseLayoutRounding="True"
-                                        BorderBrush="#E3E3E3"
                                         TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
                                         Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
                                         DockPanel.Dock="Bottom">
@@ -188,7 +187,7 @@
                                                     Height="30"
                                                     Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" x:Name="PART_ButtonOK" Padding="8 4" Margin="7.5" SnapsToDevicePixels="True" UseLayoutRounding="True" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                                        <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers1:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
+                                                        <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.UacShield}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
                                                         <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
                                                     </StackPanel>
                                                     <Button.Style>
@@ -263,7 +262,7 @@
                                         </Grid>
                                     </Border>
 
-                                    <Grid Background="{StaticResource MsixHero.Brushes.Background}">
+                                    <Grid Background="#FBFBFB">
 
                                         <DockPanel>
                                             <Border 

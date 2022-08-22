@@ -9,12 +9,12 @@
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
-    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:packageManagement="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views"
+    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     FocusVisualStyle="{x:Null}"
@@ -129,7 +129,7 @@
                 </MenuItem>
                 <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RemoveFor_AllUsers}"  Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}">
                     <MenuItem.Icon>
-                        <Image Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="0 0 0 0" />
+                        <Image Source="{x:Static interop:WindowsIcons.UacShield}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="0 0 0 0" />
                     </MenuItem.Icon>
                     <MenuItem.CommandParameter>
                         <system:Boolean>True</system:Boolean>
@@ -232,7 +232,7 @@
                                                 VerticalAlignment="Center" 
                                                 DockPanel.Dock="Right"
                                                 Margin="8 -2 0 -2"
-                                                Source="{x:Static helpers:ShieldIcon.Source}" 
+                                                Source="{x:Static interop:WindowsIcons.UacShield}" 
                                                 Stretch="None" 
                                                 UseLayoutRounding="True" 
                                                 SnapsToDevicePixels="True">

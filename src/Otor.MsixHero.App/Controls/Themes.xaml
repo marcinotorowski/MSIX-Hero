@@ -8,14 +8,12 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Buttons.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Icons.xaml" />
-        <ResourceDictionary Source="/msixhero;component/Controls/Volume/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Acrylic/Background/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TreeListView/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Cards/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Star/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Switch/Theme.xaml" />
-        <ResourceDictionary Source="/msixhero;component/Controls/WindowsVersion/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="local:LearnMore">
@@ -55,7 +53,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:LabelWithIcon">
-                    <StackPanel Orientation="Horizontal">
+                    <DockPanel>
                         <Path 
                             VerticalAlignment="Center" 
                             Margin="0 0 4 0" 
@@ -67,7 +65,7 @@
                         <ContentPresenter 
                             TextBlock.Foreground="{TemplateBinding Foreground}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </StackPanel>
+                    </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

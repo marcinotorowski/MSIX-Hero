@@ -295,7 +295,7 @@
 		<value>Der Registry-Wert '{0}' wurde aus '{1}\{2}' entfernt.</value>
 	</data>
 	<data name="CLI_Executor_Dependencies_Reading" xml:space="preserve">
-		<value>Abhängigkeiten werden gelesen...</value>
+		<value>Abhängigkeiten werden gelesen…</value>
 	</data>
 	<data name="CLI_Executor_DidYouMean_Format" xml:space="preserve">
 		<value>Meinten Sie '{0}'?</value>
@@ -307,7 +307,7 @@
 		<value>Der Pfad '{0}' ist weder ein Verzeichnis mit extrahierten MSIX, ein .MSIX-Paket noch eine Manifestdatei.</value>
 	</data>
 	<data name="CLI_Executor_ExtractCert_Extracting_Format" xml:space="preserve">
-		<value>Extrahieren des Zertifikats von '{0}'...</value>
+		<value>Extrahieren des Zertifikats von '{0}'…</value>
 	</data>
 	<data name="CLI_Executor_ExtractCert_Success" xml:space="preserve">
 		<value>Das Zertifikat wurde extrahiert.</value>
@@ -352,10 +352,10 @@
 		<value>Das Modifikationspaket wurde in '{0}' erstellt.</value>
 	</data>
 	<data name="CLI_Executor_NewCert_Creating_Format" xml:space="preserve">
-		<value>Erstellen eines neuen Zertifikats für '{0}'...</value>
+		<value>Erstellen eines neuen Zertifikats für '{0}'…</value>
 	</data>
 	<data name="CLI_Executor_NewCert_ImportingTrustedPeople" xml:space="preserve">
-		<value>Importieren der Zertifikatsdatei in die Liste der vertrauenswürdigen Personen...</value>
+		<value>Importieren der Zertifikatsdatei in die Liste der vertrauenswürdigen Personen…</value>
 	</data>
 	<data name="CLI_Executor_NewCert_ImportingTrustedPeople_Success" xml:space="preserve">
 		<value>Das Zertifikat wurde in den Speicher für vertrauenswürdige Personen importiert.</value>
@@ -364,13 +364,13 @@
 		<value>Das Zertifikat wurde in '{0}' gespeichert.</value>
 	</data>
 	<data name="CLI_Executor_OpeningFile_Format" xml:space="preserve">
-		<value>Die Datei '{0}' wird geöffnet...</value>
+		<value>Die Datei '{0}' wird geöffnet…</value>
 	</data>
 	<data name="CLI_Executor_Pack_Packing_Format" xml:space="preserve">
-		<value>Komprimieren von '{0}' nach '{1}'...</value>
+		<value>Komprimieren von '{0}' nach '{1}'…</value>
 	</data>
 	<data name="CLI_Executor_Pack_RemovingSource_Format" xml:space="preserve">
-		<value>Entfernen des Quellverzeichnisses {0}...</value>
+		<value>Entfernen des Quellverzeichnisses {0}…</value>
 	</data>
 	<data name="CLI_Executor_Pack_Success_Format" xml:space="preserve">
 		<value>Das Paket '{0}' wurde erstellt.</value>
@@ -406,7 +406,7 @@
 		<value>Die Datei '{0}' wurde entfernt.</value>
 	</data>
 	<data name="CLI_Executor_SavingFile_Format" xml:space="preserve">
-		<value>Speichern von '{0}'...</value>
+		<value>Speichern von '{0}'…</value>
 	</data>
 	<data name="CLI_Executor_SetIdentity_Error_NoProperty" xml:space="preserve">
 		<value>Mindestens eine zu ändernde Eigenschaft ist erforderlich.</value>
@@ -445,10 +445,10 @@
 		<value>Der Registry-Wert "{0}" wurde auf '{1}' ({2}) in '{3}{4}' gesetzt.</value>
 	</data>
 	<data name="CLI_Executor_Sign_DeviceGuardDeterminingPublisher" xml:space="preserve">
-		<value>Ermittlung des Herausgebernamens aus dem Device Guard Signing-Zertifikat...</value>
+		<value>Ermittlung des Herausgebernamens aus dem Device Guard Signing-Zertifikat…</value>
 	</data>
 	<data name="CLI_Executor_Sign_DeviceGuardSigning_Format" xml:space="preserve">
-		<value>Signieren von '{0}' mit Device Guard...</value>
+		<value>Signieren von '{0}' mit Device Guard…</value>
 	</data>
 	<data name="CLI_Executor_Sign_Error_Code_Format" xml:space="preserve">
 		<value>Signierung mit Fehlercode {0} fehlgeschlagen: {1}</value>
@@ -484,34 +484,34 @@
 		<value>Der neue Herausgebername lautet '{0}'.</value>
 	</data>
 	<data name="CLI_Executor_Sign_SigningCerFile_Format" xml:space="preserve">
-		<value>Signieren von '{0}' mit Zertifikat '{1}'...</value>
+		<value>Signieren von '{0}' mit Zertifikat '{1}'…</value>
 	</data>
 	<data name="CLI_Executor_Sign_SigningSha_Format" xml:space="preserve">
-		<value>Signieren von '{0}' mit Zertifikat [SHA1 = {1}]...</value>
+		<value>Signieren von '{0}' mit Zertifikat [SHA1 = {1}]…</value>
 	</data>
 	<data name="CLI_Executor_Sign_Success" xml:space="preserve">
 		<value>Das Paket wurde erfolgreich signiert!</value>
 	</data>
 	<data name="CLI_Executor_Sign_UsingCurrent" xml:space="preserve">
-		<value>Die aktuellen MSIX Hero-Signieroptionen werden verwendet...</value>
+		<value>Die aktuellen MSIX Hero-Signieroptionen werden verwendet…</value>
 	</data>
 	<data name="CLI_Executor_Trust_Importing_Format" xml:space="preserve">
-		<value>Importiere Zertifikat von '{0}'...</value>
+		<value>Importiere Zertifikat von '{0}'…</value>
 	</data>
 	<data name="CLI_Executor_Trust_Success" xml:space="preserve">
 		<value>Das Zertifikat wurde importiert.</value>
 	</data>
 	<data name="CLI_Executor_Unpack_RemovingSource_Format" xml:space="preserve">
-		<value>Entfernen des Quellpakets '{0}'...</value>
+		<value>Entfernen des Quellpakets '{0}'…</value>
 	</data>
 	<data name="CLI_Executor_Unpack_Success_Format" xml:space="preserve">
 		<value>Das Paket wurde nach '{0}' entpackt.</value>
 	</data>
 	<data name="CLI_Executor_Unpack_Unpacking_Format" xml:space="preserve">
-		<value>Entpacken von '{0}' nach '{1}'...</value>
+		<value>Entpacken von '{0}' nach '{1}'…</value>
 	</data>
 	<data name="CLI_Executor_UpdateImpact_Comparing" xml:space="preserve">
-		<value>Die Pakete werden verglichen...</value>
+		<value>Die Pakete werden verglichen…</value>
 	</data>
 	<data name="CLI_Executor_UpdateImpact_Error_AccessDenied_Format" xml:space="preserve">
 		<value>Konnte nicht in '{0}' schreiben. Zugriff verweigert (Fehlercode: {1}).</value>
@@ -615,4 +615,10 @@
 	<data name="CLI_InvalidPassword" xml:space="preserve">
 		<value>Das konfigurierte Kennwort konnte nicht verwendet werden. Die Entschlüsselung der Zeichenkette aus den Einstellungen ist fehlgeschlagen.</value>
 	</data>
+	<data name="Signing_Failed" xml:space="preserve">
+    <value>Signierung fehlgeschlagen: {0}</value>
+  </data>
+	<data name="Signing_DeviceGuard_Reading" xml:space="preserve">
+    <value>Ermittlung des Herausgebernamens aus dem Device Guard Signing-Zertifikat…</value>
+  </data>
 </root>

@@ -67,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             this.SideloadingConfigurator.AssertDeveloperModeEnabled();
 
-            Logger.Info().WriteLine("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
+            Logger.Info().WriteLine("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')…", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
             {
                 throw new ArgumentNullException(nameof(packageFamilyName));
@@ -143,7 +143,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (appId == null)
                 {
-                    Logger.Warn().WriteLine("The package does not contain any entry point that is visible in the start menu. Aborting...");
+                    Logger.Warn().WriteLine("The package does not contain any entry point that is visible in the start menu. Aborting…");
                     throw new InvalidOperationException(Resources.Localization.Packages_Error_NoStartMenu);
                 }
 
@@ -157,7 +157,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 FileName = entryPoint
             };
 
-            Logger.Info().WriteLine("Executing " + entryPoint + " (with shell execute)...");
+            Logger.Info().WriteLine("Executing " + entryPoint + " (with shell execute)…");
             p.StartInfo = startInfo;
             p.Start();
         }

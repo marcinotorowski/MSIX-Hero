@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel.Items;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Volumes;
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
             this._elevation = elevation;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
-            // This can be longer...
+            // This can be longer…
             var taskForFreeLetters = this.GetLetters();
 
             taskForFreeLetters.ContinueWith(t =>

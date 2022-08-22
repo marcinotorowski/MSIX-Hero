@@ -87,7 +87,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
             }
             else
             {
-                Log.Debug().WriteLine("UAC Client -> Executing {0}.{1}...", targetMethod.DeclaringType.Name, targetMethod.Name);
+                Log.Debug().WriteLine("UAC Client -> Executing {0}.{1}…", targetMethod.DeclaringType.Name, targetMethod.Name);
             }
 
             try

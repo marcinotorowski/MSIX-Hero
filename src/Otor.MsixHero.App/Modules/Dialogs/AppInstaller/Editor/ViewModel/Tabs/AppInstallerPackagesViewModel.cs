@@ -4,12 +4,12 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Dapplo.Log;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 
@@ -17,16 +17,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
 {
     public class AppInstallerPackagesViewModel : ChangeableContainer
     {
-        private readonly IInteractionService interactionService;
-        private readonly IConfigurationService configurationService;
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
         private static readonly LogSource Logger = new();        
         public AppInstallerPackagesViewModel(
             IInteractionService interactionService, 
             IConfigurationService configurationService,
             IEnumerable<AppInstallerBaseEntry> entries = null)
         {
-            this.interactionService = interactionService;
-            this.configurationService = configurationService;
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
             this.Items = new ValidatedChangeableCollection<AppInstallerBasePackageViewModel>();
             
             if (entries != null)
@@ -148,14 +148,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             // ReSharper disable StringLiteralTypo
             var f = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, "*" + FileConstants.AppxBundleExtension, "*" + FileConstants.MsixBundleExtension).BuildFilter();
             // ReSharper restore StringLiteralTypo
-            if (!this.interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
+            if (!this._interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
             {
                 return;
             }
 
             try
             {
-                var configuration = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
+                var configuration = await this._configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
                 var configValue = configuration.AppInstaller?.DefaultRemoteLocationPackages;
                 if (string.IsNullOrEmpty(configValue))
                 {
@@ -196,7 +196,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                this.interactionService.ShowError(Resources.Localization.Dialogs_AppInstaller_Errors_Opening, e);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_AppInstaller_Errors_Opening, e);
             }
         }
 

@@ -5,10 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:overview="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Overview.Summaries"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="860" d:DesignWidth="800" d:DataContext="{d:DesignInstance overview:PackageOverviewViewModel}">
 
     <StackPanel
+        Margin="0 0 0 8"
         VerticalAlignment="Top"
         HorizontalAlignment="Stretch">
         <summaries:SummaryPackageNameView DataContext="{Binding SummarySummaryPackageName}" />
@@ -16,7 +18,7 @@
         <summaries:SummaryDependenciesView DataContext="{Binding SummarySummaryDependencies}" />
         <summaries:SummaryCapabilitiesView DataContext="{Binding SummarySummaryCapabilities}" />
 
-        <Label Margin="0 16 0 8" Style="{StaticResource FormLabel}" Content="Package content" />
+        <Label Margin="0 16 0 8" Style="{StaticResource FormLabel}" Content="{localization:Loc PackageExpert_PackageContent}" />
         <summaries:SummarySignatureView DataContext="{Binding SummarySummarySignature}" />
         <summaries:SummaryApplicationsView DataContext="{Binding SummaryApplications}" />
         <summaries:SummaryPsfView DataContext="{Binding SummaryPsf}" />

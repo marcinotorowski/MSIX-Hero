@@ -22,8 +22,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Controls.PackageSelector.ViewModel;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
@@ -65,8 +65,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
-            this.PromptMode = new ChangeableProperty<PromptMode>(ViewModel.PromptMode.Background);
-            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_Version, "1.0.0.0", ValidatorFactory.ValidateVersion(true));
+            this.PromptMode = new ChangeableProperty<PromptMode>();
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_Version, "1.0.0.0", ValidatorFactory.ValidateVersion());
             this.MainPackageUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_MainPackageUrl, true, ValidatorFactory.ValidateUri(true));
             this.AppInstallerUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_AppInstallerUrl, true, ValidatorFactory.ValidateUri(true));
             this.Hours = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_HoursBetweenUpdates, "24", ValidateHours);
@@ -184,7 +184,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 return false;
             }
 
-            var settings = new FileDialogSettings(Resources.Localization.Dialogs_AppInstaller_Filter_AppInstallerFiles + "|*.appinstaller|"  + Resources.Localization.Dialogs_AppInstaller_Filter_AllFiles + "|*.*", this._previousPath);
+            var settings = new FileDialogSettings(Resources.Localization.AllFiles + "|*.appinstaller|"  + Resources.Localization.AllFiles + "|*.*", this._previousPath);
             if (!this._interactionService.SaveFile(settings, out var selected))
             {
                 return false;

@@ -465,7 +465,7 @@ namespace Otor.MsixHero.Appx.Psf
                 }
             }
 
-            // make sure the list is sorted from the less to the most generic items...
+            // make sure the list is sorted from the less to the most generic items…
             list = list.OrderBy(x => x.Directory.Split('\\').Length).ToList();
 
             return list;
@@ -475,7 +475,7 @@ namespace Otor.MsixHero.Appx.Psf
         {
             if (string.IsNullOrEmpty(regexp) || regexp == ".*")
             {
-                return "All files";
+                return Resources.Localization.Psf_Descriptor_AllFiles;
             }
 
             Match match;

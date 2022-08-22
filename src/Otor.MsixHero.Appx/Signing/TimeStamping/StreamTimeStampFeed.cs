@@ -34,7 +34,7 @@ public abstract class StreamTimeStampFeed : ITimeStampFeed
 
     protected async Task<TimeStampFeedEntries> GetTimeStampServers(Stream stream, CancellationToken cancellationToken = default)
     {
-        Logger.Debug().WriteLine("Parsing stream to JSON...");
+        Logger.Debug().WriteLine("Parsing stream to JSON…");
         using var textReader = new StreamReader(stream);
         using var jsonReader = new JsonTextReader(textReader);
         var parsedJson = await JToken.LoadAsync(jsonReader, cancellationToken).ConfigureAwait(false);

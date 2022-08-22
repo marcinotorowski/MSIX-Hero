@@ -73,7 +73,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             
             if (file is FileStream fileStream)
             {
-                Logger.Debug().WriteLine("The input is a file stream, trying to evaluate its name...");
+                Logger.Debug().WriteLine("The input is a file stream, trying to evaluate its name…");
                 switch (Path.GetExtension(fileStream.Name).ToLowerInvariant())
                 {
                     case FileConstants.AppxBundleExtension:
@@ -120,7 +120,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             
             try
             {
-                Logger.Debug().WriteLine("Trying to interpret the input file as an XML manifest...");
+                Logger.Debug().WriteLine("Trying to interpret the input file as an XML manifest…");
                 var doc = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
                 var firstElement = doc.Elements().FirstOrDefault();
                 if (firstElement != null)

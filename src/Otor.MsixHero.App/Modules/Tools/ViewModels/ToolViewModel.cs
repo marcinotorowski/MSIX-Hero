@@ -17,7 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Interop;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Events;
@@ -39,7 +39,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
         {
             this._configService = configService;
 
-            application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(payload => this._tools = null);
+            application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(_ => this._tools = null);
             this.InitializeComponent();
         }
         
@@ -66,7 +66,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             {
                 Command = MsixHeroRoutedUICommands.Settings,
                 CommandParameter = "tools",
-                Header = "More commands..."
+                Header = MsixHero.App.Resources.Localization.Packages_MoreCommands
             });
         }
 
@@ -85,7 +85,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                 this._tools.Add(new MenuItem
                 {
                     Command = MsixHeroRoutedUICommands.RunTool,
-                    Icon = new Image { Source = ShellIcon.GetIconFor(string.IsNullOrEmpty(item.Icon) ? item.Path : item.Icon) },
+                    Icon = new Image { Source = WindowsIcons.GetIconFor(string.IsNullOrEmpty(item.Icon) ? item.Path : item.Icon) },
                     Header = item.Name,
                     CommandParameter = item
                 });

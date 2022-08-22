@@ -637,7 +637,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing source directory {0}....
+        ///   Looks up a localized string similar to Removing source directory {0}….
         /// </summary>
         public static string CLI_Executor_Pack_RemovingSource_Format {
             get {
@@ -862,7 +862,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Determining publisher name from Device Guard Signing certificate....
+        ///   Looks up a localized string similar to Determining publisher name from Device Guard Signing certificate….
         /// </summary>
         public static string CLI_Executor_Sign_DeviceGuardDeterminingPublisher {
             get {
@@ -988,7 +988,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signing &apos;{0}&apos; with certificate [SHA1 = {1}]....
+        ///   Looks up a localized string similar to Signing &apos;{0}&apos; with certificate [SHA1 = {1}]….
         /// </summary>
         public static string CLI_Executor_Sign_SigningSha_Format {
             get {
@@ -1006,7 +1006,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using current MSIX Hero signing options....
+        ///   Looks up a localized string similar to Using current MSIX Hero signing options….
         /// </summary>
         public static string CLI_Executor_Sign_UsingCurrent {
             get {
@@ -1033,7 +1033,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing source package &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Removing source package &apos;{0}&apos;….
         /// </summary>
         public static string CLI_Executor_Unpack_RemovingSource_Format {
             get {
@@ -1051,7 +1051,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unpacking &apos;{0}&apos; to &apos;{1}&apos;....
+        ///   Looks up a localized string similar to Unpacking &apos;{0}&apos; to &apos;{1}&apos;….
         /// </summary>
         public static string CLI_Executor_Unpack_Unpacking_Format {
             get {
@@ -1060,7 +1060,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comparing packages....
+        ///   Looks up a localized string similar to Comparing packages….
         /// </summary>
         public static string CLI_Executor_UpdateImpact_Comparing {
             get {
@@ -1551,6 +1551,24 @@ namespace Otor.MsixHero.Cli.Resources {
         public static string CommandLineParser_SentenceVersionCommandText {
             get {
                 return ResourceManager.GetString("CommandLineParser_SentenceVersionCommandText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ustalanie nazwy wydawcy z certyfikatu Device Guard….
+        /// </summary>
+        public static string Signing_DeviceGuard_Reading {
+            get {
+                return ResourceManager.GetString("Signing_DeviceGuard_Reading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing failed: {0}.
+        /// </summary>
+        public static string Signing_Failed {
+            get {
+                return ResourceManager.GetString("Signing_Failed", resourceCulture);
             }
         }
     }

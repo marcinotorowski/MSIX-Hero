@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.DragAndDrop;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel;
 using Xceed.Wpf.Toolkit;
 

@@ -277,7 +277,7 @@
                                             Margin="0 4 8 4"
                                             Foreground="#555">
                                             <Run 
-                                                Text="ERROR CODE:"
+                                                Text="{localization:Loc EventViewer_ErrorCode}"
                                                 FontWeight="SemiBold" />
                                             <Run Text="{Binding ErrorCode, Mode=OneWay}" />
                                         </TextBlock>

@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Appx.Signing.TimeStamping
                 return originalList;
             }
 
-            Logger.Debug().WriteLine("Randomizing the list of timestamp servers...");
+            Logger.Debug().WriteLine("Randomizing the list of timestamp servers…");
 
             var randomList = new TimeStampFeedEntries
             {
@@ -48,7 +48,7 @@ namespace Otor.MsixHero.Appx.Signing.TimeStamping
 
         protected override async Task<Stream> OpenStream(CancellationToken cancellationToken)
         {
-            Logger.Info().WriteLine($"Querying the list of available time stamp servers from {Url}...");
+            Logger.Info().WriteLine($"Querying the list of available time stamp servers from {Url}…");
             using var httpClient = new HttpClient();
             using var response = await httpClient.GetAsync(Url, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
 

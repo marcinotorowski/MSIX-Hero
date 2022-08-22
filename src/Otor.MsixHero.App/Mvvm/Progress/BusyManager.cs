@@ -33,25 +33,25 @@ namespace Otor.MsixHero.App.Mvvm.Progress
 
         public IBusyContext Begin(OperationType type = OperationType.Other)
         {
-            Logger.Verbose().WriteLine("Starting a context...");
+            Logger.Verbose().WriteLine("Starting a context…");
             lock (lockObject)
             {
                 var context = new ProgressBusyContext(this, type);
                 this.contexts.Add(context);
                 this.RefreshStatus(type);
-                Logger.Verbose().WriteLine("Context started...");
+                Logger.Verbose().WriteLine("Context started…");
                 return context;
             }
         }
 
         public void End(IBusyContext context)
         {
-            Logger.Verbose().WriteLine("Ending a context...");
+            Logger.Verbose().WriteLine("Ending a context…");
             lock (lockObject)
             {
                 contexts.Remove(context);
                 this.RefreshStatus(context.Type);
-                Logger.Verbose().WriteLine("Context ended...");
+                Logger.Verbose().WriteLine("Context ended…");
             }
 
             if (Application.Current?.Dispatcher != null)
@@ -102,12 +102,12 @@ namespace Otor.MsixHero.App.Mvvm.Progress
             var context = this.contexts.LastOrDefault();
             if (context != null)
             {
-                Logger.Verbose().WriteLine($@"Notifying {context.Message}, {context.Progress}%...");
+                Logger.Verbose().WriteLine($@"Notifying {context.Message}, {context.Progress}%…");
                 sc(this, new BusyStatusChange(operationType, true, context.Message, context.Progress));
             }
             else
             {
-                Logger.Verbose().WriteLine($@"Notifying 100%...");
+                Logger.Verbose().WriteLine($@"Notifying 100%…");
                 sc(this, new BusyStatusChange(operationType, false, null, 100));
             }
         }

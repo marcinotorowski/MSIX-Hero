@@ -235,7 +235,7 @@
     <value>Wartość rejestru '{0}' została usunięta z klucza '{1}\{2}.</value>
   </data>
 	<data name="CLI_Executor_Dependencies_Reading" xml:space="preserve">
-    <value>Czytanie zależności...</value>
+    <value>Czytanie zależności…</value>
   </data>
 	<data name="CLI_Executor_DidYouMean_Format" xml:space="preserve">
     <value>Czy miałeś na myśli '{0}'?</value>
@@ -295,7 +295,7 @@
     <value>Tworzenie nowego pliku certyfikatu dla '{0}'…</value>
   </data>
 	<data name="CLI_Executor_NewCert_ImportingTrustedPeople" xml:space="preserve">
-    <value>Importowanie pliku certyfikatu do magazynu certyfikatów zaufanych osób...</value>
+    <value>Importowanie pliku certyfikatu do magazynu certyfikatów zaufanych osób…</value>
   </data>
 	<data name="CLI_Executor_NewCert_ImportingTrustedPeople_Success" xml:space="preserve">
     <value>Certyfikat został zaimportowany do magazynu certyfikatów zaufanych osób.</value>
@@ -310,7 +310,7 @@
     <value>Pakowanie '{0}' do '{1}'…</value>
   </data>
 	<data name="CLI_Executor_Pack_RemovingSource_Format" xml:space="preserve">
-    <value>Usuwanie źródłowego folderu '{0}'...</value>
+    <value>Usuwanie źródłowego folderu '{0}'…</value>
   </data>
 	<data name="CLI_Executor_Pack_Success_Format" xml:space="preserve">
     <value>Pakiet '{0}' został utworzony.</value>
@@ -385,10 +385,10 @@
     <value>Ustawiono wartość '{0}' na '{1}' ({2}) w '{3}\{4}'.</value>
   </data>
 	<data name="CLI_Executor_Sign_DeviceGuardDeterminingPublisher" xml:space="preserve">
-    <value>Ustalanie nazwy wydawcy z certyfikatu z usługi Device Guard...</value>
+    <value>Ustalanie nazwy wydawcy z certyfikatu z usługi Device Guard…</value>
   </data>
 	<data name="CLI_Executor_Sign_DeviceGuardSigning_Format" xml:space="preserve">
-    <value>Podpisywanie '{0}' za pomocą usługi Device Guard...</value>
+    <value>Podpisywanie '{0}' za pomocą usługi Device Guard…</value>
   </data>
 	<data name="CLI_Executor_Sign_Error_Code_Format" xml:space="preserve">
     <value>Podpisywanie nie powiodło się i zwróciło kod błędu {0}: {1}</value>
@@ -427,13 +427,13 @@
     <value>Podpisywanie '{0}' przy użyciu certyfikatu '{1}'…</value>
   </data>
 	<data name="CLI_Executor_Sign_SigningSha_Format" xml:space="preserve">
-    <value>Podpisywanie '{0}' przy użyciu certyfikatu [SHA1 = {1}]...</value>
+    <value>Podpisywanie '{0}' przy użyciu certyfikatu [SHA1 = {1}]…</value>
   </data>
 	<data name="CLI_Executor_Sign_Success" xml:space="preserve">
     <value>Pakiet został pomyślnie podpisany!</value>
   </data>
 	<data name="CLI_Executor_Sign_UsingCurrent" xml:space="preserve">
-    <value>Stosowanie obecnych opcji podpisywania z programu MSIX Hero...</value>
+    <value>Stosowanie obecnych opcji podpisywania z programu MSIX Hero…</value>
   </data>
 	<data name="CLI_Executor_Trust_Importing_Format" xml:space="preserve">
     <value>Importowanie certyfikatu z '{0}'…</value>
@@ -442,16 +442,16 @@
     <value>Certyfikat został poprawnie zaimportowany.</value>
   </data>
 	<data name="CLI_Executor_Unpack_RemovingSource_Format" xml:space="preserve">
-    <value>Usuwanie źródłowego pakietu '{0}'...</value>
+    <value>Usuwanie źródłowego pakietu '{0}'…</value>
   </data>
 	<data name="CLI_Executor_Unpack_Success_Format" xml:space="preserve">
     <value>Pakiet został rozpakowany w '{0}'.</value>
   </data>
 	<data name="CLI_Executor_Unpack_Unpacking_Format" xml:space="preserve">
-    <value>Rozpakowywanie '{0}' do '{1}'...</value>
+    <value>Rozpakowywanie '{0}' do '{1}'…</value>
   </data>
 	<data name="CLI_Executor_UpdateImpact_Comparing" xml:space="preserve">
-    <value>Porównywanie pakietów...</value>
+    <value>Porównywanie pakietów…</value>
   </data>
 	<data name="CLI_Executor_UpdateImpact_Error_AccessDenied_Format" xml:space="preserve">
     <value>Zapis do '{0}' nie powódł się. Odmowa dostępu (kod błędu: {1}).</value>
@@ -614,5 +614,8 @@
   </data>
 	<data name="CommandLineParser_SentenceVersionCommandText" xml:space="preserve">
     <value>Wyświetla informację o wersji.</value>
+  </data>
+	<data name="Signing_Failed" xml:space="preserve">
+    <value>Podpisywanie cyfrowe nie powiodło się: {0}</value>
   </data>
 </root>

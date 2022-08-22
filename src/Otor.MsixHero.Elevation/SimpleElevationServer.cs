@@ -45,7 +45,7 @@ public class SimpleElevationServer : SimpleElevationBase
     /// <returns>A task that encapsulates the lifetime of the server operation.</returns>
     public async Task StartAsync(bool repeat = true, CancellationToken cancellationToken = default)
     {
-        Log.Info().WriteLine("UAC Server -> Awaiting client connection...");
+        Log.Info().WriteLine("UAC Server -> Awaiting client connection…");
 
         do
         {
@@ -102,7 +102,7 @@ public class SimpleElevationServer : SimpleElevationBase
 
             if (repeat)
             {
-                Log.Info().WriteLine("UAC Server -> Request finished, awaiting client connection...");
+                Log.Info().WriteLine("UAC Server -> Request finished, awaiting client connection…");
             }
             else
             {
@@ -179,7 +179,7 @@ public class SimpleElevationServer : SimpleElevationBase
             }
             else
             {
-                Log.Debug().WriteLine("UAC Server -> Executing {0}.{1}...", methodInfo.DeclaringType.Name, methodInfo.Name);
+                Log.Debug().WriteLine("UAC Server -> Executing {0}.{1}…", methodInfo.DeclaringType.Name, methodInfo.Name);
             }
 
             var methodParamTypes = methodInfo.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -292,11 +292,11 @@ public class SimpleElevationServer : SimpleElevationBase
 
             if (eventArgs is int)
             {
-                Log.Debug().WriteLine($"             -> Progress = {eventArgs}%...");
+                Log.Debug().WriteLine($"             -> Progress = {eventArgs}%…");
             }
             else
             {
-                Log.Debug().WriteLine($"             -> Progress = {eventArgs}...");
+                Log.Debug().WriteLine($"             -> Progress = {eventArgs}…");
             }
 
             try

@@ -6,9 +6,9 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackViewModel}">
 

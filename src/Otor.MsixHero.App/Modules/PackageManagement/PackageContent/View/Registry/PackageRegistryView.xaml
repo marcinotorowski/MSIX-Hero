@@ -25,7 +25,7 @@
             <cards:CardAction.Content>
                 <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{localization:Loc PackageExpert_BackToOverview}">
                     <HeaderedContentControl.Header>
-                        <TextBlock Text="Registry" FontWeight="SemiBold" />
+                        <TextBlock Text="{localization:Loc PackageExpert_Tabs_Registry}" FontWeight="SemiBold" />
                     </HeaderedContentControl.Header>
                 </HeaderedContentControl>
             </cards:CardAction.Content>

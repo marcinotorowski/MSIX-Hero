@@ -121,12 +121,12 @@
     <value>główna paczka</value>
   </data>
 	<data name="Dependencies_ReadingOptionalPackages" xml:space="preserve">
-    <value>Czytanie paczek opcjonalnych...</value>
+    <value>Czytanie paczek opcjonalnych…</value>
   </data>
 	<data name="Dependencies_ReadingRelations" xml:space="preserve">
-    <value>Czytanie relacji...</value>
+    <value>Czytanie relacji…</value>
   </data>
 	<data name="Dependencies_Reading_Format" xml:space="preserve">
-    <value>Czytanie {0}...</value>
+    <value>Czytanie {0}…</value>
   </data>
 </root>

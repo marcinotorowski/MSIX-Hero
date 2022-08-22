@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
+             Background="#FBFBFB"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HelpViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -29,12 +29,13 @@
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
             <Setter Property="Height" Value="550" />
+            <Setter Property="Title" Value="{Binding Title}" />
             <Setter Property="MinWidth" Value="500" />
             <Setter Property="MinHeight" Value="350" />
         </Style>
     </mvvm:Dialog.WindowStyle>
     <DockPanel>
-        <Border Background="Transparent" DockPanel.Dock="Top">
+        <Border Visibility="Collapsed" Background="Transparent" DockPanel.Dock="Top">
             <DockPanel>
                 <Border Width="42" Height="42" Background="{StaticResource MsixHero.Brushes.Accent}">
                     <Path 
@@ -74,13 +75,15 @@
                 </Grid>
             </DockPanel>
         </Border>
-        <Border Background="#eee" DockPanel.Dock="Bottom">
-            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                <Button Padding="8 4" Margin="4" Command="{Binding CloseCommand}" Content="{localization:Loc Dialogs_Close}" />
+        <Border BorderBrush="#E3E3E3"
+                BorderThickness="0 1 0 0"
+                Background="{StaticResource MsixHero.Dialog.Bar.Background}" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" Margin="7.5" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                <Button Padding="8 4" Margin="7.5" Height="30" Command="{Binding CloseCommand}" Content="{localization:Loc Dialogs_Close}" />
             </StackPanel>
         </Border>
 
-        <Border Background="{StaticResource MsixHero.Brushes.Background}">
+        <Border>
             <DockPanel Margin="16">
                 <DockPanel DockPanel.Dock="Top">
                     <Image MouseDown="LicenseUrlMouseDown" VerticalAlignment="Top" Source="Images/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />

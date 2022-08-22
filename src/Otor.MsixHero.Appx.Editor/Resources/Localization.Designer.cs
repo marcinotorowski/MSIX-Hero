@@ -142,7 +142,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copying file from &apos;{0}&apos; to &apos;{1}&apos;....
+        ///   Looks up a localized string similar to Copying file from &apos;{0}&apos; to &apos;{1}&apos;….
         /// </summary>
         public static string AppxEditor_Files_Copy_Format {
             get {
@@ -178,7 +178,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changing attribute &apos;ResourceId&apos; from &apos;{0}&apos; to &apos;{1}&apos;....
+        ///   Looks up a localized string similar to Changing attribute &apos;ResourceId&apos; from &apos;{0}&apos; to &apos;{1}&apos;….
         /// </summary>
         public static string AppxEditor_Identity_ChangingResourceId_Format {
             get {
@@ -205,7 +205,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting attribute &apos;Name&apos; to &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Setting attribute &apos;Name&apos; to &apos;{0}&apos;….
         /// </summary>
         public static string AppxEditor_Identity_SettingName_Format {
             get {
@@ -214,7 +214,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting attribute &apos;Publisher&apos; to &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Setting attribute &apos;Publisher&apos; to &apos;{0}&apos;….
         /// </summary>
         public static string AppxEditor_Identity_SettingPublisher_Format {
             get {
@@ -232,7 +232,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting attribute &apos;Version&apos; to &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Setting attribute &apos;Version&apos; to &apos;{0}&apos;….
         /// </summary>
         public static string AppxEditor_Identity_SettingVersion_Format {
             get {
@@ -277,7 +277,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changing attribute &apos;PublisherDisplayName&apos; from &apos;{0}&apos; to &apos;{1}&apos;....
+        ///   Looks up a localized string similar to Changing attribute &apos;PublisherDisplayName&apos; from &apos;{0}&apos; to &apos;{1}&apos;….
         /// </summary>
         public static string AppxEditor_Properties_ChangingPublisherDisplayName_Format {
             get {
@@ -385,7 +385,7 @@ namespace Otor.MsixHero.Appx.Editor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing value &apos;{0}&apos; from key &apos;{1}\{2}&apos;....
+        ///   Looks up a localized string similar to Removing value &apos;{0}&apos; from key &apos;{1}\{2}&apos;….
         /// </summary>
         public static string AppxEditor_Registry_RemovingValue_Format {
             get {

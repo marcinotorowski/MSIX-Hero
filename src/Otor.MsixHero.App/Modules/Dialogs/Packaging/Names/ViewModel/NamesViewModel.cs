@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
@@ -26,29 +26,29 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 {
     public class NamesViewModel : ChangeableDialogViewModel, IDataErrorInfo, IDialogAware
     {
-        private readonly IInteractionService interactionService;
-        private string name;
-        private string publisherHash;
-        private string publisher;
-        private string version;
-        private string resource;
-        private AppxPackageArchitecture architecture;
-        private string fullName;
-        private string familyName;
+        private readonly IInteractionService _interactionService;
+        private string _name;
+        private string _publisherHash;
+        private string _publisher;
+        private string _version;
+        private string _resource;
+        private string _fullName;
+        private string _familyName;
+        private AppxPackageArchitecture _architecture;
 
-        private readonly Func<string, string> validatePublisher = AppxValidatorFactory.ValidateSubject();
-        private readonly Func<string, string> validateVersion = AppxValidatorFactory.ValidateVersion();
-        private readonly Func<string, string> validatePackageName = AppxValidatorFactory.ValidatePackageName();
-        private readonly Func<string, string> validateResourceId = AppxValidatorFactory.ValidateResourceId(false);
-        private ICommand openCommand, copyCommand;
+        private readonly Func<string, string> _validatePublisher = AppxValidatorFactory.ValidateSubject();
+        private readonly Func<string, string> _validateVersion = AppxValidatorFactory.ValidateVersion();
+        private readonly Func<string, string> _validatePackageName = AppxValidatorFactory.ValidatePackageName();
+        private readonly Func<string, string> _validateResourceId = AppxValidatorFactory.ValidateResourceId(false);
+        private ICommand _openCommand, _copyCommand;
 
         public NamesViewModel(IInteractionService interactionService) : base(Resources.Localization.Dialogs_PackageName_Title, interactionService)
         {
-            this.interactionService = interactionService;
+            this._interactionService = interactionService;
         }
 
-        public ICommand OpenCommand => this.openCommand ??= new ActionCommand(this.OnOpenCommand);
-        public ICommand CopyCommand => this.copyCommand ??= new DelegateCommand<PackageProperty?>(this.OnCopyCommand);
+        public ICommand OpenCommand => this._openCommand ??= new ActionCommand(this.OnOpenCommand);
+        public ICommand CopyCommand => this._copyCommand ??= new DelegateCommand<PackageProperty?>(this.OnCopyCommand);
 
         public new string this[string columnName]
         {
@@ -57,13 +57,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                 switch (columnName)
                 {
                     case nameof(Publisher):
-                        return this.validatePublisher(this.publisher);
+                        return this._validatePublisher(this._publisher);
                     case nameof(Version):
-                        return this.validateVersion(this.version);
+                        return this._validateVersion(this._version);
                     case nameof(Name):
-                        return this.validatePackageName(this.name);
+                        return this._validatePackageName(this._name);
                     case nameof(Resource):
-                        return this.validateResourceId(this.resource);
+                        return this._validateResourceId(this._resource);
                     default:
                         return null;
                 }
@@ -72,56 +72,56 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         
         public string Publisher
         {
-            get => this.publisher;
+            get => this._publisher;
             set
             {
-                this.SetField(ref this.publisher, value);
+                this.SetField(ref this._publisher, value);
                 this.SetCalculatedProperties();
             }
         }
 
-        public string PublisherHash => this.publisherHash;
+        public string PublisherHash => this._publisherHash;
 
         public AppxPackageArchitecture Architecture
         {
-            get => this.architecture;
+            get => this._architecture;
             set
             {
-                this.SetField(ref this.architecture, value);
+                this.SetField(ref this._architecture, value);
                 this.SetCalculatedProperties();
             }
         }
 
-        public string FullName => this.fullName;
+        public string FullName => this._fullName;
 
-        public string FamilyName => this.familyName;
+        public string FamilyName => this._familyName;
 
         public string Version
         {
-            get => this.version;
+            get => this._version;
             set
             {
-                this.SetField(ref this.version, value);
+                this.SetField(ref this._version, value);
                 this.SetCalculatedProperties();
             }
         }
 
         public string Name
         {
-            get => this.name;
+            get => this._name;
             set
             {
-                this.SetField(ref this.name, value);
+                this.SetField(ref this._name, value);
                 this.SetCalculatedProperties();
             }
         }
 
         public string Resource
         {
-            get => this.resource;
+            get => this._resource;
             set
             {
-                this.SetField(ref this.resource, value);
+                this.SetField(ref this._resource, value);
                 this.SetCalculatedProperties();
             }
         }
@@ -130,11 +130,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         {
             if (parameters.Count == 0)
             {
-                this.name = Resources.Localization.Dialogs_PackageName_DefaultName;
-                this.version = "1.0.0.0";
-                this.architecture = AppxPackageArchitecture.x64;
-                this.publisher = Resources.Localization.Dialogs_PackageName_DefaultPublisher;
-                this.resource = "";
+                this._name = Resources.Localization.Dialogs_PackageName_DefaultName;
+                this._version = "1.0.0.0";
+                this._architecture = AppxPackageArchitecture.x64;
+                this._publisher = Resources.Localization.Dialogs_PackageName_DefaultPublisher;
+                this._resource = "";
                 this.SetCalculatedProperties();
             }
             else 
@@ -149,27 +149,27 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                 {
                     if (parameters.TryGetValue("version", out string v))
                     {
-                        this.version = v;
+                        this._version = v;
                     }
 
                     if (parameters.TryGetValue("name", out string n))
                     {
-                        this.name = n;
+                        this._name = n;
                     }
 
                     if (parameters.TryGetValue("publisher", out string p))
                     {
-                        this.publisher = p;
+                        this._publisher = p;
                     }
 
                     if (parameters.TryGetValue("resource", out string r))
                     {
-                        this.resource = r;
+                        this._resource = r;
                     }
 
                     if (parameters.TryGetValue("architecture", out string a))
                     {
-                        this.architecture = Enum.TryParse(a, out AppxPackageArchitecture parsed) ? parsed : AppxPackageArchitecture.Neutral;
+                        this._architecture = Enum.TryParse(a, out AppxPackageArchitecture parsed) ? parsed : AppxPackageArchitecture.Neutral;
                     }
 
                     this.SetCalculatedProperties();
@@ -186,28 +186,28 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         {
             if (this[nameof(Publisher)] != null)
             {
-                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
-                this.publisherHash = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
-                this.familyName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
+                this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
+                this._publisherHash = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
+                this._familyName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
             }
             else if (this[nameof(Name)] != null)
             {
-                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
-                this.familyName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
+                this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
+                this._familyName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
             }
             else if (this[nameof(Version)] != null)
             {
-                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageVersion;
+                this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageVersion;
             }
             else if (this[nameof(Resource)] != null)
             {
-                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidResourceId;
+                this._fullName = Resources.Localization.Dialogs_PackageName_InvalidResourceId;
             }
             else
             {
-                this.familyName = AppxPackaging.GetPackageFamilyName(this.name, this.publisher);
-                this.publisherHash = this.familyName.Split('_').Last();
-                this.fullName = AppxPackaging.GetPackageFullName(this.name, this.publisher, this.architecture, this.version, this.resource);
+                this._familyName = AppxPackaging.GetPackageFamilyName(this._name, this._publisher);
+                this._publisherHash = this._familyName.Split('_').Last();
+                this._fullName = AppxPackaging.GetPackageFullName(this._name, this._publisher, this._architecture, this._version, this._resource);
             }
 
             this.OnPropertyChanged(null);
@@ -218,13 +218,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
             switch (parameter.GetValueOrDefault())
             {
                 case PackageProperty.FamilyName:
-                    Clipboard.SetText(this.familyName);
+                    Clipboard.SetText(this._familyName);
                     break;
                 case PackageProperty.FullName:
-                    Clipboard.SetText(this.fullName);
+                    Clipboard.SetText(this._fullName);
                     break;
                 case PackageProperty.Subject:
-                    Clipboard.SetText(this.publisherHash);
+                    Clipboard.SetText(this._publisherHash);
                     break;
                 default:
                     throw new NotSupportedException();
@@ -240,7 +240,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 
             if (!File.Exists(file))
             {
-                this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_MissingFile, file));
+                this._interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_MissingFile, file));
                 return;
             }
 
@@ -269,26 +269,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                                 break;
                             }
 
-                            this.interactionService.ShowError(Resources.Localization.Dialogs_PackageName_OnlyManifests);
+                            this._interactionService.ShowError(Resources.Localization.Dialogs_PackageName_OnlyManifests);
                             return;
                         }
 
                     default:
-                        this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_NotSupportedExtension, Path.GetExtension(file)));
+                        this._interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_NotSupportedExtension, Path.GetExtension(file)));
                         return;
                 }
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, e);
+                this._interactionService.ShowError(e.Message, e);
                 return;
             }
 
-            this.version = manifest.Version;
-            this.name = manifest.Name;
-            this.publisher = manifest.Publisher;
-            this.resource = manifest.ResourceId;
-            this.architecture = manifest.ProcessorArchitecture;
+            this._version = manifest.Version;
+            this._name = manifest.Name;
+            this._publisher = manifest.Publisher;
+            this._resource = manifest.ResourceId;
+            this._architecture = manifest.ProcessorArchitecture;
 
             this.SetCalculatedProperties();
         }
@@ -300,7 +300,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                 "*" + FileConstants.AppxExtension,
                 FileConstants.AppxManifestFile).BuildFilter());
 
-            if (!this.interactionService.SelectFile(settings, out var selected))
+            if (!this._interactionService.SelectFile(settings, out var selected))
             {
                 return;
             }

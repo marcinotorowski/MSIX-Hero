@@ -55,7 +55,7 @@
         <ScrollViewer
             Padding="0"
             Margin="0 8 0 0"
-            DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
                 <Label 
                     Visibility="{Binding HasRestrictedCapabilities, Converter={StaticResource BooleanToVisibilityConverter}}"

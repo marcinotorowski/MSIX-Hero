@@ -145,7 +145,7 @@
     <value>The path must be a registry path.</value>
   </data>
 	<data name="AppxEditor_Files_Copy_Format" xml:space="preserve">
-    <value>Copying file from '{0}' to '{1}'...</value>
+    <value>Copying file from '{0}' to '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingArchitecture_Format" xml:space="preserve">
     <value>Changing attribute 'ProcessorArchitecture' from '{0}' to '{1}'…</value>
@@ -157,7 +157,7 @@
     <value>Changing attribute 'Publisher' from '{0}' to '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingResourceId_Format" xml:space="preserve">
-    <value>Changing attribute 'ResourceId' from '{0}' to '{1}'...</value>
+    <value>Changing attribute 'ResourceId' from '{0}' to '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingVersion_Format" xml:space="preserve">
     <value>Changing attribute 'Version' from '{0}' to '{1}'…</value>
@@ -166,16 +166,16 @@
     <value>Setting attribute 'ProcessorArchitecture' to '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingName_Format" xml:space="preserve">
-    <value>Setting attribute 'Name' to '{0}'...</value>
+    <value>Setting attribute 'Name' to '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingPublisher_Format" xml:space="preserve">
-    <value>Setting attribute 'Publisher' to '{0}'...</value>
+    <value>Setting attribute 'Publisher' to '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingResourceId_Format" xml:space="preserve">
     <value>Setting attribute 'ResourceId' to '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingVersion_Format" xml:space="preserve">
-    <value>Setting attribute 'Version' to '{0}'...</value>
+    <value>Setting attribute 'Version' to '{0}'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingDescription_Format" xml:space="preserve">
     <value>Changing attribute 'Description' from '{0}' to '{1}'…</value>
@@ -190,7 +190,7 @@
     <value>Changing property 'ModificationPackage' from '{0}' to 'true'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingPublisherDisplayName_Format" xml:space="preserve">
-    <value>Changing attribute 'PublisherDisplayName' from '{0}' to '{1}'...</value>
+    <value>Changing attribute 'PublisherDisplayName' from '{0}' to '{1}'…</value>
   </data>
 	<data name="AppxEditor_Properties_RemovingModPack" xml:space="preserve">
     <value>Removing property 'ModificationPackage'…</value>
@@ -226,7 +226,7 @@
     <value>Removing registry key '{0}\{1}'…</value>
   </data>
 	<data name="AppxEditor_Registry_RemovingValue_Format" xml:space="preserve">
-    <value>Removing value '{0}' from key '{1}\{2}'...</value>
+    <value>Removing value '{0}' from key '{1}\{2}'…</value>
   </data>
 	<data name="AppxEditor_Warn_CapabilityExists_Format" xml:space="preserve">
     <value>The capability '{0}' already exists and will not be added again.</value>

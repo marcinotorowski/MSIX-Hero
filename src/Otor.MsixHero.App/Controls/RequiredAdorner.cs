@@ -41,7 +41,7 @@ namespace Otor.MsixHero.App.Controls
             obj.SetValue(IsRequiredProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for IsRequired.  This enables animation, styling, binding, etc...
+        // Using a DependencyProperty as the backing store for IsRequired.  This enables animation, styling, binding, etc…
         public static readonly DependencyProperty IsRequiredProperty = DependencyProperty.RegisterAttached("IsRequired", typeof(bool), typeof(RequiredAdorner), new PropertyMetadata(false, PropertyChangedCallback));
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

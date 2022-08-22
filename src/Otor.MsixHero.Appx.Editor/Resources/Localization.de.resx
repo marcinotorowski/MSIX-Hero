@@ -145,73 +145,73 @@
 		<value>Der Pfad muss ein Registry-Pfad sein.</value>
 	</data>
 	<data name="AppxEditor_Files_Copy_Format" xml:space="preserve">
-		<value>Kopieren der Datei von '{0}' nach '{1}'...</value>
+		<value>Kopieren der Datei von '{0}' nach '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_ChangingArchitecture_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'ProcessorArchitecture' von '{0}' auf '{1}'...</value>
+		<value>Setzen des Attributs 'ProcessorArchitecture' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_ChangingName_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'Name' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'Name' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_ChangingPublisher_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'Publisher' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'Publisher' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_ChangingResourceId_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'ResourceId' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'ResourceId' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_ChangingVersion_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'Version' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'Version' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_SettingArchitecture_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'ProcessorArchitecture' auf '{0}'...</value>
+		<value>Setzen des Attributs 'ProcessorArchitecture' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_SettingName_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'Name' auf '{0}'...</value>
+		<value>Setzen des Attributs 'Name' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_SettingPublisher_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'Publisher' auf '{0}'...</value>
+		<value>Setzen des Attributs 'Publisher' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_SettingResourceId_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'ResourceId' auf '{0}'...</value>
+		<value>Setzen des Attributs 'ResourceId' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Identity_SettingVersion_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'Version' auf '{0}'...</value>
+		<value>Setzen des Attributs 'Version' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_ChangingDescription_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'Description' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'Description' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_ChangingDisplayName_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'DisplayName' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'DisplayName' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_ChangingLogo_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'Logo' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'Logo' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_ChangingModPackTrue_Format" xml:space="preserve">
-		<value>Ändern der Eigenschaft 'ModificationPackage' von '{0}' auf 'true'...</value>
+		<value>Ändern der Eigenschaft 'ModificationPackage' von '{0}' auf 'true'…</value>
 	</data>
 	<data name="AppxEditor_Properties_ChangingPublisherDisplayName_Format" xml:space="preserve">
-		<value>Ändern des Attributs 'PublisherDisplayName' von '{0}' auf '{1}'...</value>
+		<value>Ändern des Attributs 'PublisherDisplayName' von '{0}' auf '{1}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_RemovingModPack" xml:space="preserve">
-		<value>Entfernen der Eigenschaft 'ModificationPackage'...</value>
+		<value>Entfernen der Eigenschaft 'ModificationPackage'…</value>
 	</data>
 	<data name="AppxEditor_Properties_SettingDescription_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'Description' auf '{0}'...</value>
+		<value>Setzen des Attributs 'Description' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_SettingDisplayName_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'DisplayName' auf '{0}'...</value>
+		<value>Setzen des Attributs 'DisplayName' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_SettingLogo_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'Logo' auf '{0}'...</value>
+		<value>Setzen des Attributs 'Logo' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Properties_SettingModPackTrue" xml:space="preserve">
-		<value>Setzen der Eigenschaft 'ModificationPackage' auf 'true'...</value>
+		<value>Setzen der Eigenschaft 'ModificationPackage' auf 'true'…</value>
 	</data>
 	<data name="AppxEditor_Properties_SettingPublisherDisplayName_Format" xml:space="preserve">
-		<value>Setzen des Attributs 'PublisherDisplayName' auf '{0}'...</value>
+		<value>Setzen des Attributs 'PublisherDisplayName' auf '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Registry_ImportingRegFile_Format" xml:space="preserve">
-		<value>Importieren der Registry-Datei '{0}'...</value>
+		<value>Importieren der Registry-Datei '{0}'…</value>
 	</data>
 	<data name="AppxEditor_Registry_ImportSuccess" xml:space="preserve">
 		<value>Der Registry-Schlüssel wurde erfolgreich importiert.</value>
@@ -223,10 +223,10 @@
 		<value>Der Registry-Wert '{0}' = '{1}' ({3}) wurde in '{4}\{5}' gesetzt.</value>
 	</data>
 	<data name="AppxEditor_Registry_RemovingKey_Format" xml:space="preserve">
-		<value>Entfernen des Registry-Schlüssels '{0}\{1}'...</value>
+		<value>Entfernen des Registry-Schlüssels '{0}\{1}'…</value>
 	</data>
 	<data name="AppxEditor_Registry_RemovingValue_Format" xml:space="preserve">
-		<value>Entfernen des Wertes '{0}' aus dem Schlüssel '{1}\{2}'...</value>
+		<value>Entfernen des Wertes '{0}' aus dem Schlüssel '{1}\{2}'…</value>
 	</data>
 	<data name="AppxEditor_Warn_CapabilityExists_Format" xml:space="preserve">
 		<value>Die Capability '{0}' existiert bereits und wird nicht erneut hinzugefügt.</value>

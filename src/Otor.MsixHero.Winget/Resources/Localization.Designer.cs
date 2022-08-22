@@ -61,7 +61,7 @@ namespace Otor.MsixHero.Winget.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloading... ({0}%).
+        ///   Looks up a localized string similar to Downloading… ({0}%).
         /// </summary>
         public static string Winget_Downloading_Format {
             get {

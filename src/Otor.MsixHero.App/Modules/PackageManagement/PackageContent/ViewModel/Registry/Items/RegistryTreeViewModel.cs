@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Registry;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry.Items

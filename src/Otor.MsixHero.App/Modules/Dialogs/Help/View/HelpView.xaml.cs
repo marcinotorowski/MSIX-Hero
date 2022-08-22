@@ -22,18 +22,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel;
 using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Help.View
 {
-    /// <summary>
-    /// Interaction logic for HelpView.xaml
-    /// </summary>
     public partial class HelpView
     {
         public HelpView()
         {
             this.InitializeComponent();
+            
             this.TextBox.Text = @"                    GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

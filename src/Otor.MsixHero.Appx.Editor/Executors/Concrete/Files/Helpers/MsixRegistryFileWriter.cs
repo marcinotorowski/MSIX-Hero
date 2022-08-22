@@ -272,7 +272,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers
                     var parent = this.GetExistingRegistryKey(rootKey, lastUnit);
                     if (parent == null)
                     {
-                        // don't create a key if we are just about to remove the value...
+                        // don't create a key if we are just about to remove the value…
                         continue;
                     }
                 }

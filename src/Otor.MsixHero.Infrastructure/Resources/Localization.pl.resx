@@ -121,13 +121,13 @@
     <value>Otwieranie pliku {0} nie powiodło się.</value>
   </data>
 	<data name="Infrastructure_Hashing_Format" xml:space="preserve">
-    <value>Obliczanie sumy kontrolnej {0}%...</value>
+    <value>Obliczanie sumy kontrolnej {0}%…</value>
   </data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipeFor_Format" xml:space="preserve">
     <value>Tworzenia nazwanego potoku dla {0}…</value>
   </data>
 	<data name="Infrastructure_Ipc_CreatingNamedPipe_Format" xml:space="preserve">
-    <value>Tworzenie nazwanego potoku {0}...</value>
+    <value>Tworzenie nazwanego potoku {0}…</value>
   </data>
 	<data name="Infrastructure_Ipc_Error_CouldNotStart" xml:space="preserve">
     <value>Tworzenie pomocniczego procesu nie powiodło się.</value>
@@ -145,7 +145,7 @@
     <value>Brak zarejestrowanego odbiorcy dla typu {0}.</value>
   </data>
 	<data name="Infrastructure_Ipc_ReadingCmd" xml:space="preserve">
-    <value>Czytanie komendy ze strumienia...</value>
+    <value>Czytanie komendy ze strumienia…</value>
   </data>
 	<data name="Infrastructure_Ipc_RequestedNonVoid_Format" xml:space="preserve">
     <value>Zażądano: {0} z typem zwracanym {1}…</value>
@@ -154,19 +154,19 @@
     <value>Zażądane: {0} bez zwracanego typu.</value>
   </data>
 	<data name="Infrastructure_Ipc_ReturningResults" xml:space="preserve">
-    <value>Zwracanie rezultatów przez nazwany potok...</value>
+    <value>Zwracanie rezultatów przez nazwany potok…</value>
   </data>
 	<data name="Infrastructure_Ipc_Sending" xml:space="preserve">
-    <value>Zwracanie właściwych rezultatów przez nazwany potok...</value>
+    <value>Zwracanie właściwych rezultatów przez nazwany potok…</value>
   </data>
 	<data name="Infrastructure_Ipc_SID" xml:space="preserve">
     <value>SID bezpieczeństwa wynosi {0}.</value>
   </data>
 	<data name="Infrastructure_Ipc_Waiting" xml:space="preserve">
-    <value>Oczekiwanie na połączenie przez klienta...</value>
+    <value>Oczekiwanie na połączenie przez klienta…</value>
   </data>
 	<data name="Infrastructure_Sdk_CreatingVolume_Format" xml:space="preserve">
-    <value>Tworzenie woluminu '{0}' o wymaganym rozmiarze {1}...</value>
+    <value>Tworzenie woluminu '{0}' o wymaganym rozmiarze {1}…</value>
   </data>
 	<data name="Infrastructure_Sdk_DeletingFile_Format" xml:space="preserve">
     <value>Usuwanie pliku '{0}'…</value>
@@ -238,7 +238,7 @@
     <value>Formatowanie dysku i przypisywanie litery…</value>
   </data>
 	<data name="Infrastructure_Sdk_KillingPid_Format" xml:space="preserve">
-    <value>Zatrzymywanie procesu PID={0}...</value>
+    <value>Zatrzymywanie procesu PID={0}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MakeAppx_EditCodeError_Format" xml:space="preserve">
     <value>MakeAppx.exe zwrócił kod błędu {0} ze względu na wyjątek {1}.</value>
@@ -250,7 +250,7 @@
     <value>Wypakowywanie pliku {0}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_CopyingFile" xml:space="preserve">
-    <value>Kopiowanie {0} do {1}...</value>
+    <value>Kopiowanie {0} do {1}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_Error_AdminRights" xml:space="preserve">
     <value>Ta operacja wymaga uprawnień administratora.</value>
@@ -265,10 +265,10 @@
     <value>Proces zwrócił kod błędu {0}.</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format" xml:space="preserve">
-    <value>Usuwanie folderu tymczasowego {0}...</value>
+    <value>Usuwanie folderu tymczasowego {0}…</value>
   </data>
 	<data name="Infrastructure_Sdk_MsixMgr_RunningWithIdentity" xml:space="preserve">
-    <value>Wykryto. że MSIX Hero jest uruchomione jako aplikacji z tożsamością (identity). MSIXMGR musi zostać wystartowany z lokalizacji tymczasowej...</value>
+    <value>Wykryto. że MSIX Hero jest uruchomione jako aplikacji z tożsamością (identity). MSIXMGR musi zostać wystartowany z lokalizacji tymczasowej…</value>
   </data>
 	<data name="Infrastructure_Sdk_ProcessExited_WrongExitCode_Format" xml:space="preserve">
     <value>Proces zakończył się z nieoczekiwanym kodem wyjścia {0}.</value>
@@ -286,15 +286,18 @@
     <value>Proces zakończył się i zwrócił następujący standardowy strumień wyjścia:</value>
   </data>
 	<data name="Infrastructure_Sdk_VhdDismount" xml:space="preserve">
-    <value>Odłączanie woluminu...</value>
+    <value>Odłączanie woluminu…</value>
   </data>
 	<data name="Infrastructure_Sdk_VhdMount_Format" xml:space="preserve">
-    <value>Podłączanie woluminu '{0}'...</value>
+    <value>Podłączanie woluminu '{0}'…</value>
   </data>
 	<data name="Infrastructure_Settings_Error_UseDefault" xml:space="preserve">
     <value>Czytanie ustawień nie powiodło się. Użyte zostaną ustawienia domyślne.</value>
   </data>
 	<data name="Infrastructure_WrongVersion_Format" xml:space="preserve">
     <value>Wartość '{0}' nie mogła zostać zinterpretowana jako wersja.</value>
+  </data>
+	<data name="MakeAppx_Compressing" xml:space="preserve">
+    <value>Pakowanie {0}…</value>
   </data>
 </root>

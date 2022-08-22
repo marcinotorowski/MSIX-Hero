@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Windows.Media;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Interop;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
@@ -24,11 +24,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 {
     public class ToolViewModel : ChangeableContainer
     {
-        private readonly ToolListConfiguration model;
+        private readonly ToolListConfiguration _model;
 
         public ToolViewModel(IInteractionService interactionService, ToolListConfiguration model)
         {
-            this.model = model;
+            this._model = model;
             
             this.AddChildren(
                 this.Path = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandPath, interactionService, model.Path, ValidatePath),
@@ -38,7 +38,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
                 this.AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
             );
 
-            this.Path.ValueChanged += (sender, args) => { this.OnPropertyChanged(nameof(Image)); };
+            this.Path.ValueChanged += (_, _) => { this.OnPropertyChanged(nameof(Image)); };
             this.Icon.ValueChanged += this.IconOnValueChanged;
         }
 
@@ -54,38 +54,38 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         public bool HasIcon => !string.IsNullOrEmpty(this.Icon.CurrentValue);
 
-        public ImageSource Image => ShellIcon.GetIconFor(string.IsNullOrEmpty(this.Icon.CurrentValue) ? this.Path.CurrentValue : this.Icon.CurrentValue);
+        public ImageSource Image => WindowsIcons.GetIconFor(string.IsNullOrEmpty(this.Icon.CurrentValue) ? this.Path.CurrentValue : this.Icon.CurrentValue);
 
         public static implicit operator ToolListConfiguration(ToolViewModel viewModel)
         {
-            return viewModel.model;
+            return viewModel._model;
         }
 
         public override void Commit()
         {
             if (this.Path.IsTouched)
             {
-                this.model.Path = this.Path.CurrentValue;
+                this._model.Path = this.Path.CurrentValue;
             }
 
             if (this.Name.IsTouched)
             {
-                this.model.Name = this.Name.CurrentValue;
+                this._model.Name = this.Name.CurrentValue;
             }
 
             if (this.Icon.IsTouched)
             {
-                this.model.Icon = this.Icon.CurrentValue;
+                this._model.Icon = this.Icon.CurrentValue;
             }
 
             if (this.AsAdmin.IsTouched)
             {
-                this.model.AsAdmin = this.AsAdmin.CurrentValue;
+                this._model.AsAdmin = this.AsAdmin.CurrentValue;
             }
 
             if (this.Arguments.IsTouched)
             {
-                this.model.Arguments = this.Arguments.CurrentValue;
+                this._model.Arguments = this.Arguments.CurrentValue;
             }
 
             base.Commit();

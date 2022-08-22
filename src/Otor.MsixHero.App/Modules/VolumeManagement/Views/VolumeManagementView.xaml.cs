@@ -15,8 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Windows;
-using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Modules.Main.Events;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;

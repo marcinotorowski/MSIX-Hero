@@ -20,14 +20,13 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -36,12 +35,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 {
     public class UnpackViewModel : ChangeableAutomatedDialogViewModel<UnpackVerb>
     {
-        private readonly IAppxPacker appxPacker;
-        private ICommand openSuccessLink;
-        private ICommand reset;
+        private readonly IAppxPacker _appxPacker;
+        private ICommand _openSuccessLink;
+        private ICommand _reset;
         public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService) : base(Resources.Localization.Dialogs_Unpack_Title, interactionService)
         {
-            this.appxPacker = appxPacker;
+            this._appxPacker = appxPacker;
 
             this.OutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Unpack_TargetDir, interactionService, ChangeableFolderProperty.ValidatePath);
             this.InputPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Unpack_SourceMsix, interactionService, ChangeableFileProperty.ValidatePath)
@@ -100,12 +99,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
         public ICommand OpenSuccessLinkCommand
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public ChangeableProperty<bool> CreateFolder { get; }
@@ -114,7 +113,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            await this.appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, progress).ConfigureAwait(false);
+            await this._appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, progress).ConfigureAwait(false);
 
             if (this.RemoveFile.CurrentValue)
             {

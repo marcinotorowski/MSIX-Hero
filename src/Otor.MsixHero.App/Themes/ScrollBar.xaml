@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions"
-    xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters">
+    xmlns:converters="clr-namespace:Otor.MsixHero.App.Mvvm.Converters">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />

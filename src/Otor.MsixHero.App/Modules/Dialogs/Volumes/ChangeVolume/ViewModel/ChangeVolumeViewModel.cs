@@ -20,10 +20,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel.Items;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Volumes;
@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
             this._dialogService = dialogService;
             this._uacElevation = uacElevation;
 
-            // This can be longer...
+            // This can be longer…
             var taskForFreeLetters = this.GetAllVolumes();
 
             taskForFreeLetters.ContinueWith(t =>

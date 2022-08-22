@@ -145,70 +145,70 @@
     <value>Ścieżka musi wskazywać na plik rejestru.</value>
   </data>
 	<data name="AppxEditor_Files_Copy_Format" xml:space="preserve">
-    <value>Kopiowanie pliku '{0}' do '{1}'...</value>
+    <value>Kopiowanie pliku '{0}' do '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingArchitecture_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'ProcessorArchitecture' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'ProcessorArchitecture' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingName_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'Name' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'Name' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingPublisher_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'Publisher' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'Publisher' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingResourceId_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'ResourceId' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'ResourceId' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_ChangingVersion_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'Version' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'Version' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingArchitecture_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'ProcessorArchitecture' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'ProcessorArchitecture' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingName_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'Name' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'Name' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingPublisher_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'Publisher' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'Publisher' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingResourceId_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'ResourceId' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'ResourceId' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Identity_SettingVersion_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'Version' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'Version' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingDescription_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'Description' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'Description' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingDisplayName_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'DisplayName' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'DisplayName' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingLogo_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'Logo' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'Logo' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingModPackTrue_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'ModificationPackage' z '{0}' na 'true'...</value>
+    <value>Zmiana atrybutu 'ModificationPackage' z '{0}' na 'true'…</value>
   </data>
 	<data name="AppxEditor_Properties_ChangingPublisherDisplayName_Format" xml:space="preserve">
-    <value>Zmiana atrybutu 'PublisherDisplayName' z '{0}' na '{1}'...</value>
+    <value>Zmiana atrybutu 'PublisherDisplayName' z '{0}' na '{1}'…</value>
   </data>
 	<data name="AppxEditor_Properties_RemovingModPack" xml:space="preserve">
     <value>Usuwanie właściwości 'ModificationPackage'…</value>
   </data>
 	<data name="AppxEditor_Properties_SettingDescription_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'Description' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'Description' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Properties_SettingDisplayName_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'DisplayName' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'DisplayName' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Properties_SettingLogo_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'Logo' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'Logo' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Properties_SettingModPackTrue" xml:space="preserve">
-    <value>Ustawianie atrybutu 'ModificationPackage' na 'true'...</value>
+    <value>Ustawianie atrybutu 'ModificationPackage' na 'true'…</value>
   </data>
 	<data name="AppxEditor_Properties_SettingPublisherDisplayName_Format" xml:space="preserve">
-    <value>Ustawianie atrybutu 'PublisherDisplayName' na '{0}'...</value>
+    <value>Ustawianie atrybutu 'PublisherDisplayName' na '{0}'…</value>
   </data>
 	<data name="AppxEditor_Registry_ImportingRegFile_Format" xml:space="preserve">
     <value>Importowanie pliku rejestru {0}…</value>
@@ -223,7 +223,7 @@
     <value>Wartość rejestru '{0}' = '{1}' ({3}) została ustawiona w kluczu rejestru '{4}\{5}</value>
   </data>
 	<data name="AppxEditor_Registry_RemovingKey_Format" xml:space="preserve">
-    <value>Usuwanie klucza rejestru '{0}\{1}'...</value>
+    <value>Usuwanie klucza rejestru '{0}\{1}'…</value>
   </data>
 	<data name="AppxEditor_Registry_RemovingValue_Format" xml:space="preserve">
     <value>Usuwanie wartości '{0}' z klucza rejestru '{1}\{2}'.</value>

@@ -47,7 +47,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 return;
             }
 
-            Logger.Info().WriteLine("Removing {0} packages...", packages.Count);
+            Logger.Info().WriteLine("Removing {0} packages…", packages.Count);
 
             var opts = RemovalOptions.None;
             if (preserveAppData)
@@ -76,7 +76,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 return;
             }
 
-            Logger.Info().WriteLine("Removing {0} packages...", packages.Count);
+            Logger.Info().WriteLine("Removing {0} packages…", packages.Count);
 
             var opts = RemovalOptions.None;
             if (preserveAppData)
@@ -152,7 +152,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 await AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
-                    $"Installing {reader.DisplayName} {reader.Version}...",
+                    $"Installing {reader.DisplayName} {reader.Version}…",
                     cancellationToken,
                     progress).ConfigureAwait(false);
             }
@@ -242,7 +242,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 {
                     var deploymentResult = await AsyncOperationHelper.ConvertToTask(
                         PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                        $"Installing {name} {version}...",
+                        $"Installing {name} {version}…",
                         cancellationToken,
                         progress).ConfigureAwait(false);
 

@@ -1,0 +1,321 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Common.CertificateSelector.View.CertificateSelectorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:configuration1="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:timeStamping="clr-namespace:Otor.MsixHero.Appx.Signing.TimeStamping;assembly=Otor.MsixHero.Appx"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignWidth="500"
+             d:DesignHeight="500"
+             Background="{StaticResource MsixHero.Brushes.Background}"
+             d:DataContext="{d:DesignInstance viewModel:CertificateSelectorViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <AdornerDecorator>
+        <controls:ProgressOverlay
+            IsShown="{Binding Progress.IsLoading}"
+            Progress="{Binding Progress.Progress}"
+            Message="{Binding Progress.Message}"
+            SupportsCancelling="False">
+            <DockPanel>
+
+                <TextBlock
+                    Style="{StaticResource LabelTextBlock}"
+                    controls:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="{localization:Loc CertificateSelector_Certificate}" />
+
+                <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
+                    <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" x:Name="AskMe">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIcon}" 
+                                Data="{StaticResource SmallNone}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_None}" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" x:Name="PfxFile">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIcon}" 
+                                Data="{StaticResource SmallLicense}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_Pfx}" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" x:Name="CertStore">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIcon}" 
+                                Data="{StaticResource SmallDiploma}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_Installed}" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" x:Name="CertDeviceGuard">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIcon}" 
+                                Data="{StaticResource SmallCloudLink}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard}" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                </ComboBox>
+
+                <StackPanel 
+                    DockPanel.Dock="Top"
+                    Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <StackPanel
+                        Margin="0 16 0 0"
+                        Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                        DockPanel.Dock="Top" >
+                        <Border 
+                            Background="LightYellow" 
+                            Margin="0 0 0 0">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap" Margin="10">
+                                    <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_AzureAdInfo}" />
+                                    <Hyperlink Click="DeviceGuardMoreInfoClick">
+                                        <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_MoreInfoLink}" />
+                                    </Hyperlink>
+                                </TextBlock>
+
+                                <Button 
+                                    Command="{Binding SignInDeviceGuard}"
+                                    HorizontalAlignment="Left" 
+                                    Margin="10 0 10 10">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="BorderBrush" Value="#8C8C8C" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Setter Property="Padding" Value="12" />
+                                            <Setter Property="Cursor" Value="Hand" />
+                                            <Setter Property="Foreground" Value="#5E5E5E" />
+                                            <Setter Property="FontWeight" Value="600" />
+                                            <Setter Property="FontFamily" Value="Segoe UI" />
+                                            <Setter Property="FontSize" Value="15px" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="UseLayoutRounding" Value="True" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border 
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                            UseLayoutRounding="{TemplateBinding UseLayoutRounding}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            Background="{TemplateBinding Background}">
+                                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#2f2f2F" />
+                                                    <Setter Property="BorderBrush" Value="#2f2f2f" />
+                                                    <Setter Property="Foreground" Value="#ffffff" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <DockPanel>
+                                        <Image 
+                                            VerticalAlignment="Center"
+                                            Margin="0 -4"
+                                            Stretch="None"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True"
+                                            RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                            Source="../Images/microsoftlogo.png" />
+                                        <TextBlock Margin="12 0 0 0" VerticalAlignment="Center" Text="{localization:Loc DeviceGuard_SignWithMS}" />
+                                    </DockPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel
+                        Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        DockPanel.Dock="Top">
+
+                        <Border 
+                            Margin="0 0 0 0">
+                            <DockPanel Margin="10">
+                                <Border
+                                    VerticalAlignment="Center"
+                                    CornerRadius="16" Background="ForestGreen" Margin="-5 -5 0 -5">
+                                    <Path Data="{StaticResource VectorOK}" Fill="White" Width="32" Height="32" Margin="2">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </Border>
+                                <StackPanel
+                                    Margin="5 0 0 0"
+                                    VerticalAlignment="Center">
+                                    <TextBlock
+                                        TextWrapping="Wrap" >
+                                        <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_Ready}" />
+                                        <Run Text="{Binding DeviceGuard.CurrentValue.Subject, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="." />
+                                    </TextBlock>
+                                    <TextBlock
+                                        TextWrapping="Wrap" >
+                                        <Hyperlink Command="{Binding SignOutDeviceGuard}">
+                                            <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_SignOut}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <TextBlock
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    controls:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="{localization:Loc CertificateSelector_PfxPath}" Margin="0 16 0 6" />
+                <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="…" DockPanel.Dock="Right" />
+                    <TextBox 
+                        Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                </DockPanel>
+
+                <TextBlock
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    controls:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="{localization:Loc CertificateSelector_Certificate_InstalledCertificate}" Margin="0 16 0 6" />
+
+                <CheckBox 
+                    Margin="0 0 0 6"
+                    IsChecked="{Binding ShowAllCertificates.CurrentValue, Converter={StaticResource NegativeConverter}}"
+                    Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Content="{localization:Loc CertificateSelector_Certificate_InstalledCertificate_OnlyValid}" DockPanel.Dock="Top" />
+                <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" 
+                  ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" 
+                  Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ComboBox.ItemTemplateSelector>
+                        <helpers:ComboBoxTemplateSelector>
+                            <helpers:ComboBoxTemplateSelector.ListTemplate>
+                                <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
+                                    <StackPanel Margin="2">
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Subject}" Margin="0 1" Opacity="0.6" />
+                                        <DockPanel>
+                                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </helpers:ComboBoxTemplateSelector.ListTemplate>
+                            <helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
+                                    <StackPanel Margin="2">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                        <DockPanel Margin="0 1 0 0">
+                                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                        </helpers:ComboBoxTemplateSelector>
+                    </ComboBox.ItemTemplateSelector>
+                </ComboBox>
+
+                <TextBlock 
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                    DockPanel.Dock="Top"
+                    Text="{localization:Loc CertificateSelector_Certificate_Password}" 
+                    Margin="0 16 0 6" />
+                <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
+
+                <StackPanel 
+                    DockPanel.Dock="Top" 
+                    Margin="0 16 0 6"
+                    Orientation="Horizontal">
+                    <TextBlock 
+                        Style="{StaticResource LabelTextBlock}" 
+                        Margin="0" 
+                        Text="{localization:Loc CertificateSelector_TimeStamp}" />
+
+                    <Control 
+                        ToolTip="{localization:Loc CertificateSelector_Certificate_Timestamp_Hint}"
+                        Style="{StaticResource HelpIcon}" 
+                        VerticalAlignment="Center" 
+                        Margin="2 -2">
+                    </Control>
+                </StackPanel>
+
+                <StackPanel>
+                    <RadioButton GroupName="TimeStampNone" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.None}}" Margin="0"  Content="{localization:Loc CertificateSelector_Certificate_TimeStamp_None}" />
+
+                    <RadioButton GroupName="TimeStampAuto" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Auto}}" Margin="0 4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                                <Run Text="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random}" />
+                                <Hyperlink>
+                                    <Run Text="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random2}" />
+                                    <b:Interaction.Behaviors>
+                                        <behaviors:HyperlinkClickBehavior Url="{x:Static timeStamping:MsixHeroGistTimeStampFeed.Url}" />
+                                    </b:Interaction.Behaviors>
+                                </Hyperlink>
+                            </TextBlock>
+
+                            <Control 
+                                ToolTip="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random_Hint}"
+                                Style="{StaticResource HelpIcon}" 
+                                VerticalAlignment="Center" 
+                                Margin="2 -2" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton GroupName="TimeStampUrl" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Url}}" x:Name="SpecificTimeStamp" Margin="0 0 0 4"  Content="{localization:Loc CertificateSelector_Certificate_TimeStamp_Specific}" />
+
+                    <controls:ProgressOverlay 
+                        VerticalAlignment="Top"
+                        Visibility="{Binding ElementName=SpecificTimeStamp, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Margin="22 0 0 0" 
+                        IsShown="{Binding TimeStampServers.IsLoading}">
+                        <ComboBox 
+                            Margin="0"
+                            VerticalAlignment="Top"
+                            IsEditable="True"
+                            ItemsSource="{Binding TimeStampServers.CurrentValue}"
+                            DropDownOpened="ComboBoxOnDropDownOpened" 
+                            Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay}"/>
+                    </controls:ProgressOverlay>
+                </StackPanel>
+            </DockPanel>
+        </controls:ProgressOverlay>
+    </AdornerDecorator>
+</UserControl>

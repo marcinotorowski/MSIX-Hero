@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Controls\CertificateSelector\Images\microsoftlogo.png" />
-    <None Remove="Controls\WindowsVersion\Images\windows7.png" />
+    <None Remove="Modules\Common\CertificateSelector\Images\microsoftlogo.png" />
+    <None Remove="Modules\Common\WindowsVersion\Images\windows7.png" />
     <None Remove="Modules\Dialogs\Help\View\bundle-icon.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\sidebar.png" />
@@ -77,17 +77,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
-    <Resource Include="Controls\WindowsVersion\Images\windows7.png" />
+    <Resource Include="Modules\Common\CertificateSelector\Images\microsoftlogo.png" />
+    <Resource Include="Modules\Common\WindowsVersion\Images\windows7.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Dialogs\Settings\View\Images\sidebar.png" />
-    <Resource Include="Controls\WindowsVersion\Images\windows10.png">
+    <Resource Include="Modules\Common\WindowsVersion\Images\windows10.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Controls\WindowsVersion\Images\windows11.png">
+    <Resource Include="Modules\Common\WindowsVersion\Images\windows11.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Controls\WindowsVersion\Images\windows8.png" />
+    <Resource Include="Modules\Common\WindowsVersion\Images\windows8.png" />
     <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -118,12 +118,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml.cs">
+    <Compile Update="Modules\Common\CertificateSelector\View\CertificateSelectorView.xaml.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Dialogs\Views\PackageExpertDialogView - Copy.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>PackageExpertDialogView.xaml.cs</DependentUpon>
     </Compile>
     <Compile Update="Localization\MsixHeroApp.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -260,20 +256,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml">
+    <Page Update="Modules\Common\CertificateSelector\View\CertificateSelectorView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\PackageHeader\PackageHeader.xaml">
+    <Page Update="Modules\Common\PackageHeader\PackageHeader.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-    <Page Update="Controls\PackageSelector\View\PackageSelectorView.xaml">
+    <Page Update="Modules\Common\PackageSelector\View\PackageSelectorView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Controls\TransitionContentControl\Theme.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-    <Page Update="Controls\Volume\Theme.xaml">
+    <Page Update="Modules\Common\Themes.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Common\Volume\Theme.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\AppAttach\Editor\View\AppAttachDialogContent.xaml">

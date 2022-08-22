@@ -370,7 +370,7 @@
     <value>Packing '{0}' to '{1}'…</value>
   </data>
 	<data name="CLI_Executor_Pack_RemovingSource_Format" xml:space="preserve">
-    <value>Removing source directory {0}...</value>
+    <value>Removing source directory {0}…</value>
   </data>
 	<data name="CLI_Executor_Pack_Success_Format" xml:space="preserve">
     <value>Package '{0}' has been created.</value>
@@ -445,7 +445,7 @@
     <value>Registry value '{0}' has been set to '{1}' ({2}) in '{3}\{4}'.</value>
   </data>
 	<data name="CLI_Executor_Sign_DeviceGuardDeterminingPublisher" xml:space="preserve">
-    <value>Determining publisher name from Device Guard Signing certificate...</value>
+    <value>Determining publisher name from Device Guard Signing certificate…</value>
   </data>
 	<data name="CLI_Executor_Sign_DeviceGuardSigning_Format" xml:space="preserve">
     <value>Signing '{0}' with Device Guard…</value>
@@ -487,13 +487,13 @@
     <value>Signing '{0}' with certificate '{1}'…</value>
   </data>
 	<data name="CLI_Executor_Sign_SigningSha_Format" xml:space="preserve">
-    <value>Signing '{0}' with certificate [SHA1 = {1}]...</value>
+    <value>Signing '{0}' with certificate [SHA1 = {1}]…</value>
   </data>
 	<data name="CLI_Executor_Sign_Success" xml:space="preserve">
     <value>Package signed successfully!</value>
   </data>
 	<data name="CLI_Executor_Sign_UsingCurrent" xml:space="preserve">
-    <value>Using current MSIX Hero signing options...</value>
+    <value>Using current MSIX Hero signing options…</value>
   </data>
 	<data name="CLI_Executor_Trust_Importing_Format" xml:space="preserve">
     <value>Importing certificate from '{0}'…</value>
@@ -502,16 +502,16 @@
     <value>Certificate has been imported.</value>
   </data>
 	<data name="CLI_Executor_Unpack_RemovingSource_Format" xml:space="preserve">
-    <value>Removing source package '{0}'...</value>
+    <value>Removing source package '{0}'…</value>
   </data>
 	<data name="CLI_Executor_Unpack_Success_Format" xml:space="preserve">
     <value>The package has been unpacked to '{0}'.</value>
   </data>
 	<data name="CLI_Executor_Unpack_Unpacking_Format" xml:space="preserve">
-    <value>Unpacking '{0}' to '{1}'...</value>
+    <value>Unpacking '{0}' to '{1}'…</value>
   </data>
 	<data name="CLI_Executor_UpdateImpact_Comparing" xml:space="preserve">
-    <value>Comparing packages...</value>
+    <value>Comparing packages…</value>
   </data>
 	<data name="CLI_Executor_UpdateImpact_Error_AccessDenied_Format" xml:space="preserve">
     <value>Could not write to '{0}'. Access denied (error code: {1}).</value>
@@ -614,5 +614,14 @@
   </data>
 	<data name="CLI_InvalidPassword" xml:space="preserve">
     <value>Could not use the configured password. Decryption of the string from settings failed.</value>
+  </data>
+	<data name="Signing_Failed" xml:space="preserve">
+    <value>Signing failed: {0}</value>
+  </data>
+	<data name="Signing_DeviceGuard_Reading" xml:space="preserve">
+    <value>Determining publisher name from Device Guard Signing certificate…</value>
+  </data>
+	<data name="Signing_DeviceGuard_Reading" xml:space="preserve">
+    <value>Ustalanie nazwy wydawcy z certyfikatu Device Guard…</value>
   </data>
 </root>

@@ -59,8 +59,8 @@
                 Visibility="{Binding HasArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                 SelectedValue="{Binding Architecture.CurrentValue}" 
                 SelectedValuePath="Tag">
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm64}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_ARM64}" />
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_ARM}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm64}" Content="{localization:Loc Architecture_ARM64}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm}" Content="{localization:Loc Architecture_ARM}" />
                 <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.neutral}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_Neutral}" />
                 <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x64}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_64}" />
                 <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x86}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_32}" />

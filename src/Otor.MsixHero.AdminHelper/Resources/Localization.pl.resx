@@ -124,12 +124,12 @@
     <value>Nieprzechwycony wyjątek {0}.</value>
   </data>
 	<data name="AdminHelper_Error_UnsupportedArgument" xml:space="preserve">
-    <value>Niewspierana linia komend, nastąpi przerywanie...</value>
+    <value>Niewspierana linia komend, nastąpi przerywanie…</value>
   </data>
 	<data name="AdminHelper_PipeServerStarting" xml:space="preserve">
-    <value>Przygotowanie do uruchomienia serwera dla potoków...</value>
+    <value>Przygotowanie do uruchomienia serwera dla potoków…</value>
   </data>
 	<data name="AdminHelper_WaitingForUser" xml:space="preserve">
-    <value>Oczekiwanie na wciśnięcie klawisza...</value>
+    <value>Oczekiwanie na wciśnięcie klawisza…</value>
   </data>
 </root>

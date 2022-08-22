@@ -70,7 +70,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Calculating hash {0}%....
+        ///   Looks up a localized string similar to Calculating hash {0}%….
         /// </summary>
         public static string Infrastructure_Hashing_Format {
             get {
@@ -79,7 +79,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating named pipe {0}....
+        ///   Looks up a localized string similar to Creating named pipe {0}….
         /// </summary>
         public static string Infrastructure_Ipc_CreatingNamedPipe_Format {
             get {
@@ -178,7 +178,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returning actual results via named pipe....
+        ///   Looks up a localized string similar to Returning actual results via named pipe….
         /// </summary>
         public static string Infrastructure_Ipc_Sending {
             get {
@@ -196,7 +196,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waiting for a client connection....
+        ///   Looks up a localized string similar to Waiting for a client connection….
         /// </summary>
         public static string Infrastructure_Ipc_Waiting {
             get {
@@ -205,7 +205,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating volume &apos;{0}&apos; with required size {1}....
+        ///   Looks up a localized string similar to Creating volume &apos;{0}&apos; with required size {1}….
         /// </summary>
         public static string Infrastructure_Sdk_CreatingVolume_Format {
             get {
@@ -421,7 +421,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Killing the process PID={0}....
+        ///   Looks up a localized string similar to Killing the process PID={0}….
         /// </summary>
         public static string Infrastructure_Sdk_KillingPid_Format {
             get {
@@ -502,7 +502,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing temporary folder {0}....
+        ///   Looks up a localized string similar to Removing temporary folder {0}….
         /// </summary>
         public static string Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format {
             get {
@@ -574,7 +574,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mounting volume &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Mounting volume &apos;{0}&apos;….
         /// </summary>
         public static string Infrastructure_Sdk_VhdMount_Format {
             get {
@@ -597,6 +597,15 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         public static string Infrastructure_WrongVersion_Format {
             get {
                 return ResourceManager.GetString("Infrastructure_WrongVersion_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressing {0}….
+        /// </summary>
+        public static string MakeAppx_Compressing {
+            get {
+                return ResourceManager.GetString("MakeAppx_Compressing", resourceCulture);
             }
         }
     }

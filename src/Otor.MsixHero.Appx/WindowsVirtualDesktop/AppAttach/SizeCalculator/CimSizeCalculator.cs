@@ -11,7 +11,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
         private static readonly LogSource Logger = new();
         public Task<long> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
-            Logger.Debug().WriteLine($"Determining required size for CIM volume {sourcePath} with extra margin {(int)(100 * extraMargin)}%...");
+            Logger.Debug().WriteLine($"Determining required size for CIM volume {sourcePath} with extra margin {(int)(100 * extraMargin)}%…");
             if (sourcePath == null)
             {
                 throw new ArgumentNullException(nameof(sourcePath), Resources.Localization.Packages_Error_EmptyPath);

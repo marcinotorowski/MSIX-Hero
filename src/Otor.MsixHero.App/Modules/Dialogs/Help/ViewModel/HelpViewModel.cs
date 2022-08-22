@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.State;
@@ -50,6 +49,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
         }
 
         public string Version { get; }
+
+        public string Title => $"MSIX Hero - {this.Version}";
 
         public ICommand CloseCommand { get; }
 

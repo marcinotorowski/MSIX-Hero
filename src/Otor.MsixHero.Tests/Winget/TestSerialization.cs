@@ -71,7 +71,7 @@ LicenseUrl: https://evernote.com/legal/terms-of-service
 MinimumOSVersion: 10.0.0.0
 PackageUrl: https://www.evernote.com
 ShortDescription: evernote.evernote
-Description: Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.
+Description: Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio … and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.
 Tags:
 - evernote
 - notes
@@ -104,7 +104,7 @@ ManifestVersion: 1.0.0
             Assert.AreEqual("https://evernote.com/legal/terms-of-service", yaml.LicenseUrl);
             Assert.AreEqual("6.24.2.8919", yaml.PackageVersion);
             Assert.AreEqual("10.0.0.0", yaml.MinimumOperatingSystemVersion.ToString());
-            Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
+            Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio … and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
             Assert.AreEqual("evernote.evernote", yaml.ShortDescription);
             Assert.AreEqual("https://www.evernote.com", yaml.PackageUrl);
             Assert.AreEqual("evernote,notes,cloud,online", string.Join(",", yaml.Tags));

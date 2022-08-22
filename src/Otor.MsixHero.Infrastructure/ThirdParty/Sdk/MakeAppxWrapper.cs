@@ -250,7 +250,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     }
 
                     fileName = Path.GetFileName(fileName);
-                    this._progressReporter.Report(new ProgressData(currentProgress, $"Compressing {fileName}..."));
+                    this._progressReporter.Report(new ProgressData(currentProgress, string.Format(Resources.Localization.MakeAppx_Compressing, fileName)));
                 }
                 else
                 {

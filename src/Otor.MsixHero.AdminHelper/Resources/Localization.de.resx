@@ -124,12 +124,12 @@
 		<value>Unbehandelte Exception {0}.</value>
 	</data>
 	<data name="AdminHelper_Error_UnsupportedArgument" xml:space="preserve">
-		<value>Nicht unterstützte Kommandozeilenargumente, die Anwendung wird geschlossen...</value>
+		<value>Nicht unterstützte Kommandozeilenargumente, die Anwendung wird geschlossen…</value>
 	</data>
 	<data name="AdminHelper_PipeServerStarting" xml:space="preserve">
-		<value>Vorbereiten des Pipe-Servers...</value>
+		<value>Vorbereiten des Pipe-Servers…</value>
 	</data>
 	<data name="AdminHelper_WaitingForUser" xml:space="preserve">
-		<value>Warten auf das Drücken einer Taste durch den Benutzer...</value>
+		<value>Warten auf das Drücken einer Taste durch den Benutzer…</value>
 	</data>
 </root>

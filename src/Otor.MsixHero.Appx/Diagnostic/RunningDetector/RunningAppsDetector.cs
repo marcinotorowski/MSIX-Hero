@@ -41,16 +41,16 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
         
         public IList<string> GetCurrentlyRunningPackageNames()
         {
-            Logger.Info().WriteLine("Getting the list of running apps...");
+            Logger.Info().WriteLine("Getting the list of running apps…");
 
             try
             {
-                Logger.Verbose().WriteLine("Entering upgradeable read lock...");
+                Logger.Verbose().WriteLine("Entering upgradeable read lock…");
                 this._syncWriterLockSlim.EnterUpgradeableReadLock();
 
                 if (this._watcher == null)
                 {
-                    Logger.Info().WriteLine("Starting listening on background apps activity...");
+                    Logger.Info().WriteLine("Starting listening on background apps activity…");
                     this._watcher = AppDiagnosticInfo.CreateWatcher();
                     this._watcher.Start();
                 }
@@ -65,7 +65,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                     return this._activeApps.ToList();
                 }
 
-                Logger.Verbose().WriteLine("Upgrading to write lock...");
+                Logger.Verbose().WriteLine("Upgrading to write lock…");
                 this._syncWriterLockSlim.EnterWriteLock();
                 
                 try
@@ -78,7 +78,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                         this._activeApps.Add(family);
                     }
 
-                    Logger.Info().WriteLine($"Returning {this._activeApps.Count} apps running in the background...");
+                    Logger.Info().WriteLine($"Returning {this._activeApps.Count} apps running in the background…");
                 }
                 finally
                 {
@@ -96,7 +96,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                     this._watcher.Added += this.WatcherOnAdded;
                 }
 
-                Logger.Verbose().WriteLine("Exiting upgradeable read lock...");
+                Logger.Verbose().WriteLine("Exiting upgradeable read lock…");
                 this._syncWriterLockSlim.ExitUpgradeableReadLock();
             }
         }
@@ -115,7 +115,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
         
         private void StopListening()
         {
-            Logger.Info().WriteLine("Stopping listening on background apps activity...");
+            Logger.Info().WriteLine("Stopping listening on background apps activity…");
             this._watcher.Stop();
             this._watcher.Added -= this.WatcherOnAdded;
             this._watcher.Removed -= this.WatcherOnRemoved;

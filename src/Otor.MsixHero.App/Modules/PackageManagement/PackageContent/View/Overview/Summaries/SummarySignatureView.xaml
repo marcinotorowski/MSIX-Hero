@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummarySignatureViewModel}">
     <UserControl.Resources>
@@ -29,11 +29,14 @@
                             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_SignedTrusted}" />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TrustStatus.CurrentValue, FallbackValue={x:Null}}" Value="{x:Null}">
+                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding TrustStatus.CurrentValue.IsTrusted}" Value="{StaticResource False}">
                                         <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_Signed}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding TrustStatus.CurrentValue, FallbackValue={x:Null}}" Value="{x:Null}">
-                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned2}" />
+                                    <DataTrigger Binding="{Binding TrustStatus.CurrentValue.Trustee, FallbackValue={x:Null}}" Value="{x:Null}">
+                                        <Setter Property="controls:SimpleTextMarkup.Markup" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -53,7 +56,14 @@
                             <DataTrigger Binding="{Binding TrustStatus.CurrentValue}" Value="{x:Null}">
                                 <Setter Property="Content">
                                     <Setter.Value>
-                                        <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" controls:SimpleTextMarkup.Markup="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
+                                        <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" controls:SimpleTextMarkup.Markup="{localization:Loc PackageExpert_Signature_Summary_NotSigned2}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TrustStatus.CurrentValue.Trustee}" Value="{x:Null}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" controls:SimpleTextMarkup.Markup="{localization:Loc PackageExpert_Signature_Summary_NotSigned2}" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger>
@@ -68,6 +78,9 @@
                     <Style TargetType="Button" BasedOn="{StaticResource CardButton}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding TrustStatus.CurrentValue.IsTrusted, FallbackValue={StaticResource False}}" Value="{StaticResource True}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TrustStatus.CurrentValue.Trustee}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding TrustStatus.CurrentValue}" Value="{x:Null}">
