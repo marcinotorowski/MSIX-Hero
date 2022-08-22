@@ -592,6 +592,33 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Win32 + AI.
+        /// </summary>
+        public static string Packages_Types_AiStub {
+            get {
+                return ResourceManager.GetString("Packages_Types_AiStub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classic Win32 app enhanced by Advanced Installer launcher.
+        /// </summary>
+        public static string Packages_Types_AiStub_Long {
+            get {
+                return ResourceManager.GetString("Packages_Types_AiStub_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI.
+        /// </summary>
+        public static string Packages_Types_AiStub_Short {
+            get {
+                return ResourceManager.GetString("Packages_Types_AiStub_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to App.
         /// </summary>
         public static string Packages_Types_App {

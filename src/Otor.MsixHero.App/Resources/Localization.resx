@@ -3883,7 +3883,7 @@
 		<value>Per-user registry keys.</value>
 	</data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
-		<value>Contains registry keys.</value>
+		<value>Empty Windows registry.</value>
 	</data>
 	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
 		<value>Are you sure you want to add this publisher to the list of trusted publishers (machine-wide)?</value>

@@ -45,15 +45,17 @@
                         <Setter Property="Content">
                             <Setter.Value>
                                 <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}">
-                                    <Hyperlink Command="{Binding Path=ShowPropertiesCommand}">
-                                        <Run Text="{Binding Path=TrustStatus.CurrentValue.Trustee, Mode=OneWay}" />
-                                    </Hyperlink>
+                                    <Hyperlink controls:SimpleTextMarkup.Markup="{Binding Path=TrustStatus.CurrentValue.Trustee}" Command="{Binding Path=ShowPropertiesCommand}" />
                                 </TextBlock>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding TrustStatus.CurrentValue}" Value="{x:Null}">
-                                <Setter Property="Content" Value="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" controls:SimpleTextMarkup.Markup="{localization:Loc PackageExpert_Signature_Summary_NotSigned}" />
+                                    </Setter.Value>
+                                </Setter>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

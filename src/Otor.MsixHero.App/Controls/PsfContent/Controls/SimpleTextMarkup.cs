@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Forms;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.Controls
 {
@@ -11,8 +13,18 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Controls
 
         private static void OnMarkupChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var target = (TextBlock)d;
-            InsertMarkup(target, (string)e.NewValue);
+            if (d is TextBlock textBlock)
+            {
+                InsertMarkup(textBlock.Inlines, (string)e.NewValue);
+            }
+            else if (d is Span hyperLink)
+            {
+                InsertMarkup(hyperLink.Inlines, (string)e.NewValue);
+            }
+            else
+            {
+                throw new NotSupportedException($"Target element {d.GetType()} is not supported by this property.");
+            }
         }
 
         public static string GetMarkup(DependencyObject obj)
@@ -23,11 +35,6 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Controls
         public static void SetMarkup(DependencyObject obj, string value)
         {
             obj.SetValue(MarkupProperty, value);
-        }
-        
-        public static void InsertMarkup(TextBlock control, string text)
-        { 
-            InsertMarkup(control.Inlines, text);
         }
 
         public static void InsertMarkup(InlineCollection collection, string text)

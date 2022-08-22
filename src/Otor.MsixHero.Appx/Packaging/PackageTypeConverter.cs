@@ -43,7 +43,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
+            var isBridge = (packageType & MsixPackageType.Win32) == MsixPackageType.Win32;
             if (isBridge)
             {
                 switch (displayType)
@@ -55,7 +55,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
+            var isPsf = (packageType & MsixPackageType.Win32Psf) == MsixPackageType.Win32Psf;
             if (isPsf)
             {
                 switch (displayType)
@@ -66,6 +66,20 @@ namespace Otor.MsixHero.Appx.Packaging
                         return Resources.Localization.Packages_Types_Psf_Short;
                     default:
                         return Resources.Localization.Packages_Types_Psf;
+                }
+            }
+
+            var isAiStub = (packageType & MsixPackageType.Win32AiStub) == MsixPackageType.Win32AiStub;
+            if (isAiStub)
+            {
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return Resources.Localization.Packages_Types_AiStub_Long;
+                    case PackageTypeDisplay.Short:
+                        return Resources.Localization.Packages_Types_AiStub_Short;
+                    default:
+                        return Resources.Localization.Packages_Types_AiStub;
                 }
             }
 
@@ -138,13 +152,18 @@ namespace Otor.MsixHero.Appx.Packaging
                             if (
                                 executable.IndexOf("\\psflauncher", StringComparison.OrdinalIgnoreCase) != -1 ||
                                 executable.IndexOf("\\psfrundll", StringComparison.OrdinalIgnoreCase) != -1 ||
-                                executable.IndexOf("\\ai_stubs", StringComparison.OrdinalIgnoreCase) != -1 ||
                                 executable.IndexOf("\\psfmonitor", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                return MsixPackageType.BridgePsf;
+                                return MsixPackageType.Win32Psf;
                             }
 
-                            return MsixPackageType.BridgeDirect;
+                            if (
+                                executable.IndexOf("\\ai_stubs", StringComparison.OrdinalIgnoreCase) != -1)
+                            {
+                                return MsixPackageType.Win32AiStub;
+                            }
+
+                            return MsixPackageType.Win32;
                         }
 
                         return 0;
@@ -161,7 +180,7 @@ namespace Otor.MsixHero.Appx.Packaging
             if (executable?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true)
             {
                 // workaround for MS Edge...
-                return MsixPackageType.BridgeDirect;
+                return MsixPackageType.Win32;
             }
 
             return string.IsNullOrEmpty(startPage) ? 0 : MsixPackageType.Web;

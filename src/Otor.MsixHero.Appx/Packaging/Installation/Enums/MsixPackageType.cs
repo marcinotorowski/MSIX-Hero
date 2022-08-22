@@ -22,10 +22,11 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
     public enum MsixPackageType
     {
         Uwp = 1,
-        BridgeDirect = 2,
-        BridgePsf = 4,
+        Win32 = 2,
+        Win32Psf = 4,
         Web = 8,
         Framework = 16,
-        ProgressiveWebApp = 32
+        ProgressiveWebApp = 32,
+        Win32AiStub = 64
     }
 }

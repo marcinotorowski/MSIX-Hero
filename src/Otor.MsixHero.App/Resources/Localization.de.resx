@@ -3865,7 +3865,7 @@
 		<value>Registry-Schlüssel pro Benutzer.</value>
 	</data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
-		<value>Enthält Registry-Schlüssel.</value>
+		<value>Leere Windows-Registry</value>
 	</data>
 	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
 		<value>Sind Sie sicher, dass Sie diesen Verlag zur Liste der vertrauenswürdigen Verlage (maschinenweit) hinzufügen möchten?</value>

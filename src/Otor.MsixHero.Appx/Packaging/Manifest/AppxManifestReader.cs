@@ -385,9 +385,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                                     fileReader.GetResource(appxApplication.Square150x150Logo);
                                 if (stream != null)
                                 {
-                                    var bytes = new byte[stream.Length];
-                                    await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
-                                    appxApplication.Logo = bytes;
+                                    using var memStream = new MemoryStream();
+                                    await stream.CopyToAsync(memStream, cancellationToken).ConfigureAwait(false);
+                                    memStream.Seek(0, SeekOrigin.Begin);
+                                    appxApplication.Logo = memStream.ToArray();
                                 }
                                 else
                                 {
@@ -398,18 +399,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                         appxPackage.Applications.Add(appxApplication);
                     }
-
-                    var psfApps = appxPackage.Applications.Where(a =>
-                        PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, appxPackage.IsFramework) ==
-                        MsixPackageType.BridgePsf).ToArray();
-
-                    if (psfApps.Any())
+                    
+                    foreach (var psfApp in appxPackage.Applications)
                     {
-                        foreach (var psfApp in psfApps)
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var type = PackageTypeConverter.GetPackageTypeFrom(psfApp.EntryPoint, psfApp.Executable, psfApp.StartPage, appxPackage.IsFramework);
+                        if (type != MsixPackageType.Win32Psf && type != MsixPackageType.Win32AiStub)
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            psfApp.Proxy = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
+                            continue;
                         }
+
+                        psfApp.Proxy = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
                     }
                 }
 

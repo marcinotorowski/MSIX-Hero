@@ -44,7 +44,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.P
             this.Psf = null;
             using var reader = FileReaderFactory.CreateFileReader(filePath);
 
-            var paths = model.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, model.IsFramework) == MsixPackageType.BridgePsf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
+            var paths = model.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, model.IsFramework) == MsixPackageType.Win32Psf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             paths.Add(string.Empty);
 
             var scripts = new ObservableCollection<ScriptViewModel>();

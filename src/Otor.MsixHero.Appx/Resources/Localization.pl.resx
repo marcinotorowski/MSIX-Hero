@@ -309,6 +309,15 @@
 	<data name="Packages_Types_Psf_Short" xml:space="preserve">
     <value>PSF</value>
   </data>
+  <data name="Packages_Types_AiStub" xml:space="preserve">
+    <value>Win32 + AI</value>
+  </data>
+  <data name="Packages_Types_AiStub_Long" xml:space="preserve">
+    <value>Klasyczna aplikacja Win32, rozszerzona za pomocą pośrednika Advanced Installer</value>
+  </data>
+	<data name="Packages_Types_AiStub_Short" xml:space="preserve">
+    <value>AI</value>
+  </data>
 	<data name="Packages_Types_Pwa" xml:space="preserve">
     <value>PWA</value>
   </data>

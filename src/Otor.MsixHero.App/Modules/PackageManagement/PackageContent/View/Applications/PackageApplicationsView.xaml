@@ -13,6 +13,7 @@
         <DockPanel.Resources>
             <DataTemplate DataType="{x:Type items:ApplicationViewModel}">
                 <cards:CardExpander 
+                    HorizontalContentExpandedAlignment="Stretch"
                     IsExpanded="{Binding IsExpanded}"
                     x:Name="Card">
                     <cards:CardExpander.Content>

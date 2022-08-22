@@ -148,7 +148,7 @@ namespace Otor.MsixHero.Tests
 
                 var app = manifest.Applications[0];
                 var type = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, manifest.IsFramework);
-                Assert.AreEqual(MsixPackageType.BridgePsf, type);
+                Assert.AreEqual(MsixPackageType.Win32Psf, type);
 
                 Assert.AreEqual(app.Proxy.Executable, "VFS\\AppVPackageDrive\\ConEmuPack\\ConEmu64.exe");
                 Assert.AreEqual("VFS\\AppVPackageDrive\\ConEmuPack\\PsfLauncher1.exe", app.Executable);

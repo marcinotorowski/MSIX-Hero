@@ -872,7 +872,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 return false;
             }
 
-            return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixPackageType.BridgePsf;
+            return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixPackageType.Win32Psf;
         }
 
         private bool CanOpenManifest() => this.IsSingleSelected();

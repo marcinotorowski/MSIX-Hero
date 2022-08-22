@@ -74,8 +74,9 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(this._model.EntryPoint, this._model.Executable, this._model.StartPage, this._package.IsFramework))
                 {
-                    case MsixPackageType.BridgeDirect:
-                    case MsixPackageType.BridgePsf:
+                    case MsixPackageType.Win32:
+                    case MsixPackageType.Win32Psf:
+                    case MsixPackageType.Win32AiStub:
                         return this._model.Executable;
                     case MsixPackageType.Web:
                         return this._model.StartPage;

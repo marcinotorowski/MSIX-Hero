@@ -3865,7 +3865,7 @@
 		<value>Klucze rejestru per-użytkownik</value>
 	</data>
 	<data name="PackageExpert_Registry_SummaryBuilder_Unknown" xml:space="preserve">
-		<value>Zawiera klucze rejestru</value>
+		<value>Pusty rejestr systemu Windows</value>
 	</data>
 	<data name="PackageExpert_Trust_Prompt" xml:space="preserve">
 		<value>Czy jesteś pewien, że chcesz dodać tego wydawcę to listy zaufanych wydawców (ustawienie per-maszyna)?</value>

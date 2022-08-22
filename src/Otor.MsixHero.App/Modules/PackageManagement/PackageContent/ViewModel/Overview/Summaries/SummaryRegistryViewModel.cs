@@ -113,6 +113,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     var findKey = await appxRegistryReader
                         .EnumerateKeys(AppxRegistryRoots.HKCU + "Software", cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken)
                         .ConfigureAwait(false);
+
                     if (findKey.Path != null)
                     {
                         this.SecondLine = string.Format(Resources.Localization.PackageExpert_Registry_SummaryBuilder_HKCU_Other, findKey.Path.Substring(AppxRegistryRoots.HKCU.Length));

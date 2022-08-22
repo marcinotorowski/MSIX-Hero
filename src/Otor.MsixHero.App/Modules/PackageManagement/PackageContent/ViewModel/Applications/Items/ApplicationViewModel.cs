@@ -46,8 +46,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(_model.EntryPoint, _model.Executable, _model.StartPage, _package.IsFramework))
                 {
-                    case MsixPackageType.BridgeDirect:
-                    case MsixPackageType.BridgePsf:
+                    case MsixPackageType.Win32:
+                    case MsixPackageType.Win32Psf:
+                    case MsixPackageType.Win32AiStub:
                         return _model.Executable;
                     case MsixPackageType.Web:
                         return _model.StartPage;
@@ -68,10 +69,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             {
                 switch (Type)
                 {
-                    case MsixPackageType.BridgeDirect:
+                    case MsixPackageType.Win32: 
                         return Target;
 
-                    case MsixPackageType.BridgePsf:
+                    case MsixPackageType.Win32Psf:
+                    case MsixPackageType.Win32AiStub:
 
                         if (_model.Proxy?.Arguments == null)
                         {
@@ -91,7 +93,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             {
                 switch (Type)
                 {
-                    case MsixPackageType.BridgePsf:
+                    case MsixPackageType.Win32Psf:
+                    case MsixPackageType.Win32AiStub:
                         if (_model.Proxy?.Executable == null)
                         {
                             return null;

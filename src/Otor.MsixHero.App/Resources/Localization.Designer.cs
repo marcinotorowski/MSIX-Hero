@@ -8903,7 +8903,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contains registry keys..
+        ///   Looks up a localized string similar to Empty Windows registry..
         /// </summary>
         public static string PackageExpert_Registry_SummaryBuilder_Unknown {
             get {
