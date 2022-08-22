@@ -26,21 +26,19 @@ using Registry;
 
 namespace Otor.MsixHero.Appx.Psf
 {
-    public class PsfReader
+    public class ApplicationProxyReader
     {
-        public PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, string packageRootFolder)
+        public BaseApplicationProxy Read(string applicationId, string originalEntryPoint, string packageRootFolder)
         {
             if (!Directory.Exists(packageRootFolder))
             {
                 throw new ArgumentException("Package folder does not exist.");
             }
 
-            using (IAppxFileReader fileReader = new DirectoryInfoFileReaderAdapter(new DirectoryInfo(packageRootFolder)))
-            {
-                return this.Read(applicationId, originalEntryPoint, fileReader);
-            }
+            using IAppxFileReader fileReader = new DirectoryInfoFileReaderAdapter(new DirectoryInfo(packageRootFolder));
+            return this.Read(applicationId, originalEntryPoint, fileReader);
         }
-        public PsfApplicationDescriptor Read(string applicationId, string packageRootFolder)
+        public BaseApplicationProxy Read(string applicationId, string packageRootFolder)
         {
             if (!Directory.Exists(packageRootFolder))
             {
@@ -50,7 +48,7 @@ namespace Otor.MsixHero.Appx.Psf
             return this.Read(applicationId, null, packageRootFolder);
         }
 
-        public PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, IAppxFileReader fileReader)
+        public BaseApplicationProxy Read(string applicationId, string originalEntryPoint, IAppxFileReader fileReader)
         {
             if (
                 string.Equals(originalEntryPoint, @"AI_STUBS\AiStub.exe", StringComparison.OrdinalIgnoreCase) ||
@@ -81,7 +79,7 @@ namespace Otor.MsixHero.Appx.Psf
                         var key = reg.GetKey(@"root\registry\machine\software\caphyon\advanced installer\" + applicationId);
                         if (key?.Values != null)
                         {
-                            var psfDef = new PsfApplicationDescriptor();
+                            var psfDef = new AdvancedInstallerApplicationProxy();
 
                             foreach (var item in key.Values.Where(item => item.ValueName != null))
                             {
@@ -142,31 +140,19 @@ namespace Otor.MsixHero.Appx.Psf
             }
 
             var dir = Path.GetDirectoryName(originalEntryPoint);
-            string configJson;
-            if (string.IsNullOrEmpty(dir))
+            var configJson = string.IsNullOrEmpty(dir) ? "config.json" : Path.Combine(dir, "config.json");
+
+            if (!fileReader.FileExists(configJson))
             {
-                configJson = "config.json";
-            }
-            else
-            {
-                configJson = Path.Combine(dir, "config.json");
+                return null;
             }
 
-            if (fileReader.FileExists(configJson))
-            {
-                using (var stream = fileReader.GetFile(configJson))
-                {
-                    using (var streamReader = new StreamReader(stream))
-                    {
-                        return this.Read(applicationId, originalEntryPoint, streamReader);
-                    }
-                }
-            }
-
-            return null;
+            using var configStream = fileReader.GetFile(configJson);
+            using var configStreamReader = new StreamReader(configStream);
+            return this.Read(applicationId, configStreamReader);
         }
 
-        private PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, TextReader configJson)
+        private BaseApplicationProxy Read(string applicationId, TextReader configJson)
         {
             var jsonSerializer = new PsfConfigSerializer();
             var config = jsonSerializer.Deserialize(configJson.ReadToEnd());
@@ -206,7 +192,7 @@ namespace Otor.MsixHero.Appx.Psf
                 return null;
             }
 
-            var psfDef = new PsfApplicationDescriptor
+            var psfDef = new PsfApplicationProxy
             {
                 Executable = executable,
                 Arguments = arguments,

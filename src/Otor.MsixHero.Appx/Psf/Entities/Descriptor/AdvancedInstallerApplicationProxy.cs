@@ -14,20 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using System;
 
-namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
+namespace Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+
+[Serializable]
+public class AdvancedInstallerApplicationProxy : BaseApplicationProxy
 {
-    public class AppxServiceViewModel : NotifyPropertyChanged
-    {
-        private readonly AppxService service;
-
-        public AppxServiceViewModel(AppxService service)
-        {
-            this.service = service;
-        }
-
-        public string Name => this.service.Name;
-    }
+    public override ApplicationProxyType Type => ApplicationProxyType.AdvancedInstallerStub;
 }

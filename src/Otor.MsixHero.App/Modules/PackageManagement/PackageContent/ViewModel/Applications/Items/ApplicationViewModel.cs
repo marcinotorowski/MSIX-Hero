@@ -73,12 +73,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
 
                     case MsixPackageType.BridgePsf:
 
-                        if (_model.Psf?.Arguments == null)
+                        if (_model.Proxy?.Arguments == null)
                         {
-                            return _model.Psf?.Executable ?? _model.Executable;
+                            return _model.Proxy?.Executable ?? _model.Executable;
                         }
 
-                        return _model.Psf.Executable + " " + _model.Psf.Arguments;
+                        return _model.Proxy.Executable + " " + _model.Proxy.Arguments;
                 }
 
                 return string.IsNullOrEmpty(_model.EntryPoint) ? _model.Executable : _model.EntryPoint;
@@ -92,7 +92,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
                 switch (Type)
                 {
                     case MsixPackageType.BridgePsf:
-                        if (_model.Psf?.Executable == null)
+                        if (_model.Proxy?.Executable == null)
                         {
                             return null;
                         }
@@ -108,16 +108,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
         {
             get
             {
-                if (_model.Psf == null)
+                if (_model.Proxy == null)
                 {
                     return null;
                 }
 
-                return _model.Psf.WorkingDirectory;
+                return _model.Proxy.WorkingDirectory;
             }
         }
 
-        public string Arguments => _model.Psf?.Arguments ?? _model.Parameters;
+        public string Arguments => _model.Proxy?.Arguments ?? _model.Parameters;
 
         public string HostId => _model.HostId;
 

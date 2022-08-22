@@ -61,7 +61,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 
         public IList<string> ExecutionAlias { get; set; }
 
-        public PsfApplicationDescriptor Psf { get; set; }
+        public BaseApplicationProxy Proxy { get; set; }
 
         public List<AppxExtension> Extensions { get; set; }
     }

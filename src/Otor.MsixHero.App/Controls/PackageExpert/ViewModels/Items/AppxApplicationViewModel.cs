@@ -21,66 +21,76 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
     public class AppxApplicationViewModel : NotifyPropertyChanged
     {
-        private readonly AppxApplication model;
-        private readonly AppxPackage package;
+        private readonly AppxApplication _model;
+        private readonly AppxPackage _package;
 
         public AppxApplicationViewModel(AppxApplication model, AppxPackage package)
         {
-            this.model = model;
-            this.package = package;
-            this.Psf = model.Psf == null ? null : new AppxPsfViewModel(package.RootFolder, model.Psf);
-            this.Services = model.Extensions == null ? null : new AppxServicesViewModel(model.Extensions);
+            this._model = model;
+            this._package = package;
 
-            this.Type = PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
-            this.Alias = this.model.ExecutionAlias?.Any() == true ? string.Join(", ", this.model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
+            this.Proxy = model.Proxy switch
+            {
+                PsfApplicationProxy psfProxy => new PsfApplicationProxyViewModel(package.RootFolder, psfProxy),
+                AdvancedInstallerApplicationProxy advancedInstallerApplicationProxy => new AdvancedInstallerApplicationProxyViewModel(advancedInstallerApplicationProxy),
+                _ => null
+            };
+
+            this.Services = model.Extensions == null ? null : new ServicesViewModel(model.Extensions);
+
+            this.Type = PackageTypeConverter.GetPackageTypeFrom(this._model.EntryPoint, this._model.Executable, this._model.StartPage, this._package.IsFramework);
+            this.Alias = this._model.ExecutionAlias?.Any() == true ? string.Join(", ", this._model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
         }
         
-        public bool Visible => this.model.Visible;
+        public bool Visible => this._model.Visible;
 
         public string Alias { get; }
 
-        public bool HasPsf => this.model.Psf != null;
+        public bool HasPsf => this._model.Proxy is PsfApplicationProxy;
+
+        public bool HasProxy => this._model.Proxy != null;
         
-        public AppxPsfViewModel Psf { get; }
+        public BaseApplicationProxyViewModel Proxy { get; }
 
-        public AppxServicesViewModel Services { get; }
+        public ServicesViewModel Services { get; }
 
-        public string DisplayName => this.model.DisplayName;
+        public string DisplayName => this._model.DisplayName;
 
-        public byte[] Image => this.model.Logo;
+        public byte[] Image => this._model.Logo;
         
-        public string Id => this.model.Id;
+        public string Id => this._model.Id;
 
-        public string TileColor => this.model.BackgroundColor;
+        public string TileColor => this._model.BackgroundColor;
 
         public string Start
         {
             get
             {
-                switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework))
+                switch (PackageTypeConverter.GetPackageTypeFrom(this._model.EntryPoint, this._model.Executable, this._model.StartPage, this._package.IsFramework))
                 {
                     case MsixPackageType.BridgeDirect:
                     case MsixPackageType.BridgePsf:
-                        return this.model.Executable;
+                        return this._model.Executable;
                     case MsixPackageType.Web:
-                        return this.model.StartPage;
+                        return this._model.StartPage;
                     default:
-                        if (string.IsNullOrEmpty(this.model.EntryPoint))
+                        if (string.IsNullOrEmpty(this._model.EntryPoint))
                         {
-                            return this.model.Executable;
+                            return this._model.Executable;
                         }
 
-                        return this.model.EntryPoint;
+                        return this._model.EntryPoint;
                 }
             }
         }
 
-        public string EntryPoint => this.Type == MsixPackageType.Uwp ? this.model.EntryPoint : null;
+        public string EntryPoint => this.Type == MsixPackageType.Uwp ? this._model.EntryPoint : null;
 
         public bool HasEntryPoint => this.Type == MsixPackageType.Uwp;
 

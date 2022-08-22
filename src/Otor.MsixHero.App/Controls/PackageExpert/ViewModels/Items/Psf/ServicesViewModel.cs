@@ -22,16 +22,16 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
-    public class AppxServicesViewModel : NotifyPropertyChanged
+    public class ServicesViewModel : NotifyPropertyChanged
     {
-        public AppxServicesViewModel(IEnumerable<AppxExtension> extensions)
+        public ServicesViewModel(IEnumerable<AppxExtension> extensions)
         {
-            this.Services = new ObservableCollection<AppxServiceViewModel>(extensions.OfType<AppxService>().Select(e => new AppxServiceViewModel(e)));
+            this.Services = new ObservableCollection<ServiceViewModel>(extensions.OfType<AppxService>().Select(e => new ServiceViewModel(e)));
             this.HasServices = this.Services.Count > 0;
         }
 
         public bool HasServices { get; set; }
 
-        public ObservableCollection<AppxServiceViewModel> Services { get; }
+        public ObservableCollection<ServiceViewModel> Services { get; }
     }
 }

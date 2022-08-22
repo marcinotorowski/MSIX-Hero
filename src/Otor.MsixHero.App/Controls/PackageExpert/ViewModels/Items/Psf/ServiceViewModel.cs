@@ -14,28 +14,20 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-using System.Collections.Generic;
+using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.MsixHero.Appx.Psf.Entities.Descriptor
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
-    [Serializable]
-    public class PsfApplicationDescriptor
+    public class ServiceViewModel : NotifyPropertyChanged
     {
-        public string Executable { get; set; }
+        private readonly AppxService _service;
 
-        public string Arguments { get; set; }
+        public ServiceViewModel(AppxService service)
+        {
+            this._service = service;
+        }
 
-        public string WorkingDirectory { get; set; }
-
-        public List<PsfFolderRedirectionDescriptor> FileRedirections { get; set; }
-
-        public List<PsfScriptDescriptor> Scripts { get; set; }
-
-        public PsfTracingRedirectionDescriptor Tracing { get; set; }
-
-        public PsfElectronDescriptor Electron { get; set; }
-
-        public List<string> OtherFixups { get; set; }
+        public string Name => this._service.Name;
     }
 }

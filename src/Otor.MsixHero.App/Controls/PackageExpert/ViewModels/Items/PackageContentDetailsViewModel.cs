@@ -16,16 +16,18 @@
 
 using System.Collections.ObjectModel;
 using System.Linq;
+using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
     public class PackageContentDetailsViewModel : NotifyPropertyChanged
     {
-        private AppxApplicationViewModel selectedFixup;
+        private AppxApplicationViewModel _selectedFixup;
 
         public PackageContentDetailsViewModel(AppxPackage model, string filePath = null)
         {
@@ -75,18 +77,22 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
                     }
 
                     this.Applications.Add(new AppxApplicationViewModel(item, model));
-                    this.ScriptsCount += item.Psf?.Scripts?.Count ?? 0;
+
+                    if (item.Proxy is PsfApplicationProxy psfProxy)
+                    {
+                        this.ScriptsCount += psfProxy.Scripts?.Count ?? 0;
+                    }
                 }
             }
             
-            this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.HasPsf && a.Psf != null && (a.Psf.HasFileRedirections || a.Psf.HasTracing || a.Psf.HasOtherFixups)));
-            this.selectedFixup = this.Fixups.FirstOrDefault();
+            this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.Proxy is PsfApplicationProxyViewModel psf && (psf.HasFileRedirections || psf.HasTracing || psf.HasOtherFixups)));
+            this._selectedFixup = this.Fixups.FirstOrDefault();
             
             // 1) fixup count is the sum of all individual file redirections...
-            this.FixupsCount = this.Fixups.SelectMany(s => s.Psf.FileRedirections).Select(s => s.Exclusions.Count + s.Inclusions.Count).Sum();
+            this.FixupsCount = this.Fixups.Select(f => f.Proxy).OfType<PsfApplicationProxyViewModel>().SelectMany(s => s.FileRedirections).Select(s => s.Exclusions.Count + s.Inclusions.Count).Sum();
             
             // 2) plus additionally number of apps that have tracing
-            this.FixupsCount += this.Applications.Count(a => a.HasPsf && a.Psf.HasTracing);
+            this.FixupsCount += this.Applications.Count(a => a.Proxy is PsfApplicationProxyViewModel psf && psf.HasTracing);
             
             this.BuildInfo = model.BuildInfo;
 
@@ -144,8 +150,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 
         public AppxApplicationViewModel SelectedFixup
         {
-            get => this.selectedFixup;
-            set => this.SetField(ref this.selectedFixup, value);
+            get => this._selectedFixup;
+            set => this.SetField(ref this._selectedFixup, value);
         }
 
         public BuildInfo BuildInfo { get; }

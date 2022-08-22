@@ -21,6 +21,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start
 {
@@ -33,8 +34,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         {
             this._model = model;
             this._package = package;
-            this.Psf = model.Psf == null ? null : new AppxPsfViewModel(package.RootFolder, model.Psf);
-            this.Services = model.Extensions == null ? null : new AppxServicesViewModel(model.Extensions);
+
+            this.ApplicationPsf = model.Proxy switch
+            {
+                PsfApplicationProxy psf => new PsfApplicationProxyViewModel(package.RootFolder, psf),
+                AdvancedInstallerApplicationProxy ai => new AdvancedInstallerApplicationProxyViewModel(ai),
+                _ => null
+            };
+
+            this.Services = model.Extensions == null ? null : new ServicesViewModel(model.Extensions);
 
             this.Type = PackageTypeConverter.GetPackageTypeFrom(this._model.EntryPoint, this._model.Executable, this._model.StartPage, this._package.IsFramework);
             this.Alias = this._model.ExecutionAlias?.Any() == true ? string.Join(", ", this._model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
@@ -44,11 +52,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public string Alias { get; }
 
-        public bool HasPsf => this._model.Psf != null;
+        public bool HasPsf => this._model.Proxy != null;
 
-        public AppxPsfViewModel Psf { get; }
+        public BaseApplicationProxyViewModel ApplicationPsf { get; }
 
-        public AppxServicesViewModel Services { get; }
+        public ServicesViewModel Services { get; }
 
         public string DisplayName => this._model.DisplayName;
 

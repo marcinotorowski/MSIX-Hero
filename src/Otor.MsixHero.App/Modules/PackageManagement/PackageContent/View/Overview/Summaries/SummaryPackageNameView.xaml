@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryPackageNameViewModel}">
 
-    <cards:CardExpander>
+    <cards:CardExpander HorizontalContentExpandedAlignment="Stretch">
         <cards:CardExpander.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorInfo}" />
         </cards:CardExpander.Icon>

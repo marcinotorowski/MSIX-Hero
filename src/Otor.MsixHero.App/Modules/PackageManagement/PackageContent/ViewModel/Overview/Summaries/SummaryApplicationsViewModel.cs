@@ -24,7 +24,6 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Infrastructure.Localization;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
@@ -57,7 +56,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 var promotedName = promotedApplication.DisplayName;
                 if (promotedApplication.EntryPoint == "Windows.FullTrustApplication")
                 {
-                    promotedName += " [" + Path.GetFileName(promotedApplication.Psf?.Executable ?? promotedApplication.Executable) + "]";
+                    promotedName += " [" + Path.GetFileName(promotedApplication.Proxy?.Executable ?? promotedApplication.Executable) + "]";
                 }
 
                 switch (otherApps)
@@ -69,7 +68,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                         this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_OneExtra, promotedName);
                         break;
                     default:
-                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_XExtra, promotedName, 1);
+                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_XExtra, promotedName, otherApps);
                         break;
                 }
             }

@@ -21,27 +21,27 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
     public class AppxPsfScriptViewModel : NotifyPropertyChanged
     {
-        private readonly PsfScriptDescriptor descriptor;
+        private readonly PsfScriptDescriptor _descriptor;
 
         public AppxPsfScriptViewModel(string parentFolder, PsfScriptDescriptor descriptor)
         {
-            this.descriptor = descriptor;
+            this._descriptor = descriptor;
             this.FullLocalPath = System.IO.Path.Combine(parentFolder, descriptor.Name);
         }
 
         public string Name
         {
-            get => this.descriptor.Name;
+            get => this._descriptor.Name;
         }
 
         public string Arguments
         {
-            get => this.descriptor.Arguments;
+            get => this._descriptor.Arguments;
         }
 
         public PsfScriptDescriptorTiming Timing
         {
-            get => this.descriptor.Timing;
+            get => this._descriptor.Timing;
         }
 
         public bool HasArguments
@@ -51,22 +51,22 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 
         public bool InVirtualEnvironment
         {
-            get => this.descriptor.RunInVirtualEnvironment;
+            get => this._descriptor.RunInVirtualEnvironment;
         }
 
         public bool WaitForFinish
         {
-            get => this.descriptor.WaitForScriptToFinish;
+            get => this._descriptor.WaitForScriptToFinish;
         }
 
         public bool ShowWindow
         {
-            get => this.descriptor.ShowWindow;
+            get => this._descriptor.ShowWindow;
         }
 
         public bool OnlyOnce
         {
-            get => this.descriptor.RunOnce;
+            get => this._descriptor.RunOnce;
         }
 
         public string FullLocalPath { get; }

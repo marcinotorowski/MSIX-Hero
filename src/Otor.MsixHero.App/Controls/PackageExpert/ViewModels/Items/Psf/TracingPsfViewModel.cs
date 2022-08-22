@@ -22,18 +22,18 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
     public class TracingPsfViewModel
     {
-        private readonly PsfTracingRedirectionDescriptor definition;
+        private readonly PsfTracingRedirectionDescriptor _definition;
 
         public TracingPsfViewModel(PsfTracingRedirectionDescriptor definition)
         {
-            this.definition = definition;
+            this._definition = definition;
         }
 
         public string BreaksOn
         {
             get
             {
-                switch (this.definition.BreakOn)
+                switch (this._definition.BreakOn)
                 {
                     case TraceLevel.UnexpectedFailures:
                         return "Unexpected failures";
@@ -55,7 +55,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
         {
             get
             {
-                switch (this.definition.TracingType)
+                switch (this._definition.TracingType)
                 {
                     case TracingType.Console:
                         return "Write to console";

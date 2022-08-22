@@ -12,6 +12,7 @@ using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
 using Prism.Commands;
 
@@ -65,15 +66,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.P
 
                 foreach (var app in model.Applications)
                 {
-                    if (app.Psf == null)
+                    if (app.Proxy is not PsfApplicationProxy psfProxy)
                     {
                         continue;
                     }
 
-                    foreach (var item in app.Psf.Scripts)
+                    foreach (var item in psfProxy.Scripts)
                     {
                         scripts.Add(new ScriptViewModel(app.DisplayName, path, item));
-                        var localScriptPath = System.IO.Path.Combine(path, item.Name);
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        var localScriptPath = Path.Combine(path, item.Name);
                         if (reader.FileExists(localScriptPath))
                         {
                             await using var fs = reader.GetFile(localScriptPath);

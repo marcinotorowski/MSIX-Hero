@@ -86,7 +86,7 @@
                                 TextTrimming="CharacterEllipsis" 
                                 TextWrapping="Wrap">
                                 <Run Style="{StaticResource ButtonLabelRun}" Text="{Binding DisplayName, Mode=OneTime}" />
-                                <LineBreak /><Run Style="{StaticResource ButtonDescriptionRun}" Text="{Binding Psf.Executable, Mode=OneTime}" />
+                                <LineBreak /><Run Style="{StaticResource ButtonDescriptionRun}" Text="{Binding ApplicationPsf.Executable, Mode=OneTime}" />
                                 <Run Style="{StaticResource ButtonDescriptionRun}" Text="*" Foreground="Maroon" FontWeight="Bold" />
                             </TextBlock>
 

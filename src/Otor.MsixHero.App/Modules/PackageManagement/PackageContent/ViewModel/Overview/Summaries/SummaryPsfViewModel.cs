@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
@@ -38,14 +39,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
-            this.HasPsf = model.Applications.Any(a => a.Psf != null);
-            
-            var hasRedirections = model.Applications.Select(a => a.Psf).Any(psf => psf?.FileRedirections?.Any() == true);
-            var hasTracing = model.Applications.Select(a => a.Psf).Any(psf => psf?.Tracing != null);
-            var hasOtherFixUps = model.Applications.Select(a => a.Psf).Any(psf => psf?.OtherFixups?.Any() == true);
-            var hasElectron = model.Applications.Select(a => a.Psf).Any(psf => psf?.Electron != null);
+            this.HasPsf = model.Applications.Any(a => a.Proxy != null && a.Proxy.Type == ApplicationProxyType.PackageSupportFramework);
 
-            var hasScripts = model.Applications.Select(a => a.Psf).Any(psf => psf?.Scripts?.Any() == true);
+            var psfDescriptors = model.Applications.Select(a => a.Proxy).OfType<PsfApplicationProxy>();
+
+            // ReSharper disable PossibleMultipleEnumeration
+            var hasRedirections = psfDescriptors.Any(p => p.FileRedirections?.Any() == true);
+            var hasTracing = psfDescriptors.Any(p => p.Tracing != null);
+            var hasOtherFixUps = psfDescriptors.Any(p => p.OtherFixups?.Any() == true);
+            var hasElectron = psfDescriptors.Any(p => p.Electron != null);
+            var hasScripts = psfDescriptors.Any(p => p.Scripts?.Any() == true);
+            // ReSharper restore PossibleMultipleEnumeration
 
             var secondLine = new StringBuilder(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Header);
             secondLine.Append(" ");

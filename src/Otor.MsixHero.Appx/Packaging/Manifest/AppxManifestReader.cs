@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
     public class AppxManifestReader : IAppxManifestReader
     {
-        protected readonly PsfReader PsfReader = new PsfReader();
+        protected readonly ApplicationProxyReader PsfReader = new ApplicationProxyReader();
 
         private static readonly LogSource Logger = new();
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
@@ -408,7 +408,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         foreach (var psfApp in psfApps)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            psfApp.Psf = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
+                            psfApp.Proxy = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
                         }
                     }
                 }

@@ -74,7 +74,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                     .Where(a => !string.IsNullOrEmpty(a?.Executable))
                     .OrderByDescending(a => a.Visible ? 1 : 0)
                     .ThenByDescending(a => a.Description?.Length ?? -1)
-                    .SelectMany(a => a.Psf?.Executable == null ? new[] { a.Executable } : new[] { a.Executable, a.Psf.Executable })
+                    .SelectMany(a => a.Proxy?.Executable == null ? new[] { a.Executable } : new[] { a.Executable, a.Proxy.Executable })
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Take(2)
                     .ToArray();
