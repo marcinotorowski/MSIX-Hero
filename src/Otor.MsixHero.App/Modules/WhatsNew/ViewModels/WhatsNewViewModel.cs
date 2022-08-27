@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -133,6 +134,13 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+            if (navigationContext.Uri.OriginalString == NavigationPaths.WhatsNew)
+            {
+                return;
+            }
+
+            var releaseNotesHelper = new ReleaseNotesHelper(this.configurationService);
+            releaseNotesHelper.SaveReleaseNotesConfig(this.showUpdateScreen);
         }
     }
 }
