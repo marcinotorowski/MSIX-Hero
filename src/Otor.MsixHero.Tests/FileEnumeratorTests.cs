@@ -28,8 +28,8 @@ namespace Otor.MsixHero.Tests
                 files.Add(file);
             }
             
-            Assert.IsTrue(new[] { "AppxMetadata", "Assets", "VFS" }.OrderBy(c => c).SequenceEqual(folders.OrderBy(d => d)));
-            Assert.IsTrue(new[] { "AppxBlockMap.xml", "AppxManifest.xml", "AppxSignature.p7x", "Registry.dat", "Resources.pri", "User.dat", "UserClasses.dat", "[Content_Types].xml" }.OrderBy(c => c).SequenceEqual(files.Select(f => f.FullPath).OrderBy(f => f)));
+            Assert.IsTrue(new[] { "Assets", "VFS" }.OrderBy(c => c).SequenceEqual(folders.OrderBy(d => d)));
+            Assert.IsTrue(new[] { "[Content_Types].xml", "AppxBlockMap.xml", "AppxManifest.xml", "config.json", "FileRedirectionFixup64.dll", "PsfLauncher64.exe", "PsfRunDll64.exe", "PsfRuntime64.dll", "Registry.dat", "Resources.pri", "TraceFixup64.dll", "User.dat", "UserClasses.dat" ,"WaitForDebuggerFixup64.dll" }.OrderBy(c => c).SequenceEqual(files.Select(f => f.FullPath).OrderBy(f => f)));
         }
 
         [Test]
