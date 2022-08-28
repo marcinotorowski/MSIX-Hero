@@ -784,7 +784,10 @@
     <value>Package</value>
   </data>
   <data name="Dialog_AppInstaller_LoadButton" xml:space="preserve">
-    <value>Load from file…</value>
+    <value>Open existing…</value>
+  </data>
+  <data name="Dashboard_Open" xml:space="preserve">
+    <value>Open existing…</value>
   </data>
   <data name="Dialog_AppInstaller_Never" xml:space="preserve">
     <value>Never</value>
@@ -4086,5 +4089,14 @@ Click the icon again to remove the star.</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_CurrentSize" xml:space="preserve">
     <value>Current .appinstaller file size:</value>
+  </data>
+  <data name="Dashboard_Open_SecondLine" xml:space="preserve">
+    <value>Open an existing .msix, .appinstaller or .yaml file</value>
+  </data>
+  <data name="Dashboard_ToolsAndAnalyzers" xml:space="preserve">
+    <value>Tools and analyzers</value>
+  </data>
+  <data name="Dashboard_MsixAndPackaging" xml:space="preserve">
+    <value>MSIX and packaging</value>
   </data>
 </root>

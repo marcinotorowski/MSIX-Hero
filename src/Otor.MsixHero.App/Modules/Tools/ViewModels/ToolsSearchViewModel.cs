@@ -24,26 +24,26 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 {
     public class ToolsSearchViewModel : NotifyPropertyChanged
     {
-        private readonly IMsixHeroApplication application;
+        private readonly IMsixHeroApplication _application;
 
         public ToolsSearchViewModel(IMsixHeroApplication application, IEventAggregator eventAggregator)
         {
-            this.application = application;
+            this._application = application;
             eventAggregator.GetEvent<UiExecutedEvent<SetToolFilterCommand>>().Subscribe(this.OnSetToolFilterCommand);
         }
 
         public string SearchKey
         {
-            get => this.application.ApplicationState.Tools.SearchKey;
+            get => this._application.ApplicationState.Tools.SearchKey;
 
             set
             {
-                if (this.application.ApplicationState.Tools.SearchKey == value)
+                if (this._application.ApplicationState.Tools.SearchKey == value)
                 {
                     return;
                 }
 
-                this.application.CommandExecutor.Invoke(this, new SetToolFilterCommand(value));
+                this._application.CommandExecutor.Invoke(this, new SetToolFilterCommand(value));
             }
         }
 

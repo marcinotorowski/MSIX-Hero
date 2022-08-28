@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Otor.MsixHero.App.Controls.Cards;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Modules.Main.Events;
@@ -28,79 +29,79 @@ namespace Otor.MsixHero.App.Modules.Tools.Views
 {
     public partial class ToolsView : INavigationAware
     {
-        private readonly IEventAggregator eventAggregator;
+        private readonly IEventAggregator _eventAggregator;
 
         public ToolsView(IEventAggregator eventAggregator)
         {
-            this.eventAggregator = eventAggregator;
+            this._eventAggregator = eventAggregator;
             eventAggregator.GetEvent<UiExecutedEvent<SetToolFilterCommand>>().Subscribe(this.OnSetToolFilter, ThreadOption.UIThread);
             InitializeComponent();
         }
 
         private void OnSetToolFilter(UiExecutedPayload<SetToolFilterCommand> obj)
         {
-            var host = this.Host;
+            var allChildren = this.ColumnLeft.Children.OfType<FrameworkElement>().Union(this.ColumnRight.Children.OfType<FrameworkElement>());
 
-            for (var i = 0; i < host.Children.Count; i++)
+            Label label = null;
+            var isLabelVisible = false;
+
+            foreach (var child in allChildren)
             {
-                if (!(host.Children[i] is TextBlock text))
+                if (child is Label childLabel)
                 {
-                    continue;
-                }
+                    if (label != null)
+                    {
+                        label.Visibility = isLabelVisible ? Visibility.Visible : Visibility.Collapsed;
+                        isLabelVisible = false;
+                    }
 
-                var nextElement = i + 1 < host.Children.Count ? host.Children[i + 1] as WrapPanel : null;
-                if (nextElement == null)
+                    label = childLabel;
+                }
+                else if (child is CardAction childCardAction)
                 {
-                    text.Visibility = Visibility.Visible;
+                    var isChildVisible = string.IsNullOrEmpty(obj.Request.SearchKey);
+                    if (!isChildVisible && childCardAction.Content is TextBlock textBlock)
+                    {
+                        var localText = textBlock.Text;
+                        isChildVisible |= localText.IndexOf(obj.Request.SearchKey, StringComparison.OrdinalIgnoreCase) != -1;
+                    }
+
+                    childCardAction.Visibility = isChildVisible ? Visibility.Visible : Visibility.Collapsed;
+                    isLabelVisible |= isChildVisible;
                 }
-                else
-                {
-                    var anyVisible = false;
-                    bool allVisible;
+            }
 
-                    if (string.IsNullOrEmpty(obj.Request.SearchKey) || text.Text.IndexOf(obj.Request.SearchKey, StringComparison.OrdinalIgnoreCase) > -1)
-                    {
-                        text.Visibility = Visibility.Visible;
-                        allVisible = true;
-                    }
-                    else
-                    {
-                        text.Visibility = Visibility.Collapsed;
-                        allVisible = false;
-                    }
+            if (label != null)
+            {
+                label.Visibility = isLabelVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
 
-                    foreach (var button in nextElement.Children.OfType<Button>())
-                    {
-                        if (allVisible || string.IsNullOrEmpty(obj.Request.SearchKey))
-                        {
-                            anyVisible = true;
-                            button.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            var buttonTexts = ((StackPanel)button.Content).Children.OfType<TextBlock>();
+            var leftVisible = this.ColumnLeft.Children.OfType<FrameworkElement>().Any(fe => fe.Visibility == Visibility.Visible);
+            var rightVisible = this.ColumnRight.Children.OfType<FrameworkElement>().Any(fe => fe.Visibility == Visibility.Visible);
 
-                            var hasText = buttonTexts.Any(b => b.Text?.IndexOf(obj.Request.SearchKey, StringComparison.OrdinalIgnoreCase) > -1);
-                            anyVisible |= hasText;
-                            button.Visibility = hasText ? Visibility.Visible : Visibility.Collapsed;
-                        }
-                    }
-
-                    if (allVisible || string.IsNullOrEmpty(obj.Request.SearchKey) || anyVisible)
-                    {
-                        text.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        text.Visibility = Visibility.Collapsed;
-                    }
-                }
+            if (leftVisible && !rightVisible)
+            {
+                this.ColumnDefinition1.Width = new GridLength(1, GridUnitType.Star);
+                this.ColumnDefinition2.Width = new GridLength(0, GridUnitType.Pixel);
+                this.ColumnDefinition3.Width = new GridLength(0, GridUnitType.Pixel);
+            }
+            else if (!leftVisible && rightVisible)
+            {
+                this.ColumnDefinition1.Width = new GridLength(0, GridUnitType.Pixel);
+                this.ColumnDefinition2.Width = new GridLength(0, GridUnitType.Pixel);
+                this.ColumnDefinition3.Width = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                this.ColumnDefinition1.Width = new GridLength(1, GridUnitType.Star);
+                this.ColumnDefinition2.Width = new GridLength(16, GridUnitType.Pixel);
+                this.ColumnDefinition3.Width = new GridLength(1, GridUnitType.Star);
             }
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(250.0));
+            this._eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(250.0));
         }
         
         public bool IsNavigationTarget(NavigationContext navigationContext)

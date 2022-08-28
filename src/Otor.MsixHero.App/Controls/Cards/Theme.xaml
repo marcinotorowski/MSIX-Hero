@@ -196,6 +196,13 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="{x:Type Border}" x:Key="CardFooter">
+        <Setter Property="Background" Value="{StaticResource CardFooterGradientBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource CardBorderThickness}" />
+        <Setter Property="Padding" Value="{StaticResource CardContentPadding}" />
+    </Style>
+
     <Style TargetType="{x:Type controls:Card}">
         <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
@@ -272,8 +279,8 @@
                         </Border>
 
                         <Border
+                            Style="{StaticResource CardFooter}"
                             x:Name="Footer"
-                            Background="{StaticResource CardFooterGradientBrush}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="1,0,1,1"
                             Grid.Row="1"

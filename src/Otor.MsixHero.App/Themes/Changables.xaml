@@ -239,7 +239,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBox 
-                                                Margin="6 0 0 0"
+                                                Margin="6 1 0 1"
                                                 Grid.Column="0"
                                                 x:Name="CmdLine"
                                                 BorderThickness="0" 

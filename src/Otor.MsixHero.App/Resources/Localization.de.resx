@@ -190,7 +190,10 @@
     <value>Paket</value>
   </data>
   <data name="Dialog_AppInstaller_LoadButton" xml:space="preserve">
-    <value>Aus Datei laden…</value>
+    <value>Datei öffnen…</value>
+  </data>
+  <data name="Dashboard_Open" xml:space="preserve">
+    <value>Datei öffnen…</value>
   </data>
   <data name="Dialog_AppInstaller_Never" xml:space="preserve">
     <value>Nie</value>
@@ -4086,5 +4089,14 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_PaddingExplain3" xml:space="preserve">
     <value>Wenn Sie eine vorhandene .appinstaller-Datei mit einer linksbündigen Ausrichtung öffnen, wird die Größe der ausgewählten Datei berücksichtigt.</value>
+  </data>
+  <data name="Dashboard_Open_SecondLine" xml:space="preserve">
+    <value>Eine vorhandene MSIX-, APPINSTALLER- oder YAML-Datei öffnen</value>
+  </data>
+  <data name="Dashboard_ToolsAndAnalyzers" xml:space="preserve">
+    <value>Tools und Dienstprogramme</value>
+  </data>
+  <data name="Dashboard_MsixAndPackaging" xml:space="preserve">
+    <value>MSIX und Paketierung</value>
   </data>
 </root>

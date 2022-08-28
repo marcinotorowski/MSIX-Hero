@@ -784,7 +784,10 @@
     <value>Pakiet</value>
   </data>
   <data name="Dialog_AppInstaller_LoadButton" xml:space="preserve">
-    <value>Wczytaj z pliku…</value>
+    <value>Otwórz istniejący…</value>
+  </data>
+  <data name="Dashboard_Open" xml:space="preserve">
+    <value>Otwórz istniejący…</value>
   </data>
   <data name="Dialog_AppInstaller_Never" xml:space="preserve">
     <value>Nigdy</value>
@@ -4086,5 +4089,14 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_PaddingExplain3" xml:space="preserve">
     <value>Jeśli otworzysz istniejący plik .appinstaller z dodatkowym paddingiem, rozmiar wybranego pliku zostanie uwzględniony w tym miejscu.</value>
+  </data>
+  <data name="Dashboard_ToolsAndAnalyzers" xml:space="preserve">
+    <value>Narzędzia i analizatory</value>
+  </data>
+  <data name="Dashboard_Open_SecondLine" xml:space="preserve">
+    <value>Otwórz istniejący plik .msix, .appinstaller lub .yaml</value>
+  </data>
+  <data name="Dashboard_MsixAndPackaging" xml:space="preserve">
+    <value>MSIX i pakietowanie</value>
   </data>
 </root>

@@ -1375,6 +1375,33 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MSIX and packaging.
+        /// </summary>
+        public static string Dashboard_MsixAndPackaging {
+            get {
+                return ResourceManager.GetString("Dashboard_MsixAndPackaging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open existing….
+        /// </summary>
+        public static string Dashboard_Open {
+            get {
+                return ResourceManager.GetString("Dashboard_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open an existing .msix, .appinstaller or .yaml file.
+        /// </summary>
+        public static string Dashboard_Open_SecondLine {
+            get {
+                return ResourceManager.GetString("Dashboard_Open_SecondLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open app installer file….
         /// </summary>
         public static string Dashboard_OpenAppInstaller {
@@ -1452,6 +1479,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dashboard_SignResign {
             get {
                 return ResourceManager.GetString("Dashboard_SignResign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools and analyzers.
+        /// </summary>
+        public static string Dashboard_ToolsAndAnalyzers {
+            get {
+                return ResourceManager.GetString("Dashboard_ToolsAndAnalyzers", resourceCulture);
             }
         }
         
@@ -1537,7 +1573,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load from file….
+        ///   Looks up a localized string similar to Open existing….
         /// </summary>
         public static string Dialog_AppInstaller_LoadButton {
             get {
