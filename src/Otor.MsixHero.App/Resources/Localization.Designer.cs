@@ -1609,6 +1609,78 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current .appinstaller file size:.
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_CurrentSize {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_CurrentSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pad .appinstaller size during the  build process .
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_EnablePadding {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_EnablePadding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pad this file to this size:.
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_Padding {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_Padding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to bytes.
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_PaddingBytes {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_PaddingBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This advanced settings is used as a workaround for a bug in MSIX / Delivery Optimization subsystem of some versions of Windows..
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_PaddingExplain1 {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_PaddingExplain1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Correct usage of this workaround requires setting the size to a value large enough that it should never be exceeded..
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_PaddingExplain2 {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_PaddingExplain2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you open an existing .appinstaller file with extra padding at the end, the value here will be automatically taken over..
+        /// </summary>
+        public static string Dialog_AppInstaller_Tab_Advanced_PaddingExplain3 {
+            get {
+                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced_PaddingExplain3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dependencies.
         /// </summary>
         public static string Dialog_AppInstaller_Tab_Dependencies {

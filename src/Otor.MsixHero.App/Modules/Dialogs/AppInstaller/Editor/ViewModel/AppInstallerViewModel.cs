@@ -54,6 +54,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         private ICommand _reset;
         private ICommand _open;
         private string _previousPath;
+        private bool _paddingManuallyChanged;
 
         public AppInstallerViewModel(
             IInteractionService interactionService,
@@ -66,6 +67,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.PromptMode = new ChangeableProperty<PromptMode>();
+            this.EnablePadding = new ChangeableProperty<bool>();
+            this.Padding = new ValidatedChangeableProperty<string>("5000", ValidatorFactory.ValidateInteger());
+            this.Padding.Changed += this.PaddingOnChanged;
             this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_Version, "1.0.0.0", ValidatorFactory.ValidateVersion());
             this.MainPackageUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_MainPackageUrl, true, ValidatorFactory.ValidateUri(true));
             this.AppInstallerUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_AppInstallerUrl, true, ValidatorFactory.ValidateUri(true));
@@ -90,18 +94,28 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 this.PromptMode,
                 this.Hours);
 
+            this.TabAdvanced = new ChangeableContainer(
+                this.EnablePadding,
+                this.Padding);
+
             this.AddChildren(
                 this.TabPackage,
                 this.TabProperties = new ChangeableContainer(this.Version, this.MainPackageUri, this.AppInstallerUri),
                 this.TabOptionalPackages = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
                 this.TabDependencies = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
                 this.TabRelatedPackages = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
-                this.TabOptions);
+                this.TabOptions,
+                this.TabAdvanced);
 
             this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
             this.AllowDowngrades.ValueChanged += this.OnCompatRelevantPropertyChanged;
             this.PromptMode.ValueChanged += this.OnCompatRelevantPropertyChanged;
+        }
+
+        private void PaddingOnChanged(object sender, EventArgs e)
+        {
+            this._paddingManuallyChanged = true;
         }
 
         public ChangeableContainer TabProperties { get; }
@@ -113,6 +127,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         public AppInstallerPackagesViewModel TabRelatedPackages { get; }
 
         public ChangeableContainer TabOptions { get; }
+        
+        public ChangeableContainer TabAdvanced { get; }
+
         public bool ShowLaunchOptions =>
             this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground ||
             this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.Launch;
@@ -121,6 +138,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
         public ValidatedChangeableProperty<string> Hours { get; }
         
+        public ChangeableProperty<bool> EnablePadding { get; }
+
+        public ChangeableProperty<string> Padding { get; }
+
         public ChangeableProperty<PromptMode> PromptMode { get; }
 
         public ValidatedChangeableProperty<string> Version { get; }
@@ -190,9 +211,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 return false;
             }
 
+            if (this.EnablePadding.CurrentValue)
+            {
+                // re-calculate the manual padding in case the user did not touch the field
+                await this.CalculatePadding().ConfigureAwait(false);
+            }
+
             this._previousPath = selected;
             var appInstaller = this.GetCurrentAppInstallerConfig();
             await this._appInstallerBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
+
+            var sizeHelper = new AppInstallerSizeInfo(new FileInfo(selected));
+            if (this.EnablePadding.CurrentValue && int.TryParse(this.Padding.CurrentValue, out var parsedSize))
+            {
+                await sizeHelper.Pad(parsedSize);
+            }
+
             return true;
         }
 
@@ -317,6 +351,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             try
             {
                 file = await AppInstallerConfig.FromFile(selected).ConfigureAwait(true);
+
+                var sizeHelper = new AppInstallerSizeInfo(new FileInfo(selected));
+                this.EnablePadding.CurrentValue = await sizeHelper.IsPadded().ConfigureAwait(true);
+
+                if (this.EnablePadding.CurrentValue)
+                {
+                    this.Padding.CurrentValue = sizeHelper.FileSize.ToString("0");
+                }
+                else
+                {
+                    this.Padding.CurrentValue = "0";
+                }
             }
             catch (Exception e)
             {
@@ -412,5 +458,28 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             this.OnPropertyChanged(nameof(CompatibleWindows));
         }
+
+        public async Task CalculatePadding()
+        {
+            this.CurrentSize = await AppInstallerSizeInfo.GetActualSize(this.GetCurrentAppInstallerConfig()).ConfigureAwait(false);
+            this.OnPropertyChanged(nameof(CurrentSize));
+
+            if (this._paddingManuallyChanged)
+            {
+                return;
+            }
+
+            var wasTouched = this.Padding.IsTouched;
+
+            this.Padding.CurrentValue = AppInstallerSizeInfo.GetSuggestedPaddedSize(this.CurrentSize).ToString("0");
+            this._paddingManuallyChanged = false;
+            
+            if (!wasTouched)
+            {
+                this.Padding.Commit();
+            }
+        }
+
+        public int CurrentSize { get; private set; }
     }
 }

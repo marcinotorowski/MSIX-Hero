@@ -14,7 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Linq;
+using System.Windows.Controls;
+using Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel;
 using Xceed.Wpf.Toolkit;
+using YamlDotNet.Core.Tokens;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View
 {
@@ -28,15 +32,43 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View
         private void Spinner_OnSpin(object sender, SpinEventArgs e)
         {
             var spinner = (ButtonSpinner)sender;
-            var content = spinner.Content as string;
 
-            int.TryParse(content ?? "0", out var value);
-            if (e.Direction == SpinDirection.Increase)
-                value++;
-            else
-                value--;
+            if (spinner.Content is string contentString)
+            {
+                if (!int.TryParse(contentString, out var value))
+                {
+                    return;
+                }
 
-            spinner.Content = value.ToString();
+                if (e.Direction == SpinDirection.Increase)
+                    value++;
+                else
+                    value--;
+
+                spinner.Content = value.ToString();
+            }
+            else if (spinner.Content is int contentInt)
+            {
+                if (e.Direction == SpinDirection.Increase)
+                    contentInt++;
+                else
+                    contentInt--;
+
+                spinner.Content = contentInt;
+            }
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var tabControl = (TabControl)sender;
+            var lastTab = tabControl.Items.OfType<TabItem>().Last();
+            var selectedTab = tabControl.SelectedItem as TabItem;
+            if (lastTab == selectedTab)
+            {
+#pragma warning disable CS4014
+                ((AppInstallerViewModel)this.DataContext).CalculatePadding();
+#pragma warning restore CS4014
+            }
         }
     }
 }

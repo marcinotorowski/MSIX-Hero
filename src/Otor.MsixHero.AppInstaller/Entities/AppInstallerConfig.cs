@@ -97,19 +97,17 @@ namespace Otor.MsixHero.AppInstaller.Entities
                 throw new FormatException("Root element must have appinstaller namespace.");
             }
 
-            using (var memStream = new MemoryStream(allText))
+            using var memStream = new MemoryStream(allText);
+            switch (doc.Root.Name.NamespaceName)
             {
-                switch (doc.Root.Name.NamespaceName)
-                {
-                    case "http://schemas.microsoft.com/appx/appinstaller/2017":
-                        return await AppInstallerConfig2017.FromStream(memStream).ConfigureAwait(false);
-                    case "http://schemas.microsoft.com/appx/appinstaller/2017/2":
-                        return await AppInstallerConfig20172.FromStream(memStream).ConfigureAwait(false);
-                    case "http://schemas.microsoft.com/appx/appinstaller/2018":
-                        return await AppInstallerConfig2018.FromStream(memStream).ConfigureAwait(false);
-                    default:
-                        throw new FormatException("Namespace " + doc.Root.Name.NamespaceName + " is not supported.");
-                }
+                case "http://schemas.microsoft.com/appx/appinstaller/2017":
+                    return await AppInstallerConfig2017.FromStream(memStream).ConfigureAwait(false);
+                case "http://schemas.microsoft.com/appx/appinstaller/2017/2":
+                    return await AppInstallerConfig20172.FromStream(memStream).ConfigureAwait(false);
+                case "http://schemas.microsoft.com/appx/appinstaller/2018":
+                    return await AppInstallerConfig2018.FromStream(memStream).ConfigureAwait(false);
+                default:
+                    throw new FormatException("Namespace " + doc.Root.Name.NamespaceName + " is not supported.");
             }
         }
     }

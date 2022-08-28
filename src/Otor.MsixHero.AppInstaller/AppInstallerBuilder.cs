@@ -20,7 +20,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
+using CsvHelper;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
@@ -107,6 +109,43 @@ namespace Otor.MsixHero.AppInstaller
 
         public PackageType MainPackageType { get; set; }
 
+
+        public async Task<string> Create(AppInstallerConfig config, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            await using var textWriter = new Utf8StringWriter();
+            var supportHelper = new AppInstallerFeatureSupportHelper();
+            var lowestNamespace = supportHelper.GetLowestCommonNamespace(config);
+
+            var xmlns = new XmlSerializerNamespaces();
+            xmlns.Add("", lowestNamespace);
+
+            await using var xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings
+            {
+                Indent = true,
+                NewLineOnAttributes = true,
+                OmitXmlDeclaration = false,
+                Encoding = Encoding.UTF8,
+                Async = true
+            });
+
+            switch (lowestNamespace)
+            {
+                case "http://schemas.microsoft.com/appx/appinstaller/2017":
+                    new XmlSerializer(typeof(AppInstallerConfig2017)).Serialize(xmlWriter, new AppInstallerConfig2017(config), xmlns);
+                    break;
+                case "http://schemas.microsoft.com/appx/appinstaller/2017/2":
+                    new XmlSerializer(typeof(AppInstallerConfig20172)).Serialize(xmlWriter, new AppInstallerConfig20172(config), xmlns);
+                    break;
+                case "http://schemas.microsoft.com/appx/appinstaller/2018":
+                    new XmlSerializer(typeof(AppInstallerConfig2018)).Serialize(xmlWriter, new AppInstallerConfig2018(config), xmlns);
+                    break;
+                default:
+                    throw new NotSupportedException(Resources.Localization.AppInstaller_Error_NotSupportedFeature);
+            }
+            
+            return textWriter.ToString();
+        }
+
         public async Task Create(AppInstallerConfig config, string file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var fileInfo = new FileInfo(file);
@@ -116,37 +155,14 @@ namespace Otor.MsixHero.AppInstaller
                 fileInfo.Directory.Create();
             }
 
-            using (var textWriter = new Utf8StringWriter())
+            if (File.Exists(file))
             {
-                var supportHelper = new AppInstallerFeatureSupportHelper();
-                var lowestNamespace = supportHelper.GetLowestCommonNamespace(config);
-                
-                var xmlns = new XmlSerializerNamespaces();
-                xmlns.Add("", lowestNamespace);
-
-                switch (lowestNamespace)
-                {
-                    case "http://schemas.microsoft.com/appx/appinstaller/2017":
-                        new XmlSerializer(typeof(AppInstallerConfig2017)).Serialize(textWriter, new AppInstallerConfig2017(config), xmlns);
-                        break;
-                    case "http://schemas.microsoft.com/appx/appinstaller/2017/2":
-                        new XmlSerializer(typeof(AppInstallerConfig20172)).Serialize(textWriter, new AppInstallerConfig20172(config), xmlns);
-                        break;
-                    case "http://schemas.microsoft.com/appx/appinstaller/2018":
-                        new XmlSerializer(typeof(AppInstallerConfig2018)).Serialize(textWriter, new AppInstallerConfig2018(config), xmlns);
-                        break;
-                    default:
-                        throw new NotSupportedException(Resources.Localization.AppInstaller_Error_NotSupportedFeature);
-                }
-
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-
-                var enc = new UTF8Encoding(false, false);
-                await File.WriteAllTextAsync(file, textWriter.ToString(), enc, cancellationToken).ConfigureAwait(false);
+                File.Delete(file);
             }
+
+            var text = await this.Create(config, cancellationToken).ConfigureAwait(false);
+            var enc = new UTF8Encoding(false, false);
+            await File.WriteAllTextAsync(file, text, enc, cancellationToken).ConfigureAwait(false);
         }
         
         public AppxPackageArchitecture MainPackageArchitecture { get; set; }

@@ -12,9 +12,10 @@
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Common.PackageSelector.View"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
-    <TabControl>
+    <TabControl SelectionChanged="Selector_OnSelectionChanged">
         <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Package}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabPackage}" />
@@ -86,7 +87,8 @@
                 <view1:OtherPackages DataContext="{Binding TabRelatedPackages}" />
             </AdornerDecorator>
         </TabItem>
-        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Options}">
+        <TabItem
+            Header="{localization:Loc Dialog_AppInstaller_Tab_Options}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptions}" />
             </b:Interaction.Behaviors>
@@ -135,9 +137,9 @@
                                 Style="{StaticResource LabelTextBlock}"
                                 Text="{localization:Loc Dialog_AppInstaller_PostUpdateDelay}" Margin="0 16 0 6" />
                             <StackPanel Orientation="Horizontal">
-                                <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80" />
+                                <xctk:IntegerUpDown Text="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" VerticalAlignment="Center" Width="80" />
                                 <TextBlock Text="{localization:Loc Dialog_AppInstaller_Unit_Hours}" VerticalAlignment="Center" Margin="5 0 0 0" />
-                            </StackPanel>
+                        </StackPanel>
                         </StackPanel>
 
                         <Border Height="1" Background="{StaticResource MsixHero.Brushes.Light3}" Margin="0 16 0 0" />
@@ -162,6 +164,69 @@
                     </StackPanel>
                 </AdornerDecorator>
             </ScrollViewer>
+        </TabItem>
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Advanced}">
+            <b:Interaction.Behaviors>
+                <validation:ValidationBehavior ValidatedChangeable="{Binding TabAdvanced}" />
+            </b:Interaction.Behaviors>
+            <StackPanel>
+                
+                <CheckBox IsChecked="{Binding EnablePadding.CurrentValue}" Content="{localization:Loc Dialog_AppInstaller_Tab_Advanced_EnablePadding}" />
+                <StackPanel Margin="22 6 0 6" IsEnabled="{Binding EnablePadding.CurrentValue}">
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="64" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock 
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            Margin="0 0 0 6"
+                            Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_CurrentSize}" />
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Grid.Row="0"
+                            Margin="0 0 0 6"
+                            Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_Padding}" />
+
+                        <StackPanel
+                            Grid.Row="1" 
+                            Grid.Column="0"
+                            Orientation="Horizontal" Margin="0 0 0 6">
+                            <TextBox IsReadOnly="True" Text="{Binding CurrentSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" VerticalAlignment="Center" Width="120" />
+                            <TextBlock Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_PaddingBytes}" VerticalAlignment="Center" Margin="5 0 0 0" />
+                        </StackPanel>
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Orientation="Horizontal" Margin="0 0 0 6">
+                            <xctk:IntegerUpDown Text="{Binding Padding.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" VerticalAlignment="Center" Width="120" />
+                            <TextBlock Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_PaddingBytes}" VerticalAlignment="Center" Margin="5 0 0 0" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_PaddingExplain1}"/>
+                    <TextBlock Style="{StaticResource LabelTextBlock}">
+                        <Hyperlink>
+                            <b:Interaction.Behaviors>
+                                <behaviors:HyperlinkClickBehavior Url="https://github.com/MicrosoftDocs/msix-docs/issues/188#issuecomment-947" />
+                            </b:Interaction.Behaviors>
+                            <Run Text="https://github.com/MicrosoftDocs/msix-docs/issues/188#issuecomment-947" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_PaddingExplain2}"/>
+                    <TextBlock Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialog_AppInstaller_Tab_Advanced_PaddingExplain3}"/>
+                </StackPanel>
+            </StackPanel>
         </TabItem>
     </TabControl>
 </UserControl>

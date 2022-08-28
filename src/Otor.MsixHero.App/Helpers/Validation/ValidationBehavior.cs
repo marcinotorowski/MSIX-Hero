@@ -79,20 +79,27 @@ namespace Otor.MsixHero.App.Helpers.Validation
 
         private void SetValues(IValidatedChangeable src)
         {
-            if (this.AssociatedObject == null)
+            if (Dispatcher.CheckAccess())
             {
-                return;
-            }
+                if (this.AssociatedObject == null)
+                {
+                    return;
+                }
 
-            if (src.IsValidated && src.DisplayValidationErrors)
-            {
-                ValidatedTabItem.SetIsValid(this.AssociatedObject, string.IsNullOrEmpty(src.ValidationMessage));
-                ValidatedTabItem.SetValidationMessage(this.AssociatedObject, src.ValidationMessage);
+                if (src.IsValidated && src.DisplayValidationErrors)
+                {
+                    ValidatedTabItem.SetIsValid(this.AssociatedObject, string.IsNullOrEmpty(src.ValidationMessage));
+                    ValidatedTabItem.SetValidationMessage(this.AssociatedObject, src.ValidationMessage);
+                }
+                else
+                {
+                    ValidatedTabItem.SetIsValid(this.AssociatedObject, true);
+                    ValidatedTabItem.SetValidationMessage(this.AssociatedObject, null);
+                }
             }
             else
             {
-                ValidatedTabItem.SetIsValid(this.AssociatedObject, true);
-                ValidatedTabItem.SetValidationMessage(this.AssociatedObject, null);
+                Dispatcher.BeginInvoke(() => this.SetValues(src));
             }
         }
     }
