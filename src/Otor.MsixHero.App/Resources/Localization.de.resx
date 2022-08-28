@@ -3793,10 +3793,10 @@
     <value>Mehr als {0} Dateien</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe1" xml:space="preserve">
-    <value>{0} und mehr als {1} andere Dateien</value>
+    <value>{0} und {1} andere Dateien</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe1Plus" xml:space="preserve">
-    <value>{0} und {1} andere Dateien</value>
+    <value>{0} und mehr als {1} andere Dateien</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe2Plus" xml:space="preserve">
     <value>{0}, {1} und mehr als {2} andere Dateien</value>

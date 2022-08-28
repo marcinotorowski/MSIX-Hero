@@ -3793,10 +3793,10 @@
     <value>Ponad {0} plików</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe1" xml:space="preserve">
-    <value>{0} oraz ponad {1} pozostałych plików</value>
+    <value>{0} oraz {1} pozostałych plików</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe1Plus" xml:space="preserve">
-    <value>{0} oraz {1} pozostałych plików</value>
+    <value>{0} oraz ponad {1} pozostałych plików</value>
   </data>
   <data name="PackageExpert_Files_Summary_FilesExe2Plus" xml:space="preserve">
     <value>{0}, {1} oraz ponad {2} pozostałych plików</value>

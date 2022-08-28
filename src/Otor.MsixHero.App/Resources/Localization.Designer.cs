@@ -8498,7 +8498,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} and more than {1} other files.
+        ///   Looks up a localized string similar to {0} and {1} other files.
         /// </summary>
         public static string PackageExpert_Files_Summary_FilesExe1 {
             get {
@@ -8507,7 +8507,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} and {1} other files.
+        ///   Looks up a localized string similar to {0} and more than {1} other files.
         /// </summary>
         public static string PackageExpert_Files_Summary_FilesExe1Plus {
             get {
@@ -8525,7 +8525,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}, {1} and {2}+ other files.
+        ///   Looks up a localized string similar to {0}, {1} and more than {2} other files.
         /// </summary>
         public static string PackageExpert_Files_Summary_FilesExe2Plus {
             get {
