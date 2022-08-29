@@ -33,7 +33,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
         public PackageInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation)
         {
             this._uacElevation = uacElevation;
-            this.Summary = new SummaryInstallationViewModel(navigation, uacElevation);
+            this.Summary = new SummaryInstallationViewModel(navigation, uacElevation, true);
 
             this.GoBack = new DelegateCommand(() =>
             {

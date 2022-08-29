@@ -17,6 +17,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Humanizer;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -32,13 +33,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
     {
         private readonly IUacElevation _uacElevation;
 
-        public SummaryInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation)
+        public SummaryInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation, bool preciseDate)
         {
             this._uacElevation = uacElevation;
+            this.PreciseDate = preciseDate;
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Installation));
         }
 
         public ICommand Details { get; }
+
+        public bool PreciseDate { get; }
 
         public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
@@ -49,7 +53,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             }
             else if (model.Source.InstallDate != default)
             {
-                this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, model.Source.InstallDate);
+                if (this.PreciseDate)
+                {
+                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, model.Source.InstallDate);
+                }
+                else
+                {
+                    var dateHumanized = model.Source.InstallDate.Humanize(false);
+                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, dateHumanized);
+                }
             }
             else
             {

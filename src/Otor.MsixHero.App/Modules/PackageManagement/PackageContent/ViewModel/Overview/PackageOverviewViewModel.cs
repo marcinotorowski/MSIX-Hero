@@ -55,7 +55,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         _loadPackageHandlers.Add(SummaryPackagingInformation = new SummaryPackagingInformationViewModel(navigation, prismServices));
         _loadPackageHandlers.Add(SummarySummarySignature = new SummarySignatureViewModel(navigation, interactionService, uacElevation));
         _loadPackageHandlers.Add(SummarySummaryDependencies = new SummaryDependenciesViewModel(navigation));
-        _loadPackageHandlers.Add(SummarySummaryInstallation = new SummaryInstallationViewModel(navigation, uacElevation));
+        _loadPackageHandlers.Add(SummarySummaryInstallation = new SummaryInstallationViewModel(navigation, uacElevation, false));
         _loadPackageHandlers.Add(SummaryFiles = new SummaryFilesViewModel(navigation));
         _loadPackageHandlers.Add(SummaryPsf = new SummaryPsfViewModel(navigation));
         _loadPackageHandlers.Add(SummaryRegistry = new SummaryRegistryViewModel(navigation));
