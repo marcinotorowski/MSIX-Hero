@@ -144,6 +144,36 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             return pkgs.FirstOrDefault();
         }
 
+        public async Task<InstalledPackage> GetInstalledPackageByFamilyName(string familyName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+            if (mode == PackageFindMode.Auto)
+            {
+                mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            }
+
+            Package found;
+
+            switch (mode)
+            {
+                case PackageFindMode.CurrentUser:
+                    found = await Task.Run(() => PackageManager.Value.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                    break;
+                case PackageFindMode.AllUsers:
+                    found = await Task.Run(() => PackageManager.Value.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            if (found == null)
+            {
+                return null;
+            }
+
+            return await this.GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
+        }
+
         private async Task<List<InstalledPackage>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<InstalledPackage>();

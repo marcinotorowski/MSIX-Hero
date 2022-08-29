@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -26,12 +27,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent
         public PackageContentHost(IEventAggregator eventAggregator,
             IInteractionService interactionService,
             IUacElevation uacElevation,
+            IAppxPackageQuery queryManager,
             IConfigurationService configurationService,
             PrismServices prismServices, 
             IAppxFileViewer fileViewer, 
             FileInvoker fileInvoker)
         {
-            this.DataContext = new PackageContentViewModel(interactionService, configurationService, eventAggregator, uacElevation, prismServices, fileViewer, fileInvoker);
+            this.DataContext = new PackageContentViewModel(interactionService, configurationService, queryManager, eventAggregator, uacElevation, prismServices, fileViewer, fileInvoker);
             this._context = RegionContext.GetObservableContext(this);
             this._context.PropertyChanged += this.OnPropertyChanged;
         }

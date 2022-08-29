@@ -19,6 +19,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
 
         public string Name => _model.Name;
 
+        public AppxPackageDependency Model => this._model;
+
         public string Publisher => _model.Publisher;
     }
 }

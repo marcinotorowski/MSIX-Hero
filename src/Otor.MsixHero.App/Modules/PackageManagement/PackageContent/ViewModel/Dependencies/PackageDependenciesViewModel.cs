@@ -1,30 +1,56 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies
 {
     public class PackageDependenciesViewModel : PackageLazyLoadingViewModel
     {
-        public PackageDependenciesViewModel(IPackageContentItemNavigation navigation)
+        public PackageDependenciesViewModel(
+            IPackageContentItemNavigation navigation, 
+            IAppxPackageQuery manager, 
+            IInteractionService interactionService,
+            PrismServices prismServices)
         {
             this.GoBack = new DelegateCommand(() =>
             {
                 navigation.SetCurrentItem(PackageContentViewType.Overview);
+            });
+
+            this.OpenDependency = new DelegateCommand<object>(p =>
+            {
+                ExceptionGuard.Guard(() =>
+                {
+                    var dep = (AppxPackageDependency)p;
+                    var familyName = AppxPackaging.GetPackageFamilyName(dep.Name, dep.Publisher);
+                    var pkg = manager.GetInstalledPackageByFamilyName(familyName).GetAwaiter().GetResult();
+
+                    var dialogOpener = new DialogOpener(prismServices, interactionService);
+                    dialogOpener.OpenMsix(new FileInfo(pkg.ManifestLocation));
+                });
             });
         }
         
         public override PackageContentViewType Type => PackageContentViewType.Dependencies;
         
         public ObservableCollection<SoftwareDependencyViewModel> SoftwareDependencies { get; private set; }
+
+        public ICommand OpenDependency { get; }
 
         public ObservableCollection<SystemDependencyViewModel> SystemDependencies { get; private set; }
 

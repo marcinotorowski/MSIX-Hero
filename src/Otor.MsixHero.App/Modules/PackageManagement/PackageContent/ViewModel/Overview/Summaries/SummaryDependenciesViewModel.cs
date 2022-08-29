@@ -35,6 +35,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public ICommand Details { get; }
 
+        public bool HasAny { get; private set; }
+
+        public int Count { get; private set; }
+
+        public string Summary { get; private set; }
+
         public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
             this.Count = model.OperatingSystemDependencies.Count + model.PackageDependencies.Count;
@@ -42,13 +48,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             if (model.OperatingSystemDependencies.Any())
             {
-                if (this.Count - 1 == 0)
+                if (this.Count == 1)
                 {
-                    this.Summary = model.OperatingSystemDependencies[0].Minimum.Name;
+                    this.Summary = FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum);
                 }
                 else
                 {
-                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, model.OperatingSystemDependencies[0].Minimum.Name, this.Count - 1);
+                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum), this.Count - 1);
                 }
             }
             else if (model.PackageDependencies.Any())
@@ -71,11 +77,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
             return Task.CompletedTask;
         }
-        
-        public bool HasAny { get; private set; }
-        
-        public int Count { get; private set; }
-        
-        public string Summary { get; private set; }
+
+        private static string FormatSystemDependency(AppxTargetOperatingSystem os)
+        {
+            if (string.IsNullOrEmpty(os.MarketingCodename))
+            {
+                return os.Name;
+            }
+
+            return $"{os.Name} ({os.MarketingCodename})";
+        }
     }
 }

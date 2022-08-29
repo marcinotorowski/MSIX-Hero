@@ -4099,4 +4099,7 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="Dashboard_MsixAndPackaging" xml:space="preserve">
     <value>MSIX i pakietowanie</value>
   </data>
+  <data name="PackageExpert_Dependency_Open" xml:space="preserve">
+    <value>Otwórz</value>
+  </data>
 </root>

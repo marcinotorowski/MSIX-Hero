@@ -17,8 +17,10 @@
         </cards:CardAction.Icon>
         <cards:CardAction.Content>
             <HeaderedContentControl 
-                Content="{Binding Summary}"
                 Style="{StaticResource CardHeader}">
+                <HeaderedContentControl.Content>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Summary}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
+                </HeaderedContentControl.Content>
                 <HeaderedContentControl.Header>
                     <TextBlock Tag="">
                         <controls:SimpleTextMarkup.Markup>

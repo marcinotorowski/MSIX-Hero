@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items"
              xmlns:windowsVersion="clr-namespace:Otor.MsixHero.App.Modules.Common.WindowsVersion"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance dependencies:PackageDependenciesViewModel}">
     <DockPanel VerticalAlignment="Top">
@@ -58,7 +59,11 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
             <DataTemplate DataType="{x:Type items:SoftwareDependencyViewModel}">
-                <cards:Card HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
+                <cards:Card 
+                    HorizontalContentAlignment="Stretch" 
+                    HorizontalContentRightAlignment="Right" 
+                    VerticalContentRightAlignment="Center"
+                    VerticalContentAlignment="Center">
                     <cards:Card.Icon>
                         <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDocumentLink}" />
                     </cards:Card.Icon>
@@ -72,12 +77,12 @@
                                 </TextBlock>
                             </HeaderedContentControl.Header>
                             <HeaderedContentControl.Content>
-                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" ToolTip="{Binding Publisher}" Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" TextWrapping="Wrap" ToolTip="{Binding Publisher}" Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" />
                             </HeaderedContentControl.Content>
                         </HeaderedContentControl>
                     </cards:Card.Content>
                     <cards:Card.ContentRight>
-                        <Button Margin="16 0 0 0" Style="{StaticResource CardButton}" Content="Open" VerticalAlignment="Center" />
+                        <Button Margin="16 0 0 0" Command="Open" CommandParameter="{Binding Model}" Style="{StaticResource CardButton}" Content="{localization:Loc PackageExpert_Dependency_Open}" />
                     </cards:Card.ContentRight>
                 </cards:Card>
             </DataTemplate>
@@ -105,6 +110,11 @@
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
+
+                <commands:RoutedCommandHandlers.Commands>
+                    <commands:RoutedCommandHandler Command="{Binding OpenDependency}" RoutedCommand="Open" />
+                </commands:RoutedCommandHandlers.Commands>
+
                 <Label 
                     Content="{localization:Loc PackageExpert_Dependencies_Family_Header}" 
                     Margin="0 8 0 0" Style="{StaticResource FormLabelThin}" />

@@ -4099,4 +4099,7 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="Dashboard_MsixAndPackaging" xml:space="preserve">
     <value>MSIX und Paketierung</value>
   </data>
+  <data name="PackageExpert_Dependency_Open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
 </root>

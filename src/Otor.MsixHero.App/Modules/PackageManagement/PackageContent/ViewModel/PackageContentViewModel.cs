@@ -21,6 +21,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
@@ -40,6 +41,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
 
         public PackageContentViewModel(IInteractionService interactionService,
             IConfigurationService configurationService,
+            IAppxPackageQuery queryManager,
             IEventAggregator eventAggregator,
             IUacElevation uacElevation,
             PrismServices prismServices,
@@ -54,7 +56,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
             var packageApplications = new PackageApplicationsViewModel(this);
             var packagePsf = new PackagePsfViewModel(this);
-            var packageDependencies = new PackageDependenciesViewModel(this);
+            var packageDependencies = new PackageDependenciesViewModel(this, queryManager, interactionService, prismServices);
             var packageInstallation = new PackageInstallationViewModel(this, uacElevation);
             var packageFiles = new PackageFilesViewModel(this, fileViewer, fileInvoker);
             var packageRegistry = new PackageRegistryViewModel(this);
