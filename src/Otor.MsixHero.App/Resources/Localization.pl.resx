@@ -1876,13 +1876,13 @@
     <value>APPX</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Burn" xml:space="preserve">
-    <value>Burn</value>
+    <value>Plik wykonywalny (WIX/Burn)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_EXE" xml:space="preserve">
-    <value>Plik wykonawczy (ogólny)</value>
+    <value>Plik wykonywalny (ogólny)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Inno" xml:space="preserve">
-    <value>Plik wykonawczy (Inno Setup)</value>
+    <value>Plik wykonywalny (Inno Setup)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_MSI" xml:space="preserve">
     <value>MSI (Instalator Windows)</value>
@@ -1894,13 +1894,13 @@
     <value>Nieznany / niepodany</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Nsis" xml:space="preserve">
-    <value>Plik wykonawczy (NSIS)</value>
+    <value>Plik wykonywalny (NSIS)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_PWA" xml:space="preserve">
     <value>Aplikacja progresywna PWA</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Wix" xml:space="preserve">
-    <value>Plik wykonawczy (WIX)</value>
+    <value>MSI (WIX)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Zip" xml:space="preserve">
     <value>Archiwum ZIP</value>

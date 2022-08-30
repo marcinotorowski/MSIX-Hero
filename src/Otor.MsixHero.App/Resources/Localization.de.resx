@@ -2110,13 +2110,13 @@
     <value>Installer-Typ</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Burn" xml:space="preserve">
-    <value>Burn</value>
+    <value>Ausführbare Datei (WIX/Burn)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_EXE" xml:space="preserve">
-    <value>Ausführbar (generisch)</value>
+    <value>Ausführbare Datei (allgemein)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Inno" xml:space="preserve">
-    <value>Ausführbar (Inno Setup)</value>
+    <value>Ausführbare Datei (Inno Setup)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_MSI" xml:space="preserve">
     <value>MSI (Windows Installer)</value>
@@ -2128,13 +2128,13 @@
     <value>Unbekannt / nicht angegeben</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Nsis" xml:space="preserve">
-    <value>Ausführbar (NSIS)</value>
+    <value>Ausführbare Datei (NSIS)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_PWA" xml:space="preserve">
     <value>Progressive Webanwendung PWA</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Wix" xml:space="preserve">
-    <value>Ausführbar (WIX Bootstrapper)</value>
+    <value>MSI (WIX)</value>
   </data>
   <data name="Dialogs_Winget_LicenseUrl" xml:space="preserve">
     <value>Link zur Lizenzseite</value>

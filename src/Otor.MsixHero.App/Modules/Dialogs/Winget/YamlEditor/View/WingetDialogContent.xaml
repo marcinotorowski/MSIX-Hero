@@ -203,13 +203,13 @@
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msix}" Content="{localization:Loc Dialogs_Winget_InstallerType_MSIX}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Appx}" Content="{localization:Loc Dialogs_Winget_InstallerType_APPX}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msi}" Content="{localization:Loc Dialogs_Winget_InstallerType_MSI}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Wix}" Content="{localization:Loc Dialogs_Winget_InstallerType_Wix}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Exe}" Content="{localization:Loc Dialogs_Winget_InstallerType_EXE}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.InnoSetup}" Content="{localization:Loc Dialogs_Winget_InstallerType_Inno}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Nullsoft}" Content="{localization:Loc Dialogs_Winget_InstallerType_Nsis}" />
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Wix}" Content="{localization:Loc Dialogs_Winget_InstallerType_Wix}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Burn}" Content="{localization:Loc Dialogs_Winget_InstallerType_Burn}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.ProgressiveWebApp}" Content="{localization:Loc Dialogs_Winget_InstallerType_PWA}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Zip}" Content="{localization:Loc Dialogs_Winget_InstallerType_Zip}" />
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Burn}" Content="{localization:Loc Dialogs_Winget_InstallerType_Burn}" />
                                         <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.None}" Content="{localization:Loc Dialogs_Winget_InstallerType_None}" />
                                     </ComboBox>
                                 </StackPanel>

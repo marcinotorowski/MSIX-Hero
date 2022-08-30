@@ -6667,7 +6667,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Burn.
+        ///   Looks up a localized string similar to Executable (WIX/Burn).
         /// </summary>
         public static string Dialogs_Winget_InstallerType_Burn {
             get {
@@ -6739,7 +6739,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Executable (WIX Bootstrapper).
+        ///   Looks up a localized string similar to MSI (WIX).
         /// </summary>
         public static string Dialogs_Winget_InstallerType_Wix {
             get {

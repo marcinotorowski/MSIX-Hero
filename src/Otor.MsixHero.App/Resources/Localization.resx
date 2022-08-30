@@ -1867,7 +1867,7 @@
     <value>APPX</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Burn" xml:space="preserve">
-    <value>Burn</value>
+    <value>Executable (WIX/Burn)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_EXE" xml:space="preserve">
     <value>Executable (generic)</value>
@@ -1891,7 +1891,7 @@
     <value>Progressive Web App</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Wix" xml:space="preserve">
-    <value>Executable (WIX Bootstrapper)</value>
+    <value>MSI (WIX)</value>
   </data>
   <data name="Dialogs_Winget_InstallerType_Zip" xml:space="preserve">
     <value>ZIP file</value>
