@@ -23,14 +23,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 public class SelectableInstalledPackageViewModel : InstalledPackageViewModel
 {
     private readonly IMsixHeroCommandExecutor _commandExecutor;
-    private bool _isSelected;
     private bool _hasStar;
+    private bool _isVisible;
 
-    public SelectableInstalledPackageViewModel(InstalledPackage package, IMsixHeroCommandExecutor commandExecutor, bool isSelected = false, bool star = false) : base(package)
+    public SelectableInstalledPackageViewModel(InstalledPackage package, IMsixHeroCommandExecutor commandExecutor, bool star = false) : base(package)
     {
         this._commandExecutor = commandExecutor;
-        this._isSelected = isSelected;
         this._hasStar = star;
+    }
+
+    public bool IsVisible
+    {
+        get => this._isVisible;
+        set => this.SetField(ref this._isVisible, value);
     }
 
     public bool HasStar
@@ -48,28 +53,6 @@ public class SelectableInstalledPackageViewModel : InstalledPackageViewModel
                 {
                     this._commandExecutor.Invoke(this, new UnstarPackageCommand(this.PackageFullName));
                 }
-            }
-        }
-    }
-
-    public bool IsSelected
-    {
-        get => this._isSelected;
-        set
-        {
-            if (!this.SetField(ref _isSelected, value))
-            {
-                return;
-            }
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (value)
-            {
-                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.PackageFullName, SelectPackagesCommand.PackageSelectionMode.Add));
-            }
-            else
-            {
-                this._commandExecutor.Invoke(this, new SelectPackagesCommand(this.PackageFullName, SelectPackagesCommand.PackageSelectionMode.Remove));
             }
         }
     }

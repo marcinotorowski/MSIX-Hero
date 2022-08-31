@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     }
                 }
 
-                var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToList();
+                var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToList();
                 
                 var results = await manager.GetInstalledPackages(mode, cancellationToken, context).ConfigureAwait(false);
                 
@@ -112,7 +112,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 // Just in case, make sure to remove stuff from the selection if the list of packages does not have it anymore.
                 for (var i = selected.Count - 1; i >= 0; i--)
                 {
-                    if (this.commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.ManifestLocation == selected[i]))
+                    if (this.commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.PackageFullName == selected[i]))
                     {
                         continue;
                     }
