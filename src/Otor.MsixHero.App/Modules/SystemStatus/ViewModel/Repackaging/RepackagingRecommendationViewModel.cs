@@ -24,7 +24,6 @@ using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
-using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
@@ -44,6 +43,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
             this.AutoDownloadRecommendation = autoDownloadRecommendation;
             this.Items = new ObservableCollection<ServiceRecommendationViewModel>();
             this.AutoDownloadRecommendation.PropertyChanged += this.AutoDownloadRecommendationOnPropertyChanged;
+            this.IsLoading = true;
         }
 
         private void AutoDownloadRecommendationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -65,7 +65,6 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
             this.IsLoading = true;
             try
             {
-                await Task.Delay(1200, cancellationToken).ConfigureAwait(false);
                 var list = await Task.Run(() => this.ServiceAdvisor.Advise(AdvisorMode.ForPackaging).ToList(), cancellationToken).ConfigureAwait(true);
 
                 var newItems = new ObservableCollection<ServiceRecommendationViewModel>();

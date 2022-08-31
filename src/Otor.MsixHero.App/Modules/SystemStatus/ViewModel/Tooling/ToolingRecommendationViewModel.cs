@@ -51,7 +51,6 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Tooling
 
             try
             {
-                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                 var thirdParty = await Task.Run(() => this.ThirdPartyDetector.ProvideApps().ToList(), cancellationToken).ConfigureAwait(false);
 
                 this.Items = new ObservableCollection<DiscoveredAppViewModel>();

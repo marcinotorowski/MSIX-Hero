@@ -214,7 +214,9 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type developerMode:DeveloperAndSideloadingRecommendationViewModel}">
-                            <cards:Card VerticalContentAlignment="Stretch">
+                            <cards:Card
+                                IsLoading="{Binding IsLoading}"
+                                VerticalContentAlignment="Stretch">
                                 <cards:Card.Icon>
                                     <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                         <Canvas Width="32" Height="32">
@@ -262,7 +264,9 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type developerMode:DeveloperModeRecommendationViewModel}">
-                            <cards:Card VerticalContentAlignment="Stretch">
+                            <cards:Card 
+                                IsLoading="{Binding IsLoading}"
+                                VerticalContentAlignment="Stretch">
                                 <cards:Card.Icon>
                                     <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                         <Canvas Width="32" Height="32">
@@ -284,7 +288,9 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type developerMode:SideloadingRecommendationViewModel}">
-                            <cards:Card VerticalContentAlignment="Stretch">
+                            <cards:Card 
+                                IsLoading="{Binding IsLoading}"
+                                VerticalContentAlignment="Stretch">
                                 <cards:Card.Icon>
                                     <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                         <Canvas Width="32" Height="32">
@@ -313,7 +319,8 @@
 
                         <DataTemplate DataType="{x:Type repackaging:RepackagingRecommendationViewModel}">
                             <cards:CardExpander 
-                                    Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                                IsLoading="{Binding IsLoading}"
+                                Margin="0 0 0 8" VerticalContentAlignment="Stretch">
                                 <cards:CardExpander.Icon>
                                     <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                         <Canvas Width="32" Height="32">
@@ -467,7 +474,9 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type tooling:ToolingRecommendationViewModel}">
-                            <cards:CardExpander Margin="0 0 0 8" VerticalContentAlignment="Stretch">
+                            <cards:CardExpander
+                                IsLoading="{Binding IsLoading}"
+                                Margin="0 0 0 8" VerticalContentAlignment="Stretch">
                                 <cards:CardExpander.Icon>
                                     <Viewbox Width="24" Height="24" Margin="0 0 8 0" VerticalAlignment="Center">
                                         <Canvas Width="32" Height="32">
