@@ -23,15 +23,41 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     {
         public static string GetSdkPath(string localName, string baseDirectory = null)
         {
+            return GetSdkPath(localName, IntPtr.Size == 4, baseDirectory);
+        }
+
+        public static string GetSdkPath(string localName, bool use32Bit, string baseDirectory = null)
+        {
             // ReSharper disable once AssignNullToNotNullAttribute
             var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "sdk");
-            var path = Path.Combine(baseDir, IntPtr.Size == 4 ? "x86" : "x64", localName);
+            var path = Path.Combine(baseDir, use32Bit ? "x86" : "x64", localName);
             if (!File.Exists(path))
             {
                 path = Path.Combine(baseDir, localName);
                 if (!File.Exists(path))
                 {
                     throw new FileNotFoundException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_MissingSdk_Format, path), path);
+                }
+            }
+
+            return path;
+        }
+        public static string GetPsfDirectory(string baseDirectory = null)
+        {
+            return GetPsfDirectory(IntPtr.Size == 4, baseDirectory);
+        }
+
+        public static string GetPsfDirectory(bool use32Bit, string baseDirectory = null)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "psf");
+            var path = Path.Combine(baseDir, use32Bit ? "x86" : "x64");
+            if (!Directory.Exists(path))
+            {
+                path = Path.Combine(baseDir);
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_MissingSdk_Format, path));
                 }
             }
 

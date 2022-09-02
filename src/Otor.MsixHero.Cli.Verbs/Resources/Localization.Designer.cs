@@ -295,6 +295,46 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Identifiers of applications, for which PSF runtime will be used. Simple wildcards (* and ?) and regular expressions (/&lt;regex&gt;/) are also supported. If left empty or omitted, all win32 applications will be considered.
+        ///
+        ///Parameters applicationIds and fileNames are mutually exclusive..
+        /// </summary>
+        public static string CLI_Verbs_Edit_InjectPsf_ApplicationIds {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_Edit_InjectPsf_ApplicationIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start file names of applications, for which PSF runtime will be used. Simple wildcards (* and ?) and regular expressions (/&lt;regex&gt;/) are also supported. If left empty or omitted, all win32 applications will be considered.
+        ///
+        ///Parameters applicationIds and fileNames are mutually exclusive..
+        /// </summary>
+        public static string CLI_Verbs_Edit_InjectPsf_FileNames {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_Edit_InjectPsf_FileNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If set, this allows replacing existing PSF framework. By default, if PSF runtime is already present in the package, no replacement will be done..
+        /// </summary>
+        public static string CLI_Verbs_Edit_InjectPsf_Force {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_Edit_InjectPsf_Force", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Injects PSF runtime and readdress entry points of specified or all applications..
+        /// </summary>
+        public static string CLI_Verbs_Edit_InjectPsf_VerbName {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_Edit_InjectPsf_VerbName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File path to a file containing the instructions to execute. If not provided, the user can provide the required content from the console..
         /// </summary>
         public static string CLI_Verbs_Edit_List_Prop_File {

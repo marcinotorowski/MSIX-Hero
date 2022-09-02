@@ -22,9 +22,11 @@ using System.Xml.Linq;
 using Otor.MsixHero.Appx.Editor.Commands;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Files;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Commands.Concrete.Psf;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Helpers;
 
@@ -101,6 +103,12 @@ namespace Otor.MsixHero.Appx.Editor
                 case SetBuildMetaData addBuildMetaData:
                 {
                     await new SetBuildMetaDataExecutor(this._manifest).Execute(addBuildMetaData, cancellationToken).ConfigureAwait(false);
+                    break;
+                }
+
+                case InjectPsf injectPsf:
+                {
+                    await new InjectPsfExecutor(this._directoryInfo).Execute(injectPsf, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 

@@ -1,15 +1,45 @@
-﻿using System.Linq;
+﻿// MSIX Hero
+// Copyright (C) 2022 Marcin Otorowski
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// Full notice:
+// https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
+
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
+using Otor.MsixHero.Cli;
+using Otor.MsixHero.Cli.Executors.Edit.Psf;
+using Otor.MsixHero.Cli.Verbs.Edit.Psf;
 
 namespace Otor.MsixHero.Tests.Appx.Editing
 {
     public class ManifestEditingTests
     {
+        [Test]
+        public async Task InjectPsf()
+        {
+            var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
+            var injectPsf = new InjectPsfEditVerb();
+            var executor = new InjectPsfVerbExecutor(msixHeroPackage.FullName, injectPsf, new ConsoleImpl(Console.Out, Console.Error));
+            await executor.Execute();
+        }
+
         [Test]
         public async Task AddSimpleMetaDataToEmptyPackage()
         {
