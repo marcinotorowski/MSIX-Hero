@@ -1,3 +1,21 @@
+# 3.0.0 (planned)
+Feature highlights:
+* New UI with card-based layout
+* Multi-language support (English, German and Polish in this release)
+* Ability to pin apps in the list view
+* Improved package overview sidebar
+  * More human friendly display of PSF content
+  * PSF content now shows more details, including the content of launch scripts and custom JSON configuration
+  * Build meta-data is now displayed
+  * Added detection of Host ID
+  * File count and total size is now displayed
+  * Ability to open dependency packages
+* Function buttons (Start app, open installaction folder) are now also displayed in package dialog
+* Restyled Event viewer
+* New tab ("Advanced") in the app installer editor
+* Internal notifications using Windows style
+* General improvements, stability and bug fixes
+
 # 2.3.0
 Feature highlights:
 * New command line verb ```edit``` for unattended MSIX editing. (#78)
