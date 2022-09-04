@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -167,6 +166,13 @@ namespace Otor.MsixHero.Infrastructure.Services
             var result = new Configuration.Configuration();
             result.Packages.Sidebar.Visible = true;
 
+            result.AppAttach = new AppAttachConfiguration
+            {
+                ExtractCertificate = true,
+                GenerateScripts = true,
+                JunctionPoint = "C:\\temp\\msix-app-attach",
+                UseMsixMgrForVhdCreation = true
+            };
 
             result.Packages.StarredApps = new List<string>
             {
@@ -194,6 +200,10 @@ namespace Otor.MsixHero.Infrastructure.Services
             }
 
             if (result.AppAttach == null)
+            {
+                result.AppAttach = defaults.AppAttach;
+            }
+            else if (result.AppAttach.JunctionPoint == null)
             {
                 result.AppAttach = defaults.AppAttach;
             }

@@ -23,7 +23,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
     public class DirectoryInfoFileReaderAdapter : IAppxDiskFileReader
     {
-        private readonly IAppxFileReader adapter;
+        private readonly IAppxFileReader _adapter;
 
         public DirectoryInfoFileReaderAdapter(DirectoryInfo appxManifestFolder)
         {
@@ -43,11 +43,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     throw new ArgumentException(Resources.Localization.Packages_Error_NoPackageInFolder, nameof(appxManifestFolder));
                 }
 
-                adapter = new FileInfoFileReaderAdapter(appxManifest);
+                _adapter = new FileInfoFileReaderAdapter(appxManifest);
             }
             else
             {
-                adapter = new FileInfoFileReaderAdapter(Path.Combine(appxManifestFolder.FullName, FileConstants.AppxManifestFile));
+                _adapter = new FileInfoFileReaderAdapter(Path.Combine(appxManifestFolder.FullName, FileConstants.AppxManifestFile));
             }
         }
 
@@ -64,22 +64,22 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return null;
             }
 
-            return this.adapter.GetFile(filePath);
+            return this._adapter.GetFile(filePath);
         }
 
         public IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, CancellationToken cancellationToken = default)
         {
-            return this.adapter.EnumerateDirectories(rootRelativePath, cancellationToken);
+            return this._adapter.EnumerateDirectories(rootRelativePath, cancellationToken);
         }
 
         public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default)
         {
-            return this.adapter.EnumerateFiles(rootRelativePath, wildcard, searchOption, cancellationToken);
+            return this._adapter.EnumerateFiles(rootRelativePath, wildcard, searchOption, cancellationToken);
         }
 
         public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
         {
-            return this.adapter.EnumerateFiles(rootRelativePath, cancellationToken);
+            return this._adapter.EnumerateFiles(rootRelativePath, cancellationToken);
         }
 
         public bool FileExists(string filePath)
@@ -89,7 +89,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return false;
             }
 
-            return this.adapter.FileExists(filePath);
+            return this._adapter.FileExists(filePath);
         }
 
         public Stream GetResource(string resourceFilePath)
@@ -99,12 +99,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return null;
             }
 
-            return this.adapter.GetResource(resourceFilePath);
+            return this._adapter.GetResource(resourceFilePath);
         }
 
         void IDisposable.Dispose()
         {
-            this.adapter.Dispose();
+            this._adapter.Dispose();
         }
     }
 }

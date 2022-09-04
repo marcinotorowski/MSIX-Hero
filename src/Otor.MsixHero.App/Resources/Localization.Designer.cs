@@ -1645,15 +1645,6 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Advanced.
-        /// </summary>
-        public static string Dialog_AppInstaller_Tab_Advanced {
-            get {
-                return ResourceManager.GetString("Dialog_AppInstaller_Tab_Advanced", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Current .appinstaller file size:.
         /// </summary>
         public static string Dialog_AppInstaller_Tab_Advanced_CurrentSize {
@@ -1920,6 +1911,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialog_AppInstaller_WhenNewVersionAvailable_SilentUpdate {
             get {
                 return ResourceManager.GetString("Dialog_AppInstaller_WhenNewVersionAvailable_SilentUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string Dialog_Tab_Advanced {
+            get {
+                return ResourceManager.GetString("Dialog_Tab_Advanced", resourceCulture);
             }
         }
         
@@ -2221,11 +2221,20 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More information and samples for testing.
+        ///   Looks up a localized string similar to MSIX app attach and samples.
         /// </summary>
         public static string Dialogs_AppAttach_GenScripts_HelpText {
             get {
                 return ResourceManager.GetString("Dialogs_AppAttach_GenScripts_HelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Junction point.
+        /// </summary>
+        public static string Dialogs_AppAttach_JunctionPoint {
+            get {
+                return ResourceManager.GetString("Dialogs_AppAttach_JunctionPoint", resourceCulture);
             }
         }
         

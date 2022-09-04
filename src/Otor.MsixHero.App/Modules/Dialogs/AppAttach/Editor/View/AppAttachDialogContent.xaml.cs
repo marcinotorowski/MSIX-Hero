@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,15 +28,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
         public AppAttachDialogContent()
         {
             InitializeComponent();
-        }
-        private void HyperlinkMsdn_OnClick(object sender, RoutedEventArgs e)
-        {
-            var psi = new ProcessStartInfo("https://msixhero.net/redirect/msix-app-attach/prepare-ps")
-            {
-                UseShellExecute = true
-            };
-
-            Process.Start(psi);
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)

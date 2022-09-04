@@ -44,5 +44,8 @@ namespace Otor.MsixHero.Cli.Verbs
 
         [Option('e', "extractCert", HelpText = "CLI_Verbs_AppAttach_Prop_ExtractCertificate", Required = false, ResourceType = typeof(Localization))]
         public bool ExtractCertificate { get; set; }
+
+        [Option('j', "junctionPoint", HelpText = "CLI_Verbs_AppAttach_Prop_JunctionPoint", Required = false, ResourceType = typeof(Localization))]
+        public string JunctionPoint { get; set; }
     }
 }

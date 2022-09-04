@@ -97,6 +97,15 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sets the folder to the symbolic link in the JSON file. This parameter can only be used while using the --createScripts / -c switch..
+        /// </summary>
+        public static string CLI_Verbs_AppAttach_Prop_JunctionPoint {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_AppAttach_Prop_JunctionPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File name for the output file. If left empty, the MSIX file name without extension will be used. This parameter is not used in case of multiple input packages..
         /// </summary>
         public static string CLI_Verbs_AppAttach_Prop_Name {

@@ -27,6 +27,7 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.MountVol;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -38,30 +39,50 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper();
         
         private static readonly LogSource Logger = new();        
-        private readonly ISigningManager signingManager;
-        private readonly IConfigurationService configurationService;
+        private readonly ISigningManager _signingManager;
+        private readonly IConfigurationService _configurationService;
         
         public AppAttachManager(ISigningManager signingManager, IConfigurationService configurationService) : this(configurationService)
         {
-            this.signingManager = signingManager;
+            this._signingManager = signingManager;
         }
 
         public AppAttachManager(IConfigurationService configurationService)
         {
-            this.configurationService = configurationService;
+            this._configurationService = configurationService;
         }
 
-        public Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool extractCertificate, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
+        private AppAttachNewVolumeOptions CoerceOptions(AppAttachNewVolumeOptions options)
         {
-            return this.CreateVolume(packagePath, volumePath, vhdSize, AppAttachVolumeType.Vhd, extractCertificate, generateScripts, cancellationToken, progressReporter);
+            if (options == null)
+            {
+                options = new AppAttachNewVolumeOptions();
+            }
+
+            var defaultConfig = this._configurationService.GetCurrentConfiguration().AppAttach ?? new AppAttachConfiguration();
+            
+            if (options.GenerateScripts == null)
+            {
+                options.GenerateScripts = defaultConfig.GenerateScripts;
+            }
+            
+            if (options.ExtractCertificate == null)
+            {
+                options.GenerateScripts = defaultConfig.ExtractCertificate;
+            }
+
+            if (options.JunctionPoint == null)
+            {
+                options.JunctionPoint = defaultConfig.JunctionPoint;
+            }
+
+            return options;
         }
 
         public async Task CreateVolumes(
             IReadOnlyCollection<string> packagePaths, 
-            string volumeDirectory, 
-            AppAttachVolumeType type = AppAttachVolumeType.Vhd,
-            bool extractCertificate = false, 
-            bool generateScripts = true, 
+            string volumeDirectory,
+            AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null)
         {
@@ -70,7 +91,9 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 throw new ArgumentNullException(nameof(volumeDirectory));
             }
 
-            var diskExtension = type.ToString("G").ToLowerInvariant();
+            options = this.CoerceOptions(options);
+
+            var diskExtension = options.Type.ToString("G").ToLowerInvariant();
             
             if (!Directory.Exists(volumeDirectory))
             {
@@ -81,7 +104,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             var allPackagesCount = packagePaths.Count;
             var currentPackage = 0;
 
-            var volumeCreationStrategy = await this.GetVolumeCreationStrategy(type).ConfigureAwait(false);
+            var volumeCreationStrategy = await this.GetVolumeCreationStrategy(options.Type).ConfigureAwait(false);
 
             IAppAttachVolumeCreationStrategyInitialization initialization = null;
             try
@@ -90,7 +113,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 
                 foreach (var packagePath in packagePaths)
                 {
-                    var currentVolumeDirectory = type == AppAttachVolumeType.Cim ? Path.Combine(volumeDirectory, Path.GetFileNameWithoutExtension(packagePath)) : volumeDirectory;
+                    var currentVolumeDirectory = options.Type == AppAttachVolumeType.Cim ? Path.Combine(volumeDirectory, Path.GetFileNameWithoutExtension(packagePath)) : volumeDirectory;
 
                     var packageProgressReporter = new RangeProgress(progressReporter, (int)(currentPackage * 80.0 / allPackagesCount), (int)((currentPackage + 1) * 80.0 / allPackagesCount));
                     currentPackage++;
@@ -115,17 +138,17 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                     await volumeCreationStrategy.CreateVolume(packagePath, volumeFileInfo.FullName, null, cancellationToken, packageProgressReporter).ConfigureAwait(false);
 
-                    if (extractCertificate)
+                    if (options.ExtractCertificate == true)
                     {
                         packageProgressReporter.Report(new ProgressData(100, string.Format(Resources.Localization.Packages_ExtractingCertFrom_Format, Path.GetFileName(packagePath))));
                         cancellationToken.ThrowIfCancellationRequested();
 
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        await this.signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
+                        await this._signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
                     }
                 }
 
-                if (type == AppAttachVolumeType.Cim)
+                if (options.Type == AppAttachVolumeType.Cim)
                 {
                     // Currently JSON and PS1 are only supported for VHD(X)…
                 }
@@ -133,7 +156,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 {
                     var jsonData = new List<JsonData>();
 
-                    if (generateScripts)
+                    if (options.GenerateScripts == true)
                     {
                         progressReporter?.Report(new ProgressData(90, Resources.Localization.Packages_AppAttach_CreatingScripts));
                         await CreateScripts(volumeDirectory, cancellationToken).ConfigureAwait(false);
@@ -146,7 +169,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                         var volumeGuid = volumeData.Item1;
                         var volumeMsixFolderName = volumeData.Item2;
 
-                        jsonData.Add(new JsonData(Path.GetFileName(volumePath), Path.GetFileNameWithoutExtension(volumePath), volumeGuid, volumeMsixFolderName));
+                        jsonData.Add(new JsonData(Path.GetFileName(volumePath), Path.GetFileNameWithoutExtension(volumePath), volumeGuid, volumeMsixFolderName, options.JunctionPoint ?? "C:\\temp\\msix-app-attach"));
                     }
 
                     var jsonPath = Path.Combine(volumeDirectory, "app-attach.json");
@@ -164,9 +187,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             string packagePath,
             string volumePath,
             uint size,
-            AppAttachVolumeType type = AppAttachVolumeType.Vhd,
-            bool extractCertificate = false,
-            bool generateScripts = true,
+            AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null)
         {
@@ -187,6 +208,8 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath), packagePath);
             }
 
+            options = this.CoerceOptions(options);
+
             var volumeFileInfo = new FileInfo(volumePath);
             if (volumeFileInfo.Directory != null && !volumeFileInfo.Directory.Exists)
             {
@@ -194,7 +217,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 volumeFileInfo.Directory.Create();
             }
 
-            var volumeCreationStrategy = await this.GetVolumeCreationStrategy(type);
+            var volumeCreationStrategy = await this.GetVolumeCreationStrategy(options.Type);
             
             if (File.Exists(volumePath))
             {
@@ -211,17 +234,17 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                 await volumeCreationStrategy.CreateVolume(packagePath, volumePath, size, cancellationToken).ConfigureAwait(false);
 
-                if (extractCertificate)
+                if (options.ExtractCertificate == true)
                 {
                     progressReporter?.Report(new ProgressData(80, Resources.Localization.Packages_ExtractingCert));
                     
                     cancellationToken.ThrowIfCancellationRequested();
 
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    await this.signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
+                    await this._signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
                 }
 
-                if (type == AppAttachVolumeType.Cim)
+                if (options.Type == AppAttachVolumeType.Cim)
                 {
                     // Currently JSON and PS1 are only supported for VHD(X)…
                 }
@@ -231,7 +254,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                     var volumeGuid = volumeData.Item1;
                     var volumeMsixFolderName = volumeData.Item2;
 
-                    if (generateScripts)
+                    if (options.GenerateScripts == true)
                     {
                         await CreateScripts(volumeFileInfo.Directory?.FullName, cancellationToken).ConfigureAwait(false);
                     }
@@ -241,7 +264,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                         Path.Combine(Path.GetDirectoryName(volumePath), "app-attach.json"),
                         new[]
                         {
-                            new JsonData(volumeFileInfo.Name, Path.GetFileNameWithoutExtension(packagePath), volumeGuid, volumeMsixFolderName)
+                            new JsonData(volumeFileInfo.Name, Path.GetFileNameWithoutExtension(packagePath), volumeGuid, volumeMsixFolderName, options.JunctionPoint)
                         },
                         cancellationToken).ConfigureAwait(false);
                 }
@@ -261,7 +284,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             }
             else
             {
-                var config = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+                var config = await this._configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
                 if (config.AppAttach?.UseMsixMgrForVhdCreation == true)
                 {
                     // Forced MSIXMGR by the user configuration (non-default)
@@ -334,7 +357,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                     ["parentFolder"] = item.RootName,
                     ["packageName"] = item.PackageFolderName,
                     ["volumeGuid"] = item.VolumeGuid.ToString("D"),
-                    ["msixJunction"] = @"C:\temp\AppAttach"
+                    ["msixJunction"] = item.JunctionDir
                 };
 
                 jsonArray.Add(jsonObject);
@@ -400,18 +423,25 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         
         private struct JsonData
         {
-            public JsonData(string vhdFileName, string rootName, Guid volumeGuid, string packageFolderName)
+            public JsonData(
+                string vhdFileName, 
+                string rootName, 
+                Guid volumeGuid, 
+                string packageFolderName,
+                string junctionDir)
             {
                 this.VhdFileName = vhdFileName;
                 this.RootName = rootName;
                 this.VolumeGuid = volumeGuid;
                 this.PackageFolderName = packageFolderName;
+                this.JunctionDir = junctionDir;
             }
 
             public string VhdFileName;
             public string RootName;
             public Guid VolumeGuid;
             public string PackageFolderName;
+            public string JunctionDir;
         }
     }
 }

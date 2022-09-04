@@ -165,7 +165,7 @@
                 </AdornerDecorator>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Advanced}">
+        <TabItem Header="{localization:Loc Dialog_Tab_Advanced}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabAdvanced}" />
             </b:Interaction.Behaviors>

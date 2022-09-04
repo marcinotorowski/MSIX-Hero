@@ -30,11 +30,11 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class AppAttachVerbExecutor : VerbExecutor<AppAttachVerb>
     {
-        private readonly IAppAttachManager appAttachManager;
+        private readonly IAppAttachManager _appAttachManager;
 
         public AppAttachVerbExecutor(AppAttachVerb verb, IAppAttachManager appAttachManager, IConsole console) : base(verb, console)
         {
-            this.appAttachManager = appAttachManager;
+            this._appAttachManager = appAttachManager;
         }
 
         public override async Task<int> Execute()
@@ -67,15 +67,24 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             
             try
             {
+                var options = new AppAttachNewVolumeOptions
+                {
+                    Type = this.Verb.FileType,
+                    ExtractCertificate = this.Verb.ExtractCertificate,
+                    GenerateScripts = this.Verb.CreateScript,
+                    JunctionPoint = this.Verb.JunctionPoint
+                };
+
                 if (this.Verb.Package.Count() == 1)
                 {
                     // ReSharper disable once AssignNullToNotNullAttribute
                     var volumeName = Path.Combine(this.Verb.Directory, this.Verb.Name ?? Path.GetFileNameWithoutExtension(this.Verb.Package.First())) + "." + this.Verb.FileType.ToString("G").ToLowerInvariant();
-                    await this.appAttachManager.CreateVolume(Verb.Package.First(), volumeName, this.Verb.Size, this.Verb.FileType, this.Verb.ExtractCertificate, this.Verb.CreateScript).ConfigureAwait(false);
+
+                    await this._appAttachManager.CreateVolume(Verb.Package.First(), volumeName, this.Verb.Size, options).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.appAttachManager.CreateVolumes(Verb.Package.ToList(), this.Verb.Directory, this.Verb.FileType, this.Verb.ExtractCertificate, this.Verb.CreateScript).ConfigureAwait(false);
+                    await this._appAttachManager.CreateVolumes(Verb.Package.ToList(), this.Verb.Directory, options).ConfigureAwait(false);
                 }
             }
             catch (ProcessWrapperException e)

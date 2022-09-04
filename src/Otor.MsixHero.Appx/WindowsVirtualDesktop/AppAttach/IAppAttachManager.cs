@@ -31,22 +31,10 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
     
     public interface IAppAttachManager
     {
-        [Obsolete]
-        Task CreateVolume(
-            string packagePath, 
-            string volumePath, 
-            uint vhdSize, 
-            bool extractCertificate,
-            bool generateScripts, 
-            CancellationToken cancellationToken = default, 
-            IProgress<ProgressData> progressReporter = null);
-
         Task CreateVolumes(
             IReadOnlyCollection<string> packagePaths,
             string volumeDirectory,
-            AppAttachVolumeType type = AppAttachVolumeType.Vhd,
-            bool extractCertificate = false,
-            bool generateScripts = true,
+            AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null);
         
@@ -54,9 +42,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             string packagePath, 
             string volumePath,
             uint size,
-            AppAttachVolumeType type = AppAttachVolumeType.Vhd,
-            bool extractCertificate = false,
-            bool generateScripts = true, 
+            AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default, 
             IProgress<ProgressData> progressReporter = null);
     }

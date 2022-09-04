@@ -620,6 +620,45 @@
                         </ScrollViewer>
                     </Grid>
                 </TabItem>
+                <TabItem Header="App attach">
+                    <b:Interaction.Behaviors>
+                        <validation:ValidationBehavior ValidatedChangeable="{Binding TabAppAttach}" />
+                    </b:Interaction.Behaviors>
+                    <StackPanel>
+                        <CheckBox Margin="0 0 0 0" IsChecked="{Binding AppAttachExtractCertificate.CurrentValue}">
+                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_ExtractCert_Header}" TextWrapping="Wrap" />
+                        </CheckBox>
+
+                        <TextBlock Foreground="{StaticResource MsixHero.Brushes.Light2}" Margin="22 6 0 0" TextWrapping="Wrap">
+                            <Run Text="{localization:Loc Dialogs_AppAttach_ExtractCert_HelpText}" />
+                        </TextBlock>
+
+                        <CheckBox 
+                            IsEnabled="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeConverter}}"
+                            Margin="0 16 0 0" IsChecked="{Binding AppAttachGenerateScripts.CurrentValue}">
+                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_GenScripts_Header}" TextWrapping="Wrap" />
+                        </CheckBox>
+
+                        <controls1:LearnMore 
+                            Margin="22 6 0 0"
+                            Link="msix-app-attach/prepare-ps" Topic="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}" />
+
+                        <Label 
+                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource FormLabelThin}" 
+                            Content="{localization:Loc Dialog_Tab_Advanced}" 
+                            Margin="0 16 0 6" />
+
+                        <TextBlock
+                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource LabelTextBlock}" 
+                            Text="{localization:Loc Dialogs_AppAttach_JunctionPoint}"  />
+                        <TextBox 
+                            Margin="0 0 0 16"
+                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Text="{Binding AppAttachJunctionPoint.CurrentValue}" />
+                    </StackPanel>
+                </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Other}">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding TabOther}" />

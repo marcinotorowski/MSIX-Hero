@@ -1198,7 +1198,7 @@
     <value>Erstellung von Skripten für die Bereitstellung, Registrierung, Aufhebung der Bereitstellung und Aufhebung der Registrierung</value>
   </data>
   <data name="Dialogs_AppAttach_GenScripts_HelpText" xml:space="preserve">
-    <value>Weitere Informationen und Beispiele zum Testen</value>
+    <value>MSIX app attach und Beispiele zum Testen</value>
   </data>
   <data name="Dialogs_AppAttach_OK" xml:space="preserve">
     <value>Volume für App-Attach erstellen</value>
@@ -4069,7 +4069,7 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="AllFiles" xml:space="preserve">
     <value>Alle Dateien</value>
   </data>
-  <data name="Dialog_AppInstaller_Tab_Advanced" xml:space="preserve">
+  <data name="Dialog_Tab_Advanced" xml:space="preserve">
     <value>Erweiterte</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_CurrentSize" xml:space="preserve">
@@ -4104,5 +4104,8 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   </data>
   <data name="PackageExpert_Dependency_Open" xml:space="preserve">
     <value>Öffnen</value>
+  </data>
+  <data name="Dialogs_AppAttach_JunctionPoint" xml:space="preserve">
+    <value>Symbolische Verknüpfung</value>
   </data>
 </root>

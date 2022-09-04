@@ -41,7 +41,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         private readonly IUacElevation _uacElevation;
         private ICommand _reset;
         
-        public AppAttachViewModel(IUacElevation uacElevation, IInteractionService interactionService) : base("Prepare volume for app attach", interactionService)
+        public AppAttachViewModel(IUacElevation uacElevation, IConfigurationService configurationService, IInteractionService interactionService) : base("Prepare volume for app attach", interactionService)
         {
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
@@ -50,19 +50,25 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this.Files.CollectionChanged += (_, _) =>
             {
                 this.OnPropertyChanged(nameof(IsOnePackage));
+                this.OnPropertyChanged(nameof(IsMoreThanOnePackage));
             };
+
+            var config = configurationService.GetCurrentConfiguration().AppAttach;
 
             this.TabPackages = new ChangeableContainer(this.Files);
             this.TabOptions = new ChangeableContainer(
-                this.ExtractCertificate = new ChangeableProperty<bool>(),
-                this.GenerateScripts = new ChangeableProperty<bool>(true),
+                this.ExtractCertificate = new ChangeableProperty<bool>(config.ExtractCertificate),
+                this.GenerateScripts = new ChangeableProperty<bool>(config.GenerateScripts),
+                this.JunctionPoint = new ChangeableProperty<string>(config.JunctionPoint),
                 this.VolumeType = new ChangeableProperty<AppAttachVolumeType>(),
                 this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(),
                 this.FixedSize = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppAttach_FixedSize, "100", this.ValidateFixedSize)
             );
             
             this.AddChildren(this.TabPackages, this.TabOptions);
-            this.RegisterForCommandLineGeneration(this.Files, this.GenerateScripts, this.VolumeType, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+            this.RegisterForCommandLineGeneration(this.Files, this.GenerateScripts, this.JunctionPoint, this.VolumeType, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+
+            this.VolumeType.Changed += VolumeTypeOnChanged;
         }
 
         public void AddPackage(string packagePath = null)
@@ -117,6 +123,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         }
 
         public bool IsOnePackage => this.Files.Count == 1;
+
+        public bool IsMoreThanOnePackage => this.Files.Count > 1;
 
         public List<string> SelectedPackages { get; } = new List<string>();
 
@@ -176,6 +184,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
             this.Verb.FileType = this.VolumeType.CurrentValue;
             this.Verb.CreateScript = this.GenerateScripts.CurrentValue;
+            this.Verb.JunctionPoint = this.JunctionPoint.CurrentValue;
             this.Verb.ExtractCertificate = this.ExtractCertificate.CurrentValue;
             
             if (this.Files.Count == 1)
@@ -207,6 +216,21 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         public ValidatedChangeableCollection<string> Files { get; }
 
         public ChangeableProperty<bool> GenerateScripts { get; }
+
+        public bool EnableAdvanced
+        {
+            get
+            {
+                if (this.VolumeType.CurrentValue == AppAttachVolumeType.Cim)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        public ChangeableProperty<string> JunctionPoint { get; }
 
         public ChangeableProperty<bool> ExtractCertificate { get; }
         
@@ -273,7 +297,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             cancellationToken.ThrowIfCancellationRequested();
 
             var appAttach = this._uacElevation.AsAdministrator<IAppAttachManager>();
-            
+
+            var options = new AppAttachNewVolumeOptions
+            {
+                Type = this.VolumeType.CurrentValue,
+                ExtractCertificate = this.ExtractCertificate.CurrentValue,
+                GenerateScripts = this.GenerateScripts.CurrentValue,
+                JunctionPoint = this.JunctionPoint.CurrentValue
+            };
+
             if (this.Files.Count == 1)
             {
                 await appAttach.CreateVolume(
@@ -282,9 +314,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                     Path.Combine(this.OutputDirectory, fileName),
                     // ReSharper restore AssignNullToNotNullAttribute
                     sizeInMegabytes,
-                    this.VolumeType.CurrentValue,
-                    this.ExtractCertificate.CurrentValue,
-                    this.GenerateScripts.CurrentValue,
+                    options,
                     cancellationToken,
                     progress).ConfigureAwait(false);
             }
@@ -293,9 +323,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                 await appAttach.CreateVolumes(
                     this.Files,
                     this.OutputDirectory,
-                    this.VolumeType.CurrentValue,
-                    this.ExtractCertificate.CurrentValue,
-                    this.GenerateScripts.CurrentValue,
+                    options,
                     cancellationToken,
                     progress).ConfigureAwait(false); 
             }
@@ -338,6 +366,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             }
 
             return parsed <= 0 ? Resources.Localization.Dialogs_AppAttach_Errors_FixedSize_Negative : null;
+        }
+
+        private void VolumeTypeOnChanged(object sender, EventArgs e)
+        {
+            this.OnPropertyChanged(nameof(EnableAdvanced));
         }
     }
 }

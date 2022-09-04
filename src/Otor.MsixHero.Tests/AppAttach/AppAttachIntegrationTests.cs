@@ -30,8 +30,17 @@ namespace Otor.MsixHero.Tests.AppAttach
 
             try
             {
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdxPath, 0, AppAttachVolumeType.Vhdx, true, true, CancellationToken.None).Wait();
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, cimPath, 0, AppAttachVolumeType.Cim, true, true, CancellationToken.None).Wait();
+                var options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhdx,
+                    ExtractCertificate = true,
+                    GenerateScripts = true
+                };
+
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdxPath, 0, options, CancellationToken.None).Wait();
+
+                options.Type = AppAttachVolumeType.Cim;
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, cimPath, 0, options, CancellationToken.None).Wait();
             }
             catch (AggregateException e)
             {
@@ -53,13 +62,44 @@ namespace Otor.MsixHero.Tests.AppAttach
             var vhdPathScripts = Path.Combine(targetDirectory.FullName, "scripts", "output.vhd");
             var vhdPathCertificate = Path.Combine(targetDirectory.FullName, "certificate", "output.vhd");
             var vhdPathBoth = Path.Combine(targetDirectory.FullName, "both", "output.vhd");
-
+            
             try
             {
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathNothing, 0, AppAttachVolumeType.Vhd, false, false, CancellationToken.None).Wait();
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathScripts, 0, AppAttachVolumeType.Vhd, false, true, CancellationToken.None).Wait();
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathCertificate, 0, AppAttachVolumeType.Vhd, true, false, CancellationToken.None).Wait();
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathBoth, 0, AppAttachVolumeType.Vhd, true, true, CancellationToken.None).Wait();
+                var options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhd,
+                    GenerateScripts = false,
+                    ExtractCertificate = false
+                };
+
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathNothing, 0, options, CancellationToken.None).Wait();
+
+                options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhd,
+                    GenerateScripts = false,
+                    ExtractCertificate = true
+                };
+
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathScripts, 0, options, CancellationToken.None).Wait();
+
+                options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhd,
+                    GenerateScripts = true,
+                    ExtractCertificate = false
+                };
+
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathCertificate, 0, options, CancellationToken.None).Wait();
+
+                options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhd,
+                    GenerateScripts = true,
+                    ExtractCertificate = true
+                };
+
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPathBoth, 0, options, CancellationToken.None).Wait();
             }
             catch (AggregateException e)
             {
@@ -107,10 +147,17 @@ namespace Otor.MsixHero.Tests.AppAttach
             var vhdPath1 = Path.Combine(targetDirectory.FullName, "output1.vhd");
             var vhdPath2 = Path.Combine(targetDirectory.FullName, "output2.vhd");
 
+            var options = new AppAttachNewVolumeOptions
+            {
+                Type = AppAttachVolumeType.Vhd,
+                ExtractCertificate = true,
+                GenerateScripts = true
+            };
+
             try
             {
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPath1, 0, AppAttachVolumeType.Vhd, true, true, CancellationToken.None).Wait();
-                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPath2, 50, AppAttachVolumeType.Vhd, true, true, CancellationToken.None).Wait();
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPath1, 0, options, CancellationToken.None).Wait();
+                appAttachManager.CreateVolume(msixHeroPackage.FullName, vhdPath2, 50, options, CancellationToken.None).Wait();
             }
             catch (AggregateException e)
             {
@@ -149,9 +196,20 @@ namespace Otor.MsixHero.Tests.AppAttach
 
             try
             {
-                appAttachManager.CreateVolumes(sourceFiles, targetVhd, AppAttachVolumeType.Vhd, true, true, CancellationToken.None).Wait();
-                appAttachManager.CreateVolumes(sourceFiles, targetVhdx, AppAttachVolumeType.Vhdx, true, true, CancellationToken.None).Wait();
-                appAttachManager.CreateVolumes(sourceFiles, targetCim, AppAttachVolumeType.Cim, true, true, CancellationToken.None).Wait();
+                var options = new AppAttachNewVolumeOptions
+                {
+                    Type = AppAttachVolumeType.Vhd,
+                    ExtractCertificate = true,
+                    GenerateScripts = true
+                };
+
+                appAttachManager.CreateVolumes(sourceFiles, targetVhd, options, CancellationToken.None).Wait();
+
+                options.Type = AppAttachVolumeType.Vhdx;
+                appAttachManager.CreateVolumes(sourceFiles, targetVhdx, options, CancellationToken.None).Wait();
+
+                options.Type = AppAttachVolumeType.Cim;
+                appAttachManager.CreateVolumes(sourceFiles, targetCim, options, CancellationToken.None).Wait();
             }
             catch (AggregateException e)
             {

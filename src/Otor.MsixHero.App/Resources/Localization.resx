@@ -265,7 +265,7 @@
     <value>Generate scripts for staging, registering, de-staging and de-registering</value>
   </data>
   <data name="Dialogs_AppAttach_GenScripts_HelpText" xml:space="preserve">
-    <value>More information and samples for testing</value>
+    <value>MSIX app attach and samples</value>
   </data>
   <data name="Dialogs_AppAttach_OK" xml:space="preserve">
     <value>Create volume for app attach</value>
@@ -4069,7 +4069,7 @@ Click the icon again to remove the star.</value>
   <data name="AllFiles" xml:space="preserve">
     <value>All files</value>
   </data>
-  <data name="Dialog_AppInstaller_Tab_Advanced" xml:space="preserve">
+  <data name="Dialog_Tab_Advanced" xml:space="preserve">
     <value>Advanced</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_EnablePadding" xml:space="preserve">
@@ -4104,5 +4104,8 @@ Click the icon again to remove the star.</value>
   </data>
   <data name="PackageExpert_Dependency_Open" xml:space="preserve">
     <value>Open</value>
+  </data>
+  <data name="Dialogs_AppAttach_JunctionPoint" xml:space="preserve">
+    <value>Junction point</value>
   </data>
 </root>

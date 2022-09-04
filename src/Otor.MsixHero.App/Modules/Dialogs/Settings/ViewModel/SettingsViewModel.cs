@@ -68,6 +68,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.AllLanguages.Add(LanguageViewModel.FromCultureInfo(translation));
             }
 
+            this.TabAppAttach.AddChildren(
+                this.AppAttachGenerateScripts = new ChangeableProperty<bool>(config.AppAttach?.GenerateScripts == true),
+                this.AppAttachExtractCertificate = new ChangeableProperty<bool>(config.AppAttach?.ExtractCertificate == true),
+                this.AppAttachJunctionPoint = new ChangeableProperty<string>(config.AppAttach?.JunctionPoint ?? "c:\\temp\\msix-app-attach")
+            );
+
             this.TabOther.AddChildren
             (
                 this.CertificateOutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Settings_Certificate_Output, interactionService, config.Signing?.DefaultOutFolder?.Resolved),
@@ -121,6 +127,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.Language = new ChangeableProperty<string>(language),
                 this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
                 this.TabEditors,
+                this.TabAppAttach,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
             );
@@ -230,6 +237,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableContainer TabEditors { get; } = new ChangeableContainer();
 
         public ChangeableContainer TabSigning { get; } = new ChangeableContainer();
+        
+        public ChangeableContainer TabAppAttach { get; } = new ChangeableContainer();
 
         public ToolsConfigurationViewModel Tools { get; }
 
@@ -238,6 +247,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
+        
+        public ChangeableProperty<string> AppAttachJunctionPoint { get; }
+
+        public ChangeableProperty<bool> AppAttachGenerateScripts { get; }
+
+        public ChangeableProperty<bool> AppAttachExtractCertificate { get; }
 
         public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
 
@@ -364,6 +379,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             UpdateConfiguration(newConfiguration.Packer, cfg => cfg.SignByDefault, this.PackerSignByDefault);
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.DefaultScreen, this.DefaultScreen);
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
+            UpdateConfiguration(newConfiguration.AppAttach, e => e.GenerateScripts, this.AppAttachGenerateScripts);
+            UpdateConfiguration(newConfiguration.AppAttach, e => e.ExtractCertificate, this.AppAttachExtractCertificate);
+            UpdateConfiguration(newConfiguration.AppAttach, e => e.JunctionPoint, this.AppAttachJunctionPoint);
             UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
 
             UpdateConfiguration(newConfiguration.Editing, e => e.ManifestEditorType, this.ManifestEditorType);

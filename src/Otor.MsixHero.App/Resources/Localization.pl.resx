@@ -265,7 +265,7 @@
     <value>Wygeneruj skrypty do inicjalizacji, rejestracji, kończenia i wyrejestrowywania</value>
   </data>
   <data name="Dialogs_AppAttach_GenScripts_HelpText" xml:space="preserve">
-    <value>Więcej informacji i przykłady testowania</value>
+    <value>MSIX app attach i przykłady testowania</value>
   </data>
   <data name="Dialogs_AppAttach_OK" xml:space="preserve">
     <value>Stwórz wolumin app attach</value>
@@ -4069,7 +4069,7 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="AllFiles" xml:space="preserve">
     <value>Wszystkie pliki</value>
   </data>
-  <data name="Dialog_AppInstaller_Tab_Advanced" xml:space="preserve">
+  <data name="Dialog_Tab_Advanced" xml:space="preserve">
     <value>Zaawansowane</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_CurrentSize" xml:space="preserve">
@@ -4104,5 +4104,8 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   </data>
   <data name="PackageExpert_Dependency_Open" xml:space="preserve">
     <value>Otwórz</value>
+  </data>
+  <data name="Dialogs_AppAttach_JunctionPoint" xml:space="preserve">
+    <value>Dowiązanie symboliczne</value>
   </data>
 </root>

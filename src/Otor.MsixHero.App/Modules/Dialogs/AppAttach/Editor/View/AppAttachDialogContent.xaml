@@ -130,28 +130,6 @@
                             </RadioButton>
                         </StackPanel>
 
-                        <StackPanel Visibility="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                            <TextBlock
-                                Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Style="{StaticResource LabelTextBlock}" 
-                                Text="{localization:Loc Dialogs_AppAttach_VhdVolumeSize}" 
-                                Margin="0 16 0 6" />
-                            <RadioButton 
-                                Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" 
-                                Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Auto}" />
-                            <RadioButton 
-                                Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" 
-                                Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Dynamic}" Margin="0 6" />
-                            <StackPanel 
-                            Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Orientation="Horizontal" IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
-                                <xctk:ButtonSpinner VerticalContentAlignment="Center" Content="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
-                                <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
-                            </StackPanel>
-                        </StackPanel>
-
                         <CheckBox Margin="0 16 0 0" IsChecked="{Binding ExtractCertificate.CurrentValue}">
                             <TextBlock Text="{localization:Loc Dialogs_AppAttach_ExtractCert_Header}" TextWrapping="Wrap" />
                         </CheckBox>
@@ -166,14 +144,11 @@
                             <TextBlock Text="{localization:Loc Dialogs_AppAttach_GenScripts_Header}" TextWrapping="Wrap" />
                         </CheckBox>
 
-                        <TextBlock 
+                        <controls:LearnMore 
                             Visibility="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                            Foreground="{StaticResource MsixHero.Brushes.Light2}" Margin="22 0 0 0">
-                            <Hyperlink Click="HyperlinkMsdn_OnClick">
-                                <Run Text="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}"></Run>
-                            </Hyperlink>
-                        </TextBlock>
-
+                            Margin="22 6 0 0"
+                            Link="msix-app-attach/prepare-ps" Topic="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}" />
+                       
                         <Border 
                             Visibility="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Background="{StaticResource MsixHero.Dialog.Bar.Background}" Margin="22 2 0 0">
@@ -184,6 +159,39 @@
                     </StackPanel>
                 </AdornerDecorator>
             </ScrollViewer>
+        </TabItem>
+        <TabItem 
+            Header="{localization:Loc Dialog_Tab_Advanced}" 
+            IsEnabled="{Binding EnableAdvanced}">
+            <StackPanel>
+                <TextBlock
+                    Visibility="{Binding GenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource LabelTextBlock}" 
+                    Text="{localization:Loc Dialogs_AppAttach_JunctionPoint}"  />
+                <TextBox 
+                    Margin="0 0 0 16"
+                    Visibility="{Binding GenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Text="{Binding JunctionPoint.CurrentValue}" />
+
+                <TextBlock
+                    IsEnabled="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Style="{StaticResource LabelTextBlock}" 
+                    Text="{localization:Loc Dialogs_AppAttach_VhdVolumeSize}" />
+                <RadioButton 
+                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" 
+                    Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Auto}" />
+                <RadioButton 
+                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" 
+                    Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Dynamic}" Margin="0 6" />
+                <StackPanel 
+                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Orientation="Horizontal" IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
+                    <xctk:ButtonSpinner VerticalContentAlignment="Center" Content="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
+                    <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
+                </StackPanel>
+            </StackPanel>
         </TabItem>
     </TabControl>
 </UserControl>

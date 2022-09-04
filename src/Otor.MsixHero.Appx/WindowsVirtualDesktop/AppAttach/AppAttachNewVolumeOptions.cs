@@ -14,23 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Runtime.Serialization;
+namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 
-namespace Otor.MsixHero.Infrastructure.Configuration
+public class AppAttachNewVolumeOptions
 {
-    [DataContract]
-    public class AppAttachConfiguration : BaseJsonSetting
-    {
-        [DataMember(Name = "useMsixMgrForVhdCreation")]
-        public bool UseMsixMgrForVhdCreation { get; set; }
+    public AppAttachVolumeType Type { get; set; }
 
-        [DataMember(Name = "junctionPoint")]
-        public string JunctionPoint { get; set; }
+    public bool? GenerateScripts { get; set; }
 
-        [DataMember(Name = "extractCertificate")]
-        public bool ExtractCertificate { get; set; }
+    public bool? ExtractCertificate { get; set; }
 
-        [DataMember(Name = "generateScripts")]
-        public bool GenerateScripts { get; set; }
-    }
+    public string JunctionPoint { get; set; }
 }
