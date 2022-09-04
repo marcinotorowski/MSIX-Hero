@@ -61,7 +61,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to all files.
+        ///   Looks up a localized string similar to All files.
         /// </summary>
         public static string AllFiles {
             get {
@@ -8485,6 +8485,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_Enforce_PIChecks_Disabled {
             get {
                 return ResourceManager.GetString("PackageExpert_Enforce_PIChecks_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Even a **HERO** cannot open this package. Please double check its content, below is something that may help:.
+        /// </summary>
+        public static string PackageExpert_Error {
+            get {
+                return ResourceManager.GetString("PackageExpert_Error", resourceCulture);
             }
         }
         

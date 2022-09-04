@@ -26,17 +26,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
     public class FileInfoFileReaderAdapter : IAppxDiskFileReader
     {
-        private readonly FileInfo appxManifestFile;
+        private readonly FileInfo _appxManifestFile;
 
         public FileInfoFileReaderAdapter(FileInfo appxManifestFile)
         {
             if (!appxManifestFile.Exists)
             {
-                throw new ArgumentException($"File {appxManifestFile.FullName} does not exist.", nameof(appxManifestFile));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FileNotFound_Format, appxManifestFile.FullName), nameof(appxManifestFile));
             }
 
             this.RootDirectory = appxManifestFile.DirectoryName;
-            this.appxManifestFile = appxManifestFile;
+            this._appxManifestFile = appxManifestFile;
             this.FilePath = appxManifestFile.FullName;
         }
 
@@ -46,13 +46,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             if (string.IsNullOrEmpty(appxManifestFile))
             {
                 this.RootDirectory = null;
-                this.appxManifestFile = null;
+                this._appxManifestFile = null;
             }
             else
             {
                 var fileInfo = new FileInfo(appxManifestFile);
                 this.RootDirectory = fileInfo.DirectoryName;
-                this.appxManifestFile = fileInfo;
+                this._appxManifestFile = fileInfo;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            return File.OpenRead(Path.Combine(this.appxManifestFile.Directory.FullName, filePath));
+            return File.OpenRead(Path.Combine(this._appxManifestFile.Directory.FullName, filePath));
         }
 
 #pragma warning disable 1998
@@ -76,7 +76,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 #pragma warning restore 1998
         {
             // ReSharper disable once PossibleNullReferenceException
-            var baseDir = this.appxManifestFile.Directory.FullName;
+            var baseDir = this._appxManifestFile.Directory.FullName;
             var fullDir = rootRelativePath == null ? baseDir : Path.Combine(baseDir, rootRelativePath);
 
             foreach (var d in Directory.EnumerateDirectories(fullDir, "*", SearchOption.TopDirectoryOnly))
@@ -91,7 +91,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 #pragma warning restore 1998
         {
             // ReSharper disable once PossibleNullReferenceException
-            var baseDir = this.appxManifestFile.Directory.FullName;
+            var baseDir = this._appxManifestFile.Directory.FullName;
             var fullDir = rootRelativePath == null ? baseDir : Path.Combine(baseDir, rootRelativePath);
 
             foreach (var f in Directory.EnumerateFiles(fullDir, wildcard, searchOption))
@@ -123,7 +123,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var resourceDir = Path.GetDirectoryName(resourceFilePath);
 
             var dirsToTry = new Queue<string>();
-            dirsToTry.Enqueue(string.IsNullOrEmpty(resourceDir) ? this.appxManifestFile.DirectoryName : Path.Combine(this.appxManifestFile.DirectoryName, resourceDir));
+            dirsToTry.Enqueue(string.IsNullOrEmpty(resourceDir) ? this._appxManifestFile.DirectoryName : Path.Combine(this._appxManifestFile.DirectoryName, resourceDir));
 
             while (dirsToTry.Any())
             {
@@ -140,7 +140,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     var name = Regex.Replace(matchingFile.Name, @"\.[^\.\-]+-[^\.\-]+", string.Empty);
                     if (string.Equals(name, fileName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return this.GetFile(Path.GetRelativePath(this.appxManifestFile.DirectoryName, matchingFile.FullName));
+                        return this.GetFile(Path.GetRelativePath(this._appxManifestFile.DirectoryName, matchingFile.FullName));
                     }
                 }
 
@@ -161,13 +161,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return false;
             }
 
-            if (this.appxManifestFile?.Directory?.FullName == null)
+            if (this._appxManifestFile?.Directory?.FullName == null)
             {
                 return false;
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            return File.Exists(Path.Combine(this.appxManifestFile.Directory.FullName, filePath));
+            return File.Exists(Path.Combine(this._appxManifestFile.Directory.FullName, filePath));
         }
 
         void IDisposable.Dispose()

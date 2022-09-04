@@ -215,12 +215,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     break;
                 case DialogTarget.Ask:
 
-                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.WingetExtension);
+                    var filterBuilder = new DialogFilterBuilder().WithWinget().WithAll();
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.Winget,
                         NavigationPaths.DialogPaths.WingetYamlEditor,
                         "yaml",
-                        filterBuilder.BuildFilter());
+                        filterBuilder);
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -246,12 +246,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         NavigationPaths.DialogPaths.PackagingModificationPackage);
                     break;
                 case DialogTarget.Ask:
-                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension);
+                    var filterBuilder = new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.Msix).WithAll();
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.Packaging,
                         NavigationPaths.DialogPaths.PackagingModificationPackage,
                         "file",
-                        filterBuilder.BuildFilter());
+                        filterBuilder);
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -277,12 +277,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     break;
                 case DialogTarget.Ask:
 
-                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension);
+                    var filterBuilder = new DialogFilterBuilder().WithAppInstaller().WithAll();
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.AppInstaller,
                         NavigationPaths.DialogPaths.AppInstallerEditor,
                         "file",
-                        filterBuilder.BuildFilter());
+                        filterBuilder);
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -402,17 +402,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 if (forAllUsers)
                 {
-                    if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder( "*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()), out packagePath))
+                    if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithPackages().WithAll()), out packagePath))
                     {
                         return;
                     }
                 }
                 else
                 {
-                    if (!this._interactionService.SelectFile(
-                        // ReSharper disable StringLiteralTypo
-                        FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, "*" + FileConstants.AppxBundleExtension, "*" + FileConstants.AppInstallerExtension, FileConstants.AppxManifestFile).BuildFilter()), out packagePath))
-                        // ReSharper restore StringLiteralTypo
+                    if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.All).WithAppInstaller().WithManifests().WithAllSupported().WithAll()), out packagePath))
                     {
                         return;
                     }

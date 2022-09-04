@@ -18,5 +18,10 @@ namespace Otor.MsixHero.Appx.Packaging
         public const string AppAttachVhdExtension = ".vhd";
         public const string AppAttachVhdxExtension = ".vhdx";
         public const string AppAttachCimExtension = ".cim";
+        public const string RegExtension = ".reg";
+        public const string PfxExtension = ".pfx";
+        public const string CerExtension = ".cer";
+        public const string ExeExtension = ".exe";
+        public const string MsiExtension = ".msi";
     }
 }

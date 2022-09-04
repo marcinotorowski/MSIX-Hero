@@ -9,6 +9,9 @@
     xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
     xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+    xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels"
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
 
@@ -50,10 +53,47 @@
 
     </mvvm:Dialog.WindowStyle>
     <DockPanel>
-        <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
-            <ContentControl 
-                mvvm:RegionManager.RegionContext="{Binding FilePath}"
-                mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.PackageExpert}" />
+        <controls:ProgressOverlay 
+            Visibility="{Binding Path=CommandHandler.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+            IsShown="{Binding Progress.IsLoading}" 
+            Progress="{Binding Progress.Progress}" 
+            Message="{Binding Progress.Message}" 
+            CancelCommand="{Binding Progress.Cancel}" 
+            SupportsCancelling="{Binding Progress.SupportsCancelling}">
+            <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
+                <ContentControl 
+                    mvvm:RegionManager.RegionContext="{Binding CommandHandler.FilePath}"
+                    mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.PackageExpert}" />
+            </Border>
+        </controls:ProgressOverlay>
+
+        <Border 
+            VerticalAlignment="Center"
+            Background="Transparent"
+            Visibility="{Binding Path=CommandHandler.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel MaxWidth="350">
+                <Path 
+                    HorizontalAlignment="Center"
+                    Width="48"
+                    Height="48"
+                    Fill="#ccc"
+                    Data="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 18 16.5 A 2.5 2.5 0 0 0 18 21.5 A 2.5 2.5 0 0 0 18 16.5 z M 30 16.5 A 2.5 2.5 0 0 0 30 21.5 A 2.5 2.5 0 0 0 30 16.5 z M 24 26 C 20.192934 26 16.77633 27.783678 14.582031 30.572266 A 1.50015 1.50015 0 1 0 16.939453 32.427734 C 18.585155 30.336322 21.127066 29 24 29 C 26.872934 29 29.414845 30.336322 31.060547 32.427734 A 1.50015 1.50015 0 1 0 33.417969 30.572266 C 31.22367 27.783678 27.807066 26 24 26 z">
+                    <Path.LayoutTransform>
+                        <ScaleTransform ScaleX="2" ScaleY="2" />
+                    </Path.LayoutTransform>
+                </Path>
+                <TextBlock 
+                    TextWrapping="Wrap" 
+                    Margin="0 16 0 0" 
+                    controls:SimpleTextMarkup.Markup="{localization:Loc PackageExpert_Error}" />
+                <TextBox 
+                    TextWrapping="Wrap" 
+                    Text="{Binding CommandHandler.ErrorMessage, Mode=OneWay}" IsReadOnly="True" MaxHeight="150" Padding="8" Margin="0 16 0 0" />
+
+                <Button
+                    Style="{StaticResource CardButton}"
+                    Margin="0 16 0 0" HorizontalAlignment="Center" Command="Refresh" Content="{localization:Loc Packages_Actions_Refresh}" />
+            </StackPanel>
         </Border>
     </DockPanel>
 </UserControl>

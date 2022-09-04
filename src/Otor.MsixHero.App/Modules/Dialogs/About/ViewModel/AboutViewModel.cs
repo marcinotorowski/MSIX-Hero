@@ -26,21 +26,21 @@ using Otor.MsixHero.Infrastructure.Updates;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
+namespace Otor.MsixHero.App.Modules.Dialogs.About.ViewModel
 {
-    public class HelpViewModel : NotifyPropertyChanged, IDialogAware
+    public class AboutViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly IUpdateChecker updateChecker;
-        private readonly IMsixHeroApplication application;
-        private bool isChecked;
+        private readonly IUpdateChecker _updateChecker;
+        private readonly IMsixHeroApplication _application;
+        private bool _isChecked;
 
-        public HelpViewModel(IUpdateChecker updateChecker, IMsixHeroApplication application)
+        public AboutViewModel(IUpdateChecker updateChecker, IMsixHeroApplication application)
         {
             this.CloseCommand = new DelegateCommand(((IDialogAware)this).OnDialogClosed, ((IDialogAware)this).CanCloseDialog);
             this.ShowReleaseNotes = new DelegateCommand(this.OnShowReleaseNotes);
 
-            this.updateChecker = updateChecker;
-            this.application = application;
+            this._updateChecker = updateChecker;
+            this._application = application;
             this.Check = new DelegateCommand(this.CheckExecute, this.CheckCanExecute);
             this.UpdateCheck = new AsyncProperty<UpdateCheckResult>();
 
@@ -73,7 +73,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
         private void OnShowReleaseNotes()
         {
             this.RequestClose?.Invoke(new DialogResult());
-            this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
+            this._application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
         }
 
         string IDialogAware.Title => Resources.Localization.Dialogs_About_WindowTitle;
@@ -82,8 +82,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
 
         public bool IsChecked
         {
-            get => this.isChecked;
-            set => this.SetField(ref this.isChecked, value);
+            get => this._isChecked;
+            set => this.SetField(ref this._isChecked, value);
         }
 
         public ICommand Check { get; private set; }
@@ -97,7 +97,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
 
         private async void CheckExecute()
         {
-            await this.UpdateCheck.Load(this.updateChecker.CheckForNewVersion()).ConfigureAwait(false);
+            await this.UpdateCheck.Load(this._updateChecker.CheckForNewVersion()).ConfigureAwait(false);
         }
     }
 }

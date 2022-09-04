@@ -32,11 +32,11 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 {
     public class ToolViewModel : NotifyPropertyChanged
     {
-        private readonly IInteractionService interactionService;
-        private readonly IDialogService dialogService;
-        private readonly IModuleManager moduleManager;
-        private readonly DialogOpener dialogOpener;
-        private string searchKey;
+        private readonly IInteractionService _interactionService;
+        private readonly IDialogService _dialogService;
+        private readonly IModuleManager _moduleManager;
+        private readonly DialogOpener _dialogOpener;
+        private string _searchKey;
 
         public ToolViewModel(
             IEventAggregator eventAggregator,
@@ -44,11 +44,11 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
             IDialogService dialogService,
             IModuleManager moduleManager)
         {
-            this.dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
+            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
             
-            this.interactionService = interactionService;
-            this.dialogService = dialogService;
-            this.moduleManager = moduleManager;
+            this._interactionService = interactionService;
+            this._dialogService = dialogService;
+            this._moduleManager = moduleManager;
 
             this.ShowAppAttachDialog = new DelegateCommand(this.OnShowAppAttachDialog);
             this.ShowAppInstallerDialog = new DelegateCommand<object>(this.OnShowAppInstallerDialog);
@@ -74,8 +74,8 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
         
         public string SearchKey
         {
-            get => this.searchKey;
-            private set => this.SetField(ref this.searchKey, value);
+            get => this._searchKey;
+            private set => this.SetField(ref this._searchKey, value);
         }
 
         private void OnSetToolFilterCommand(UiExecutedPayload<SetToolFilterCommand> obj)
@@ -119,8 +119,8 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 
         private void OnShowDependencyGraphDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, this.OnDialogClosed);
         }
 
         private void OnOpenAppsFeatures()
@@ -137,85 +137,85 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 
         private void OnShowNewSelfSignedDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningNewSelfSigned, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningNewSelfSigned, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowExtractCertificateDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningCertificateExport, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningCertificateExport, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowUnpackDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingUnpack, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingUnpack, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowUpdateImpactDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Updates);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.UpdatesUpdateImpact, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Updates);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.UpdatesUpdateImpact, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnOpenFileDialog()
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*" + FileConstants.WingetExtension, "*" + FileConstants.AppInstallerExtension);
-            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
+            var filterBuilder = new DialogFilterBuilder().WithPackages().WithManifests().WithWinget().WithAppInstaller().WithAll().WithAllSupported();
+            this._dialogOpener.ShowFileDialog(filterBuilder);
         }
 
         private void OnOpenMsixDialog()
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension);
-            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
+            var filterBuilder = new DialogFilterBuilder().WithPackages().WithAll();
+            this._dialogOpener.ShowFileDialog(filterBuilder);
         }
 
         private void OnShowPackDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingPack, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingPack, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowNamesDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingNames, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingNames, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowModificationPackageDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingModificationPackage, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingModificationPackage, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowWingetDialog(object param)
         {
             if (param != null)
             {
-                var fileFilter = new DialogFilterBuilder("*" + FileConstants.WingetExtension);
+                var fileFilter = new DialogFilterBuilder().WithWinget().WithAll();
                 var settings = new FileDialogSettings
                 {
-                    Filter = fileFilter.BuildFilter(),
+                    Filter = fileFilter,
                     DialogTitle = string.Format(Resources.Localization.Dashboard_OpenWinget_TitleFormat, $"*{FileConstants.WingetExtension}")
                 };
 
-                if (!this.interactionService.SelectFile(settings, out var filePath))
+                if (!this._interactionService.SelectFile(settings, out var filePath))
                 {
                     return;
                 }
 
-                this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
+                this._moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
                 IDialogParameters parameters = new DialogParameters();
                 parameters.Add("yaml", filePath);
-                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, parameters, this.OnDialogClosed);
+                this._dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, parameters, this.OnDialogClosed);
             }
             else
             {
-                this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
-                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
+                this._moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
+                this._dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
             }
         }
 
@@ -223,40 +223,40 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
         {
             if (param != null)
             {
-                var fileFilter = new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension);
+                var fileFilter = new DialogFilterBuilder().WithAppInstaller().WithAll();
                 var settings = new FileDialogSettings
                 {
-                    Filter = fileFilter.BuildFilter(),
+                    Filter = fileFilter,
                     DialogTitle = string.Format(Resources.Localization.Dashboard_OpenAppInstaller_TitleFormat, $"*{FileConstants.AppInstallerExtension}")
                 };
 
-                if (!this.interactionService.SelectFile(settings, out var filePath))
+                if (!this._interactionService.SelectFile(settings, out var filePath))
                 {
                     return;
                 }
 
-                this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
+                this._moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
                 IDialogParameters parameters = new DialogParameters();
                 parameters.Add("file", filePath);
-                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, parameters, this.OnDialogClosed);
+                this._dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, parameters, this.OnDialogClosed);
             }
             else
             {
-                this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
-                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
+                this._moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
+                this._dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
             }
         }
 
         private void OnShowAppAttachDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.AppAttach);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppAttachEditor, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.AppAttach);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.AppAttachEditor, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowSignPackageDialog()
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningPackageSigning, new DialogParameters(), this.OnDialogClosed);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Signing);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.SigningPackageSigning, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnOpenCertificateManager(bool perMachine)
@@ -280,7 +280,7 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, e);
+                this._interactionService.ShowError(e.Message, e);
             }
         }
 

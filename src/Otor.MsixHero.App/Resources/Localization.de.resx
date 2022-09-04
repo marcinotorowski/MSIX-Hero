@@ -2700,6 +2700,9 @@
   <data name="PackageExpert_Enforce_PIChecks" xml:space="preserve">
     <value>Erzwingen von Paketintegritätsprüfungen zur Laufzeit für den gesamten Inhalt des Pakets</value>
   </data>
+  <data name="PackageExpert_Error" xml:space="preserve">
+    <value>Selbst ein **HERO** kann dieses Paket nicht öffnen. Bitte den Inhalt des Pakets nochmal überprüfen. Im untenstehenden Text ist etwas, das möglicherweise dabei hilft:</value>
+  </data>
   <data name="PackageExpert_Enforce_PIChecks_Disabled" xml:space="preserve">
     <value>Standard-Einstellungen</value>
   </data>
@@ -4073,7 +4076,7 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
     <value>Die aktuelle Größe der .appinstaller-Datei:</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_EnablePadding" xml:space="preserve">
-    <value>Erweitern Sie beim Erstellen der .appinstaller-Datei die Größe der Datei</value>
+    <value>Beim Erstellen der .appinstaller-Datei die Größe der Datei anpassen</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced_Padding" xml:space="preserve">
     <value>Die Datei linksbündig ausrichten</value>

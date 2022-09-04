@@ -83,9 +83,12 @@
             </b:Interaction.Behaviors>
         </Button>
 
-        <Label Content="{localization:Loc PackageExpert_App_Other}" />
+        <Label
+            Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Content="{localization:Loc PackageExpert_App_Other}" />
 
         <Button 
+            Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"

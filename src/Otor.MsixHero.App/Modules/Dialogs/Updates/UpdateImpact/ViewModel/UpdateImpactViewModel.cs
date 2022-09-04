@@ -25,7 +25,6 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates;
@@ -52,14 +51,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             {
                 IsValidated = true,
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
+                Filter = new DialogFilterBuilder().WithPackages().WithManifests().WithAllSupported().WithAll()
             };
 
             this.Path2 = new ChangeableFileProperty(() => Resources.Localization.Dialogs_UpdateImpact_File2_Path, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
+                Filter = new DialogFilterBuilder().WithPackages().WithManifests().WithAll().WithAllSupported()
             };
             
             this.AddChildren(this.Path1, this.Path2);

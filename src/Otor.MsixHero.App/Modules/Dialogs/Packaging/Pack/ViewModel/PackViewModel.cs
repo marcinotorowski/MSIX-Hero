@@ -67,7 +67,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.OutputPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Pack_TargetPackagePath, interactionService, ChangeableFileProperty.ValidatePath)
             {
                 OpenForSaving = true,
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()
+                Filter = new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.Msix).WithAll()
             };
 
             this.Sign = new ChangeableProperty<bool>(signByDefault);

@@ -2964,6 +2964,9 @@
   <data name="PackageExpert_Enforce_PIChecks_Disabled" xml:space="preserve">
     <value>Default settings</value>
   </data>
+  <data name="PackageExpert_Error" xml:space="preserve">
+    <value>Even a **HERO** cannot open this package. Please double check its content, below is something that may help:</value>
+  </data>
   <data name="PackageExpert_FamilyName" xml:space="preserve">
     <value>Family name</value>
   </data>
@@ -4064,7 +4067,7 @@ Click the icon again to remove the star.</value>
     <value>ARM 64-bit</value>
   </data>
   <data name="AllFiles" xml:space="preserve">
-    <value>all files</value>
+    <value>All files</value>
   </data>
   <data name="Dialog_AppInstaller_Tab_Advanced" xml:space="preserve">
     <value>Advanced</value>

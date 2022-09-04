@@ -21,9 +21,9 @@ using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
-    public class AppxFileViewer : IAppxFileViewer, IDisposable
+    public class AppxFileViewer : IAppxFileViewer
     {
-        private DirectoryInfo tempDirectory;
+        private DirectoryInfo _tempDirectory;
         
         public async Task<string> GetDiskPath(IAppxFileReader fileReader, string filePath)
         {
@@ -42,11 +42,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var index = 0;
             string fullPath;
 
-            this.tempDirectory ??= new DirectoryInfo(Path.Combine(Path.GetTempPath(), "MSIX-Hero", Guid.NewGuid().ToString("N").Substring(10)));
+            this._tempDirectory ??= new DirectoryInfo(Path.Combine(Path.GetTempPath(), "MSIX-Hero", Guid.NewGuid().ToString("N").Substring(10)));
             
             while (true)
             {
-                fullPath = Path.Combine(this.tempDirectory.FullName, index.ToString("0"), Path.GetFileName(filePath));
+                fullPath = Path.Combine(this._tempDirectory.FullName, index.ToString("0"), Path.GetFileName(filePath));
 
                 if (!File.Exists(fullPath))
                 {
@@ -81,10 +81,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
         // ReSharper disable once UnusedParameter.Local
         private void Dispose(bool disposing)
         {
-            if (this.tempDirectory?.Exists == true)
+            if (this._tempDirectory?.Exists == true)
             {
-                ExceptionGuard.Guard(() => this.tempDirectory.Delete(true));
-                this.tempDirectory = null;
+                ExceptionGuard.Guard(() => this._tempDirectory.Delete(true));
+                this._tempDirectory = null;
             }
         }
     }

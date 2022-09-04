@@ -17,7 +17,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Humanizer;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -59,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else
                 {
-                    var dateHumanized = model.Source.InstallDate.Humanize(false);
+                    var dateHumanized = model.Source.InstallDate.ToString();
                     this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, dateHumanized);
                 }
             }

@@ -54,27 +54,35 @@ namespace Otor.MsixHero.App
 
         private void HelpExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this._moduleManager.LoadModule(ModuleNames.Dialogs.Help);
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.About);
             this._dialogService.ShowDialog(NavigationPaths.DialogPaths.About);
         }
 
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*" + FileConstants.WingetExtension, "*" + FileConstants.AppInstallerExtension);
-            this._dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
+
+            var filterBuilder = new DialogFilterBuilder()
+                .WithPackages()
+                .WithManifests()
+                .WithAppInstaller()
+                .WithWinget()
+                .WithAllSupported()
+                .WithAll();
+                
+            this._dialogOpener.ShowFileDialog(filterBuilder);
         }
 
         private void OnFileDropped(object sender, DragEventArgs e)
         {
             DropFileObject.SetIsDragging((DependencyObject)sender, false);
-            var hasData = e.Data.GetDataPresent("FileDrop");
+            var hasData = e.Data.GetDataPresent(DataFormats.FileDrop);
             if (!hasData)
             {
                 return;
             }
 
-            var data = e.Data.GetData("FileDrop") as string[];
+            var data = e.Data.GetData(DataFormats.FileDrop) as string[];
             if (data == null || !data.Any())
             {
                 return;

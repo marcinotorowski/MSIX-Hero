@@ -176,7 +176,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 entry = msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace(Path.DirectorySeparatorChar, '/'), StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                 {
-                    throw new FileNotFoundException($"File {filePath} not found in MSIX package.");
+                    throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileInsideNotFound, filePath));
                 }
             }
 
@@ -268,7 +268,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             if (!File.Exists(this.msixPackagePath))
             {
-                throw new ArgumentException($"File { this.msixPackagePath} does not exist.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, this.msixPackagePath));
             }
 
             var fileStream = File.OpenRead(msixPackagePath);
@@ -281,7 +281,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             catch (InvalidDataException e)
             {
                 this.disposableStreams = new IDisposable[] { fileStream };
-                throw new InvalidDataException("This file is not an MSIX/APPX package, or the content of the package is damaged.", e);
+                throw new InvalidDataException(Resources.Localization.Packages_Error_NotAPackage, e);
             }
             catch (Exception)
             {

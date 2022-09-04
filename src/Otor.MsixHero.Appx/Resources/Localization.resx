@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,449 +59,467 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="Events_PleaseWait" xml:space="preserve">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Events_PleaseWait" xml:space="preserve">
     <value>Getting events, please wait…</value>
   </data>
-	<data name="Packages_Analyzing" xml:space="preserve">
+  <data name="Packages_Analyzing" xml:space="preserve">
     <value>Analyzing {0}…</value>
   </data>
-	<data name="Packages_AppAttach_ApplyingACL" xml:space="preserve">
+  <data name="Packages_AppAttach_ApplyingACL" xml:space="preserve">
     <value>Applying ACLs…</value>
   </data>
-	<data name="Packages_AppAttach_CreatingJson" xml:space="preserve">
+  <data name="Packages_AppAttach_CreatingJson" xml:space="preserve">
     <value>Creating JSON file…</value>
   </data>
-	<data name="Packages_AppAttach_CreatingScripts" xml:space="preserve">
+  <data name="Packages_AppAttach_CreatingScripts" xml:space="preserve">
     <value>Creating scripts…</value>
   </data>
-	<data name="Packages_AppAttach_Expanding" xml:space="preserve">
+  <data name="Packages_AppAttach_Expanding" xml:space="preserve">
     <value>Expanding MSIX…</value>
   </data>
-	<data name="Packages_AppAttach_Initializing" xml:space="preserve">
+  <data name="Packages_AppAttach_Initializing" xml:space="preserve">
     <value>Initializing…</value>
   </data>
-	<data name="Packages_AppAttach_UnpackingMsix" xml:space="preserve">
+  <data name="Packages_AppAttach_UnpackingMsix" xml:space="preserve">
     <value>Unpacking MSIX…</value>
   </data>
-	<data name="Packages_AppAttach_Unpacking_Format" xml:space="preserve">
+  <data name="Packages_AppAttach_Unpacking_Format" xml:space="preserve">
     <value>Unpacking {0}…</value>
   </data>
-	<data name="Packages_Deprovision_AllUsers" xml:space="preserve">
+  <data name="Packages_Deprovision_AllUsers" xml:space="preserve">
     <value>De-provisioning for all users</value>
   </data>
-	<data name="Packages_Error_AllBundleResources" xml:space="preserve">
+  <data name="Packages_Error_AllBundleResources" xml:space="preserve">
     <value>Cannot use the flag AllBundleResources with non-bundle packages.</value>
   </data>
-	<data name="Packages_Error_AppAttachFinishing" xml:space="preserve">
+  <data name="Packages_Error_AppAttachFinishing" xml:space="preserve">
     <value>Finishing…</value>
   </data>
-	<data name="Packages_Error_AppInstallerAllUsers" xml:space="preserve">
+  <data name="Packages_Error_AppInstallerAllUsers" xml:space="preserve">
     <value>Cannot install a package from .appinstaller for all users.</value>
   </data>
-	<data name="Packages_Error_AppInstallerDowngrade" xml:space="preserve">
+  <data name="Packages_Error_AppInstallerDowngrade" xml:space="preserve">
     <value>Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.</value>
   </data>
-	<data name="Packages_Error_BundleNotSupported" xml:space="preserve">
+  <data name="Packages_Error_BundleNotSupported" xml:space="preserve">
     <value>Bundles are not supported.</value>
   </data>
-	<data name="Packages_Error_DeveloperMode" xml:space="preserve">
+  <data name="Packages_Error_DeveloperMode" xml:space="preserve">
     <value>Developer mode must be enabled to use this feature.</value>
   </data>
-	<data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
+  <data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
     <value>The directory '{0}' does not exist.</value>
   </data>
-	<data name="Packages_Error_DiskFormatNotSupported" xml:space="preserve">
+  <data name="Packages_Error_DiskFormatNotSupported" xml:space="preserve">
     <value>Disk format {0} is not supported.</value>
   </data>
-	<data name="Packages_Error_EmptyPath" xml:space="preserve">
+  <data name="Packages_Error_EmptyPath" xml:space="preserve">
     <value>Package path must not be empty.</value>
   </data>
-	<data name="Packages_Error_EmptyVolumePath" xml:space="preserve">
+  <data name="Packages_Error_EmptyVolumePath" xml:space="preserve">
     <value>Volume path must not be empty.</value>
   </data>
-	<data name="Packages_Error_ExtensionNotSupported_Format" xml:space="preserve">
+  <data name="Packages_Error_ExtensionNotSupported_Format" xml:space="preserve">
     <value>Extension {0} is not supported.</value>
   </data>
-	<data name="Packages_Error_FileMissing_Format" xml:space="preserve">
+  <data name="Packages_Error_FileMissing_Format" xml:space="preserve">
     <value>The file '{0}' does not exist.</value>
   </data>
-	<data name="Packages_Error_FileNotSupported" xml:space="preserve">
+  <data name="Packages_Error_FileNotSupported" xml:space="preserve">
     <value>File path {0} is not supported.</value>
   </data>
-	<data name="Packages_Error_Folder_NoExe" xml:space="preserve">
+  <data name="Packages_Error_Folder_NoExe" xml:space="preserve">
     <value>This folder contains no executable files.</value>
   </data>
-	<data name="Packages_Error_Install_Format" xml:space="preserve">
+  <data name="Packages_Error_Install_Format" xml:space="preserve">
     <value>Could not install {0} {1}.</value>
   </data>
-	<data name="Packages_Error_InvalidVersion" xml:space="preserve">
+  <data name="Packages_Error_InvalidVersion" xml:space="preserve">
     <value>Invalid version format, major version is required.</value>
   </data>
-	<data name="Packages_Error_ManifestNotFound" xml:space="preserve">
+  <data name="Packages_Error_ManifestNotFound" xml:space="preserve">
     <value>Manifest file has not been found.</value>
   </data>
-	<data name="Packages_Error_Manifest_Identity" xml:space="preserve">
+  <data name="Packages_Error_Manifest_Identity" xml:space="preserve">
     <value>The manifest is malformed, missing &lt;Identity /&gt;.</value>
   </data>
-	<data name="Packages_Error_Manifest_Root" xml:space="preserve">
+  <data name="Packages_Error_Manifest_Root" xml:space="preserve">
     <value>The manifest is malformed. There is no root element.</value>
   </data>
-	<data name="Packages_Error_Manifest_Root_Package" xml:space="preserve">
+  <data name="Packages_Error_Manifest_Root_Package" xml:space="preserve">
     <value>The manifest is malformed. The document root must be &lt;Package /&gt; element.</value>
   </data>
-	<data name="Packages_Error_Manifest_Root_Package_Namespace" xml:space="preserve">
+  <data name="Packages_Error_Manifest_Root_Package_Namespace" xml:space="preserve">
     <value>The manifest is malformed. The document root must be &lt;Package /&gt; element, belonging to a supported namespace.</value>
   </data>
-	<data name="Packages_Error_MissingResource_Format" xml:space="preserve">
+  <data name="Packages_Error_MissingResource_Format" xml:space="preserve">
     <value>Could not locate resource {0}.</value>
   </data>
-	<data name="Packages_Error_Mount" xml:space="preserve">
+  <data name="Packages_Error_Mount" xml:space="preserve">
     <value>Could not mount the drive.</value>
   </data>
-	<data name="Packages_Error_MountContent" xml:space="preserve">
+  <data name="Packages_Error_MountContent" xml:space="preserve">
     <value>Could not read the content of the mounted file.</value>
   </data>
-	<data name="Packages_Error_NoEntryPointCmd" xml:space="preserve">
+  <data name="Packages_Error_NoEntryPointCmd" xml:space="preserve">
     <value>Cannot execute a command in this package context. The package does not have any applications defined.</value>
   </data>
-	<data name="Packages_Error_NoEntryPoint_Format" xml:space="preserve">
+  <data name="Packages_Error_NoEntryPoint_Format" xml:space="preserve">
     <value>The entry point '{0}' was not found.</value>
   </data>
-	<data name="Packages_Error_NoStartMenu" xml:space="preserve">
+  <data name="Packages_Error_NoStartMenu" xml:space="preserve">
     <value>This package has no Start Menu entry points.</value>
   </data>
-	<data name="Packages_Error_Registering" xml:space="preserve">
+  <data name="Packages_Error_Registering" xml:space="preserve">
     <value>The package could not be registered.</value>
   </data>
-	<data name="Packages_Error_SrcNotSupported" xml:space="preserve">
+  <data name="Packages_Error_SrcNotSupported" xml:space="preserve">
     <value>Required package source is not supported.</value>
   </data>
-	<data name="Packages_Error_TargetNotDir" xml:space="preserve">
+  <data name="Packages_Error_TargetNotDir" xml:space="preserve">
     <value>The target path must be a directory.</value>
   </data>
-	<data name="Packages_Error_TemplateNotFound_Format" xml:space="preserve">
+  <data name="Packages_Error_TemplateNotFound_Format" xml:space="preserve">
     <value>Required template {0} was not found.</value>
   </data>
-	<data name="Packages_Error_Uac" xml:space="preserve">
+  <data name="Packages_Error_Uac" xml:space="preserve">
     <value>This tool requires admin rights.</value>
   </data>
-	<data name="Packages_Error_VolumeCreation_Format" xml:space="preserve">
+  <data name="Packages_Error_VolumeCreation_Format" xml:space="preserve">
     <value>Volume {0} could not be created.</value>
   </data>
-	<data name="Packages_Error_VolumeNotFound_Format" xml:space="preserve">
+  <data name="Packages_Error_VolumeNotFound_Format" xml:space="preserve">
     <value>Could not find volume '{0}'.</value>
   </data>
-	<data name="Packages_ExtractingCert" xml:space="preserve">
+  <data name="Packages_ExtractingCert" xml:space="preserve">
     <value>Extracting certificate…</value>
   </data>
-	<data name="Packages_ExtractingCertFrom_Format" xml:space="preserve">
+  <data name="Packages_ExtractingCertFrom_Format" xml:space="preserve">
     <value>Extracting certificate from {0}…</value>
   </data>
-	<data name="Packages_GettingApps" xml:space="preserve">
+  <data name="Packages_GettingApps" xml:space="preserve">
     <value>Getting installed apps…</value>
   </data>
-	<data name="Packages_InstallingFrom_Format" xml:space="preserve">
+  <data name="Packages_InstallingFrom_Format" xml:space="preserve">
     <value>Installing from {0}…</value>
   </data>
-	<data name="Packages_Installing_Format" xml:space="preserve">
+  <data name="Packages_Installing_Format" xml:space="preserve">
     <value>Installing {0}…</value>
   </data>
-	<data name="Packages_ModPackage_DefaultDescription_Format" xml:space="preserve">
+  <data name="Packages_ModPackage_DefaultDescription_Format" xml:space="preserve">
     <value>Modification Package for {0}</value>
   </data>
-	<data name="Packages_ModPackage_DefaultPackageName" xml:space="preserve">
+  <data name="Packages_ModPackage_DefaultPackageName" xml:space="preserve">
     <value>Modification Package Name</value>
   </data>
-	<data name="Packages_ModPackage_DefaultPublisherName" xml:space="preserve">
+  <data name="Packages_ModPackage_DefaultPublisherName" xml:space="preserve">
     <value>Modification Package Publisher Name</value>
   </data>
-	<data name="Packages_PkgDir_Placeholder" xml:space="preserve">
+  <data name="Packages_PkgDir_Placeholder" xml:space="preserve">
     <value>&lt;PackageDirectory&gt;</value>
   </data>
-	<data name="Packages_PkgDrv_Placeholder" xml:space="preserve">
+  <data name="Packages_PkgDrv_Placeholder" xml:space="preserve">
     <value>&lt;PackageDrive&gt;</value>
   </data>
-	<data name="Packages_Processes_CheckError" xml:space="preserve">
+  <data name="Packages_Processes_CheckError" xml:space="preserve">
     <value>Could not get the list of running processes.</value>
   </data>
-	<data name="Packages_Provisioning_Format" xml:space="preserve">
+  <data name="Packages_Provisioning_Format" xml:space="preserve">
     <value>Provisioning {0} {1}…</value>
   </data>
-	<data name="Packages_Psf_FilesWithExt_Format" xml:space="preserve">
+  <data name="Packages_Psf_FilesWithExt_Format" xml:space="preserve">
     <value>Files with extension {0}</value>
   </data>
-	<data name="Packages_Removing" xml:space="preserve">
+  <data name="Packages_Removing" xml:space="preserve">
     <value>Removing…</value>
   </data>
-	<data name="Packages_Removing_Format" xml:space="preserve">
+  <data name="Packages_Removing_Format" xml:space="preserve">
     <value>Removing {0}…</value>
   </data>
-	<data name="Packages_Types_App" xml:space="preserve">
+  <data name="Packages_Types_App" xml:space="preserve">
     <value>App</value>
   </data>
-	<data name="Packages_Types_Framework" xml:space="preserve">
+  <data name="Packages_Types_Framework" xml:space="preserve">
     <value>Framework</value>
   </data>
-	<data name="Packages_Types_Psf" xml:space="preserve">
+  <data name="Packages_Types_Psf" xml:space="preserve">
     <value>Win32 + PSF</value>
   </data>
-	<data name="Packages_Types_Psf_Long" xml:space="preserve">
+  <data name="Packages_Types_Psf_Long" xml:space="preserve">
     <value>Classic Win32 app enhanced by Package Support Framework (PSF)</value>
   </data>
-	<data name="Packages_Types_Psf_Short" xml:space="preserve">
+  <data name="Packages_Types_Psf_Short" xml:space="preserve">
     <value>PSF</value>
   </data>
-	<data name="Packages_Types_AiStub" xml:space="preserve">
+  <data name="Packages_Types_AiStub" xml:space="preserve">
     <value>Win32 + AI</value>
   </data>
-	<data name="Packages_Types_AiStub_Long" xml:space="preserve">
+  <data name="Packages_Types_AiStub_Long" xml:space="preserve">
     <value>Classic Win32 app enhanced by Advanced Installer launcher</value>
   </data>
-	<data name="Packages_Types_AiStub_Short" xml:space="preserve">
+  <data name="Packages_Types_AiStub_Short" xml:space="preserve">
     <value>AI</value>
   </data>
-	<data name="Packages_Types_Pwa" xml:space="preserve">
+  <data name="Packages_Types_Pwa" xml:space="preserve">
     <value>PWA</value>
   </data>
-	<data name="Packages_Types_Pwa_Long" xml:space="preserve">
+  <data name="Packages_Types_Pwa_Long" xml:space="preserve">
     <value>Progressive Web Application</value>
   </data>
-	<data name="Packages_Types_Unknown" xml:space="preserve">
+  <data name="Packages_Types_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
-	<data name="Packages_Types_UWP" xml:space="preserve">
+  <data name="Packages_Types_UWP" xml:space="preserve">
     <value>UWP</value>
   </data>
-	<data name="Packages_Types_UWP_Long" xml:space="preserve">
+  <data name="Packages_Types_UWP_Long" xml:space="preserve">
     <value>Universal Windows Platform (UWP) app</value>
   </data>
-	<data name="Packages_Types_W32" xml:space="preserve">
+  <data name="Packages_Types_W32" xml:space="preserve">
     <value>Win32</value>
   </data>
-	<data name="Packages_Types_W32_Long" xml:space="preserve">
+  <data name="Packages_Types_W32_Long" xml:space="preserve">
     <value>Classic Win32 app</value>
   </data>
-	<data name="Packages_UpdateImpact_AnalyzingAdded" xml:space="preserve">
+  <data name="Packages_UpdateImpact_AnalyzingAdded" xml:space="preserve">
     <value>Analyzing added files…</value>
   </data>
-	<data name="Packages_UpdateImpact_AnalyzingChanges" xml:space="preserve">
+  <data name="Packages_UpdateImpact_AnalyzingChanges" xml:space="preserve">
     <value>Analyzing changed files…</value>
   </data>
-	<data name="Packages_UpdateImpact_AnalyzingDeleted" xml:space="preserve">
+  <data name="Packages_UpdateImpact_AnalyzingDeleted" xml:space="preserve">
     <value>Analyzing deleted files…</value>
   </data>
-	<data name="Packages_UpdateImpact_AnalyzingUnchanged" xml:space="preserve">
+  <data name="Packages_UpdateImpact_AnalyzingUnchanged" xml:space="preserve">
     <value>Analyzing unchanged files…</value>
   </data>
-	<data name="Packages_UpdateImpact_Calculating1" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Calculating1" xml:space="preserve">
     <value>Calculating file status (1/2)…</value>
   </data>
-	<data name="Packages_UpdateImpact_Calculating2" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Calculating2" xml:space="preserve">
     <value>Calculating file status (2/2)…</value>
   </data>
-	<data name="Packages_UpdateImpact_ComparingFiles" xml:space="preserve">
+  <data name="Packages_UpdateImpact_ComparingFiles" xml:space="preserve">
     <value>Comparing files…</value>
   </data>
-	<data name="Packages_UpdateImpact_Deduplicating" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Deduplicating" xml:space="preserve">
     <value>Finding duplicates…</value>
   </data>
-	<data name="Packages_UpdateImpact_DeduplicatingImpact1" xml:space="preserve">
+  <data name="Packages_UpdateImpact_DeduplicatingImpact1" xml:space="preserve">
     <value>Analyzing duplication impact (1/3)…</value>
   </data>
-	<data name="Packages_UpdateImpact_DeduplicatingImpact2" xml:space="preserve">
+  <data name="Packages_UpdateImpact_DeduplicatingImpact2" xml:space="preserve">
     <value>Analyzing duplication impact (2/3)…</value>
   </data>
-	<data name="Packages_UpdateImpact_DeduplicatingImpact3" xml:space="preserve">
+  <data name="Packages_UpdateImpact_DeduplicatingImpact3" xml:space="preserve">
     <value>Analyzing duplication impact (3/3)…</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_BundleMismatch" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_BundleMismatch" xml:space="preserve">
     <value>A bundle can be only compared to another bundle.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_BundleNotSupported" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_BundleNotSupported" xml:space="preserve">
     <value>Bundles are not supported.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_FileNotsupported_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_FileNotsupported_Format" xml:space="preserve">
     <value>File {0} is not supported.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_FormatNotSupported_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_FormatNotSupported_Format" xml:space="preserve">
     <value>Could not read the package. File {0} has invalid or unsupported format.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_NotABundle_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_NotABundle_Format" xml:space="preserve">
     <value>File {0} is not a valid MSIX bundle.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_NotMsix_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_NotMsix_Format" xml:space="preserve">
     <value>File {0} is not a valid MSIX.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_SameFamily_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_SameFamily_Format" xml:space="preserve">
     <value>Package '{0}' cannot upgrade the package '{1}' because they do not share the same family name.</value>
   </data>
-	<data name="Packages_UpdateImpact_Error_Version_Format" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Error_Version_Format" xml:space="preserve">
     <value>Package '{0}' version '{1}' cannot update the package '{2}' version '{3}'. The version of the upgrade package must be higher than '{3}'.</value>
   </data>
-	<data name="Packages_UpdateImpact_Reading1" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Reading1" xml:space="preserve">
     <value>Reading the first package…</value>
   </data>
-	<data name="Packages_UpdateImpact_Reading2" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Reading2" xml:space="preserve">
     <value>Reading the second package…</value>
   </data>
-	<data name="Packages_UpdateImpact_ReadingBlock" xml:space="preserve">
+  <data name="Packages_UpdateImpact_ReadingBlock" xml:space="preserve">
     <value>Reading AppxBlockMap.xml…</value>
   </data>
-	<data name="Packages_UpdateImpact_ReadingFiles" xml:space="preserve">
+  <data name="Packages_UpdateImpact_ReadingFiles" xml:space="preserve">
     <value>Reading files…</value>
   </data>
-	<data name="Packages_UpdateImpact_Wait" xml:space="preserve">
+  <data name="Packages_UpdateImpact_Wait" xml:space="preserve">
     <value>Please wait…</value>
   </data>
-	<data name="Packages_Update_CheckError" xml:space="preserve">
+  <data name="Packages_Update_CheckError" xml:space="preserve">
     <value>Checking for updates failed from an unspecified reason.</value>
   </data>
-	<data name="System_Process_crossgen" xml:space="preserve">
+  <data name="System_Process_crossgen" xml:space="preserve">
     <value>CrossGen</value>
   </data>
-	<data name="System_Process_crossgen_Description" xml:space="preserve">
+  <data name="System_Process_crossgen_Description" xml:space="preserve">
     <value>This tool optimizes .NET Core assemblies by creating their native images with compiled processor-specific machine code. Wait for the tool to finish before starting the repackaging.</value>
   </data>
-	<data name="System_Process_gacutil" xml:space="preserve">
+  <data name="System_Process_gacutil" xml:space="preserve">
     <value>Global Assembly Cache Tool</value>
   </data>
-	<data name="System_Process_gacutil_Description" xml:space="preserve">
+  <data name="System_Process_gacutil_Description" xml:space="preserve">
     <value>Global Assembly Cache tool performs manipulations on the contents of the Global Assembly Cache and download cache folders. Wait for the tool to finish before starting the repackaging.</value>
   </data>
-	<data name="System_Process_msiexec" xml:space="preserve">
+  <data name="System_Process_msiexec" xml:space="preserve">
     <value>Windows Installer</value>
   </data>
-	<data name="System_Process_msiexec_Description" xml:space="preserve">
+  <data name="System_Process_msiexec_Description" xml:space="preserve">
     <value>Windows Installer is running in the background which may cause unrelated system changes to be captured during the repackaging. Wait for all installations to finish before starting the repackaging.</value>
   </data>
-	<data name="System_Process_ngen" xml:space="preserve">
+  <data name="System_Process_ngen" xml:space="preserve">
     <value>Native Image Generator</value>
   </data>
-	<data name="System_Process_ngen_Description" xml:space="preserve">
+  <data name="System_Process_ngen_Description" xml:space="preserve">
     <value>This tool optimizes .NET Framework assemblies by creating and installing their native images with compiled processor-specific machine code. Wait for the tool to finish before starting the repackaging.</value>
   </data>
-	<data name="System_Service_ccmexec" xml:space="preserve">
+  <data name="System_Service_ccmexec" xml:space="preserve">
     <value>System Center Configuration Manager Agent is responsible for managed installation, maintenance and removal of software. If it is active, unrelated system changes may be captured during the repackaging.</value>
   </data>
-	<data name="System_Service_cscservice" xml:space="preserve">
+  <data name="System_Service_cscservice" xml:space="preserve">
     <value>This service performs maintenance activities on the Offline Files cache. If it is active, unrelated system changes may be captured during the repackaging.</value>
   </data>
-	<data name="System_Service_dps" xml:space="preserve">
+  <data name="System_Service_dps" xml:space="preserve">
     <value>Disabling this service may improve performance and reduce the amount of unrelated captured changes in repackaged apps.</value>
   </data>
-	<data name="System_Service_wsearch" xml:space="preserve">
+  <data name="System_Service_wsearch" xml:space="preserve">
     <value>This service is responsible for background indexing of files and their content. If it is active, unrelated system changes may be captured during the repackaging.</value>
   </data>
-	<data name="System_Service_wuauserv" xml:space="preserve">
+  <data name="System_Service_wuauserv" xml:space="preserve">
     <value>This service may update, install and uninstall software which is not related to the app being repackaged.</value>
   </data>
-	<data name="PackageExpert_Commands_AppInstaller_NoUpdates_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppInstaller_NoUpdates_Multiple" xml:space="preserve">
     <value>No updates are available for these packages:</value>
   </data>
-	<data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppInstaller_OptionalUpdateAvailable_Multiple" xml:space="preserve">
     <value>An optional update is available for these packages:</value>
   </data>
-	<data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppInstaller_RequiredUpdateAvailable_Multiple" xml:space="preserve">
     <value>A required update is available for these packages:</value>
   </data>
-	<data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppInstaller_UpdateCheckFailed_Multiple" xml:space="preserve">
     <value>Could not check for updates for these packages:</value>
   </data>
-	<data name="PackageExpert_Commands_AppInstaller_WrongSource_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppInstaller_WrongSource_Multiple" xml:space="preserve">
     <value>These package were not installed via {0} file:</value>
   </data>
-	<data name="PackageExpert_Commands_AppRemoved1_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppRemoved1_Multiple" xml:space="preserve">
     <value>Apps removed</value>
   </data>
-	<data name="PackageExpert_Commands_AppRemoved2_Multiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_AppRemoved2_Multiple" xml:space="preserve">
     <value>{0} apps has been just removed.</value>
   </data>
-	<data name="PackageExpert_Commands_ConfirmRemovalMultiple" xml:space="preserve">
+  <data name="PackageExpert_Commands_ConfirmRemovalMultiple" xml:space="preserve">
     <value>Are you sure you want to remove {0} packages? This operation is irreversible.</value>
   </data>
-	<data name="PackageExpert_Commands_Deprovisioning" xml:space="preserve">
+  <data name="PackageExpert_Commands_Deprovisioning" xml:space="preserve">
     <value>De-provisioning {0}…</value>
   </data>
-	<data name="PackageExpert_Commands_UpdatesAvailable" xml:space="preserve">
+  <data name="PackageExpert_Commands_UpdatesAvailable" xml:space="preserve">
     <value>Updates are available for the following packages:</value>
   </data>
-	<data name="Events_Reading" xml:space="preserve">
+  <data name="Events_Reading" xml:space="preserve">
     <value>Reading {0}…</value>
   </data>
-	<data name="Psf_Descriptor_AllFiles" xml:space="preserve">
+  <data name="Psf_Descriptor_AllFiles" xml:space="preserve">
     <value>All files</value>
   </data>
-	<data name="Signing_AlgNotSupported" xml:space="preserve">
+  <data name="Signing_AlgNotSupported" xml:space="preserve">
     <value>Signature algorithm {0} is not supported.</value>
   </data>
-	<data name="Signing_DeviceGuard_LoggingIn" xml:space="preserve">
+  <data name="Signing_DeviceGuard_LoggingIn" xml:space="preserve">
     <value>Signing-in…</value>
   </data>
-	<data name="Signing_DeviceGuard_Signing" xml:space="preserve">
+  <data name="Signing_DeviceGuard_Signing" xml:space="preserve">
     <value>Signing with Device Guard…</value>
   </data>
-	<data name="Signing_DeviceGuard_Validation" xml:space="preserve">
+  <data name="Signing_DeviceGuard_Validation" xml:space="preserve">
     <value>Validating signing capabilities…</value>
   </data>
-	<data name="Signing_Signing" xml:space="preserve">
+  <data name="Signing_Signing" xml:space="preserve">
     <value>Signing…</value>
+  </data>
+  <data name="Packages_Error_FileInsideNotFound" xml:space="preserve">
+    <value>File {0} not found in MSIX package.</value>
+  </data>
+  <data name="Packages_Error_FileNotFound" xml:space="preserve">
+    <value>File not found.</value>
+  </data>
+  <data name="Packages_Error_FileNotFound_Format" xml:space="preserve">
+    <value>File {0} does not exist.</value>
+  </data>
+  <data name="Packages_Error_NoPackageInFolder" xml:space="preserve">
+    <value>This folder does not contain APPX/MSIX package nor APPX bundle.</value>
+  </data>
+  <data name="Packages_Error_NotAPackage" xml:space="preserve">
+    <value>This file is not an MSIX/APPX package, or the content of the package is damaged.</value>
+  </data>
+  <data name="Packages_Error_PackageNotFound" xml:space="preserve">
+    <value>Could not find the required package.</value>
   </data>
 </root>

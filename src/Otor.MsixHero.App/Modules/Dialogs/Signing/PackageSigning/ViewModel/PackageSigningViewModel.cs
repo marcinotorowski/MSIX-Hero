@@ -206,7 +206,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             }
             else
             {
-                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
+                var filter = new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.Msix).WithAll();
+                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(filter), out var selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;

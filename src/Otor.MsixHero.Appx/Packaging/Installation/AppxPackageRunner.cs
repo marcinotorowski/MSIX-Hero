@@ -91,9 +91,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
 
             Logger.Debug().WriteLine("Executing Invoke-CommandInDesktopPackage");
+
             try
             {
-                // ReSharper disable once UnusedVariable
                 using var result = await ps.InvokeAsync().ConfigureAwait(false);
             }
             catch (Exception e)

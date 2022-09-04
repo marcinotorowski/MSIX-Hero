@@ -48,12 +48,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
             this.InputPath = new ChangeableFileProperty(Resources.Localization.Dialogs_ExportCertificate_PackageOrCerFile, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*.cer").BuildFilter()
+                Filter = new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.Msix).WithAll()
             };
 
             this.ExtractCertificate = new ChangeableFileProperty(Resources.Localization.Dialogs_ExportCertificate_Output_Cer_Path, interactionService, ChangeableFileProperty.ValidatePath)
             {
-                Filter = new DialogFilterBuilder("*.cer").BuildFilter(),
+                Filter = new DialogFilterBuilder().WithCertificates(DialogFilterBuilderPackagesExtensions.CertificateTypes.Cer).WithAll(),
                 OpenForSaving = true
             };
             

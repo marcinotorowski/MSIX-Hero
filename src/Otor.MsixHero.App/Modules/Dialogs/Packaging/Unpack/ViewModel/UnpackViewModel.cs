@@ -23,7 +23,6 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -45,7 +44,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
             this.OutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Unpack_TargetDir, interactionService, ChangeableFolderProperty.ValidatePath);
             this.InputPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Unpack_SourceMsix, interactionService, ChangeableFileProperty.ValidatePath)
             {
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()
+                Filter = new DialogFilterBuilder().WithPackages().WithAll()
             };
             
             this.CreateFolder = new ChangeableProperty<bool>(true);

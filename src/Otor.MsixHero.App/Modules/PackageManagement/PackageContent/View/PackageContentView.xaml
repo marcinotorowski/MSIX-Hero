@@ -28,7 +28,7 @@
              mc:Ignorable="d" 
              Background="#FCFCFC"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}">
-    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FAFAFA">
+    <DockPanel x:Name="Parent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FAFAFA">
         <DockPanel.Resources>
             <DataTemplate DataType="{x:Type overview:PackageOverviewViewModel}">
                 <ScrollViewer 
@@ -67,7 +67,9 @@
             </DataTemplate>
         </DockPanel.Resources>
 
-        <actions:ActionsView DataContext="{Binding Actions}" DockPanel.Dock="Top" />
+        <actions:ActionsView 
+            DataContext="{Binding Actions}"
+            DockPanel.Dock="Top" />
 
         <background:AcrylicBackgroundControl
             DockPanel.Dock="Top"
@@ -90,6 +92,7 @@
         </background:AcrylicBackgroundControl>
 
         <controls:ProgressOverlay 
+            DockPanel.Dock="Top"
             Progress="{Binding Progress.Progress}"
             IsShown="{Binding Progress.IsLoading}" 
             Message="{Binding Progress.Message}">

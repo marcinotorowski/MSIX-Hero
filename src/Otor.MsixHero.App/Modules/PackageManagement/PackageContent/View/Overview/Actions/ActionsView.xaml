@@ -10,11 +10,13 @@
              xmlns:more="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Overview.Actions.More"
              xmlns:start="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Overview.Actions.Start"
              xmlns:open="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Overview.Actions.Open"
+             xmlns:actions="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance items:ActionsViewModel}">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance actions:ActionsViewModel}">
     <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
         <DockPanel>
             <WrapPanel DockPanel.Dock="Right">
+                
                 <ToggleButton 
                     x:Name="ToggleButtonMore"
                     Style="{StaticResource ActionPopupToggleButton}">
@@ -48,9 +50,20 @@
             </WrapPanel>
 
             <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Button 
+                    Style="{StaticResource ActionButton}"
+                    Visibility="{Binding IsInstalled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Command="{x:Static commands:MsixHeroRoutedUICommands.AddPackage}">
+                    <controls:LabelWithIcon 
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallPlus}"
+                        Content="{localization:Loc Packages_Actions_Install}" />
+                    </Button>
+
                 <ToggleButton 
-                x:Name="ToggleButtonStart"
-                Style="{StaticResource ActionPopupToggleButton}">
+                    Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    x:Name="ToggleButtonStart"
+                    Style="{StaticResource ActionPopupToggleButton}">
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallStart}"
@@ -79,6 +92,7 @@
                 </Popup>
 
                 <ToggleButton 
+                    Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
                     x:Name="ToggleOpen"
                     Style="{StaticResource ActionPopupToggleButton}">
                     <controls:LabelWithIcon 
@@ -109,6 +123,7 @@
                 </Popup>
 
                 <Button
+                    Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
@@ -118,6 +133,7 @@
                 </Button>
 
                 <Button 
+                    Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 

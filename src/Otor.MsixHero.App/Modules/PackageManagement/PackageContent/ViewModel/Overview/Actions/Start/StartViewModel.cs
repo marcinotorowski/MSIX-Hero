@@ -29,12 +29,15 @@ using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start;
 
-public class StartViewModel : NotifyPropertyChanged, ILoadPackage
+public class StartViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationAware
 {
     private readonly IConfigurationService _configurationService;
     private ObservableCollection<ToolViewModel> _tools;
+    private bool _isInstalled;
 
-    public StartViewModel(IEventAggregator eventAggregator, IConfigurationService configurationService)
+    public StartViewModel(
+        IEventAggregator eventAggregator, 
+        IConfigurationService configurationService)
     {
         _configurationService = configurationService;
         eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(OnToolsChanged, ThreadOption.UIThread);
@@ -55,6 +58,12 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage
         }
     }
 
+    public bool IsInstalled
+    {
+        get => this._isInstalled;
+        set => this.SetField(ref this._isInstalled, value);
+    }
+
     public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         var apps = new ObservableCollection<ApplicationViewModel>();
@@ -70,6 +79,7 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage
 
         this.Applications = apps;
         OnPropertyChanged(nameof(Applications));
+        OnPropertyChanged(nameof(IsInstalled));
 
         return Task.CompletedTask;
     }

@@ -16,11 +16,13 @@
 
 using System.Windows.Media;
 using Otor.MsixHero.App.Helpers.Interop;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start
 {
-    public class ToolViewModel
+    public class ToolViewModel : NotifyPropertyChanged
     {
         public ToolViewModel(ToolListConfiguration model)
         {

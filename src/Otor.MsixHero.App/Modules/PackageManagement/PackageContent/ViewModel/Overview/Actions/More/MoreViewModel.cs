@@ -22,10 +22,18 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.More;
 
-public class MoreViewModel : NotifyPropertyChanged, ILoadPackage
+public class MoreViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationAware
 {
+    private bool _isInstalled;
+
     public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    public bool IsInstalled
+    {
+        get => this._isInstalled;
+        set => this.SetField(ref this._isInstalled, value);
     }
 }

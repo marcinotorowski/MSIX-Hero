@@ -32,7 +32,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             {
                 if (!Directory.Exists(path))
                 {
-                    throw new FileNotFoundException("File not found.", path);
+                    throw new FileNotFoundException(Resources.Localization.Packages_Error_FileNotFound, path);
                 }
 
                 return new DirectoryInfoFileReaderAdapter(path);

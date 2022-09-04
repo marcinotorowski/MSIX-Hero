@@ -24,3 +24,8 @@ public interface ILoadPackage
 {
     Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken);
 }
+
+public interface IInstallationAware
+{
+    bool IsInstalled { get; set; }
+}

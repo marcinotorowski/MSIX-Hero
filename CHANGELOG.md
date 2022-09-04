@@ -1,14 +1,13 @@
-# 3.0.0 (planned)
+# 3.0.0
+See http://msixhero.net/redirect/release-notes/3.0.0 for more details
+
 Feature highlights:
 * New UI with card-based layout
 * Multi-language support (English, German and Polish in this release)
 * Ability to pin apps in the list view
 * Improved package overview sidebar
-  * More human friendly display of PSF content
-  * PSF content now shows more details, including the content of launch scripts and custom JSON configuration
-  * Build meta-data is now displayed
-  * Added detection of Host ID
-  * File count and total size is now displayed
+  * Reworked and extended PSF content viewer
+  * More info is now shown, for example total file size, host ID, build meta-data etc.
   * Ability to open dependency packages
 * Function buttons (Start app, open installaction folder) are now also displayed in package dialog
 * Restyled Event viewer
@@ -17,6 +16,8 @@ Feature highlights:
 * General improvements, stability and bug fixes
 
 # 2.3.0
+See http://msixhero.net/redirect/release-notes/2.3.0 for more details
+
 Feature highlights:
 * New command line verb ```edit``` for unattended MSIX editing. (#78)
   * Changing of package identity (```msixherocli.exe edit <path> setIdentity …```)
@@ -57,7 +58,6 @@ Technical changes and SDK updates
 * Migrated MSIX Hero to .NET 6.0. (e546a32e)
 * Reduced application size thanks to deprecation of older .NET Framework code. (4cd18578)
 * Updated MSIX/Windows SDK to 10.0.22000.0. (2269bf46)
-
 
 # 2.2.34
 See http://msixhero.net/redirect/release-notes/2.2.34 for more details

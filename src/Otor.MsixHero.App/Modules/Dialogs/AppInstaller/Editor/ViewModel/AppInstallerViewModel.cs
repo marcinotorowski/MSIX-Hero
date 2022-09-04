@@ -205,7 +205,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 return false;
             }
 
-            var settings = new FileDialogSettings(Resources.Localization.AllFiles + "|*.appinstaller|"  + Resources.Localization.AllFiles + "|*.*", this._previousPath);
+            var settings = new FileDialogSettings(new DialogFilterBuilder().WithAll().WithAppInstaller(), this._previousPath);
             if (!this._interactionService.SaveFile(settings, out var selected))
             {
                 return false;
@@ -332,13 +332,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             {
                 if (this._previousPath != null)
                 {
-                    var settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter(), this._previousPath);
+                    var settings = new FileDialogSettings(new DialogFilterBuilder().WithAppInstaller().WithAll(), this._previousPath);
                     if (!this._interactionService.SelectFile(settings, out selected))
                     {
                         return;
                     }
                 }
-                else if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter()), out selected))
+                else if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithAppInstaller().WithAll()), out selected))
                 {
                     return;
                 }

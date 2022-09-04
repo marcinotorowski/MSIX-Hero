@@ -6,6 +6,8 @@
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
              xmlns:summaries="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryInstallationViewModel}">
 
@@ -22,9 +24,14 @@
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
         </cards:CardAction.Icon>
         <cards:CardAction.ContentRight>
-            <TextBlock 
-                VerticalAlignment="Center"
-                Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock 
+                    VerticalAlignment="Center"
+                    Visibility="{Binding HasAddOns, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding ThirdLine}" />
+                <Button 
+                    Visibility="{Binding IsInstalled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Command="{x:Static commands:MsixHeroRoutedUICommands.AddPackage}" Style="{StaticResource CardButton}" Content="{localization:Loc Packages_Actions_Install}" />
+            </StackPanel>
         </cards:CardAction.ContentRight>
     </cards:CardAction>
 </UserControl>

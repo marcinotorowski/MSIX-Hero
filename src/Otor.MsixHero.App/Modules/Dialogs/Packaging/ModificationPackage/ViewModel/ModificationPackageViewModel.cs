@@ -328,7 +328,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.SourcePath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_ModPack_ParentPath, this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter(),
+                Filter = new DialogFilterBuilder()
+                    .WithPackages()
+                    .WithManifests()
+                    .WithAll()
+                    .WithAllSupported(),
                 IsValidated = true
             };
 
@@ -390,7 +394,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.SourceRegistryFile = new ChangeableFileProperty(() => Resources.Localization.Dialogs_ModPack_RegFile, this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = false,
-                Filter = new DialogFilterBuilder("*.reg").BuildFilter(),
+                Filter = new DialogFilterBuilder().WithRegistry().WithAll(),
                 OpenForSaving = false
             };
 

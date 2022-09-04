@@ -146,7 +146,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
         private async void OnBrowse()
         {
             // ReSharper disable StringLiteralTypo
-            var f = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, "*" + FileConstants.AppxBundleExtension, "*" + FileConstants.MsixBundleExtension).BuildFilter();
+            var f = new DialogFilterBuilder()
+                .WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.All)
+                .WithAll();
+            
             // ReSharper restore StringLiteralTypo
             if (!this._interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
             {

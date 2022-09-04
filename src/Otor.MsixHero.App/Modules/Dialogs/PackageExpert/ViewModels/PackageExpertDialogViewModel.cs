@@ -19,7 +19,6 @@ using System.IO;
 using System.Linq;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Elevation;
@@ -49,6 +48,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 prismServices,
                 uacElevation,
                 busyManager);
+
+            busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
         }
 
         public PackageExpertCommandHandler CommandHandler { get; }
@@ -62,8 +63,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         {
             this.RequestClose?.Invoke(new DialogResult());
         }
-
-        public ChangeableProperty<bool> IsInstalled { get; } = new ChangeableProperty<bool>();
         
         public void OnDialogOpened(IDialogParameters parameters)
         {
@@ -78,10 +77,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 return;
             }
 
-            this.FilePath = packagePath;
-            this.OnPropertyChanged(nameof(FilePath));
-
-            this.Title = Path.GetFileName(this.FilePath);
+            this.Title = $"MSIX Hero - {Path.GetFileName(packagePath)}";
             this.OnPropertyChanged(nameof(Title));
 
             this.CommandHandler.FilePath = packagePath;
@@ -90,7 +86,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         public string Title { get; private set; } = "MSIX Hero";
         
         public event Action<IDialogResult> RequestClose;
-        
-        public string FilePath { get; private set; }
+
+        public ProgressProperty Progress { get; } = new ProgressProperty();
+
+        private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
+        {
+            if (e.Type != OperationType.PackageLoading && e.Type != OperationType.Other)
+            {
+                return;
+            }
+
+            this.Progress.IsLoading = e.IsBusy;
+            this.Progress.Message = e.Message;
+            this.Progress.Progress = e.Progress;
+        }
     }
 }

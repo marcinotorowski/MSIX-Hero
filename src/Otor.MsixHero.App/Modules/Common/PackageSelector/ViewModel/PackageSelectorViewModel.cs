@@ -302,7 +302,7 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
             {
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Package)
                 {
-                    filterBuilder.AddFilters("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension);
+                    filterBuilder.WithPackages();
                 }
             }
 
@@ -311,17 +311,17 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle)
                 {
                     // ReSharper disable once StringLiteralTypo
-                    filterBuilder.AddFilters("*" + FileConstants.AppxBundleExtension);
+                    filterBuilder.WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.AppxBundle | DialogFilterBuilderPackagesExtensions.PackageTypes.MsixBundle);
                 }
             }
 
             if (allowManifests)
             {
                 // ReSharper disable once StringLiteralTypo
-                filterBuilder.AddFilters(FileConstants.AppxManifestFile);
+                filterBuilder.WithManifests();
             }
 
-            return filterBuilder.BuildFilter();
+            return filterBuilder.WithAllSupported().WithAll().ToString();
         }
 
         private void PackageTypeOnValueChanged(object sender, ValueChangedEventArgs e)

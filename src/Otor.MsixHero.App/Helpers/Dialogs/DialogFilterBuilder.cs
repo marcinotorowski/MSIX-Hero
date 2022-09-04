@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Helpers.Dialogs
 {
@@ -27,240 +26,225 @@ namespace Otor.MsixHero.App.Helpers.Dialogs
     /// </summary>
     public class DialogFilterBuilder
     {
-        private readonly HashSet<string> filters = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        public DialogFilterBuilder(params string[] extensions)
+        private readonly Dictionary<string, FilterEntry> _filters = new(StringComparer.OrdinalIgnoreCase);
+        private bool _includeAllSupported;
+        
+        public DialogFilterBuilder WithAllSupported()
         {
-            AddFilters(extensions);
+            this._includeAllSupported = true;
+            return this;
         }
 
-        public void AddFilters(params string[] extensions)
+        public DialogFilterBuilder WithAll(string displayName = null)
         {
-            foreach (var ext in extensions)
+            if (displayName == null)
             {
-                // ReSharper disable once StringLiteralTypo
-                if (string.Equals(ext, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
-                {
-                    // ReSharper disable once StringLiteralTypo
-                    filters.Add(FileConstants.AppxManifestFile);
-                    continue;
-                }
-
-                filters.Add(ext);
+                displayName = Resources.Localization.AllFiles;
             }
+
+            if (displayName.IndexOf('|') != -1)
+            {
+                throw new ArgumentException(@"The display name must not contain pipe character (|).", nameof(displayName));
+            }
+
+            this._filters["*.*"] = new FilterEntry(displayName, int.MaxValue, FilterEntryType.AllFiles);
+            return this;
         }
 
-        public string BuildFilter(bool includeAllSupported = true, bool includeAll = true)
+        public DialogFilterBuilder WithExtension(
+            string extension, 
+            string displayName = null, 
+            int order = 0)
         {
-            var filter = string.Join('|', new[]
+            if (extension == null)
             {
-                BuildPackagesFilter(),
-                BuildBundles(),
-                BuildManifestFilter(),
-                BuildWinget(),
-                BuildAppInstaller(),
-                BuildCertificateFiles(),
-                BuildRegistry(),
-                BuildLegacyInstallers(),
-                BuildOtherFiles()
-            }.Where(s => !string.IsNullOrEmpty(s)));
-
-            if (!includeAll && !includeAllSupported)
-            {
-                return filter;
+                throw new ArgumentNullException(nameof(extension));
             }
 
-            var sections = filter.Split('|');
-            if (sections.Length == 0)
+            if (extension == "*" || extension == "*.*" || extension == ".*")
             {
-                return Resources.Localization.AllFiles + "|*.*";
+                return this.WithAll(displayName);
             }
 
-            var allExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            for (var i = 1; i < sections.Length; i += 2)
+            if (extension.IndexOf('|') != -1)
             {
-                var extensions = sections[i].Split(';');
-                foreach (var extension in extensions)
+                throw new ArgumentException(@"The extension must not contain pipe character (|).", nameof(extension));
+            }
+
+            if (displayName == null)
+            {
+                displayName = string.Format(Resources.Localization.Dialogs_Filter_MultipleFormats, extension.TrimStart('.').ToUpperInvariant());
+            }
+
+            if (displayName.IndexOf('|') != -1)
+            {
+                throw new ArgumentException(@"The display name must not contain pipe character (|).", nameof(displayName));
+            }
+
+            if (extension.StartsWith("*.", StringComparison.OrdinalIgnoreCase))
+            {
+                // ok
+            }
+            else if (extension.StartsWith('.'))
+            {
+                extension = "*" + extension;
+            }
+            else
+            {
+                if (extension.IndexOf('.') != -1 || extension.IndexOf('*') != -1)
                 {
-                    allExtensions.Add(extension);
+                    throw new ArgumentException(@"Extension format not supported.", nameof(extension));
                 }
+
+                extension = "*." + extension;
             }
 
-            if (includeAllSupported && allExtensions.Count > 1 && sections.Length / 2 > 1)
+            if (displayName.IndexOf('|') != -1)
             {
-                // if there is just one category then it makes no sense to show all supported files extra
-                filter = Resources.Localization.Dialogs_Filter_AllSupportedFiles + "|" + string.Join(';', allExtensions.OrderBy(e => e)) + "|" + filter;
+                displayName = displayName.Replace('|', ' ');
             }
 
-            if (includeAll && !allExtensions.Contains("*.*"))
-            {
-                if (filter.Length > 0)
-                {
-                    filter += "|" + Resources.Localization.AllFiles + "|*.*";
-                }
-                else
-                {
-                    filter = Resources.Localization.AllFiles + "|*.*";
-                }
-            }
-
-            return filter;
+            this._filters[extension] = new FilterEntry(displayName, order, FilterEntryType.Extension);
+            return this;
         }
 
-        private string BuildLegacyInstallers()
+        public DialogFilterBuilder WithFile(
+            string fileName, 
+            string displayName = null, 
+            int order = 0)
         {
-            var msi = filters.Contains("*.msi");
-            var exe = filters.Contains("*.exe");
-
-            if (msi)
+            if (fileName == null)
             {
-                if (exe)
-                {
-                    return Resources.Localization.Dialogs_Filter_Msi + "|*.msi|" + Resources.Localization.Dialogs_Filter_Exe + "|*.exe";
-                }
-
-                return Resources.Localization.Dialogs_Filter_Msi + "|*.msi";
+                throw new ArgumentNullException(nameof(fileName));
             }
 
-            if (exe)
+            if (fileName.IndexOf('|') != -1)
             {
-                return Resources.Localization.Dialogs_Filter_Exe + "|*.exe";
+                throw new ArgumentException(@"The file name must not contain pipe character (|).", nameof(fileName));
             }
 
-            return null;
+            if (displayName == null)
+            {
+                displayName = string.Format(Resources.Localization.Dialogs_Filter_MultipleFormats, fileName);
+            }
+
+            if (displayName != null && displayName.IndexOf('|') != -1)
+            {
+                throw new ArgumentException(@"The display name must not contain pipe character (|).", nameof(displayName));
+            }
+
+            if (fileName == "*.*")
+            {
+                return this.WithAll(displayName);
+            }
+
+            this._filters[fileName] = new FilterEntry(displayName, order, FilterEntryType.File);
+            
+            return this;
         }
-
-        private string BuildOtherFiles()
+        
+        public DialogFilterBuilder WithWindowsFilter(
+            string mask, 
+            int order = 0)
         {
-            var otherExtensions = filters.Select(filter =>
+            if (mask == null)
             {
-                switch (filter.ToLowerInvariant())
-                {
-                    // ReSharper disable once StringLiteralTypo
-                    case FileConstants.AppxManifestFile:
-                    case "*" + FileConstants.MsixExtension:
-                    case "*" + FileConstants.AppxExtension:
-                    case "*" + FileConstants.WingetExtension:
-                    // ReSharper disable once StringLiteralTypo
-                    case "*" + FileConstants.AppInstallerExtension:
-                    case "*.reg":
-                    case "*.cer":
-                    case "*.exe":
-                    case "*.msi":
-                    case "*.pfx":
-                    // ReSharper disable once StringLiteralTypo
-                    case "*" + FileConstants.AppxBundleExtension:
-                    // ReSharper disable once StringLiteralTypo
-                    case "*" + FileConstants.MsixBundleExtension:
-                        return null;
-                    default:
-                        return filter;
-                }
-            }).Where(ext => ext != null).OrderBy(ext => ext);
-
-            return string.Join('|', otherExtensions.Select(e => string.Format(Resources.Localization.Dialogs_Filter_MultipleFormats, e.TrimStart('*').TrimStart('.').ToUpperInvariant() + "|*." + e)));
-        }
-
-        private string BuildPackagesFilter()
-        {
-            var msix = filters.Contains("*" + FileConstants.MsixExtension);
-            var appx = filters.Contains("*" + FileConstants.AppxExtension);
-
-            var package = msix || appx;
-            if (!package)
-            {
-                return string.Empty;
+                throw new ArgumentNullException(nameof(mask));
             }
 
+            var split = mask.Split('|');
+            for (var i = 1; i < split.Length; i += 2)
+            {
+                var displayName = split[i - 1];
+                var extensions = split[i].Split(';');
+
+                foreach (var ext in extensions)
+                {
+                    if (ext.StartsWith("*.", StringComparison.OrdinalIgnoreCase))
+                    {
+                        this.WithExtension(ext, displayName, order);
+                    }
+                    else
+                    {
+                        this.WithFile(ext, displayName, order);
+                    }
+                }
+            }
+
+            return this;
+        }
+        
+        public string Build()
+        {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append(Resources.Localization.Dialogs_Filter_Packages + "|");
-            if (msix)
+            foreach (var group in this._filters.Where(f => f.Value.Type != FilterEntryType.AllFiles).GroupBy(f => f.Value.DisplayName).OrderBy(g => g.Min(x => x.Value.Order)))
             {
-                stringBuilder.Append("*" + FileConstants.MsixExtension + ";");
+                var ext = string.Join(';', group.Select(g => g.Key));
+
+                stringBuilder.Append('|');
+                stringBuilder.Append(group.Key);
+
+                if (group.Any(x => x.Value.Type != FilterEntryType.Extension))
+                {
+                    stringBuilder.Append(" (");
+                    stringBuilder.Append(ext);
+                    stringBuilder.Append(")");
+                }
+
+                stringBuilder.Append('|');
+                stringBuilder.Append(ext);
+            }
+            
+            if (this._includeAllSupported)
+            {
+                stringBuilder.Append('|');
+                stringBuilder.Append(Resources.Localization.Dialogs_Filter_AllSupportedFiles);
+                stringBuilder.Append('|');
+                stringBuilder.Append(string.Join(';', this._filters.Where(f => f.Value.Type != FilterEntryType.AllFiles).Select(g => g.Key).Distinct()));
             }
 
-            if (appx)
+            if (!this._filters.Any() || this._filters.Any(f => f.Value.Type == FilterEntryType.AllFiles))
             {
-                stringBuilder.Append("*" + FileConstants.MsixExtension + ";");
+                stringBuilder.Append('|');
+                stringBuilder.Append(Resources.Localization.AllFiles.Replace('|', ' '));
+                stringBuilder.Append('|');
+                stringBuilder.Append("*.*");
             }
 
-            return stringBuilder.ToString().TrimEnd(';');
+            return stringBuilder.ToString(1, stringBuilder.Length - 1);
         }
 
-        private string BuildManifestFilter()
+        public override string ToString()
         {
-            // ReSharper disable once StringLiteralTypo
-            return filters.Contains(FileConstants.AppxManifestFile) ? Resources.Localization.Dialogs_Filter_Manifests + "|" + FileConstants.AppxManifestFile : null;
+            return this.Build();
         }
 
-        private string BuildBundles()
+        public static implicit operator string(DialogFilterBuilder builder)
         {
-            var msixBundle = filters.Contains("*" + FileConstants.MsixBundleExtension);
-            var appxBundle = filters.Contains("*" + FileConstants.AppxBundleExtension);
-
-            var bundle = msixBundle || appxBundle;
-            if (!bundle)
-            {
-                return string.Empty;
-            }
-
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append(Resources.Localization.Dialogs_Filter_Bundles + "|");
-
-            if (msixBundle)
-            {
-                stringBuilder.Append("*" + FileConstants.MsixBundleExtension + ";");
-            }
-
-            if (appxBundle)
-            {
-                stringBuilder.Append("*" + FileConstants.AppxBundleExtension + ";");
-            }
-
-            return stringBuilder.ToString().TrimEnd(';');
+            return builder.ToString();
         }
 
-        private string BuildWinget()
+        private struct FilterEntry
         {
-            // ReSharper disable once StringLiteralTypo
-            return filters.Contains("*" + FileConstants.WingetExtension) ? Resources.Localization.Dialogs_Filter_Winget + "|*" + FileConstants.WingetExtension : null;
-        }
-
-        private string BuildCertificateFiles()
-        {
-            var pfx = filters.Contains("*.pfx");
-            var cer = filters.Contains("*.cer");
-
-            if (!pfx && !cer)
+            public FilterEntry(string displayName, int order, FilterEntryType type)
             {
-                return null;
+                this.DisplayName = displayName;
+                this.Order = order;
+                this.Type = type;
             }
 
-            var stringBuilder = new StringBuilder(Resources.Localization.Dialogs_Filter_Certificates + "|");
+            public string DisplayName { get; }
 
-            if (pfx)
-            {
-                stringBuilder.Append("*.pfx;");
-            }
+            public int Order { get; }
 
-            if (cer)
-            {
-                stringBuilder.Append("*.cer;");
-            }
-
-            return stringBuilder.ToString().TrimEnd(';');
+            public FilterEntryType Type { get; }
         }
 
-        private string BuildRegistry()
+        private enum FilterEntryType
         {
-            return filters.Contains("*.reg") ? Resources.Localization.Dialogs_Filter_Registry + "|*.reg" : null;
-        }
-
-        private string BuildAppInstaller()
-        {
-            // ReSharper disable once StringLiteralTypo
-            return filters.Contains("*" + FileConstants.AppInstallerExtension) ? Resources.Localization.Dialogs_Filter_AppInstaller + "|*" + FileConstants.AppInstallerExtension : null;
+            File,
+            Extension,
+            AllFiles
         }
     }
 }

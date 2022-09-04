@@ -235,7 +235,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         
         private async void OnLoadFromSetup()
         {
-            var settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*.exe", "*.msi").BuildFilter());
+            var settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithPackages().WithManifests().WithWindowsInstallerFiles().WithExecutableFiles().WithAll().WithAllSupported());
             // ReSharper disable once StringLiteralTypo
             if (!this._interactionService.SelectFile(settings, out var selected))
             {

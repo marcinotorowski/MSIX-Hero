@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Controls.TransitionContentControl;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications;
@@ -38,6 +37,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
     {
         private readonly IList<ILoadPackage> _loadPackageHandlers = new List<ILoadPackage>();
         private IPackageContentItem _currentItem;
+        private readonly AutoResetEvent _syncObject = new(true);
+        private CancellationTokenSource _previousCancellationTokenSource;
+        private string _lastPackageRequest;
 
         public PackageContentViewModel(IInteractionService interactionService,
             IConfigurationService configurationService,
@@ -48,7 +50,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             IAppxFileViewer fileViewer,
             FileInvoker fileInvoker)
         {
-            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(eventAggregator, configurationService));
+            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(queryManager, eventAggregator, configurationService));
             this.Items = new ObservableCollection<IPackageContentItem>();
             this.Header = new HeaderViewModel(this);
 
@@ -194,27 +196,21 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             await this.LoadPackage(pkg, path).ConfigureAwait(false);
         }
 
-        private readonly AutoResetEvent syncObject = new AutoResetEvent(true);
-
-        private CancellationTokenSource previousCancellationTokenSource;
-
-        private string lastPackageRequest;
-
         public async Task LoadPackage(AppxPackage model, string filePath)
         {
-            this.lastPackageRequest = filePath;
+            this._lastPackageRequest = filePath;
 
-            var got = this.syncObject.WaitOne();
+            var got = this._syncObject.WaitOne();
             try
             {
-                this.previousCancellationTokenSource?.Cancel();
-                if (this.lastPackageRequest != filePath)
+                this._previousCancellationTokenSource?.Cancel();
+                if (this._lastPackageRequest != filePath)
                 {
                     return;
                 }
 
-                this.previousCancellationTokenSource = new CancellationTokenSource();
-                var newCancellationToken = this.previousCancellationTokenSource.Token;
+                this._previousCancellationTokenSource = new CancellationTokenSource();
+                var newCancellationToken = this._previousCancellationTokenSource.Token;
 
                 var originalProgress = this.Progress.IsLoading;
                 this.Progress.IsLoading = true;
@@ -261,7 +257,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             {
                 if (got)
                 {
-                    this.syncObject.Set();
+                    this._syncObject.Set();
                 }
             }
         }

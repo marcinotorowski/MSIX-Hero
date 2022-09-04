@@ -22,14 +22,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel;
 using Otor.MsixHero.Infrastructure.Helpers;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Help.View
+namespace Otor.MsixHero.App.Modules.Dialogs.About.View
 {
-    public partial class HelpView
+    public partial class AboutView
     {
-        public HelpView()
+        public AboutView()
         {
             this.InitializeComponent();
             
@@ -1791,7 +1790,12 @@ SOFTWARE.
                 bi.BeginInit();
 
                 // ReSharper disable once PossibleNullReferenceException
-                var s = Assembly.GetAssembly(typeof(HelpView)).GetManifestResourceStream(typeof(HelpView).Namespace + ".Images.bundle-icon.png");
+                var s = Assembly.GetAssembly(typeof(AboutView)).GetManifestResourceStream(typeof(AboutView).Namespace + ".Images.bundle-icon.png");
+                if (s == null)
+                {
+                    return;
+                }
+
                 var memArr = new byte[s.Length];
                 for (var i = s.Length - 1; i >= 0; i--)
                 {

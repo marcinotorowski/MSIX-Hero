@@ -95,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             this.Store.ValueChanged += this.StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty(Resources.Localization.CertificateSelector_PfxPath, interactionService, signConfig.PfxPath?.Resolved, this.ValidatePfxPath)
             {
-                Filter = new DialogFilterBuilder("*.pfx").BuildFilter()
+                Filter = new DialogFilterBuilder().WithCertificates(DialogFilterBuilderPackagesExtensions.CertificateTypes.Pfx).WithAll().Build()
             };
 
             SecureString initialSecurePassword = null;

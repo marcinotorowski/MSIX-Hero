@@ -161,8 +161,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         pkg = PackageManagerWrapper.Instance.FindPackageForUser(string.Empty, this.packageFullName);
                         if (pkg == null)
                         {
-                            throw new FileNotFoundException("Could not find the required package.");
-                        }
+                            throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
+                            }
 
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
@@ -174,7 +174,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         pkg = pkgs.FirstOrDefault();
                         if (pkg == null)
                         {
-                            throw new FileNotFoundException("Could not find the required package.");
+                            throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
                         }
 
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
@@ -206,8 +206,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         pkg = PackageManagerWrapper.Instance.FindPackage(this.packageFullName);
                         if (pkg == null)
                         {
-                            throw new FileNotFoundException("Could not find the required package.");
-                        }
+                            throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
+                            }
 
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
@@ -219,8 +219,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         pkg = pkgs.FirstOrDefault();
                         if (pkg == null)
                         {
-                            throw new FileNotFoundException("Could not find the required package.");
-                        }
+                            throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
+                            }
 
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }

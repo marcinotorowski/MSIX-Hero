@@ -25,7 +25,7 @@
   <ItemGroup>
     <None Remove="Modules\Common\CertificateSelector\Images\microsoftlogo.png" />
     <None Remove="Modules\Common\WindowsVersion\Images\windows7.png" />
-    <None Remove="Modules\Dialogs\Help\View\bundle-icon.png" />
+    <None Remove="Modules\Dialogs\About\View\bundle-icon.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Dialogs\Settings\View\Images\sidebar.png" />
     <None Remove="Modules\PackageManagement\Views\mock2.png" />
@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Modules\Dialogs\Help\View\Images\bundle-icon.png">
+    <EmbeddedResource Include="Modules\Dialogs\About\View\Images\bundle-icon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -57,9 +57,6 @@
     <PackageReference Include="FluentWPF" Version="0.10.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="GraphX" Version="3.0.0" />
-    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-    <PackageReference Include="Humanizer.Core.de" Version="2.14.1" />
-    <PackageReference Include="Humanizer.Core.pl" Version="2.14.1" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
@@ -117,7 +114,7 @@
     <Resource Include="Resources\Images\msix-hero-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Modules\Dialogs\Help\View\Images\msix-hero-64.png" />
+    <Resource Include="Modules\Dialogs\About\View\Images\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -306,7 +303,7 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dialogs\Help\View\HelpView.xaml">
+    <Page Update="Modules\Dialogs\About\View\AboutView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Packaging\ModificationPackage\View\ModificationPackageDialogContent.xaml">

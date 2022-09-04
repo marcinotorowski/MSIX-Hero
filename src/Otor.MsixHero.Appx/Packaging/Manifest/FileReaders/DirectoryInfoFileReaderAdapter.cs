@@ -29,7 +29,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
         {
             if (!appxManifestFolder.Exists)
             {
-                throw new ArgumentException($"Directory {appxManifestFolder.FullName} does not exist.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, appxManifestFolder.FullName));
             }
 
             this.RootDirectory = appxManifestFolder.FullName;
@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 appxManifest = Path.Combine(appxManifestFolder.FullName, FileConstants.AppxBundleManifestFilePath);
                 if (!File.Exists(appxManifest))
                 {
-                    throw new ArgumentException("This folder does not contain APPX/MSIX package nor APPX bundle.", nameof(appxManifestFolder));
+                    throw new ArgumentException(Resources.Localization.Packages_Error_NoPackageInFolder, nameof(appxManifestFolder));
                 }
 
                 adapter = new FileInfoFileReaderAdapter(appxManifest);

@@ -30,10 +30,10 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Modules.Dialogs.About;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies;
-using Otor.MsixHero.App.Modules.Dialogs.Help;
 using Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Modules.Dialogs.PackageExpert.Views;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging;
@@ -241,7 +241,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), ModuleNames.Dialogs.Winget, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), ModuleNames.Dialogs.AppAttach, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SettingsModule), ModuleNames.Dialogs.Settings, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(HelpModule), ModuleNames.Dialogs.Help, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(AboutModule), ModuleNames.Dialogs.About, InitializationMode.OnDemand));
 
             base.ConfigureModuleCatalog(moduleCatalog);
         }

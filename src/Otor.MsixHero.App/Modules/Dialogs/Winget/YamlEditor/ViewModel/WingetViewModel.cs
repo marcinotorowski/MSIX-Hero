@@ -34,16 +34,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 {
     public class WingetViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly WingetValidateWrapper yamlValidator = new WingetValidateWrapper();
-        private readonly IInteractionService interactionService;
-        private ICommand openSuccessLink;
-        private ICommand reset;
-        private ICommand open;
-        private string yamlPath;
+        private readonly WingetValidateWrapper _yamlValidator = new();
+        private readonly IInteractionService _interactionService;
+        private ICommand _openSuccessLink;
+        private ICommand _reset;
+        private ICommand _open;
+        private string _yamlPath;
 
         public WingetViewModel(IInteractionService interactionService) : base(Resources.Localization.Dialogs_Winget_Title, interactionService)
         {
-            this.interactionService = interactionService;
+            this._interactionService = interactionService;
             this.AddChild(this.Definition = new WingetDefinitionViewModel(interactionService));
         }
 
@@ -51,17 +51,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         public ICommand OpenSuccessLinkCommand
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public ICommand OpenCommand
         {
-            get { return this.open ??= new DelegateCommand(this.OpenExecuted, this.CanOpen); }
+            get { return this._open ??= new DelegateCommand(this.OpenExecuted, this.CanOpen); }
         }
 
         public bool WingetVerified { get; private set; }
@@ -78,23 +78,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             string selected;
 
             FileDialogSettings settings;
-            if (string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath))
+            if (string.IsNullOrEmpty(this._yamlPath) || !File.Exists(this._yamlPath))
             {
-                settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter());
+                settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithWinget().WithAll());
             }    
             else
             {
-                settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter(), null, this.yamlPath);
+                settings = new FileDialogSettings(new DialogFilterBuilder().WithWinget().WithAll(), null, this._yamlPath);
             }
             
-            var userSelected = this.interactionService.SaveFile(settings, out selected);
+            var userSelected = this._interactionService.SaveFile(settings, out selected);
 
             if (!userSelected)
             {
                 return false;
             }
 
-            this.yamlPath = selected;
+            this._yamlPath = selected;
 
             var tempPath = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileConstants.WingetExtension);
             try
@@ -104,17 +104,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                     return false;
                 }
 
-                var winGetPath = await this.yamlValidator.GetWingetPath(cancellationToken).ConfigureAwait(false);
+                var winGetPath = await this._yamlValidator.GetWingetPath(cancellationToken).ConfigureAwait(false);
                 if (winGetPath != null)
                 {
                     progress.Report(new ProgressData(100, Resources.Localization.Dialogs_Winget_ValidatingCli));
 
-                    var validationDetails = await yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
+                    var validationDetails = await _yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
                     await Task.Delay(TimeSpan.FromMilliseconds(400), cancellationToken).ConfigureAwait(false);
                     
                     if (validationDetails != null)
                     {
-                        if (1 == this.interactionService.ShowMessage(Resources.Localization.Dialogs_Winget_ValidatingCli_Body, 
+                        if (1 == this._interactionService.ShowMessage(Resources.Localization.Dialogs_Winget_ValidatingCli_Body, 
                                 new[] { Resources.Localization.Dialogs_Winget_ValidatingCli_Ignore, Resources.Localization.Dialogs_Winget_ValidatingCli_Fix }, 
                                 Resources.Localization.Dialogs_Winget_ValidatingCli_Title, validationDetails))
                         {
@@ -148,13 +148,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (parameters.TryGetValue("yaml", out string yamlSelectedPath))
             {
-                this.yamlPath = Path.ChangeExtension(yamlSelectedPath, FileConstants.WingetExtension);
+                this._yamlPath = Path.ChangeExtension(yamlSelectedPath, FileConstants.WingetExtension);
 #pragma warning disable 4014
                 this.GeneralProgress.MonitorProgress(this.Definition.LoadFromYaml(yamlSelectedPath));
             }
             else if (parameters.TryGetValue("msix", out string msixPath))
             {
-                this.yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), FileConstants.WingetExtension);
+                this._yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), FileConstants.WingetExtension);
                 this.GeneralProgress.MonitorProgress(this.Definition.LoadFromFile(msixPath));
             }
             else
@@ -180,12 +180,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 this.State.IsSaved = false;
             }
 
-            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter()), out var selectedFile))
+            if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder().WithWinget().WithAll()), out var selectedFile))
             {
                 return;
             }
 
-            this.yamlPath = selectedFile;
+            this._yamlPath = selectedFile;
             var task = this.Definition.LoadFromYaml(selectedFile);
             this.GeneralProgress.MonitorProgress(task);
             await task.ConfigureAwait(false);
@@ -193,7 +193,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         private void OpenSuccessLinkExecuted()
         {
-            Process.Start("explorer.exe", "/select," + this.yamlPath);
+            Process.Start("explorer.exe", "/select," + this._yamlPath);
         }
     }
 }

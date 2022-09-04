@@ -70,7 +70,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             string[] selection;
             if (string.IsNullOrEmpty(packagePath))
             {
-                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out selection);
+                var filterString = new DialogFilterBuilder().WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.Msix).WithAll();
+                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(filterString), out selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;

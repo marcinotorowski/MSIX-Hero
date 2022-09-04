@@ -25,6 +25,7 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Ookii.Dialogs.Wpf;
+using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Helpers.Interop;
 using Otor.MsixHero.Infrastructure.Services;
 using Application = System.Windows.Application;
@@ -412,7 +413,7 @@ namespace Otor.MsixHero.App.Services
         {
             if (string.IsNullOrEmpty(filterString))
             {
-                return Resources.Localization.AllFiles + " (*.*)|*.*";
+                return new DialogFilterBuilder().WithAll();
             }
 
             return filterString;

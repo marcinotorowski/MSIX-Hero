@@ -295,10 +295,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 
         private async void OnOpenCommand()
         {
-            var settings = new FileDialogSettings(new DialogFilterBuilder(
-                "*" + FileConstants.MsixExtension,
-                "*" + FileConstants.AppxExtension,
-                FileConstants.AppxManifestFile).BuildFilter());
+            var settings = new FileDialogSettings(
+                new DialogFilterBuilder()
+                    .WithPackages()
+                    .WithManifests()
+                    .WithAll()
+                    .WithAllSupported());
 
             if (!this._interactionService.SelectFile(settings, out var selected))
             {
