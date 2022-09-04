@@ -34,7 +34,8 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Psf
             {
                 ApplicationIds = this.Verb.ApplicationIds,
                 FileNames = this.Verb.FileNames,
-                Force = this.Verb.Force
+                Force = this.Verb.Force,
+                PsfLauncherSourcePath = this.Verb.PsfLauncherSourcePath
             };
 
             var executor = new InjectPsfExecutor(directoryPath);

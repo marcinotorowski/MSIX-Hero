@@ -55,6 +55,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
                 throw new FileNotFoundException("Manifest not found.");
             }
 
+            Logger.Debug().WriteLine($"Opening manifest file {manifest}...");
             XDocument document;
             await using (var stream = File.OpenRead(manifest))
             {
@@ -73,6 +74,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
             var applications = document.Root.Element(identityFullName);
             if (applications == null)
             {
+                Logger.Warn().WriteLine("No <Applications /> element. Aborting.");
                 return;
             }
 
@@ -89,6 +91,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
 
             if (filterByApp)
             {
+                Logger.Info().WriteLine("Activating filtering by application ID...");
                 candidateStrings = applications
                     .Elements(rootNamespace + "Application")
                     .Select(a => a.Attribute("Id")?.Value)
@@ -96,6 +99,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
             }
             else
             {
+                Logger.Info().WriteLine("Activating filtering by application executable...");
                 candidateStrings = applications
                     .Elements(rootNamespace + "Application")
                     .Select(a => a.Attribute("Executable")?.Value)
@@ -112,29 +116,34 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
 
                 if (string.IsNullOrEmpty(attrId?.Value))
                 {
+                    Logger.Debug().WriteLine("Ignoring empty ID.");
                     // Ignore if from some reason there was no ID.
                     continue;
                 }
 
                 if (string.IsNullOrEmpty(attrExecutable?.Value))
                 {
+                    Logger.Debug().WriteLine("Ignoring empty executable.");
                     // Ignore if no executable
-                    continue;
-                }
-
-                if (!string.Equals("Windows.FullTrustApplication", attrEntryPoint?.Value, StringComparison.OrdinalIgnoreCase))
-                {
-                    // Ignore non-win32
                     continue;
                 }
 
                 if (filterByApp && !filteredStrings.Contains(attrId.Value))
                 {
+                    Logger.Debug().WriteLine($"Ignoring app {attrId.Value} because of filter settings.");
                     continue;
                 }
 
                 if (filterByName && !filteredStrings.Contains(attrExecutable.Value))
                 {
+                    Logger.Debug().WriteLine($"Ignoring app {attrId.Value} with file name {attrExecutable.Value} because of filter settings.");
+                    continue;
+                }
+
+                if (!string.Equals("Windows.FullTrustApplication", attrEntryPoint?.Value, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Warn().WriteLine($"Ignoring app {attrId.Value}, because it is not win32 app.");
+                    // Ignore non-win32
                     continue;
                 }
 
@@ -151,55 +160,50 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
                     continue;
                 }
 
-                if (command.ApplicationIds?.Any() == true && !command.ApplicationIds.Contains(attrId.Value))
+                if (command.PsfLauncherSourcePath == null)
                 {
-                    continue;
-                }
+                    var fullPath = Path.Combine(this.Directory.FullName, this.ResolvePath(attrExecutable.Value));
+                    var bitness = await bitnessReader.GetBitness(fullPath, cancellationToken).ConfigureAwait(false);
+                    has32Bit |= bitness != FileBitness.X64;
+                    has64Bit |= bitness == FileBitness.X64;
 
-                var fullPath = Path.Combine(this.Directory.FullName, this.ResolvePath(attrExecutable.Value));
-                var bitness = await bitnessReader.GetBitness(fullPath, cancellationToken).ConfigureAwait(false);
-                has32Bit |= bitness != FileBitness.X64;
-                has64Bit |= bitness == FileBitness.X64;
-
-                var psfSuffix = bitness switch
-                {
-                    FileBitness.X64 => "64",
-                    _ => "32"
-                };
-
-                redirections[attrId.Value] = attrExecutable.Value;
-                attrExecutable.SetValue($"PsfLauncher{psfSuffix}.exe");
-            }
-
-            if (has64Bit)
-            {
-                var sourcePsfPath = SdkPathHelper.GetPsfDirectory(false);
-                foreach (var source in System.IO.Directory.EnumerateFiles(sourcePsfPath))
-                {
-                    var target = new FileInfo(Path.Combine(this.Directory.FullName, Path.GetFileName(source)));
-
-                    if (target.Directory?.Exists == false)
+                    var psfSuffix = bitness switch
                     {
-                        target.Directory.Create();
-                    }
+                        FileBitness.X64 => "64",
+                        _ => "32"
+                    };
 
-                    File.Copy(source, target.FullName);
+                    redirections[attrId.Value] = attrExecutable.Value;
+                    attrExecutable.SetValue($"PsfLauncher{psfSuffix}.exe");
+                }
+                else
+                {
+                    var launcherName = Path.GetFileName(command.PsfLauncherSourcePath);
+                    
+                    if (string.Equals(attrExecutable.Value, launcherName, StringComparison.OrdinalIgnoreCase) && !command.Force)
+                    {
+                        continue;
+                    }
+                    
+                    redirections[attrId.Value] = attrExecutable.Value;
+                    attrExecutable.SetValue(launcherName);
                 }
             }
 
-            if (has32Bit)
+            if (command.PsfLauncherSourcePath == null)
             {
-                var sourcePsfPath = SdkPathHelper.GetPsfDirectory(true);
-                foreach (var source in System.IO.Directory.EnumerateFiles(sourcePsfPath))
+                this.CopyPsfFiles(Path.GetDirectoryName(command.PsfLauncherSourcePath));
+            }
+            else
+            {
+                if (has64Bit)
                 {
-                    var target = new FileInfo(Path.Combine(this.Directory.FullName, Path.GetFileName(source)));
+                    this.CopyPsfFiles(false);
+                }
 
-                    if (target.Directory?.Exists == false)
-                    {
-                        target.Directory.Create();
-                    }
-
-                    File.Copy(source, target.FullName);
+                if (has32Bit)
+                {
+                    this.CopyPsfFiles(true);
                 }
             }
 
@@ -223,6 +227,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
 
             await File.WriteAllTextAsync(manifest, document.ToString(SaveOptions.None), cancellationToken);
         }
+
         private static IEnumerable<string> GetMatches(IEnumerable<string> rules, IEnumerable<string> candidates)
         {
             if (candidates == null)
@@ -256,6 +261,26 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Psf
                 {
                     yield return candidate;
                 }
+            }
+        }
+
+        private void CopyPsfFiles(bool use32Bit)
+        {
+            this.CopyPsfFiles(SdkPathHelper.GetPsfDirectory(use32Bit));
+        }
+
+        private void CopyPsfFiles(string psfDirectory)
+        {
+            foreach (var source in System.IO.Directory.EnumerateFiles(psfDirectory))
+            {
+                var target = new FileInfo(Path.Combine(this.Directory.FullName, Path.GetFileName(source)));
+
+                if (target.Directory?.Exists == false)
+                {
+                    target.Directory.Create();
+                }
+
+                File.Copy(source, target.FullName);
             }
         }
     }

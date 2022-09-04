@@ -29,5 +29,7 @@ namespace Otor.MsixHero.Appx.Editor.Commands.Concrete.Psf
         public List<string> FileNames { get; set; }
 
         public bool Force { get; set; }
+
+        public string PsfLauncherSourcePath { get; set; }
     }
 }

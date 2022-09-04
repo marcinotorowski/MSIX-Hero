@@ -31,5 +31,8 @@ namespace Otor.MsixHero.Cli.Verbs.Edit.Psf
 
         [Option('f', "force", Default = false, HelpText = "CLI_Verbs_Edit_InjectPsf_Force", ResourceType = typeof(Localization))]
         public bool Force { get; set; }
+
+        [Option('s', "launcherSourcePath", Default = false, HelpText = "CLI_Verbs_Edit_InjectPsf_PsfLauncherSourcePath", ResourceType = typeof(Localization))]
+        public string PsfLauncherSourcePath { get; set; }
     }
 }
