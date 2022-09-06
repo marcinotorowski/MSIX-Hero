@@ -21,6 +21,6 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
 {
     public interface ISizeCalculator
     {
-        Task<long> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default);
+        Task<uint> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default);
     }
 }

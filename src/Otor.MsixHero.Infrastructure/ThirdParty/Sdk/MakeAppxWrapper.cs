@@ -115,7 +115,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             try
             {
-                await RunAsync(makeAppx, arguments, cancellationToken, callBack, 0).ConfigureAwait(false);
+                await RunAsync(makeAppx, arguments, 0, callBack, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {

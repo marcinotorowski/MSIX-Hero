@@ -28,12 +28,92 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     public abstract class ExeWrapper
     {
         private static readonly LogSource Logger = new();
-        protected static Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
+
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            IList<int> properExitCodes,
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
         {
-            return RunAsync(path, arguments, null, cancellationToken, callBack, properExitCodes);
+            return RunAsync(path, arguments, null, properExitCodes, callBack, cancellationToken);
         }
 
-        protected static async Task<int> RunAsync(string path, string arguments, string workingDirectory, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, null, (_, _, _) => null, callBack, cancellationToken);
+        }
+
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, null, (_, _, _) => null, default, cancellationToken);
+        }
+
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            int properExitCode,
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, null, new[] { properExitCode }, callBack, cancellationToken);
+        }
+
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            int properExitCode,
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, null, new[] { properExitCode }, default, cancellationToken);
+        }
+
+        protected static Task RunAsync(
+            string path,
+            string arguments,
+            string workingDirectory,
+            int properExitCode,
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, workingDirectory, new[] { properExitCode }, callBack, cancellationToken);
+        }
+
+        protected static Task RunAsync(
+            string path, 
+            string arguments, 
+            string workingDirectory,
+            IList<int> properExitCodes,
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
+        {
+            // ReSharper disable once ConvertToLocalFunction
+            GetErrorMessageFromProcess errorChecker = delegate(int code, IList<string> _, IList<string> _)
+            {
+                if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(code))
+                {
+                    return string.Format(Resources.Localization.Infrastructure_Sdk_ProcessExited_WrongExitCode_Format, code);
+                }
+
+                return null;
+            };
+
+            return RunAsync(path, arguments, workingDirectory, errorChecker, callBack, cancellationToken);
+        }
+
+        protected static async Task RunAsync(string path,
+            string arguments,
+            string workingDirectory,
+            GetErrorMessageFromProcess errorDelegate,
+            Action<string> callBack = default,
+            CancellationToken cancellationToken = default)
         {
             Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_Executing_Format, path, arguments));
             var processStartInfo = new ProcessStartInfo(path, arguments);
@@ -52,7 +132,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             {
                 processStartInfo.WorkingDirectory = workingDirectory;
             }
-            
+
             var tcs = new TaskCompletionSource<int>();
 
             var process = new Process
@@ -87,7 +167,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     standardErrorResults.SetResult(standardError.ToArray());
                 }
             };
-            
+
             process.Exited += async (_, _) =>
             {
                 await standardOutputResults.Task.ConfigureAwait(false);
@@ -128,7 +208,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (standardOutput.Any())
                 {
-                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdOut + "\r\n" + string.Join(System.Environment.NewLine, standardOutput));
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdOut + "\r\n" + string.Join(Environment.NewLine, standardOutput));
                 }
                 else
                 {
@@ -137,24 +217,35 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (standardError.Any())
                 {
-                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdErr + "\r\n" + string.Join(System.Environment.NewLine, standardError));
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdErr + "\r\n" + string.Join(Environment.NewLine, standardError));
                 }
                 else
                 {
                     Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_NoStdErr);
                 }
 
-                if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(result))
+                var error = errorDelegate(result, standardError, standardOutput);
+                if (error == null)
                 {
-                    throw new ProcessWrapperException(
-                        string.Format(Resources.Localization.Infrastructure_Sdk_ProcessExited_WrongExitCode_Format, result), 
-                        result, 
-                        standardError.Any() ? standardError : standardOutput,
-                        standardOutput);
+                    return;
                 }
 
-                return result;
+                throw new ProcessWrapperException(error, result, standardError, standardOutput);
             }
         }
+        
+        protected static Task RunAsync(string path,
+            string arguments,
+            GetErrorMessageFromProcess errorDelegate,
+            Action<string> callBack,
+            CancellationToken cancellationToken = default)
+        {
+            return RunAsync(path, arguments, null, errorDelegate, callBack, cancellationToken);
+        }
+
+        protected delegate string GetErrorMessageFromProcess(
+            int exitCode,
+            IList<string> standardOutput,
+            IList<string> standardError);
     }
 }

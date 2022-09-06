@@ -186,7 +186,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         public async Task CreateVolume(
             string packagePath,
             string volumePath,
-            uint size,
+            uint sizeInMegaBytes,
             AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null)
@@ -232,7 +232,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             {
                 initialization = await volumeCreationStrategy.Initialize(cancellationToken).ConfigureAwait(false);
 
-                await volumeCreationStrategy.CreateVolume(packagePath, volumePath, size, cancellationToken).ConfigureAwait(false);
+                await volumeCreationStrategy.CreateVolume(packagePath, volumePath, sizeInMegaBytes, cancellationToken).ConfigureAwait(false);
 
                 if (options.ExtractCertificate == true)
                 {
@@ -363,8 +363,50 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 jsonArray.Add(jsonObject);
             }
 
+            if (File.Exists(jsonPath))
+            {
+                jsonArray = await Merge(jsonArray, jsonPath).ConfigureAwait(false);
+            }
+
             var contentJson = jsonArray.ToString(Formatting.Indented);
+
+            // ReSharper disable once AssignNullToNotNullAttribute
             await File.WriteAllTextAsync(jsonPath, contentJson, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+        }
+
+        private static async Task<JArray> Merge(JArray newArray, string jsonPath)
+        {
+            try
+            {
+                await using Stream fileStream = File.OpenRead(jsonPath);
+                using TextReader textReader = new StreamReader(fileStream);
+                using JsonReader reader = new JsonTextReader(textReader);
+                var originalContent = await JArray.LoadAsync(reader).ConfigureAwait(false);
+                if (originalContent.Count == 0)
+                {
+                    return newArray;
+                }
+
+                var existingItemsOld = originalContent.Children().Select(c => c.Value<string>("vhdFileName")).Distinct();
+                var existingItemsNew = newArray.Children().Select(c => c.Value<string>("vhdFileName")).Distinct();
+
+                var missing = existingItemsOld.Except(existingItemsNew).ToArray();
+                
+                foreach (var existingItemOld in originalContent.Children().Reverse())
+                {
+                    if (missing.Contains(existingItemOld.Value<string>("vhdFileName")))
+                    {
+                        newArray.Insert(0, existingItemOld);
+                    }
+                }
+
+                return newArray;
+            }
+            catch (Exception e)
+            {
+                Logger.Warn().WriteLine(e, "Could not merge the new JSON content with the old one. The old content will be overwritten.");
+                return newArray;
+            }
         }
 
         private static async Task CreateScripts(string directory, CancellationToken cancellationToken)

@@ -71,7 +71,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             try
             {
-                await RunAsync(signTool, args, cancellationToken, callBack, 0).ConfigureAwait(false);
+                await RunAsync(signTool, args, 0, callBack, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {
@@ -157,12 +157,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             var signTool = SdkPathHelper.GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info().WriteLine("Executing {0} {1}", signTool, maskedArgs);
-
-            Action<string> callBack = _ => { };
-
+            
             try
             {
-                await RunAsync(signTool, args, cancellationToken,  callBack, 0).ConfigureAwait(false);
+                await RunAsync(signTool, args, 0, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {
@@ -226,7 +224,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             try
             {
-                await RunAsync(signTool, args, cancellationToken, default, 0).ConfigureAwait(false);
+                await RunAsync(signTool, args, 0, default, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {

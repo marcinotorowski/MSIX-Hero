@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         Task CreateVolume(
             string packagePath, 
             string volumePath,
-            uint size,
+            uint sizeInMegaBytes,
             AppAttachNewVolumeOptions options = default,
             CancellationToken cancellationToken = default, 
             IProgress<ProgressData> progressReporter = null);

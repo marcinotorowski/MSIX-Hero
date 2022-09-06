@@ -81,7 +81,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
         public async Task CreateVolume(
             string packagePath,
             string volumePath,
-            long? customSize,
+            uint? sizeInMegaBytes,
             CancellationToken cancellationToken = default, 
             IProgress<ProgressData> progressReporter = null)
         {
@@ -121,16 +121,16 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             using var progress = new WrappedProgress(progressReporter);
 
             // ReSharper disable once UnusedVariable
-            var progressSize = customSize <= 0 ? progress.GetChildProgress(30) : null;
+            var progressSize = sizeInMegaBytes <= 0 ? progress.GetChildProgress(30) : null;
             var progressInitializeDisk = progress.GetChildProgress(100);
             var progressExpand = progress.GetChildProgress(120);
 
             try
             {
                 long minimumSize;
-                if (customSize.HasValue && customSize.Value > 0)
+                if (sizeInMegaBytes.HasValue && sizeInMegaBytes.Value > 0)
                 {
-                    minimumSize = 1024 * 1024 * customSize.Value;
+                    minimumSize = sizeInMegaBytes.Value;
                 }
                 else
                 {

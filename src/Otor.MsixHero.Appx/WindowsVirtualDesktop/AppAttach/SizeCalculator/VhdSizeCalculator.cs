@@ -25,7 +25,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
     public class VhdSizeCalculator : ISizeCalculator
     {
         private static readonly LogSource Logger = new();
-        public Task<long> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
+        public Task<uint> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
             Logger.Debug().WriteLine($"Determining required size for VHD(X) drive {sourcePath} with extra margin {(int)(100 * extraMargin)}%…");
             const long reserved = 16 * 1024 * 1024;
@@ -61,7 +61,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
 
             var actualMinSize = Math.Max(minSize, (long)(total * (1 + extraMargin) + reserved));
             Logger.Info().WriteLine("Required minimum size for VHD volume is " + actualMinSize + " bytes.");
-            return Task.FromResult(actualMinSize);
+            return Task.FromResult((uint)(Math.Floor(actualMinSize / (1024.0 * 1024.0))));
         }
     }
 }

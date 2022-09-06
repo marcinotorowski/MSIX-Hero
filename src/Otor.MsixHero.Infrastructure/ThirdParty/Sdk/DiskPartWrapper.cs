@@ -161,7 +161,7 @@ detach vdisk";
 
             try
             {
-                await RunAsync(diskPart, arguments, cancellationToken, callBack, 0).ConfigureAwait(false);
+                await RunAsync(diskPart, arguments, 0, callBack, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {

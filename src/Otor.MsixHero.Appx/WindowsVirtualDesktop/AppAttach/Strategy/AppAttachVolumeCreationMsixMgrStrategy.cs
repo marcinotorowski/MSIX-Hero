@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
         public async Task CreateVolume(
             string packagePath,
             string volumePath,
-            long? customSizeInBytes,
+            uint? sizeInMegaBytes,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null)
         {
@@ -62,10 +62,10 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                     throw new NotSupportedException(string.Format(Resources.Localization.Packages_Error_DiskFormatNotSupported, Path.GetExtension(volumePath)));
             }
 
-            long size;
-            if (customSizeInBytes.HasValue && customSizeInBytes.Value > 0)
+            uint size;
+            if (sizeInMegaBytes.HasValue && sizeInMegaBytes.Value > 0)
             {
-                size = customSizeInBytes.Value;
+                size = sizeInMegaBytes.Value;
             }
             else
             {
@@ -86,10 +86,15 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
                 size = await sizeCalculator.GetRequiredSize(packagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
-
-            if (fileType == MsixMgrWrapper.FileType.Cim)
+            
+            // These value are taken from what msixmgr seems to report:
+            if (size < 5)
             {
-                size = (long)Math.Max(5, size / (1024.0 * 1024));
+                size = 5;
+            }
+            else if (size > 2040000)
+            {
+                size = 2040000;
             }
 
             Logger.Info().WriteLine("Expanding MSIX…");
@@ -97,7 +102,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 packagePath,
                 volumePath,
                 fileType,
-                (uint)size,
+                size,
                 true,
                 true,
                 Path.GetFileNameWithoutExtension(packagePath),

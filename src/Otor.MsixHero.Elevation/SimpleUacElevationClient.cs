@@ -193,7 +193,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                                     throw new InvalidOperationException("Empty type name.");
                                 }
 
-                                var exceptionType = TypeHelper.FromFullNameWithAssembly(fullTypeName);
+                                var _ = TypeHelper.FromFullNameWithAssembly(fullTypeName);
 
                                 privateToken.ThrowIfCancellationRequested();
                                 var serializedObject = await binaryReader.ReadString(cts.Token).ConfigureAwait(false);

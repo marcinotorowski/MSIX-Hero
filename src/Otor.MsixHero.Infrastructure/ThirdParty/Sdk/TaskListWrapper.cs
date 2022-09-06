@@ -38,12 +38,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var stringBuilder = new StringBuilder();
 
             Action<string> callback = output => stringBuilder.AppendLine(output);
-            var exitCode = await RunAsync(GetExecutablePath(), GetCommandLine(status, false), cancellationToken, callback).ConfigureAwait(false);
-            if (exitCode != 0)
-            {
-                throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_Error_TaskListNonZeroExitCode);
-            }
-
+            await RunAsync(GetExecutablePath(), GetCommandLine(status, false), 0, callback, cancellationToken).ConfigureAwait(false);
+            
             using var reader = new StringReader(stringBuilder.ToString());
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
@@ -69,12 +65,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var stringBuilder = new StringBuilder();
 
             Action<string> callback = output => stringBuilder.AppendLine(output);
-            var exitCode = await RunAsync(GetExecutablePath(), GetCommandLine(status, true), cancellationToken, callback).ConfigureAwait(false);
-            if (exitCode != 0)
-            {
-                throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_Error_TaskListNonZeroExitCode);
-            }
-
+            await RunAsync(GetExecutablePath(), GetCommandLine(status, true), 0, callback, cancellationToken).ConfigureAwait(false);
+            
             using var reader = new StringReader(stringBuilder.ToString());
             var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
             {

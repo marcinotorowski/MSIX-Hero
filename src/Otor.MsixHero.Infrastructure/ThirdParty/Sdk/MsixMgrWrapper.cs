@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -192,28 +193,41 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             
             Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_Executing_Format, msixMgrPath, arguments);
 
+            GetErrorMessageFromProcess msixMgrCustomErrorChecker = (code, output, error) =>
+            {
+                // This is a special workaround for msixmgr v111, which sometimes returns exit code 0 although the standard error says
+                // something different...
+
+                if (code != 0)
+                {
+                    if (code == -1951596541)
+                    {
+                        return Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_TooSmallSize;
+                    }
+
+#pragma warning disable 652
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (code == 0x80070522)
+#pragma warning restore 652
+                    {
+                        return Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_AdminRights;
+                    }
+
+                    return GetActualErrorFromMsixMgrOutput(error) ?? string.Format(Resources.Localization.Infrastructure_Sdk_ProcessExited_WrongExitCode_Format, code);
+                }
+
+                return GetActualErrorFromMsixMgrOutput(error);
+            };
+
             try
             {
                 var tempDir = Path.GetTempPath();
-                await RunAsync(msixMgrPath, arguments, tempDir, cancellationToken, callBack, 0).ConfigureAwait(false);
+                await RunAsync(msixMgrPath, arguments, tempDir, msixMgrCustomErrorChecker, callBack, cancellationToken).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {
                 Logger.Warn().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_MsixMgr_ProcessExitCode, e.ExitCode));
-                if (e.ExitCode == -1951596541)
-                {
-                    throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_TooSmallSize, e);
-                }
-
-#pragma warning disable 652
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (e.ExitCode == 0x80070522)
-#pragma warning restore 652
-                {
-                    throw new UnauthorizedAccessException(Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_AdminRights, e);
-                }
-
-                throw new InvalidOperationException(e.StandardError.LastOrDefault(stdError => !string.IsNullOrWhiteSpace(stdError) && !stdError.Contains("Successfully started the Shell Hardware Detection Service", StringComparison.OrdinalIgnoreCase)), e);
+                throw;
             }
             finally
             {
@@ -223,6 +237,17 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     ExceptionGuard.Guard(() => Directory.Delete(msixMgrDirectory, true));
                 }
             }
+        }
+
+        private static string GetActualErrorFromMsixMgrOutput(IList<string> standardOutput)
+        {
+            if (!standardOutput.Any(l => l.StartsWith(" ------", StringComparison.Ordinal)))
+            {
+                return null;
+            }
+
+            var errors = string.Join(". ", standardOutput.SkipWhile(string.IsNullOrEmpty).TakeWhile(l => !string.IsNullOrEmpty(l)).Select(l => l.TrimEnd().TrimEnd('.')));
+            return errors;
         }
     }
 }
