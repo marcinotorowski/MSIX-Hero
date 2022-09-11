@@ -23,6 +23,7 @@ using Dapplo.Log;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Volumes;
@@ -167,6 +168,7 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
                     server.RegisterProxy<IMsixHeroTranslationService, MsixHeroTranslationService>();
                     server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
+                    server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();
                     server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
                     server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();
                 }

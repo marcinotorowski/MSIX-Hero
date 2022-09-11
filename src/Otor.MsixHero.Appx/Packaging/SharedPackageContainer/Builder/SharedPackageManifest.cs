@@ -14,16 +14,18 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedAppContainer.View
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+
+namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
+
+public class SharedPackageManifest : SharedPackage
 {
-    /// <summary>
-    /// Interaction logic for SharedAppContainerView.
-    /// </summary>
-    public partial class SharedAppContainerView
+    public SharedPackageManifest(AppxPackage package)
     {
-        public SharedAppContainerView()
-        {
-            this.InitializeComponent();
-        }
+        Package = package;
     }
+
+    public AppxPackage Package { get; }
+
+    public override string FamilyName => Package.FamilyName;
 }

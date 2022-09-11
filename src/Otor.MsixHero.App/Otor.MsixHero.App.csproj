@@ -147,10 +147,10 @@
     <Compile Update="Modules\Dialogs\Packaging\Pack\View\PackView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\Dialogs\Packaging\SharedAppContainer\View\SharedAppContainerDialogContent.xaml.cs">
+    <Compile Update="Modules\Dialogs\Packaging\SharedPackageContainer\View\SharedPackageContainerDialogContent.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\Dialogs\Packaging\SharedAppContainer\View\SharedAppContainerView.xaml.cs">
+    <Compile Update="Modules\Dialogs\Packaging\SharedPackageContainer\View\SharedPackageContainerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Dialogs\Packaging\Unpack\View\UnpackView.xaml.cs">
@@ -331,11 +331,11 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dialogs\Packaging\SharedAppContainer\View\SharedAppContainerDialogContent.xaml">
+    <Page Update="Modules\Dialogs\Packaging\SharedPackageContainer\View\SharedPackageContainerDialogContent.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dialogs\Packaging\SharedAppContainer\View\SharedAppContainerView.xaml">
+    <Page Update="Modules\Dialogs\Packaging\SharedPackageContainer\View\SharedPackageContainerView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

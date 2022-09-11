@@ -8,7 +8,6 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="400"

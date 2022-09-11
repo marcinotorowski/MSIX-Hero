@@ -62,6 +62,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
+using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Updates;
@@ -164,6 +165,7 @@ namespace Otor.MsixHero.App
             uacClient.RegisterProxy<IAppxLogManager>(this.Container);
             uacClient.RegisterProxy<IMsixHeroTranslationService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageManager>(this.Container);
+            uacClient.RegisterProxy<ISharedPackageContainerService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageQuery>(this.Container);
             uacClient.RegisterProxy<IAppxPackageInstaller>(this.Container);
             uacClient.RegisterProxy<IAppxPackageRunner>(this.Container);
@@ -172,6 +174,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IUacElevation>(() => uacClient);
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
+            containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
             containerRegistry.RegisterSingleton<IRegistryManager, RegistryManager>();
             containerRegistry.RegisterSingleton<IMsixHeroTranslationService, MsixHeroTranslationService>();
             containerRegistry.RegisterSingleton<ISigningManager, SigningManager>();

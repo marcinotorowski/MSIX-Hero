@@ -14,12 +14,14 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Xml.Serialization;
+namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
 
-namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer;
-
-public class PackageFamilyDefinition
+public class SharedPackageFamilyName : SharedPackage
 {
-    [XmlAttribute("Name")]
-    public string FamilyName { get; set; }
+    public SharedPackageFamilyName(string familyName)
+    {
+        FamilyName = familyName;
+    }
+
+    public override string FamilyName { get; }
 }

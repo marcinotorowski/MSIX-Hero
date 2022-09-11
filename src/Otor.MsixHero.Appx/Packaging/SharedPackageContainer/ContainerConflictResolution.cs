@@ -14,19 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer;
+namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
-public class SharedAppFullName : SharedAppDefinition
+public enum ContainerConflictResolution
 {
-    public string FullName { get; }
-
-    public SharedAppFullName(string fullName)
-    {
-        this.FullName = fullName;
-
-        var identity = PackageIdentity.FromFullName(fullName);
-        this.FamilyName = identity.GetFamilyName();
-    }
-
-    public override string FamilyName { get; }
+    Merge,
+    Replace,
+    Disallow
 }

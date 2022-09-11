@@ -10,81 +10,82 @@ using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 
-namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer
+namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder
 {
-    public class SharedAppContainerBuilder
+    public class SharedPackageContainerBuilder
     {
-        private readonly List<SharedAppDefinition> _apps = new();
+        private readonly List<SharedPackage> _apps = new();
 
-        public SharedAppContainerBuilder(string name = null)
+        public SharedPackageContainerBuilder(string name = null)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public string Name { get; set; }
 
-        public SharedAppDefinition AddFamilyName(string familyName)
+        public SharedPackage AddFamilyName(string familyName)
         {
-            this._apps.Add(new SharedAppFamilyName(familyName));
-            return this._apps.Last();
+            _apps.Add(new SharedPackageFamilyName(familyName));
+            return _apps.Last();
         }
 
-        public async Task<SharedAppDefinition> AddPackageFile(string packageFilePath)
+        public async Task<SharedPackage> AddPackageFile(string packageFilePath)
         {
             var manifestReader = await AppxManifestSummaryReader.FromInstallLocation(packageFilePath).ConfigureAwait(false);
-            this.Add(manifestReader.Name, manifestReader.Publisher);
-            return this._apps.Last();
+            Add(manifestReader.Name, manifestReader.Publisher);
+            return _apps.Last();
         }
 
-        public SharedAppDefinition AddFullPackageName(string packageFullName)
+        public SharedPackage AddFullPackageName(string packageFullName)
         {
-            this._apps.Add(new SharedAppFullName(packageFullName));
-            return this._apps.Last();
+            _apps.Add(new SharedPackageFullName(packageFullName));
+            return _apps.Last();
         }
 
-        public async Task<SharedAppDefinition> AddFromFilePath(string filePath, CancellationToken cancellationToken)
+        public async Task<SharedPackage> AddFromFilePath(string filePath, CancellationToken cancellationToken)
         {
             using var reader = FileReaderFactory.CreateFileReader(filePath);
             var manifestReader = new AppxManifestReader();
             var manifest = await manifestReader.Read(reader, cancellationToken).ConfigureAwait(false);
-            this.AddFullPackageName(manifest.FullName);
-            return this._apps.Last();
+            AddFullPackageName(manifest.FullName);
+            return _apps.Last();
         }
 
         public void Add(string name, string publisher)
         {
-            this.AddFamilyName(AppxPackaging.GetPackageFamilyName(name, publisher));
+            AddFamilyName(AppxPackaging.GetPackageFamilyName(name, publisher));
         }
 
-        public SharedAppContainerDefinition Build()
+        public Entities.SharedPackageContainer Build()
         {
-            var result = new SharedAppContainerDefinition();
+            var result = new Entities.SharedPackageContainer();
 
-            if (this._apps.Any())
+            if (_apps.Any())
             {
-                result.PackageFamilies = new List<PackageFamilyDefinition>();
+                result.PackageFamilies = new List<SharedPackageFamily>();
 
                 var alreadyUsed = new HashSet<string>();
-                foreach (var fn in this._apps.Select(a => a.FamilyName))
+                foreach (var fn in _apps.Select(a => a.FamilyName))
                 {
                     if (!alreadyUsed.Add(fn))
                     {
                         continue;
                     }
 
-                    result.PackageFamilies.Add(new PackageFamilyDefinition { FamilyName = fn });
+                    result.PackageFamilies.Add(new SharedPackageFamily { FamilyName = fn });
                 }
             }
 
-            result.Name = this.Name;
+            result.Name = Name;
             return result;
         }
 
         public string ToXml()
         {
-            var resultObject = this.Build();
-            var serializer = new XmlSerializer(typeof(SharedAppContainerDefinition));
+            var resultObject = Build();
+            var serializer = new XmlSerializer(typeof(Entities.SharedPackageContainer));
 
             var xmlBody = new StringBuilder();
             using TextWriter textWriter = new Utf8StringWriter(xmlBody);
@@ -98,14 +99,14 @@ namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer
             };
 
             using var xmlBodyWriter = XmlWriter.Create(textWriter, settings);
-            
+
             var ns = new XmlSerializerNamespaces();
             ns.Add(string.Empty, string.Empty);
             serializer.Serialize(xmlBodyWriter, resultObject, ns);
 
             return xmlBody.ToString();
         }
-        
+
         private class Utf8StringWriter : StringWriter
         {
             public Utf8StringWriter(StringBuilder sb) : base(sb)

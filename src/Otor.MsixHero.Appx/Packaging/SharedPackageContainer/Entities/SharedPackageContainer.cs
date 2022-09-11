@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer
+namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities
 {
-    public class SharedAppContainerDefinition
+    public class SharedPackageContainer
     {
         /*
          *
@@ -23,6 +19,9 @@ namespace Otor.MsixHero.Appx.Packaging.SharedAppContainer
         public string Name { get; set; }
 
         [XmlElement("PackageFamily")]
-        public List<PackageFamilyDefinition> PackageFamilies { get; set; }
+        public List<SharedPackageFamily> PackageFamilies { get; set; }
+
+        [XmlAttribute("Id")]
+        public string Id { get; set; }
     }
 }
