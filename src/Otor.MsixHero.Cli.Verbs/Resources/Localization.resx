@@ -366,6 +366,27 @@
   <data name="CLI_Verbs_Pack_VerbName" xml:space="preserve">
     <value>Packs a folder.</value>
   </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_Force" xml:space="preserve">
+    <value>Indicates that the content of the container should replace any existing container with the same name. Cannot be used together with --merge option.</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_ForceApplicationShutdown" xml:space="preserve">
+    <value>Indicates that apps installed in shared container should be stopped if running.</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_Merge" xml:space="preserve">
+    <value>Indicates that the content of the container should be merged with any existing container (with the same name. Cannot be used together with --force option.</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_Name" xml:space="preserve">
+    <value>The name of the container</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_Output" xml:space="preserve">
+    <value>The output file. If not specified, the container will be installed. Installation of apps into Shared Package Container requires administrative permissions.</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_Prop_Packages" xml:space="preserve">
+    <value>Full paths, or family names, or full names or a combination of them that build the container.</value>
+  </data>
+  <data name="CLI_Verbs_SharedPackageContainer_VerbName" xml:space="preserve">
+    <value>Creates Shared Package Container (XML) or installs packages into a Shared Package Container</value>
+  </data>
   <data name="CLI_Verbs_Sign_Prop_DeviceGuardFile" xml:space="preserve">
     <value>Full path to JSON file containing access tokens to AzureAD.</value>
   </data>

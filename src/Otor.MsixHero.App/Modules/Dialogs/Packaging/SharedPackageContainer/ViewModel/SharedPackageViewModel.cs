@@ -1,7 +1,7 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
@@ -14,35 +14,56 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
     {
         New,
         FilePath,
-        FamilyName
+        FamilyName,
+        Installed
     }
 
     public class SharedPackageViewModel : ChangeableContainer
     {
         private bool _isEditing;
 
-        public static SharedPackageViewModel Create(IAppxPackageQuery query, string familyName)
+        public SharedPackageViewModel()
+        { 
+            this.AddChildren
+            (
+                this.FamilyName = new("Family name", true, ValidatorFactory.ValidateNotEmptyField()),
+                this.Type = new ChangeableProperty<SharedPackageItemType>(),
+                this.FullName = new ChangeableProperty<string>(),
+                this.FilePath = new ChangeableProperty<string>()
+            );
+        }
+
+        public static SharedPackageViewModel FromFamilyName(IAppxPackageQuery query, string familyName)
         {
             var newObj = new SharedPackageViewModel();
             newObj.SetFromFamilyName(query, familyName, CancellationToken.None).GetAwaiter().GetResult();
-            newObj.FamilyName.Commit();
+            newObj.Type.CurrentValue = SharedPackageItemType.FamilyName;
+            newObj.Commit();
+
             return newObj;
         }
-
-        public static SharedPackageViewModel Create(InstalledPackage installedPackage)
+        
+        public static SharedPackageViewModel FromInstalledPackage(InstalledPackage installedPackage)
         {
             var newObj = new SharedPackageViewModel();
             newObj.FamilyName.CurrentValue = installedPackage.PackageFamilyName;
             newObj.DisplayName = installedPackage.DisplayName;
-            newObj.FilePath = installedPackage.ManifestLocation;
-            newObj.Type = SharedPackageItemType.FilePath;
+            newObj.FilePath.CurrentValue = installedPackage.ManifestLocation;
+            newObj.Type.CurrentValue = SharedPackageItemType.FilePath;
             newObj.Color = installedPackage.TileColor;
             newObj.PublisherDisplayName = installedPackage.DisplayName;
             newObj.Version = installedPackage.DisplayName;
             newObj.LogoPath = installedPackage.Image;
+            newObj.Type.CurrentValue = SharedPackageItemType.Installed;
+            newObj.FullName.CurrentValue = installedPackage.PackageFullName;
+            newObj.Commit();
 
-            newObj.FamilyName.Commit();
             return newObj;
+        }
+        
+        public static SharedPackageViewModel FromInstalledPackage(InstalledPackageViewModel installedPackage)
+        {
+            return FromInstalledPackage(installedPackage.Model);
         }
 
         public bool IsEditing
@@ -51,13 +72,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             set => this.SetField(ref this._isEditing, value);
         }
 
-        public SharedPackageItemType Type { get; set; } = SharedPackageItemType.New;
+        public ChangeableProperty<SharedPackageItemType> Type { get; }
 
-        public ValidatedChangeableProperty<string> FamilyName { get; } = new("Family name", true, ValidatorFactory.ValidateNotEmptyField());
+        public ChangeableProperty<string> FullName { get; }
+
+        public ChangeableProperty<string> FilePath { get; }
+
+        public ValidatedChangeableProperty<string> FamilyName { get; }
 
         public string DisplayName { get; private set; }
-        
-        public string FilePath { get; private set; }
 
         public string Version { get; private set; }
         
@@ -71,8 +94,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         public async Task<bool> SetFromFamilyName(IAppxPackageQuery packageQuery, string familyName, CancellationToken cancellationToken)
         {
-            this.Type = SharedPackageItemType.FamilyName;
-
             if (this.FamilyName.CurrentValue == familyName || string.IsNullOrEmpty(familyName))
             {
                 return false;
@@ -83,7 +104,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 var installedPackage = await packageQuery.GetInstalledPackageByFamilyName(familyName, cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (installedPackage != null)
                 {
-                    return await this.SetFromFilePath(installedPackage.ManifestLocation, cancellationToken).ConfigureAwait(false);
+                    var ip = await this.SetFromFilePath(installedPackage.ManifestLocation, cancellationToken).ConfigureAwait(false);
+                    this.Type.CurrentValue = SharedPackageItemType.FamilyName;
+                    return ip;
                 }
             }
             catch
@@ -91,8 +114,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 // can happen, ignore it
             }
 
+            this.Type.CurrentValue = SharedPackageItemType.FamilyName;
             this.FamilyName.CurrentValue = familyName;
-            this.FilePath = null;
+            this.FilePath.CurrentValue = null;
+            this.FullName.CurrentValue = null;
             this.Color = null;
             this.DisplayName = null;
             this.PublisherDisplayName = null;
@@ -106,7 +131,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         public async Task<bool> SetFromFilePath(string filePath, CancellationToken cancellationToken)
         {
-            this.Type = SharedPackageItemType.FilePath;
+            this.Type.CurrentValue = SharedPackageItemType.FilePath;
 
             try
             {
@@ -116,12 +141,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
                 this.Color = pkg.Applications.Select(b => b.BackgroundColor).FirstOrDefault(b => b != null);
                 this.DisplayName = pkg.DisplayName;
-                this.FilePath = filePath;
+                this.FilePath.CurrentValue = filePath;
                 this.PublisherDisplayName = pkg.PublisherDisplayName;
                 this.Logo = pkg.Logo;
                 this.LogoPath = null;
                 this.Version = pkg.Version;
                 this.FamilyName.CurrentValue = pkg.FamilyName;
+                this.FullName.CurrentValue = pkg.FullName;
 
                 this.OnPropertyChanged(null);
                 return true;

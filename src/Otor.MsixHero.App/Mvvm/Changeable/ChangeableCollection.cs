@@ -84,6 +84,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             {
                 newChangeable.IsTouchedChanged -= this.OnIsTouchedChanged;
                 newChangeable.IsTouchedChanged += this.OnIsTouchedChanged;
+
+                if (item is not IChangeableValue)
+                {
+                    newChangeable.Changed -= this.OnChanged;
+                    newChangeable.Changed += this.OnChanged;
+                }
             }
 
             if (!this.monitorChildren)
@@ -208,6 +214,30 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         }
 
         private void OnItemValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (!this.monitorChildren)
+            {
+                return;
+            }
+
+            this.IsTouched = true;
+            var actualSender = (IChangeable) sender;
+            if (actualSender != null)
+            {
+                if (actualSender.IsDirty)
+                {
+                    this.IsDirty = true;
+                }
+                else
+                {
+                    this.IsDirty = !this.originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
+                }
+            }
+
+            this.Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnChanged(object sender, EventArgs e)
         {
             if (!this.monitorChildren)
             {

@@ -33,7 +33,6 @@ using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
-using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -42,7 +41,7 @@ using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel
 {
-    public class SharedPackageContainerViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>, IDropTarget
+    public class SharedPackageContainerViewModel : ChangeableAutomatedDialogViewModel<SharedPackageContainerVerb>, IDropTarget
     {
         private readonly IUacElevation _uacElevation;
         private readonly IInteractionService _interactionService;
@@ -64,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 this.Packages = new ValidatedChangeableCollection<SharedPackageViewModel>()
             );
 
-            this.RegisterForCommandLineGeneration(this.Name, this.CreationMode, this.Packages);
+            this.RegisterForCommandLineGeneration(this.Name, this.CreationMode, this.Packages, this.Output, this.Resolution);
             this.CreationMode.ValueChanged += this.CreationModeOnValueChanged;
 
             this.Add = new DelegateCommand(this.OnAdd, this.CanAdd);
@@ -150,6 +149,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         private async Task<bool> SaveDeploy(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            this.Output.CurrentValue = null;
+
             progress.Report(new ProgressData(50, "Verifying..."));
 
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
@@ -159,7 +160,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 .ConfigureAwait(false);
 
             var containerBuilder = new SharedPackageContainerBuilder(this.Name.CurrentValue);
-            var resolution = ContainerConflictResolution.Replace;
+            this.Resolution.CurrentValue = ContainerConflictResolution.Default;
 
             if (getExisting != null)
             {
@@ -215,7 +216,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     switch (interactionResult)
                     {
                         case 0:
-                            resolution = ContainerConflictResolution.Replace;
+                            this.Resolution.CurrentValue = ContainerConflictResolution.Replace;
                             
                             foreach (var familyName in this.Packages.Select(a => a.FamilyName.CurrentValue).Distinct())
                             {
@@ -225,13 +226,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                             break;
 
                         case 1:
-                            resolution = ContainerConflictResolution.Merge;
+                            this.Resolution.CurrentValue = ContainerConflictResolution.Merge;
 
                             foreach (var familyName in existingPackageFamilies.Concat(extraToBeAdded))
                             {
                                 containerBuilder.AddFamilyName(familyName);
                             }
-
+                            
                             break;
                         default:
                             return false;
@@ -263,7 +264,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             
             try
             {
-                await this._uacElevation.AsAdministrator<ISharedPackageContainerService>().Add(container, true, resolution, cancellationToken).ConfigureAwait(false);
+                await this._uacElevation.AsAdministrator<ISharedPackageContainerService>().Add(container, true, this.Resolution.CurrentValue, cancellationToken).ConfigureAwait(false);
             }
             catch (AlreadyInAnotherContainerException e)
             {
@@ -277,7 +278,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             {
                 var _ = this._interactionService.ShowToast("Container deployed", string.Format("Container with {0} packages has been added to container '{1}'.", container.PackageFamilies.Count, container.Name));
             }
-            else if (resolution == ContainerConflictResolution.Merge)
+            else if (this.Resolution.CurrentValue == ContainerConflictResolution.Merge)
             {
                 var _ = this._interactionService.ShowToast("Container merged", string.Format("Additional {0} packages have been added to an existing container '{1}'.", container.PackageFamilies.Count, container.Name)) ;
             }
@@ -307,6 +308,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 return false;
             }
 
+            this.Output.CurrentValue = path;
+
             cancellationToken.ThrowIfCancellationRequested();
             progress.Report(new ProgressData(100, "Creating XML file..."));
             var sharedContainer = new SharedPackageContainerBuilder(this.Name.CurrentValue);
@@ -335,21 +338,61 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             return true;
         }
 
+        public ChangeableProperty<ContainerConflictResolution> Resolution { get; private set; } = new(ContainerConflictResolution.Default);
+
+        public ChangeableProperty<string> Output { get; private set; } = new();
+
         protected override void UpdateVerbData()
         {
-            this.Verb.JunctionPoint = "C:\\temp\\" + Guid.NewGuid().ToString("N").Substring(0, 4);
-            this.Verb.CreateScript = Guid.NewGuid().GetHashCode() % 2 == 1;
-            this.Verb.ExtractCertificate = Guid.NewGuid().GetHashCode() % 2 == 1;
-            this.Verb.FileType = (AppAttachVolumeType)(Guid.NewGuid().GetHashCode() % 3);
-            this.Verb.Directory = "C:\\output\\" + Guid.NewGuid().ToString("N").Substring(0, 4);
-            this.Verb.Size = (uint)Math.Abs(Guid.NewGuid().GetHashCode() / 1000);
-            this.Verb.Package = new List<string>() { Guid.NewGuid().ToString("N").Substring(0, 4) + ".msix" };
+            this.Verb.Name = this.Verb.Name;
+
+            switch (this.CreationMode.CurrentValue)
+            {
+                case ViewModel.CreationMode.Xml:
+                    this.Verb.Output = "<output-file-path.xml>";
+                    this.Verb.Force = false;
+                    this.Verb.Merge = false;
+                    this.Verb.ForceApplicationShutdown = false;
+                    break;
+                case ViewModel.CreationMode.Deploy:
+                    this.Verb.Output = null;
+
+                    switch (this.Resolution.CurrentValue)
+                    {
+                        case ContainerConflictResolution.Merge:
+                            this.Verb.Force = false;
+                            this.Verb.Merge = true;
+                            break;
+
+                        case ContainerConflictResolution.Replace:
+                            this.Verb.Force = true;
+                            this.Verb.Merge = false;
+                            break;
+                    }
+
+                    this.Verb.ForceApplicationShutdown = true;
+                    this.Verb.Output = this.Output.CurrentValue;
+                    break;
+            }
+
+            this.Verb.Packages = this.Packages.Select(p =>
+            {
+                switch (p.Type.CurrentValue)
+                {
+                    case SharedPackageItemType.FilePath:
+                        return p.FilePath.CurrentValue;
+                    case SharedPackageItemType.Installed:
+                        return p.FullName.CurrentValue;
+                    default:
+                        return p.FamilyName.CurrentValue;
+                }
+            });
         }
 
         private void OnAdd()
         {
-            var package = SharedPackageViewModel.Create(this._packageQuery, "MSIXHero_zxq1da1qqbeze");
-            package.Type = SharedPackageItemType.New;
+            var package = SharedPackageViewModel.FromFamilyName(this._packageQuery, "MSIXHero_zxq1da1qqbeze");
+            package.Type.CurrentValue = SharedPackageItemType.New;
 
             this.Packages.Add(package);
             this.SelectedPackage = package;
@@ -385,13 +428,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             foreach (var selection in selections)
             {
-                var newPackage = new SharedPackageViewModel
-                {
-                    Type = SharedPackageItemType.FilePath
-                };
+                var newPackage = new SharedPackageViewModel();
+                newPackage.Type.CurrentValue = SharedPackageItemType.FilePath;
 
                 if (newPackage.SetFromFilePath(selection, CancellationToken.None).GetAwaiter().GetResult())
                 {
+                    newPackage.Commit();
                     this.Packages.Add(newPackage);
                     this.SelectedPackage = newPackage;
                 }

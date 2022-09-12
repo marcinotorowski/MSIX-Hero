@@ -522,4 +522,7 @@
   <data name="Packages_Error_PackageNotFound" xml:space="preserve">
     <value>Could not find the required package.</value>
   </data>
+  <data name="Packages_Error_FullName" xml:space="preserve">
+    <value>The full name must be a string with 5 units, separated by underscores.</value>
+  </data>
 </root>

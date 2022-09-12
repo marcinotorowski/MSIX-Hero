@@ -28,6 +28,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
     {
         private readonly ISigningManager signingManager;
         private static readonly LogSource Logger = new();
+
         public TrustVerbExecutor(TrustVerb verb, ISigningManager signingManager, IConsole console) : base(verb, console)
         {
             this.signingManager = signingManager;

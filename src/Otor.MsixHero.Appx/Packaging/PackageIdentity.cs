@@ -43,7 +43,7 @@ namespace Otor.MsixHero.Appx.Packaging
             var split = packageFullName.Split('_');
             if (split.Length < 5)
             {
-                throw new ArgumentException("The full name must have 5 units.", nameof(packageFullName));
+                throw new ArgumentException(Resources.Localization.Packages_Error_FullName, nameof(packageFullName));
             }
 
             var obj = new PackageIdentity

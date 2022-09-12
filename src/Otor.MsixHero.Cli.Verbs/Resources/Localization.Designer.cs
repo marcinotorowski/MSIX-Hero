@@ -808,6 +808,69 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indicates that the content of the container should replace any existing container with the same name. Cannot be used together with --merge option..
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_Force {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_Force", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates that apps installed in shared container should be stopped if running..
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_ForceApplicationShutdown {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_ForceApplicationShutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates that the content of the container should be merged with any existing container (with the same name. Cannot be used together with --force option..
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_Merge {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the container.
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_Name {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The output file. If not specified, the container will be installed. Installation of apps into Shared Package Container requires administrative permissions..
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_Output {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_Output", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full paths, or family names, or full names or a combination of them that build the container..
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_Prop_Packages {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_Prop_Packages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates Shared Package Container (XML) or installs packages into a Shared Package Container.
+        /// </summary>
+        public static string CLI_Verbs_SharedPackageContainer_VerbName {
+            get {
+                return ResourceManager.GetString("CLI_Verbs_SharedPackageContainer_VerbName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full path to JSON file containing access tokens to AzureAD..
         /// </summary>
         public static string CLI_Verbs_Sign_Prop_DeviceGuardFile {

@@ -168,7 +168,9 @@ public class InstalledPackages : NotifyPropertyChanged
     {
         this._listRefreshRequired = true;
         this.IsVisible = false;
-        this._parent.Packages.Add(SharedPackageViewModel.Create(this._parent.PackageQuery, this.SelectedItem.PackageFamilyName));
+
+        var pkg = SharedPackageViewModel.FromInstalledPackage(this.SelectedItem);
+        this._parent.Packages.Add(pkg);
     }
 
     private void OnCancel()

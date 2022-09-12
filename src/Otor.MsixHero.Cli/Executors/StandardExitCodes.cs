@@ -10,10 +10,12 @@
         
         public static int ErrorFormat = 3;
 
-        public static int ErrorMustBeAdministrator = 11;
-
         public static int ErrorSettings = 10;
 
+        public static int ErrorMustBeAdministrator = 11;
+
         public static int ErrorResourceExists = 12;
+
+        public static int ErrorNotSupported = 13;
     }
 }

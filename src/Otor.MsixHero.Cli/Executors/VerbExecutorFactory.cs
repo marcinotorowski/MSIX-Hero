@@ -6,6 +6,7 @@ using CommandLine;
 using CommandLine.Text;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
+using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
@@ -43,6 +44,7 @@ namespace Otor.MsixHero.Cli.Executors
                 typeof(UnpackVerb),
                 typeof(NewCertVerb),
                 typeof(TrustVerb),
+                typeof(SharedPackageContainerVerb),
                 typeof(AppAttachVerb),
                 typeof(NewModPackVerb),
                 typeof(ExtractCertVerb),
@@ -57,6 +59,11 @@ namespace Otor.MsixHero.Cli.Executors
             p.WithParsed<PackVerb>(verb =>
             {
                 verbExecutor = new PackVerbExecutor(verb, this.console);
+            });
+
+            p.WithParsed<SharedPackageContainerVerb>(verb =>
+            {
+                verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerService(), this.console);
             });
 
             p.WithParsed<UnpackVerb>(verb =>

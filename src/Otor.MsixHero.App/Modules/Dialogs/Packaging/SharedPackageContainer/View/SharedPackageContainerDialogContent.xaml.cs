@@ -66,7 +66,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             }
 
             var dataContext = (SharedPackageContainerViewModel)this.DataContext;
-            if (addedItem.Type == SharedPackageItemType.New && !dataContext.Packages.Any(a => a.IsEditing))
+            if (addedItem.Type.CurrentValue == SharedPackageItemType.New && !dataContext.Packages.Any(a => a.IsEditing))
             {
                 Dispatcher.BeginInvoke(() => addedItem.IsEditing = true, DispatcherPriority.SystemIdle);
             }
