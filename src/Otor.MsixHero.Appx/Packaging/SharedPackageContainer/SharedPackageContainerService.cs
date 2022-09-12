@@ -73,7 +73,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
     public async Task Add(
         Entities.SharedPackageContainer container, 
         bool forceApplicationShutdown = false,
-        ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Disallow,
+        ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
     {
         var temporaryFile = new FileInfo(Path.Combine(Path.GetTempPath(), "shared-app-container-" + Guid.NewGuid().ToString("N").Substring(0, 8) + ".xml"));
@@ -125,7 +125,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
     public async Task Add(
         FileInfo containerFile, 
         bool forceApplicationShutdown = false,
-        ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Disallow,
+        ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
     {
         if (!containerFile.Exists)
@@ -240,49 +240,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
 
         return obj;
     }
-        
-    public async Task<Entities.SharedPackageContainer> GetById(string containerId, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrEmpty(containerId))
-        {
-            throw new ArgumentNullException(nameof(containerId));
-        }
-
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Get-AppSharedPackageContainer");
-        command.AddParameter("Id", containerId);
-        
-        PSDataCollection<PSObject> results;
-        try
-        {
-            results = await powerShell.InvokeAsync().ConfigureAwait(false);
-        }
-        catch (CommandNotFoundException e)
-        {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
-        }
-
-        var result = results.FirstOrDefault();
-        if (result == null)
-        {
-            return null;
-        }
-
-        var baseType = result.BaseObject.GetType();
-        var name = (string)baseType.GetProperty("Name")?.GetValue(result.BaseObject, Array.Empty<object>());
-        var id = (string)baseType.GetProperty("Id")?.GetValue(result.BaseObject, Array.Empty<object>());
-        var packageFamilyNames = (IEnumerable<string>)baseType.GetProperty("PackageFamilyNames")?.GetValue(result.BaseObject, Array.Empty<object>());
-
-        var obj = new Entities.SharedPackageContainer
-        {
-            Name = name,
-            Id = id,
-            PackageFamilies = packageFamilyNames?.Select(pfn => new Entities.SharedPackageFamily { FamilyName = pfn }).ToList()
-        };
-
-        return obj;
-    }
-
+       
     public async Task Reset(string containerName, CancellationToken cancellationToken = default)
     {
         using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);

@@ -47,7 +47,7 @@
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <controls:ProgressOverlay 
-                    IsShown="{Binding CurrentVolume.IsLoading}" Message="{localization:Loc Dialogs_ChangeVolume_GettingData}">
+                    IsShown="{Binding CurrentVolume.Progress.IsLoading}" Message="{localization:Loc Dialogs_ChangeVolume_GettingData}">
                     <StackPanel>
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}"
@@ -76,7 +76,7 @@
                             SelectedValue="{Binding TargetVolume.CurrentValue}" 
                             SelectionChanged="Selector_OnSelectionChanged"
                             ItemsSource="{Binding AllVolumes.CurrentValue}" 
-                            IsEnabled="{Binding AllVolumes.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            IsEnabled="{Binding AllVolumes.Progress.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
                                     <DockPanel>

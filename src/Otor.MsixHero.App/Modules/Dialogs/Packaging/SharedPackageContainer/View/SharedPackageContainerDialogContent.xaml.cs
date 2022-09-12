@@ -174,5 +174,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             
             editing.IsEditing = true;
         }
+
+        private void Control_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var dataContext = (SharedPackageContainerViewModel)this.DataContext;
+            if (dataContext.InstalledPackages.Accept.CanExecute(null))
+            {
+                dataContext.InstalledPackages.Accept.Execute(null);
+            }
+        }
     }
 }

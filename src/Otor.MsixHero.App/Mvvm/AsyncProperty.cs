@@ -26,31 +26,58 @@ namespace Otor.MsixHero.App.Mvvm
     public class AsyncProperty<T> : NotifyPropertyChanged
     {
         private T currentValue;
-        private bool isLoading;
-        private bool hasError;
-        private string error;
 
         public AsyncProperty(T initialValue = default, bool isLoading = false)
         {
-            this.isLoading = isLoading;
+            this.Progress.IsLoading = isLoading;
             currentValue = initialValue;
         }
 
-        public AsyncProperty(Task<T> loader, IProgress<ProgressData> progressReporter = null)
+        public AsyncProperty(Task<T> loader)
         {
             if (loader != null)
             {
 #pragma warning disable 4014
-                Load(loader, progressReporter);
+                Load(loader);
 #pragma warning restore 4014
             }
         }
 
-        public async Task Load(Task<T> loader, IProgress<ProgressData> progressReporter = null)
+        public ProgressProperty Progress { get; } = new ProgressProperty();
+
+        public async Task Load(Func<IProgress<ProgressData>,Task<T>> loaderDelegate)
+        {                
+            var progress = new Infrastructure.Progress.Progress();
+
+            EventHandler<ProgressData> eventHandler = (_, data) =>
+            {
+                this.Progress.Progress = data.Progress;
+                this.Progress.Message = data.Message;
+            };
+
+            progress.ProgressChanged += eventHandler;
+
+            try
+            {
+                this.Progress.Error = null;
+                await this.Load(loaderDelegate(progress)).ConfigureAwait(false);
+            }
+            finally
+            {
+                progress.ProgressChanged -= eventHandler;
+            }
+        }
+
+        public Task Load(Func<Task<T>> loaderDelegate)
+        {
+            return this.Load(loaderDelegate());
+        }
+
+        public async Task Load(Task<T> loader)
         {
             try
             {
-                IsLoading = true;
+                this.Progress.IsLoading = true;
                 var newValue = await loader.ConfigureAwait(true);
 
                 if (CurrentValue != null && typeof(T).IsGenericType)
@@ -85,33 +112,21 @@ namespace Otor.MsixHero.App.Mvvm
                 HasValue = true;
                 CurrentValue = newValue;
 
-                HasError = false;
-                Error = null;
+                this.Progress.HasError = false;
+                this.Progress.Error = null;
                 OnLoaded(EventArgs.Empty);
             }
             catch (Exception e)
             {
-                Error = e.Message;
-                HasError = !string.IsNullOrEmpty(e.Message);
+                this.Progress.Error = e.Message;
+                this.Progress.HasError = !string.IsNullOrEmpty(e.Message);
             }
             finally
             {
-                IsLoading = false;
+                this.Progress.IsLoading = false;
             }
         }
-
-        public bool HasError
-        {
-            get => hasError;
-            private set => SetField(ref hasError, value);
-        }
-
-        public string Error
-        {
-            get => error;
-            private set => SetField(ref error, value);
-        }
-
+        
         public T CurrentValue
         {
             get => currentValue;
@@ -123,13 +138,7 @@ namespace Otor.MsixHero.App.Mvvm
         }
 
         public bool HasValue { get; private set; }
-
-        public bool IsLoading
-        {
-            get => isLoading;
-            private set => SetField(ref isLoading, value);
-        }
-
+        
         public event EventHandler<EventArgs> Loaded;
 
         protected void OnLoaded(EventArgs args)

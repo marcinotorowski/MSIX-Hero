@@ -102,15 +102,15 @@
                         <views:MsixHeroLinks x:Name="Links" DockPanel.Dock="Top" Margin="0 8" />
 
                         <StackPanel Orientation="Horizontal" Margin="0 16 0 0"  HorizontalAlignment="Left">
-                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckNow}" HorizontalAlignment="Left" />
-                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckAgain}"  HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.Progress.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckNow}" HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.Progress.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckAgain}"  HorizontalAlignment="Left" />
                             <Button Margin="0 0 6 0" Command="{Binding ShowReleaseNotes}" Content="{localization:Loc Dialogs_About_Update_ShowRelNotes}" />
                         </StackPanel>
                     </StackPanel>
 
                 </DockPanel>
 
-                <Border DockPanel.Dock="Top" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
+                <Border DockPanel.Dock="Top" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.Progress.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
                     <StackPanel>
                         <TextBlock Text="{localization:Loc Dialogs_About_Update_Reading}" />
                         <ProgressBar Height="8" IsIndeterminate="True" Margin="0 8 0 0" />

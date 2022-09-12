@@ -20,5 +20,5 @@ public enum ContainerConflictResolution
 {
     Merge,
     Replace,
-    Disallow
+    Default
 }

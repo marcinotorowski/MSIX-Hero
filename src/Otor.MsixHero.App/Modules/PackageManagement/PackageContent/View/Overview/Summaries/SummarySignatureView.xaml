@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <cards:Card 
-        IsLoading="{Binding TrustStatus.IsLoading, FallbackValue={StaticResource True}}">
+        IsLoading="{Binding TrustStatus.Progress.IsLoading, FallbackValue={StaticResource True}}">
         <!-- Margin="0 0 0 8" -->
         <cards:Card.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />

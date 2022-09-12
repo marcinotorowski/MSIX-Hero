@@ -299,7 +299,6 @@
                 FocusVisualStyle="{x:Null}"
                 IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
                 x:Name="ListBox"
-                ItemsSource="{Binding ItemsCollection}"
                 SelectionMode="Extended"
                 SelectedValuePath="PackageFullName"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration1="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
@@ -305,7 +304,7 @@
                         VerticalAlignment="Top"
                         Visibility="{Binding ElementName=SpecificTimeStamp, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Margin="22 0 0 0" 
-                        IsShown="{Binding TimeStampServers.IsLoading}">
+                        IsShown="{Binding TimeStampServers.Progress.IsLoading}">
                         <ComboBox 
                             Margin="0"
                             VerticalAlignment="Top"

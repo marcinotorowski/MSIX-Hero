@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 
@@ -27,6 +29,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             return newObj;
         }
 
+        public static SharedPackageViewModel Create(InstalledPackage installedPackage)
+        {
+            var newObj = new SharedPackageViewModel();
+            newObj.FamilyName.CurrentValue = installedPackage.PackageFamilyName;
+            newObj.DisplayName = installedPackage.DisplayName;
+            newObj.FilePath = installedPackage.ManifestLocation;
+            newObj.Type = SharedPackageItemType.FilePath;
+            newObj.Color = installedPackage.TileColor;
+            newObj.PublisherDisplayName = installedPackage.DisplayName;
+            newObj.Version = installedPackage.DisplayName;
+            newObj.LogoPath = installedPackage.Image;
+
+            newObj.FamilyName.Commit();
+            return newObj;
+        }
+
         public bool IsEditing
         {
             get => this._isEditing;
@@ -44,6 +62,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         public string Version { get; private set; }
         
         public byte[] Logo { get; private set; }
+        
+        public string LogoPath { get; private set; }
 
         public string Color { get; private set; }
 
@@ -77,6 +97,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             this.DisplayName = null;
             this.PublisherDisplayName = null;
             this.Logo = null;
+            this.LogoPath = null;
             this.Version = null;
             this.OnPropertyChanged(null);
 
@@ -98,6 +119,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 this.FilePath = filePath;
                 this.PublisherDisplayName = pkg.PublisherDisplayName;
                 this.Logo = pkg.Logo;
+                this.LogoPath = null;
                 this.Version = pkg.Version;
                 this.FamilyName.CurrentValue = pkg.FamilyName;
 

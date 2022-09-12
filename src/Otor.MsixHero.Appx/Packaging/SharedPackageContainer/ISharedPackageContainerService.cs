@@ -10,13 +10,13 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer
         Task Add(
             Entities.SharedPackageContainer container, 
             bool forceApplicationShutdown = false,
-            ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Disallow,
+            ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
             CancellationToken cancellationToken = default);
         
         Task Add(
             FileInfo containerFile,
             bool forceApplicationShutdown = false,
-            ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Disallow,
+            ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
             CancellationToken cancellationToken = default);
 
         Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default);
@@ -30,10 +30,6 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer
             string containerName,
             CancellationToken cancellationToken = default);
         
-        Task<Entities.SharedPackageContainer> GetById(
-            string containerId, 
-            CancellationToken cancellationToken = default);
-
         Task Reset(
             string containerName, 
             CancellationToken cancellationToken = default);

@@ -26,6 +26,7 @@ using System.Windows;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
 using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging.Installation;
@@ -34,6 +35,7 @@ using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -42,17 +44,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 {
     public class SharedPackageContainerViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>, IDropTarget
     {
-        private readonly ISharedPackageContainerService _sharedPackageContainerService;
+        private readonly IUacElevation _uacElevation;
         private readonly IInteractionService _interactionService;
         private readonly IAppxPackageQuery _packageQuery;
         private SharedPackageViewModel _selectedPackage;
 
         public SharedPackageContainerViewModel(
-            ISharedPackageContainerService sharedPackageContainerService,
+            IMsixHeroApplication application,
+            IUacElevation uacElevation,
             IInteractionService interactionService,
             IAppxPackageQuery packageQuery) : base("Create shared package container definition", interactionService)
         {
-            this._sharedPackageContainerService = sharedPackageContainerService;
+            this._uacElevation = uacElevation;
             this._interactionService = interactionService;
             this._packageQuery = packageQuery;
             this.AddChildren(
@@ -69,7 +72,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             this.Open = new DelegateCommand(this.OnOpen, this.CanOpen);
             
             this.CustomValidation += this.OnCustomValidation;
+            this.InstalledPackages = new InstalledPackages(this, application);
         }
+
+        public InstalledPackages InstalledPackages { get; }
 
         private void OnCustomValidation(object sender, ContainerValidationArgs e)
         {
@@ -130,7 +136,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     return await this.SaveXml(cancellationToken, progress).ConfigureAwait(false);
                     
                 case ViewModel.CreationMode.Deploy:
-                    if (!this._sharedPackageContainerService.IsSharedPackageContainerSupported())
+                    if (!this._uacElevation.AsCurrentUser<ISharedPackageContainerService>().IsSharedPackageContainerSupported())
                     {
                         throw new NotSupportedException("Deploying of containers is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.");
                     }
@@ -148,7 +154,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
 
-            var getExisting = await this._sharedPackageContainerService
+            var getExisting = await this._uacElevation.AsCurrentUser<ISharedPackageContainerService>()
                 .GetByName(this.Name.CurrentValue, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -221,7 +227,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                         case 1:
                             resolution = ContainerConflictResolution.Merge;
 
-                            foreach (var familyName in extraToBeAdded)
+                            foreach (var familyName in existingPackageFamilies.Concat(extraToBeAdded))
                             {
                                 containerBuilder.AddFamilyName(familyName);
                             }
@@ -257,7 +263,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             
             try
             {
-                await this._sharedPackageContainerService.Add(container, true, resolution, cancellationToken).ConfigureAwait(false);
+                await this._uacElevation.AsAdministrator<ISharedPackageContainerService>().Add(container, true, resolution, cancellationToken).ConfigureAwait(false);
             }
             catch (AlreadyInAnotherContainerException e)
             {
