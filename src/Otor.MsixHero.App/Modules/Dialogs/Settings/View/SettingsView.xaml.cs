@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dapplo.Log;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -38,6 +39,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
     /// </summary>
     public partial class SettingsView
     {
+        private static readonly LogSource Logger = new();
         private readonly IInteractionService interactionService;
 
         public SettingsView(IInteractionService interactionService)
@@ -150,11 +152,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
 
         private void OpenLogsClicked(object sender, RoutedEventArgs e)
         {
-            var logFile = LogManager.LogFile;
+            var logFile = LogManager.GetActualLogFile();
+            
             if (logFile != null)
             {
+                Logger.Info().WriteLine("Opening log file " + logFile);
+
                 ExceptionGuard.Guard(() =>
                 {
+                    Logger.Debug().WriteLine("Starting explorer.exe /e," + Path.GetDirectoryName(logFile));
                     var psi = new ProcessStartInfo
                     {
                         UseShellExecute = true,
