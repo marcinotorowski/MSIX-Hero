@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Mvvm.Changeable;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Services;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel
 {
@@ -25,10 +25,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             );
         }
 
-        public static SharedPackageViewModel FromFamilyName(IAppxPackageQuery query, string familyName)
+        public static SharedPackageViewModel FromFamilyName(IAppxPackageQueryService queryService, string familyName)
         {
             var newObj = new SharedPackageViewModel();
-            newObj.SetFromFamilyName(query, familyName, CancellationToken.None).GetAwaiter().GetResult();
+            newObj.SetFromFamilyName(queryService, familyName, CancellationToken.None).GetAwaiter().GetResult();
             newObj.Type.CurrentValue = SharedPackageItemType.FamilyName;
             newObj.Commit();
 
@@ -84,7 +84,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         public string PublisherDisplayName { get; private set; }
 
-        public async Task<bool> SetFromFamilyName(IAppxPackageQuery packageQuery, string familyName, CancellationToken cancellationToken)
+        public async Task<bool> SetFromFamilyName(IAppxPackageQueryService packageQueryService, string familyName, CancellationToken cancellationToken)
         {
             if (this.FamilyName.CurrentValue == familyName || string.IsNullOrEmpty(familyName))
             {
@@ -93,7 +93,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             try
             {
-                var installedPackage = await packageQuery.GetInstalledPackageByFamilyName(familyName, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var installedPackage = await packageQueryService.GetInstalledPackageByFamilyName(familyName, cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (installedPackage != null)
                 {
                     var ip = await this.SetFromFilePath(installedPackage.ManifestLocation, cancellationToken).ConfigureAwait(false);

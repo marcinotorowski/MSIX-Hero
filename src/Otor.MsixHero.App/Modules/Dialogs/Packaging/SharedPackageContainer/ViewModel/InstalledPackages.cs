@@ -23,8 +23,8 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel;

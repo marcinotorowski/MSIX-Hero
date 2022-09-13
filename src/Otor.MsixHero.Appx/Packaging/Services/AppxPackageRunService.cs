@@ -30,13 +30,13 @@ using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class AppxPackageRunner : IAppxPackageRunner
+    public class AppxPackageRunService : IAppxPackageRunService
     {
-        private static readonly LogSource Logger = new();        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
-        
+        private static readonly LogSource Logger = new(); protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
+
         public async Task RunToolInContext(InstalledPackage package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (package == null)
@@ -65,7 +65,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            this.SideloadingConfigurator.AssertDeveloperModeEnabled();
+            SideloadingConfigurator.AssertDeveloperModeEnabled();
 
             Logger.Info().WriteLine("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')…", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
@@ -116,7 +116,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             return Run(package.ManifestLocation, appId, cancellationToken, progress);
         }
-        
+
         public async Task Run(string packageManifestLocation, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (appId == null)
@@ -161,7 +161,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             p.StartInfo = startInfo;
             p.Start();
         }
-        
+
         private static async Task<string[]> GetEntryPoints(string manifestLocation)
         {
             if (!File.Exists(manifestLocation))

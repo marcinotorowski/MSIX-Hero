@@ -20,12 +20,12 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
@@ -43,14 +43,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
 
         public PackageContentViewModel(IInteractionService interactionService,
             IConfigurationService configurationService,
-            IAppxPackageQuery queryManager,
+            IAppxPackageQueryService packageQueryService,
             IEventAggregator eventAggregator,
             IUacElevation uacElevation,
             PrismServices prismServices,
             IAppxFileViewer fileViewer,
             FileInvoker fileInvoker)
         {
-            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(queryManager, eventAggregator, configurationService));
+            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(packageQueryService, eventAggregator, configurationService));
             this.Items = new ObservableCollection<IPackageContentItem>();
             this.Header = new HeaderViewModel(this);
 
@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
             var packageApplications = new PackageApplicationsViewModel(this);
             var packagePsf = new PackagePsfViewModel(this);
-            var packageDependencies = new PackageDependenciesViewModel(this, queryManager, interactionService, prismServices);
+            var packageDependencies = new PackageDependenciesViewModel(this, packageQueryService, interactionService, prismServices);
             var packageInstallation = new PackageInstallationViewModel(this, uacElevation);
             var packageFiles = new PackageFilesViewModel(this, fileViewer, fileInvoker);
             var packageRegistry = new PackageRegistryViewModel(this);

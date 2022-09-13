@@ -9,10 +9,10 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -23,7 +23,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
     {
         public PackageDependenciesViewModel(
             IPackageContentItemNavigation navigation, 
-            IAppxPackageQuery manager, 
+            IAppxPackageQueryService manager, 
             IInteractionService interactionService,
             PrismServices prismServices)
         {

@@ -8,9 +8,9 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Prism.Events;
@@ -45,7 +45,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             var context = this.busyManager.Begin(OperationType.PackageLoading);
             try
             {
-                var manager = request.FindMode == PackageFindMode.AllUsers ? this.uacElevation.AsAdministrator<IAppxPackageQuery>() : this.uacElevation.AsHighestAvailable<IAppxPackageQuery>();
+                var manager = request.FindMode == PackageFindMode.AllUsers ? this.uacElevation.AsAdministrator<IAppxPackageQueryService>() : this.uacElevation.AsHighestAvailable<IAppxPackageQueryService>();
 
                 PackageFindMode mode;
                 if (request.FindMode.HasValue)

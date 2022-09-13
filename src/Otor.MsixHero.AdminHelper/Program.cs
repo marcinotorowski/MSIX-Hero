@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
@@ -156,20 +156,20 @@ namespace Otor.MsixHero.AdminHelper
                     var signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
                     var appAttachManager = new AppAttachManager(signingManager, configurationService);
                     var registryManager = new RegistryManager();
-                    var appxPackageQuery = new AppxPackageQuery(registryManager, configurationService);
+                    var appxPackageQuery = new AppxPackageQueryService(registryManager, configurationService);
                     
                     var server = new SimpleElevationServer();
                     server.RegisterProxy<ISigningManager, SigningManager>(signingManager);
                     server.RegisterProxy<IAppAttachManager, AppAttachManager>(appAttachManager);
                     server.RegisterProxy<IRegistryManager, RegistryManager>(registryManager);
                     server.RegisterProxy<IAppxVolumeManager, AppxVolumeManager>();
-                    server.RegisterProxy<IAppxPackageInstaller, AppxPackageInstaller>();
+                    server.RegisterProxy<IAppxPackageInstallationService, AppxPackageInstallationService>();
                     server.RegisterProxy<IAppxLogManager, AppxLogManager>();
-                    server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
+                    server.RegisterProxy<IAppxPackageRunService, AppxPackageRunService>();
                     server.RegisterProxy<IMsixHeroTranslationService, MsixHeroTranslationService>();
-                    server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
+                    server.RegisterProxy<IAppxPackageManagerService, AppxPackageManagerService>();
                     server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();
-                    server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
+                    server.RegisterProxy<IAppxPackageQueryService, AppxPackageQueryService>(appxPackageQuery);
                     server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();
                 }
                 else

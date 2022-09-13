@@ -20,9 +20,9 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Prism.Commands;
 
@@ -118,7 +118,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         
         private async Task<int> GetAddOnsCount(AppxPackage package, CancellationToken cancellationToken = default)
         {
-            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
+            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
             return results.Count;
         }
     }

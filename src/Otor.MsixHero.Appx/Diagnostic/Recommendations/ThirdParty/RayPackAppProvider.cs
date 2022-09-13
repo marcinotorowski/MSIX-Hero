@@ -27,10 +27,10 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
         public IEnumerable<IThirdPartyApp> ProvideApps()
         {
             // Detect MSIX version
-            var pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_whm4wqzjy81pg").FirstOrDefault();
+            var pkg = PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_whm4wqzjy81pg").FirstOrDefault();
             if (pkg == null)
             {
-                pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_n395tecb6fd4t").FirstOrDefault();
+                pkg = PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_n395tecb6fd4t").FirstOrDefault();
                 if (pkg == null)
                 {   
                     yield return new ThirdPartyStoreApp("RAYPACK", "RayPack", "Raynet GmbH", "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_n395tecb6fd4t");

@@ -6,8 +6,8 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overv
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Open;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
@@ -16,15 +16,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class ActionsViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationAware
     {
-        private readonly IAppxPackageQuery _packageQuery;
+        private readonly IAppxPackageQueryService _packageQueryService;
         private bool _isInstalled;
 
         public ActionsViewModel(
-            IAppxPackageQuery packageQuery,
+            IAppxPackageQueryService packageQueryService,
             IEventAggregator eventAggregator, 
             IConfigurationService configurationService)
         {
-            this._packageQuery = packageQuery;
+            this._packageQueryService = packageQueryService;
             this.Start = new StartViewModel(eventAggregator, configurationService);
             this.Open = new OpenViewModel();
             this.More = new MoreViewModel();
@@ -43,7 +43,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             }
             else
             {
-                var installedPackage = ExceptionGuard.Guard(() => this._packageQuery.GetInstalledPackage(model.FullName, cancellationToken: cancellationToken).GetAwaiter().GetResult());
+                var installedPackage = ExceptionGuard.Guard(() => this._packageQueryService.GetInstalledPackage(model.FullName, cancellationToken: cancellationToken).GetAwaiter().GetResult());
                 this.IsInstalled = installedPackage != null;
             }
         }

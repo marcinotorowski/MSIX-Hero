@@ -31,6 +31,7 @@ using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -53,8 +54,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
     public class PackageExpertCommandHandler : NotifyPropertyChanged
     {
         private static readonly LogSource Logger = new();
-        private readonly IAppxPackageQuery _query;
-        private readonly IAppxPackageInstaller _packageInstaller;
+        private readonly IAppxPackageQueryService _queryService;
+        private readonly IAppxPackageInstallationService _packageInstallationService;
         private readonly IInteractionService _interactionService;
         private readonly IConfigurationService _configurationService;
         private readonly PrismServices _prismServices;
@@ -68,8 +69,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         public PackageExpertCommandHandler(
             IMsixHeroApplication application,
-            IAppxPackageQuery query,
-            IAppxPackageInstaller packageInstaller,
+            IAppxPackageQueryService queryService,
+            IAppxPackageInstallationService packageInstallationService,
             IInteractionService interactionService,
             IConfigurationService configurationService,
             PrismServices prismServices,
@@ -77,8 +78,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             IBusyManager busyManager)
         {
             this._application = application;
-            this._query = query;
-            this._packageInstaller = packageInstaller;
+            this._queryService = queryService;
+            this._packageInstallationService = packageInstallationService;
             this._interactionService = interactionService;
             this._configurationService = configurationService;
             this._prismServices = prismServices;
@@ -142,10 +143,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                     {
                         using var loader = FileReaderFactory.CreateFileReader(this._filePath);
                         var pkg = new AppxManifestReader().Read(loader).GetAwaiter().GetResult();
-                        var isInstalled = this._packageInstaller.IsInstalled(this.FilePath).GetAwaiter().GetResult();
+                        var isInstalled = this._packageInstallationService.IsInstalled(this.FilePath).GetAwaiter().GetResult();
                         if (isInstalled)
                         {
-                            this._installedPackage = this._query.GetInstalledPackage(pkg.FullName).GetAwaiter().GetResult();
+                            this._installedPackage = this._queryService.GetInstalledPackage(pkg.FullName).GetAwaiter().GetResult();
                         }
 
                         this._packageDetails = pkg;
@@ -436,7 +437,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
             try
             {
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunner>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
                 await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
@@ -479,7 +480,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var details = await selection.ToAppxPackage().ConfigureAwait(false);
-                var manager = tool.AsAdmin ? this._uacElevation.AsAdministrator<IAppxPackageRunner>() : this._uacElevation.AsCurrentUser<IAppxPackageRunner>();
+                var manager = tool.AsAdmin ? this._uacElevation.AsAdministrator<IAppxPackageRunService>() : this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
                 await manager.RunToolInContext(selection.PackageFamilyName, details.Applications[0].Id, tool.Path, tool.Arguments, CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -571,7 +572,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             var context = this._busyManager.Begin();
             try
             {
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
                 await manager.Add(this.FilePath, options, progress: context).ConfigureAwait(false);
 
                 var appxIdentity = this._packageDetails.DisplayName;
@@ -606,7 +607,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             var context = this._busyManager.Begin();
             try
             {
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
                 await manager.Add(appInstallerPath, options, progress: context).ConfigureAwait(false);
 
                 var _ = this._interactionService.ShowToast(Resources.Localization.PackageExpert_Commands_Add_Success1, string.Format(Resources.Localization.PackageExpert_Commands_Add_SuccessFile2, this._packageDetails.DisplayName));
@@ -703,11 +704,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             {
                 if (forAllUsers)
                 {
-                    var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstaller>();
+                    var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstallationService>();
                     await adminManager.Deprovision(this._installedPackage.PackageFamilyName, CancellationToken.None).ConfigureAwait(false);
                 }
 
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
                 var removedPackageName = this._installedPackage.DisplayName;
 
                 await manager.Remove(

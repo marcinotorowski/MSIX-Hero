@@ -27,7 +27,7 @@ public class PsfToolingAppProvider : IThirdPartyAppProvider
     public IEnumerable<IThirdPartyApp> ProvideApps()
     {
         // Detect MSIX version
-        var pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "23572TimMangan.TMurgent-PsfTooling_g76gvapcsc2b0").FirstOrDefault();
+        var pkg = PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, "23572TimMangan.TMurgent-PsfTooling_g76gvapcsc2b0").FirstOrDefault();
 
         if (pkg == null)
         {

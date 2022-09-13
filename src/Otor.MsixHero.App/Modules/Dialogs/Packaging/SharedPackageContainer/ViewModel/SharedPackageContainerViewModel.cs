@@ -29,7 +29,7 @@ using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
@@ -45,18 +45,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
     {
         private readonly IUacElevation _uacElevation;
         private readonly IInteractionService _interactionService;
-        private readonly IAppxPackageQuery _packageQuery;
+        private readonly IAppxPackageQueryService _packageQueryService;
         private SharedPackageViewModel _selectedPackage;
 
         public SharedPackageContainerViewModel(
             IMsixHeroApplication application,
             IUacElevation uacElevation,
             IInteractionService interactionService,
-            IAppxPackageQuery packageQuery) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
+            IAppxPackageQueryService packageQueryService) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
         {
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
-            this._packageQuery = packageQuery;
+            this._packageQueryService = packageQueryService;
             this.AddChildren(
                 this.Name = new ValidatedChangeableProperty<string>(Resources.Localization.Dialogs_SharedContainer_ContainerName, true, ValidatorFactory.ValidateNotEmptyField()),
                 this.CreationMode = new ChangeableProperty<CreationMode>(),
@@ -120,7 +120,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         public bool AdminRightsRequired => this.CreationMode.CurrentValue == ViewModel.CreationMode.Deploy;
         
-        public IAppxPackageQuery PackageQuery => this._packageQuery;
+        public IAppxPackageQueryService PackageQueryService => this._packageQueryService;
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
@@ -389,7 +389,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         private void OnAdd()
         {
-            var package = SharedPackageViewModel.FromFamilyName(this._packageQuery, "MSIXHero_zxq1da1qqbeze");
+            var package = SharedPackageViewModel.FromFamilyName(this._packageQueryService, "MSIXHero_zxq1da1qqbeze");
             package.Type.CurrentValue = SharedPackageItemType.New;
 
             this.Packages.Add(package);

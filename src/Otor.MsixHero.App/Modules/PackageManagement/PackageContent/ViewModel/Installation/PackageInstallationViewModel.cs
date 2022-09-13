@@ -10,12 +10,12 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Commo
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.InstalledBy;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -99,7 +99,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken);
 
             var usersTask = this.GetUsers(model, false, cancellationToken);
-            var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);
+            var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);
 
             await Task.WhenAll(usersTask, addOnsTask).ConfigureAwait(false);
             
@@ -122,15 +122,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
         {
             try
             {
-                IAppxPackageQuery actualSource;
+                IAppxPackageQueryService actualSource;
 
                 if (forceElevation)
                 {
-                    actualSource = this._uacElevation.AsAdministrator<IAppxPackageQuery>();
+                    actualSource = this._uacElevation.AsAdministrator<IAppxPackageQueryService>();
                 }
                 else
                 {
-                    actualSource = this._uacElevation.AsHighestAvailable<IAppxPackageQuery>();
+                    actualSource = this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>();
                 }
 
                 var stateDetails = await actualSource.GetUsersForPackage(package.FullName, cancellationToken, progress).ConfigureAwait(false);

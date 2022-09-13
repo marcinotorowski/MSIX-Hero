@@ -21,9 +21,9 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
-    public interface IAppxPackageInstaller
+    public interface IAppxPackageInstallationService
     {
         Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

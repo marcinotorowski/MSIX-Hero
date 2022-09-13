@@ -15,14 +15,20 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Management.Deployment;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
-    public class PackageManagerWrapper
+    public interface IAppxPackageManagerService
     {
-        private static readonly Lazy<PackageManager> PackageManager = new Lazy<PackageManager>(() => new PackageManager(), true);
+        public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
 
-        public static PackageManager Instance => PackageManager.Value;
+        Task Stop(string packageFullName, CancellationToken cancellationToken = default);
+
+        Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

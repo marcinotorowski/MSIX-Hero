@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 
 namespace Otor.MsixHero.App.Hero.Handlers
@@ -18,7 +18,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         protected override Task Handle(StopPackageCommand request, CancellationToken cancellationToken)
         {
-            return this.uacElevation.AsHighestAvailable<IAppxPackageManager>().Stop(request.Package.PackageFullName, cancellationToken);
+            return this.uacElevation.AsHighestAvailable<IAppxPackageManagerService>().Stop(request.Package.PackageFullName, cancellationToken);
         }
     }
 }

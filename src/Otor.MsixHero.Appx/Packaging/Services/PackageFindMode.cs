@@ -14,7 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
     public enum PackageFindMode
     {

@@ -32,11 +32,12 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class AppxPackageInstaller : IAppxPackageInstaller
+    public class AppxPackageInstallationService : IAppxPackageInstallationService
     {
         private static readonly LogSource Logger = new(); protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
 
@@ -62,7 +63,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 Logger.Info().WriteLine("Removing {0}", item);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    PackageManagerWrapper.Instance.RemovePackageAsync(item, opts),
+                    PackageManagerSingleton.Instance.RemovePackageAsync(item, opts),
                     Resources.Localization.Packages_Removing, CancellationToken.None, progress);
 
                 await task.ConfigureAwait(false);
@@ -96,7 +97,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 Logger.Info().WriteLine("Removing {0}", item.PackageFullName);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    PackageManagerWrapper.Instance.RemovePackageAsync(item.PackageFullName, opts),
+                    PackageManagerSingleton.Instance.RemovePackageAsync(item.PackageFullName, opts),
                     string.Format(Resources.Localization.Packages_Removing_Format, item.DisplayName), CancellationToken.None, progress);
 
                 await task.ConfigureAwait(false);
@@ -111,7 +112,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         public async Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var task = AsyncOperationHelper.ConvertToTask(
-                PackageManagerWrapper.Instance.DeprovisionPackageForAllUsersAsync(packageFamilyName),
+                PackageManagerSingleton.Instance.DeprovisionPackageForAllUsersAsync(packageFamilyName),
                 Resources.Localization.Packages_Deprovision_AllUsers,
                 CancellationToken.None, progress);
             await task.ConfigureAwait(false);
@@ -121,7 +122,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             try
             {
-                this.SideloadingConfigurator.AssertSideloadingEnabled();
+                SideloadingConfigurator.AssertSideloadingEnabled();
 
                 Logger.Info().WriteLine("Installing package {0}", filePath);
                 if (filePath == null)
@@ -154,7 +155,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     deploymentOptions |= DeploymentOptions.DevelopmentMode;
 
                     await AsyncOperationHelper.ConvertToTask(
-                        PackageManagerWrapper.Instance.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
+                        PackageManagerSingleton.Instance.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
                         $"Installing {reader.DisplayName} {reader.Version}…",
                         cancellationToken,
                         progress).ConfigureAwait(false);
@@ -183,9 +184,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                         deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
                     }
 
-                    var volume = PackageManagerWrapper.Instance.GetDefaultPackageVolume();
+                    var volume = PackageManagerSingleton.Instance.GetDefaultPackageVolume();
                     await AsyncOperationHelper.ConvertToTask(
-                        PackageManagerWrapper.Instance.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
+                        PackageManagerSingleton.Instance.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
                         string.Format(Resources.Localization.Packages_InstallingFrom_Format, Path.GetFileName(filePath)),
                         cancellationToken,
                         progress).ConfigureAwait(false);
@@ -244,7 +245,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                     {
                         var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            PackageManagerSingleton.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
                             $"Installing {name} {version}…",
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -254,7 +255,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                             throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
                         }
 
-                        var findInstalled = PackageManagerWrapper.Instance.FindPackages(name, publisher).FirstOrDefault();
+                        var findInstalled = PackageManagerSingleton.Instance.FindPackages(name, publisher).FirstOrDefault();
                         if (findInstalled == null)
                         {
                             throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
@@ -263,7 +264,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                         var familyName = findInstalled.Id.FamilyName;
 
                         await AsyncOperationHelper.ConvertToTask(
-                            PackageManagerWrapper.Instance.ProvisionPackageForAllUsersAsync(familyName),
+                            PackageManagerSingleton.Instance.ProvisionPackageForAllUsersAsync(familyName),
                             string.Format(Resources.Localization.Packages_Provisioning_Format, name, version),
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -271,7 +272,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     else
                     {
                         var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            PackageManagerSingleton.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
                             string.Format(Resources.Localization.Packages_Installing_Format, name),
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -334,12 +335,12 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 case PackageFindMode.CurrentUser:
                     var pkg = await Task.Run(
-                        () => PackageManagerWrapper.Instance.FindPackageForUser(string.Empty, pkgFullName),
+                        () => PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, pkgFullName),
                         cancellationToken).ConfigureAwait(false);
                     return pkg != null;
                 case PackageFindMode.AllUsers:
                     var pkgAllUsers = await Task.Run(
-                        () => PackageManagerWrapper.Instance.FindPackage(pkgFullName),
+                        () => PackageManagerSingleton.Instance.FindPackage(pkgFullName),
                         cancellationToken).ConfigureAwait(false);
                     return pkgAllUsers != null;
                 default:

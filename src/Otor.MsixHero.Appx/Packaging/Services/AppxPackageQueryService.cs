@@ -40,10 +40,10 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class AppxPackageQuery : IAppxPackageQuery
+    public class AppxPackageQueryService : IAppxPackageQueryService
     {
         public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
 
@@ -51,10 +51,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         private readonly IRegistryManager _registryManager;
         public readonly IConfigurationService ConfigurationService;
 
-        public AppxPackageQuery(IRegistryManager registryManager, IConfigurationService configurationService)
+        public AppxPackageQueryService(IRegistryManager registryManager, IConfigurationService configurationService)
         {
-            this._registryManager = registryManager;
-            this.ConfigurationService = configurationService;
+            _registryManager = registryManager;
+            ConfigurationService = configurationService;
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -82,10 +82,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             Logger.Info().WriteLine("Returning {0} users…", result.Count);
             return result;
         }
-        
+
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.QueryInstalledPackages(null, mode, cancellationToken, progress);
+            return QueryInstalledPackages(null, mode, cancellationToken, progress);
         }
 
         public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -119,7 +119,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             return list;
         }
-        
+
         public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var reader = new PackageIdentityFileReaderAdapter(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers, packageName);
@@ -140,7 +140,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<InstalledPackage> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var pkgs = await this.QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
+            var pkgs = await QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
             return pkgs.FirstOrDefault();
         }
 
@@ -171,7 +171,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 return null;
             }
 
-            return await this.GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
+            return await GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<List<InstalledPackage>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
@@ -249,30 +249,30 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                    {
-                        var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
-
-                        allPackages = new List<Package>();
-                        if (pkg != null)
                         {
-                            allPackages.Add(pkg);
-                        }
+                            var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
 
-                        break;
-                    }
+                            allPackages = new List<Package>();
+                            if (pkg != null)
+                            {
+                                allPackages.Add(pkg);
+                            }
+
+                            break;
+                        }
 
                     case PackageFindMode.AllUsers:
-                    {
-                        var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
-
-                        allPackages = new List<Package>();
-                        if (pkg != null)
                         {
-                            allPackages.Add(pkg);
-                        }
+                            var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
 
-                        break;
-                    }
+                            allPackages = new List<Package>();
+                            if (pkg != null)
+                            {
+                                allPackages.Add(pkg);
+                            }
+
+                            break;
+                        }
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -428,7 +428,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 InstallDate = installDate,
                 AppInstallerUri = item.GetAppInstallerInfo()?.Uri
             };
-            
+
             if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                             pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                             pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
@@ -452,7 +452,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             return pkg;
         }
-        
+
         private static string SidToAccountName(string sidString)
         {
             var sid = new SecurityIdentifier(sidString);

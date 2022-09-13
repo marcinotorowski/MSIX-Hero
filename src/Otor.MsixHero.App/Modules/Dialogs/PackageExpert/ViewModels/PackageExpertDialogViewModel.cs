@@ -20,7 +20,7 @@ using System.Linq;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Services.Dialogs;
@@ -30,8 +30,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
     public class PackageExpertDialogViewModel : NotifyPropertyChanged, IDialogAware
     {
         public PackageExpertDialogViewModel(
-            IAppxPackageInstaller packageQueryInstaller,
-            IAppxPackageQuery query,
+            IAppxPackageInstallationService packageQueryInstallationService,
+            IAppxPackageQueryService queryService,
             IMsixHeroApplication application,
             IInteractionService interactionService,
             IUacElevation uacElevation,
@@ -41,8 +41,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         {
             this.CommandHandler = new PackageExpertCommandHandler(
                 application,
-                query,
-                packageQueryInstaller,
+                queryService,
+                packageQueryInstallationService,
                 interactionService,
                 configurationService,
                 prismServices,

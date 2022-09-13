@@ -117,7 +117,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             {
                 case Key.Enter:
                     var dataContext = (SharedPackageContainerViewModel)this.DataContext;
-                    viewModel.SetFromFamilyName(dataContext.PackageQuery, textBox.Text, CancellationToken.None).GetAwaiter().GetResult();
+                    viewModel.SetFromFamilyName(dataContext.PackageQueryService, textBox.Text, CancellationToken.None).GetAwaiter().GetResult();
                     viewModel.IsEditing = false;
                     break;
                 case Key.Escape:

@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Dependencies.Domain;
@@ -35,7 +35,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         public override async Task<int> Execute()
         {
             await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Dependencies_Reading).ConfigureAwait(false);
-            var dependencyMapper = DependencyMapper.Create(new AppxPackageQuery(new RegistryManager(), new LocalConfigurationService()));
+            var dependencyMapper = DependencyMapper.Create(new AppxPackageQueryService(new RegistryManager(), new LocalConfigurationService()));
 
             var graph = await dependencyMapper.GetGraph(this.Verb.Path).ConfigureAwait(false);
             

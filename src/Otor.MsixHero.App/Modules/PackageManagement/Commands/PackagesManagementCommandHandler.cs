@@ -43,6 +43,7 @@ using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Services.Dialogs;
+using Otor.MsixHero.Appx.Packaging.Services;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {
@@ -432,7 +433,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 var p1 = wrappedProgress.GetChildProgress(90);
                 var p2 = wrappedProgress.GetChildProgress(10);
 
-                var manager = forAllUsers ? this._uacElevation.AsAdministrator<IAppxPackageInstaller>() : this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
+                var manager = forAllUsers ? this._uacElevation.AsAdministrator<IAppxPackageInstallationService>() : this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
                 await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
                 AppxIdentity appxIdentity = null;
@@ -497,7 +498,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             try
             {
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunner>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
                 await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
@@ -540,7 +541,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var details = await selection.ToAppxPackage().ConfigureAwait(false);
-                var manager = tool.AsAdmin ? this._uacElevation.AsAdministrator<IAppxPackageRunner>() : this._uacElevation.AsCurrentUser<IAppxPackageRunner>();
+                var manager = tool.AsAdmin ? this._uacElevation.AsAdministrator<IAppxPackageRunService>() : this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
                 await manager.RunToolInContext(selection.PackageFamilyName, details.Applications[0].Id, tool.Path, tool.Arguments, CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -782,7 +783,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var processed = 0;
                     var toProcess = this._application.ApplicationState.Packages.SelectedPackages.Count;
 
-                    var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstaller>();
+                    var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstallationService>();
 
                     foreach (var item in this._application.ApplicationState.Packages.SelectedPackages)
                     {
@@ -792,7 +793,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     }
                 }
 
-                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
+                var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
                 var removedPackageNames = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
                 var removedPackages = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToArray();
                 await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);

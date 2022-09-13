@@ -158,7 +158,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     Package pkg = null;
                     if (string.IsNullOrEmpty(this.packagePublisher))
                     {
-                        pkg = PackageManagerWrapper.Instance.FindPackageForUser(string.Empty, this.packageFullName);
+                        pkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, this.packageFullName);
                         if (pkg == null)
                         {
                             throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
@@ -167,7 +167,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
 
-                    var pkgs = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+                    var pkgs = PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
 
                     if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
                     {
@@ -203,7 +203,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     Package pkg = null;
                     if (string.IsNullOrEmpty(this.packagePublisher))
                     {
-                        pkg = PackageManagerWrapper.Instance.FindPackage(this.packageFullName);
+                        pkg = PackageManagerSingleton.Instance.FindPackage(this.packageFullName);
                         if (pkg == null)
                         {
                             throw new FileNotFoundException(Resources.Localization.Packages_Error_PackageNotFound);
@@ -212,7 +212,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
 
-                    var pkgs = PackageManagerWrapper.Instance.FindPackages(this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+                    var pkgs = PackageManagerSingleton.Instance.FindPackages(this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
 
                     if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
                     {

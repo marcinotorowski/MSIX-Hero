@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
-    public interface IAppxPackageRunner
+    public interface IAppxPackageRunService
     {
         Task RunToolInContext(InstalledPackage package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

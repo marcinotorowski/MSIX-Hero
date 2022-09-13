@@ -27,13 +27,14 @@ using Otor.MsixHero.Appx.Packaging.Interop;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging.Services
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class AppxPackageManager : IAppxPackageManager
+    public class AppxPackageManagerService : IAppxPackageManagerService
     {
-        private static readonly LogSource Logger = new();        
+        private static readonly LogSource Logger = new();
         public async Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (string.IsNullOrEmpty(itemPackageId))
@@ -41,7 +42,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 return AppInstallerUpdateAvailabilityResult.Unknown;
             }
 
-            var pkg = PackageManagerWrapper.Instance.FindPackageForUser(string.Empty, itemPackageId);
+            var pkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, itemPackageId);
             if (pkg == null)
             {
                 return AppInstallerUpdateAvailabilityResult.Unknown;
@@ -66,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             return (AppInstallerUpdateAvailabilityResult)(int)u.Availability;
         }
-        
+
         public async Task Stop(string packageFullName, CancellationToken cancellationToken = default)
         {
             Logger.Info().WriteLine("Stopping package " + packageFullName);
