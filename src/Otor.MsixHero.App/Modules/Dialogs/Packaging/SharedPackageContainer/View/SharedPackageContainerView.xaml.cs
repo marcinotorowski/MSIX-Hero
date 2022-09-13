@@ -16,12 +16,9 @@
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.View
 {
-    /// <summary>
-    /// Interaction logic for SharedAppContainerView.
-    /// </summary>
-    public partial class SharedAppContainerView
+    public partial class SharedPackageContainerView
     {
-        public SharedAppContainerView()
+        public SharedPackageContainerView()
         {
             this.InitializeComponent();
         }

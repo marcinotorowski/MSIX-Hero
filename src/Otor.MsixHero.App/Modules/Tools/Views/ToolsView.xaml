@@ -213,32 +213,7 @@
                                     Text="{localization:Loc Dashboard_AppAttach}" />
                             </cards:CardAction>
 
-                            <!-- 
-                            
-
-                    <Button Command="{Binding ShowSharedAppContainerDialog}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Path 
-                                Style="{StaticResource ButtonIcon}"
-                                Data="{StaticResource VectorCollection}" />
-                            <TextBlock 
-                                Grid.Column="1"
-                                Style="{StaticResource ButtonText}"
-                                Text="Create shared app container" />
-                            <Border
-                                Grid.Column="2"
-                                Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".xml" />
-                            </Border>
-                        </Grid>
-                    </Button>
-                            -->
-                            <cards:CardAction Command="{Binding ShowSharedAppContainerDialog}">
+                            <cards:CardAction Command="{Binding ShowSharedPackageContainerDialog}">
                                 <cards:CardAction.Icon>
                                     <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorGroupTree}" />
                                 </cards:CardAction.Icon>
@@ -250,7 +225,7 @@
                                     </StackPanel>
                                 </cards:CardAction.ContentRight>
 
-                                <TextBlock Style="{StaticResource ButtonText}" Text="Create shared app container" />
+                                <TextBlock Style="{StaticResource ButtonText}" Text="{localization:Loc Dashboard_SharedPackageContainer}" />
                             </cards:CardAction>
 
                             <Label Content="Winget" />

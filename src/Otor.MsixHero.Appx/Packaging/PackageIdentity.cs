@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Text.RegularExpressions;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging
@@ -46,15 +47,30 @@ namespace Otor.MsixHero.Appx.Packaging
                 throw new ArgumentException(Resources.Localization.Packages_Error_FullName, nameof(packageFullName));
             }
 
+            if (!Version.TryParse(split[1], out var parsedVersion))
+            {
+                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid version.", packageFullName, split[1]), nameof(packageFullName));
+            }
+
+            if (!Enum.TryParse(split[2], true, out AppxPackageArchitecture parsedArchitecture))
+            {
+                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid package architecture.", packageFullName, split[2]), nameof(packageFullName));
+            }
+
+            if (string.IsNullOrEmpty(split[4]) || !Regex.IsMatch(split[4], @"^[0123456789abcdefghjkmnpqrstvwxyz]{13}$", RegexOptions.IgnoreCase))
+            {
+                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid publisher hash.", packageFullName, split[4]), nameof(packageFullName));
+            }
+
             var obj = new PackageIdentity
             {
                 AppName = split[0],
-                AppVersion = Version.Parse(split[1]),
-                Architecture = (AppxPackageArchitecture) Enum.Parse(typeof(AppxPackageArchitecture), split[2], true),
+                Architecture = parsedArchitecture,
                 ResourceId = split[3],
-                PublisherHash = split[4]
+                PublisherHash = split[4],
+                AppVersion = parsedVersion
             };
-
+            
             return obj;
         }
 

@@ -19,7 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <DockPanel>
+    <DockPanel Margin="0 6 0 0">
         <commands:RoutedCommandHandlers.Commands>
             <commands:RoutedCommandHandler RoutedCommand="New" Command="{Binding Add}" />
             <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding Remove}" />
@@ -28,28 +28,28 @@
 
         <DockPanel>
             <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
-                Style="{StaticResource LabelTextBlock}" Text="Container name" />
+                Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_ContainerName}" />
 
             <TextBox DockPanel.Dock="Top" Margin="0 0 0 16" TabIndex="4"
                 Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
             <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
-                Style="{StaticResource LabelTextBlock}" Text="Packages in the container" />
+                Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_PackagesInContainer}" />
 
             <Border DockPanel.Dock="Bottom" Margin="0 16 0 0">
                 <StackPanel>
                     <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
-                        Style="{StaticResource LabelTextBlock}" Text="Operation type" />
+                        Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_OperationType}" />
                     <StackPanel Orientation="Horizontal">
                         <RadioButton GroupName="g1"
                             IsChecked="{Binding CreationMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:CreationMode.Xml}}"
-                            Margin="0 0 16 6" Content="Create .XML file" />
+                            Margin="0 0 16 6" Content="{localization:Loc Dialogs_SharedContainer_OperationType_Xml}" />
                         <RadioButton GroupName="g2"
                             IsChecked="{Binding CreationMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:CreationMode.Deploy}}"
                             Margin="0 0 16 6">
                             <TextBlock VerticalAlignment="Center">
-                                <Run Text="Deploy the container" />
-                                <Run Text="WINDOWS 11 ONLY" BaselineAlignment="Top" FontWeight="Bold" FontSize="8"
+                                <Run Text="{localization:Loc Dialogs_SharedContainer_OperationType_Deploy}" />
+                                <Run Text="{localization:Loc Dialogs_SharedContainer_OperationType_DeployWin11}" BaselineAlignment="Top" FontWeight="Bold" FontSize="8"
                                     Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                             </TextBlock>
                         </RadioButton>
@@ -64,14 +64,14 @@
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="New">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="New..." />
+                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_NewButton}" />
                         </Button>
 
                         <ToggleButton 
                             IsChecked="{Binding InstalledPackages.IsVisible}"
                             Style="{StaticResource ActionPopupToggleButton}"
                             x:Name="AddNew">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="Add installed..." />
+                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_AddButton}" />
                         </ToggleButton>
 
                         <Popup 
@@ -142,7 +142,7 @@
                                         Command="Open"
                                         DockPanel.Dock="Bottom" 
                                         Margin="0 6 0 0" 
-                                        Content="Continue with selection" />
+                                        Content="{localization:Loc Dialogs_SharedContainer_ContinueButton}" />
 
                                     <controls:ProgressOverlay 
                                         DockPanel.Dock="Top" 
@@ -191,7 +191,7 @@
                                                             Width="24"
                                                             Height="24"
                                                             Background="Green"
-                                                            ToolTip="Already selected" 
+                                                            ToolTip="{localization:Loc Dialogs_SharedContainer_AlreadySelected}" 
                                                             VerticalAlignment="Center" 
                                                             HorizontalAlignment="Right" 
                                                             Margin="0 0 6 0"
@@ -214,18 +214,18 @@
                         </Popup>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="Open">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallOpen}" Content="Import..." />
+                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallOpen}" Content="{localization:Loc Dialogs_SharedContainer_ImportButton}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="Delete">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallRemove}" Content="Remove" />
+                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallRemove}" Content="{localization:Loc Dialogs_SharedContainer_RemoveButton}" />
                         </Button>
                     </StackPanel>
 
                     <DockPanel DockPanel.Dock="Bottom">
                         <controls:LabelWithIcon Margin="7.5" Icon16x16="{StaticResource SmallHelp}">
                             <TextBlock
-                                Text="Tip: reorder packages by drag-and-drop to set priorities, double click or [F2] to edit."
+                                Text="{localization:Loc Dialogs_SharedContainer_ReorderTip}"
                                 TextWrapping="Wrap" />
                         </controls:LabelWithIcon>
                     </DockPanel>
@@ -302,10 +302,10 @@
                                         Background="White" VerticalAlignment="Center" HorizontalAlignment="Right"
                                         Margin="0 0 14 0" IsHitTestVisible="False">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Press" Foreground="#999" />
+                                            <TextBlock Text="{localization:Loc Dialogs_SharedContainer_Press1}" Foreground="#999" />
                                             <Path Margin="2 0" Fill="#999" Style="{StaticResource SmallIcon}"
                                                 Data="M 3.5 2 C 2.6774686 2 2 2.6774686 2 3.5 L 2 12.5 C 2 13.322531 2.6774686 14 3.5 14 L 12.5 14 C 13.322531 14 14 13.322531 14 12.5 L 14 3.5 C 14 2.6774686 13.322531 2 12.5 2 L 3.5 2 z M 3.5 3 L 12.5 3 C 12.781469 3 13 3.2185314 13 3.5 L 13 12.5 C 13 12.781469 12.781469 13 12.5 13 L 3.5 13 C 3.2185314 13 3 12.781469 3 12.5 L 3 3.5 C 3 3.2185314 3.2185314 3 3.5 3 z M 10 8 L 10 9 L 10.5 9 L 11 9 L 11 10 L 9 10 L 9 8.5 L 7 10.5 L 9 12.5 L 9 11 L 12 11 L 12 8 L 10.5 8 L 10 8 z" />
-                                            <TextBlock Text="to accept" Foreground="#999" />
+                                            <TextBlock Text="{localization:Loc Dialogs_SharedContainer_Press2}" Foreground="#999" />
                                         </StackPanel>
                                     </Border>
 
@@ -326,7 +326,6 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-
                 </DockPanel>
             </Border>
         </DockPanel>

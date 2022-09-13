@@ -7,13 +7,13 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer
 {
     public interface ISharedPackageContainerService
     {
-        Task Add(
+        Task<Entities.SharedPackageContainer> Add(
             Entities.SharedPackageContainer container, 
             bool forceApplicationShutdown = false,
             ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
             CancellationToken cancellationToken = default);
         
-        Task Add(
+        Task<Entities.SharedPackageContainer> Add(
             FileInfo containerFile,
             bool forceApplicationShutdown = false,
             ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,

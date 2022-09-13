@@ -618,4 +618,34 @@
 	<data name="Signing_Failed" xml:space="preserve">
     <value>Podpisywanie cyfrowe nie powiodło się: {0}</value>
   </data>
+	<data name="Signing_DeviceGuard_Reading" xml:space="preserve">
+		<value>Ustalanie nazwy wydawcy z certyfikatu Device Guard…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_WrongSet" xml:space="preserve">
+		<value>Parametr --output nie może być używany, jeśli obecny jest którykolwiek z następujących przełączników: --force, -f, --forceApplicationShutdown, --merge, -m.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_SavedInFormat" xml:space="preserve">
+		<value>Współdzielony kontener został poprawnie wygenerowany w '{0}'.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingFamilyFormat" xml:space="preserve">
+		<value>Dodawanie nazwy rodziny '{0}'…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingFullNameFormat" xml:space="preserve">
+		<value>Dodawanie pełnej nazwy pakietu '{0}'…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingPathFormat" xml:space="preserve">
+		<value>Dodawanie ścieżki do pliku '{0}'…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_DeployedAsFormat" xml:space="preserve">
+		<value>Współdzielony kontener został poprawnie zainstalowany jako '{0}'.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_Families" xml:space="preserve">
+		<value>Nazwy rodzin pakietów</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_Id" xml:space="preserve">
+		<value>Identyfikator kontenera</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_NotSupported" xml:space="preserve">
+		<value>Ta operacja nie jest wspierana przez twoją wersję Windows. Aby korzystać z tej funkcji, wymagana jest wersja Windows 11 build 21354 (10.0.21354).</value>
+	</data>
 </root>

@@ -862,6 +862,87 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adding family name &apos;{0}&apos;….
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_AddingFamilyFormat {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_AddingFamilyFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding full package name &apos;{0}&apos;….
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_AddingFullNameFormat {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_AddingFullNameFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding file path &apos;{0}&apos;….
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_AddingPathFormat {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_AddingPathFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared package container has been successfully deployed as &apos;{0}&apos;..
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_DeployedAsFormat {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_DeployedAsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package families.
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_Families {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_Families", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container ID.
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_Id {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature..
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_NotSupported {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_NotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared package container has been saved in &apos;{0}&apos;..
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_SavedInFormat {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_SavedInFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter --output cannot be used if any of the following parameters are used: --force, -f, --forceApplicationShutdown, --merge, -m..
+        /// </summary>
+        public static string CLI_Executor_SharedContainer_WrongSet {
+            get {
+                return ResourceManager.GetString("CLI_Executor_SharedContainer_WrongSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determining publisher name from Device Guard Signing certificate….
         /// </summary>
         public static string CLI_Executor_Sign_DeviceGuardDeterminingPublisher {

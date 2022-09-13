@@ -52,13 +52,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             IMsixHeroApplication application,
             IUacElevation uacElevation,
             IInteractionService interactionService,
-            IAppxPackageQuery packageQuery) : base("Create shared package container definition", interactionService)
+            IAppxPackageQuery packageQuery) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
         {
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
             this._packageQuery = packageQuery;
             this.AddChildren(
-                this.Name = new ValidatedChangeableProperty<string>("Container name", true, ValidatorFactory.ValidateNotEmptyField()),
+                this.Name = new ValidatedChangeableProperty<string>(Resources.Localization.Dialogs_SharedContainer_ContainerName, true, ValidatorFactory.ValidateNotEmptyField()),
                 this.CreationMode = new ChangeableProperty<CreationMode>(),
                 this.Packages = new ValidatedChangeableCollection<SharedPackageViewModel>()
             );
@@ -109,9 +109,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 switch (this.CreationMode.CurrentValue)
                 {
                     case ViewModel.CreationMode.Xml:
-                        return "Create XML file...";
+                        return Resources.Localization.Dialogs_SharedContainer_Button_Xml;
                     case ViewModel.CreationMode.Deploy:
-                        return "Deploy";
+                        return Resources.Localization.Dialogs_SharedContainer_Button_Deploy;
                     default:
                         return Resources.Localization.Dialogs_OK;
                 }
@@ -137,7 +137,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 case ViewModel.CreationMode.Deploy:
                     if (!this._uacElevation.AsCurrentUser<ISharedPackageContainerService>().IsSharedPackageContainerSupported())
                     {
-                        throw new NotSupportedException("Deploying of containers is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.");
+                        throw new NotSupportedException(Resources.Localization.Dialogs_SharedContainer_NotSupported);
                     }
 
                     return await this.SaveDeploy(cancellationToken, progress).ConfigureAwait(false);
@@ -151,7 +151,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         {
             this.Output.CurrentValue = null;
 
-            progress.Report(new ProgressData(50, "Verifying..."));
+            progress.Report(new ProgressData(50, Resources.Localization.Dialogs_SharedContainer_Verifying));
 
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
 
@@ -174,24 +174,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     var extraToBeAdded = currentPackageFamilies.Except(existingPackageFamilies).ToList();
                     if (!extraToBeAdded.Any())
                     {
-                        this._interactionService.ShowInfo("The container cannot be deployed. There is already a container with that name, and it already contains all required packages.");
+                        this._interactionService.ShowInfo(Resources.Localization.Dialogs_SharedContainer_CannotDeploy_AllPackagesThere);
                         return false;
                     }
 
                     var extendedInfo = new StringBuilder();
-                    extendedInfo.AppendLine("Installed container:");
+                    extendedInfo.AppendLine(Resources.Localization.Dialogs_SharedContainer_Compare_InstalledContainer);
                     foreach (var item in existingPackageFamilies)
                     {
                         extendedInfo.AppendLine(" * " + item);
                     }
 
                     extendedInfo.AppendLine();
-                    extendedInfo.AppendLine("Current container:");
+                    extendedInfo.AppendLine(Resources.Localization.Dialogs_SharedContainer_Compare_CurrentContainer);
                     foreach (var item in currentPackageFamilies)
                     {
                         if (extraToBeAdded.Contains(item))
                         {
-                            extendedInfo.AppendLine(" * " + string.Format("{0} [NEW]", item));
+                            extendedInfo.AppendLine(" * " + item + " " + Resources.Localization.Dialogs_SharedContainer_Compare_New);
                         }
                         else
                         {
@@ -200,16 +200,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     }
 
                     var interactionResult = this._interactionService.ShowMessage(
-                        "Container '" + this.Name.CurrentValue + "' already exists and contains " +
-                        existingPackageFamilies.Count +
-                        " packages. How do you want to proceed?",
+                        string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerExists, this.Name.CurrentValue, existingPackageFamilies.Count),
                         new List<string>
                         {
-                            "Replace existing container",
-                            "Extend existing container",
-                            "Cancel"
+                            Resources.Localization.Dialogs_SharedContainer_ContainerExists_Replace,
+                            Resources.Localization.Dialogs_SharedContainer_ContainerExists_Extend,
+                            Resources.Localization.Button_Cancel
                         },
-                        "Container already exists",
+                        Resources.Localization.Dialogs_SharedContainer_ContainerExists_Title,
                         extendedInfo.ToString());
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -254,11 +252,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 }
             }
 
-            progress.Report(new ProgressData(70, "Building shared package container..."));
+            progress.Report(new ProgressData(70, Resources.Localization.Dialogs_SharedContainer_Building));
             
             var container = containerBuilder.Build();
             
-            progress.Report(new ProgressData(85, "Deploying..."));
+            progress.Report(new ProgressData(85, Resources.Localization.Dialogs_SharedContainer_Deploying));
 
             cancellationToken.ThrowIfCancellationRequested();
             
@@ -268,23 +266,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             }
             catch (AlreadyInAnotherContainerException e)
             {
-                this._interactionService.ShowError(string.Format("Package '{0}' is already added to container '{1}'. Windows does not support multiple containers for the same package.", e.FamilyName, e.ContainerName), e);
+                this._interactionService.ShowError(string.Format(Resources.Localization.Dialogs_SharedContainer_PackageInMultipleContainers, e.FamilyName, e.ContainerName), e);
                 return false;
             }
 
-            progress.Report(new ProgressData(100, "Deploying..."));
+            progress.Report(new ProgressData(100, Resources.Localization.Dialogs_SharedContainer_Deploying));
 
             if (getExisting == null)
             {
-                var _ = this._interactionService.ShowToast("Container deployed", string.Format("Container with {0} packages has been added to container '{1}'.", container.PackageFamilies.Count, container.Name));
+                var _ = this._interactionService.ShowToast(Resources.Localization.Dialogs_SharedContainer_Result_Deployed, string.Format("Container with {0} packages has been added to container '{1}'.", container.PackageFamilies.Count, container.Name));
             }
             else if (this.Resolution.CurrentValue == ContainerConflictResolution.Merge)
             {
-                var _ = this._interactionService.ShowToast("Container merged", string.Format("Additional {0} packages have been added to an existing container '{1}'.", container.PackageFamilies.Count, container.Name)) ;
+                var _ = this._interactionService.ShowToast(Resources.Localization.Dialogs_SharedContainer_Result_Merged, string.Format("Additional {0} packages have been added to an existing container '{1}'.", container.PackageFamilies.Count, container.Name)) ;
             }
             else
             {
-                var _ = this._interactionService.ShowToast("Container replaced", string.Format("Container with {0} packages has replaced previously added container '{1}'.", container.PackageFamilies.Count, container.Name));
+                var _ = this._interactionService.ShowToast(Resources.Localization.Dialogs_SharedContainer_Result_Replaced, string.Format("Container with {0} packages has replaced previously added container '{1}'.", container.PackageFamilies.Count, container.Name));
             }
             
             return true;
@@ -349,7 +347,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             switch (this.CreationMode.CurrentValue)
             {
                 case ViewModel.CreationMode.Xml:
-                    this.Verb.Output = "<output-file-path.xml>";
+                    this.Verb.Output = this.Output.CurrentValue ?? Resources.Localization.Dialogs_SharedContainer_Output_Placeholder;
                     this.Verb.Force = false;
                     this.Verb.Merge = false;
                     this.Verb.ForceApplicationShutdown = false;
@@ -402,11 +400,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 var addedPackage = this.Packages.Last();
                 if (addedPackage.DisplayName != null)
                 {
-                    this.Name.CurrentValue = string.Format("Container for {0}", addedPackage.DisplayName);
+                    this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.DisplayName);
                 }
                 else
                 {
-                    this.Name.CurrentValue = string.Format("Container for {0}", addedPackage.FamilyName.CurrentValue.Split('_').First());
+                    this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.FamilyName.CurrentValue.Split('_').First());
                 }
             }
         }
@@ -461,20 +459,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             var addedPackage = this.Packages.Last();
             if (addedPackage.DisplayName != null)
             {
-                this.Name.CurrentValue = string.Format("Container for {0}", addedPackage.DisplayName);
+                this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.DisplayName);
             }
             else
             {
-                this.Name.CurrentValue = string.Format("Container for {0}", addedPackage.FamilyName.CurrentValue.Split('_').First());
+                this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.FamilyName.CurrentValue.Split('_').First());
             }
 
             if (selections.Length == 1)
             {
-                this._interactionService.ShowError("The selected package could not be read.");
+                this._interactionService.ShowError(Resources.Localization.Dialogs_SharedContainer_Selection_Error);
             }
             else
             {
-                this._interactionService.ShowError("Some package(s) could not be opened.");
+                this._interactionService.ShowError(Resources.Localization.Dialogs_SharedContainer_Selections_Error);
             }
         }
 

@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
             this.ShowNamesDialog = new DelegateCommand(this.OnShowNamesDialog);
             this.ShowModificationPackageDialog = new DelegateCommand(this.OnShowModificationPackageDialog);
             this.ShowUnpackDialog = new DelegateCommand(this.OnShowUnpackDialog);
-            this.ShowSharedAppContainerDialog = new DelegateCommand(this.OnShowSharedAppContainerDialog);
+            this.ShowSharedPackageContainerDialog = new DelegateCommand(this.OnShowSharedPackageContainerDialog);
             this.ShowUpdateImpactDialog = new DelegateCommand(this.OnShowUpdateImpactDialog);
             this.ShowDependencyGraphDialog = new DelegateCommand(this.OnShowDependencyGraphDialog);
             this.ShowNewSelfSignedDialog = new DelegateCommand(this.OnShowNewSelfSignedDialog);
@@ -100,7 +100,7 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 
         public ICommand ShowUnpackDialog { get; }
 
-        public ICommand ShowSharedAppContainerDialog { get; }
+        public ICommand ShowSharedPackageContainerDialog { get; }
 
         public ICommand ShowUpdateImpactDialog { get; }
 
@@ -156,10 +156,10 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
             this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingUnpack, new DialogParameters(), this.OnDialogClosed);
         }
 
-        private void OnShowSharedAppContainerDialog()
+        private void OnShowSharedPackageContainerDialog()
         {
             this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedAppContainer, new DialogParameters(), this.OnDialogClosed);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowUpdateImpactDialog()

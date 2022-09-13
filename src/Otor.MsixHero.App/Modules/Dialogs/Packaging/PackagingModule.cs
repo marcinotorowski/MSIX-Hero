@@ -37,7 +37,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(NavigationPaths.DialogPaths.PackagingModificationPackage);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(NavigationPaths.DialogPaths.PackagingPack);
             containerRegistry.RegisterDialog<NamesView, NamesViewModel>(NavigationPaths.DialogPaths.PackagingNames);
-            containerRegistry.RegisterDialog<SharedAppContainerView, SharedPackageContainerViewModel>(NavigationPaths.DialogPaths.PackagingSharedAppContainer);
+            containerRegistry.RegisterDialog<SharedPackageContainerView, SharedPackageContainerViewModel>(NavigationPaths.DialogPaths.PackagingSharedPackageContainer);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(NavigationPaths.DialogPaths.PackagingUnpack);
         }
 

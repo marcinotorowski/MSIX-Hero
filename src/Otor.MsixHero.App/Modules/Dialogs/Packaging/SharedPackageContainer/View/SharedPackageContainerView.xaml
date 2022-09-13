@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.View.SharedAppContainerView"
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.View.SharedPackageContainerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,6 +8,7 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="300"
@@ -46,10 +47,10 @@
                 <StackPanel>
                     <TextBlock 
                         Visibility="{Binding CreationMode.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static viewModel:CreationMode.Xml}}"
-                        Text="Shared package container has been successfully created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                        Text="{localization:Loc Dialogs_SharedContainer_Success_Xml}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock 
                         Visibility="{Binding CreationMode.CurrentValue, Converter={StaticResource NegativeEnumToVisibilityConverter}, ConverterParameter={x:Static viewModel:CreationMode.Xml}}"
-                        Text="Shared package container has been installed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                        Text="{localization:Loc Dialogs_SharedContainer_Success_Deploy}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                 </StackPanel>
             </DataTemplate>
         </dialog:ChangeableDialog.SuccessContentTemplate>

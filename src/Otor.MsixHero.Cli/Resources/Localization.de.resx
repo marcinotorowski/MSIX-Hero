@@ -621,4 +621,31 @@
 	<data name="Signing_DeviceGuard_Reading" xml:space="preserve">
     <value>Ermittlung des Herausgebernamens aus dem Device Guard Signing-Zertifikat…</value>
   </data>
+	<data name="CLI_Executor_SharedContainer_WrongSet" xml:space="preserve">
+		<value>Der Parameter --output kann nicht verwendet werden, wenn einer der folgenden Parameter verwendet wird: --force, -f, --forceApplicationShutdown, --merge, -m.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_SavedInFormat" xml:space="preserve">
+		<value>Der Shared Package Container wurde in '{0}' gespeichert.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingFamilyFormat" xml:space="preserve">
+		<value>Familienname '{0}' wird hinzufügt…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingFullNameFormat" xml:space="preserve">
+		<value>Vollständiger Paketname '{0}' wird hinzufügt…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_AddingPathFormat" xml:space="preserve">
+		<value>Vollständiger Datei-Pfad '{0}' wird hinzufügt…</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_DeployedAsFormat" xml:space="preserve">
+		<value>Der Shared Package Container wurde erfolgreich als '{0}' bereitgestellt.</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_Families" xml:space="preserve">
+		<value>Namen von Paketfamilien</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_Id" xml:space="preserve">
+		<value>Container-ID</value>
+	</data>
+	<data name="CLI_Executor_SharedContainer_NotSupported" xml:space="preserve">
+		<value>Dieser Vorgang wird von dieser Version von Windows nicht unterstützt. Sie benötigen mindestens Windows 11 Build 21354 (10.0.21354), um diese Funktion zu nutzen.</value>
+	</data>
 </root>

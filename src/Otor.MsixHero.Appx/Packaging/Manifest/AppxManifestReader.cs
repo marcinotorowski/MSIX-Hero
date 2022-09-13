@@ -76,7 +76,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     }
                     catch (Exception)
                     {
-                        Logger.Warn().WriteLine("Could not read a dependency to {0} {2} by {1}", item.Name, item.Publisher, item.Version);
+                        Logger.Debug().WriteLine("Could not read a dependency to {0} {2} by {1}", item.Name, item.Publisher, item.Version);
                     }
                 }
             }
@@ -531,7 +531,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 var pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
                 if (pkg == null && appxPackage.ResourceId == null)
                 {
-                    Logger.Warn().WriteLine("Could not locate package by its full name ({0}). Trying to change empty resourceId to neutral and perform the look-up.", appxPackage.FullName);
+                    Logger.Debug().WriteLine("Could not locate package by its full name ({0}). Trying to change empty resourceId to neutral and perform the look-up.", appxPackage.FullName);
                     appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, "neutral");
                     pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
                 }
@@ -560,7 +560,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         types |= PackageTypes.Main;
                     }
                     
-                    Logger.Warn().WriteLine("Could not locate package by its full name ({0}). Trying family name look-up ({0}).", appxPackage.FullName, appxPackage.FamilyName);
+                    Logger.Debug().WriteLine("Could not locate package by its full name ({0}). Trying family name look-up ({0}).", appxPackage.FullName, appxPackage.FamilyName);
                     pkg = pkgManager.FindPackagesForUserWithPackageTypes(string.Empty, appxPackage.FamilyName, types).FirstOrDefault();
                 }
 

@@ -77,7 +77,7 @@ namespace Otor.MsixHero.App.Modules
             public const string PackagingPack = BaseDialogsNavigation + "packaging-pack";
             public const string PackagingNames = BaseDialogsNavigation + "packaging-names";
             public const string PackagingUnpack = BaseDialogsNavigation + "packaging-unpack";
-            public const string PackagingSharedAppContainer = BaseDialogsNavigation + "shared-app-container";
+            public const string PackagingSharedPackageContainer = BaseDialogsNavigation + "shared-package-container";
             public const string PackagingModificationPackage = BaseDialogsNavigation + "packaging-modification-package";
 
             public const string SigningCertificateExport = BaseDialogsNavigation + "signing-certificate-export";

@@ -565,6 +565,15 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature..
+        /// </summary>
+        public static string Packages_Error_SharedContainerNotSupported {
+            get {
+                return ResourceManager.GetString("Packages_Error_SharedContainerNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required package source is not supported..
         /// </summary>
         public static string Packages_Error_SrcNotSupported {

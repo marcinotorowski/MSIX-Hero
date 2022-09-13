@@ -14,15 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Cli.Verbs.Resources;
-using CommandLine;
+namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel;
 
-namespace Otor.MsixHero.Cli.Verbs
+public enum SharedPackageItemType
 {
-    [Verb("dependencies", HelpText = "CLI_Verbs_Dependencies_VerbName", ResourceType = typeof(Localization))]
-    public class DependenciesVerb : BaseVerb
-    {
-        [Value(1, HelpText = "CLI_Verbs_Dependencies_Prop_Path", Required = true, ResourceType = typeof(Localization))]
-        public string Path { get; set; }
-    }
+    New,
+    FilePath,
+    FamilyName,
+    Installed
 }

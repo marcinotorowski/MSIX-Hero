@@ -46,7 +46,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
         catch (CommandNotFoundException e)
         {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
+            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
         }
 
         foreach (var result in results)
@@ -70,7 +70,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         return list;
     }
 
-    public async Task Add(
+    public async Task<Entities.SharedPackageContainer> Add(
         Entities.SharedPackageContainer container, 
         bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
@@ -114,7 +114,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
             }
 
             temporaryFile.Refresh();
-            await this.Add(temporaryFile, forceApplicationShutdown, containerConflictResolution, cancellationToken).ConfigureAwait(false);
+            return await this.Add(temporaryFile, forceApplicationShutdown, containerConflictResolution, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -122,7 +122,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
     }
 
-    public async Task Add(
+    public async Task<Entities.SharedPackageContainer> Add(
         FileInfo containerFile, 
         bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
@@ -133,12 +133,20 @@ public class SharedPackageContainerService : ISharedPackageContainerService
             throw new FileNotFoundException(Resources.Localization.Packages_Error_FileNotFound, containerFile.FullName);
         }
 
+        string containerName;
+
         await using (var openStream = File.OpenRead(containerFile.FullName))
         {
             var file = (Entities.SharedPackageContainer)new XmlSerializer(typeof(Entities.SharedPackageContainer)).Deserialize(openStream);
+            if (file == null)
+            {
+                throw new InvalidOperationException("Empty file.");
+            }
+
+            containerName = file.Name;
             var getAll = await this.GetRegisteredFamilyNames(cancellationToken).ConfigureAwait(false);
 
-            var findFirst = file?.PackageFamilies?.FirstOrDefault(pf => getAll.TryGetValue(pf.FamilyName, out var container) && container != file.Name);
+            var findFirst = file.PackageFamilies?.FirstOrDefault(pf => getAll.TryGetValue(pf.FamilyName, out var container) && container != file.Name);
             if (findFirst != null)
             {
                 throw new AlreadyInAnotherContainerException(getAll[findFirst.FamilyName], findFirst.FamilyName);
@@ -168,10 +176,11 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         try
         {
             await powerShell.InvokeAsync().ConfigureAwait(false);
+            return await this.GetByName(containerName, cancellationToken).ConfigureAwait(false);
         }
         catch (CommandNotFoundException e)
         {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
+            throw new NotSupportedException("", e);
         }
     }
 
@@ -194,7 +203,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
         catch (CommandNotFoundException e)
         {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
+            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
         }
     }
 
@@ -217,7 +226,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
         catch (CommandNotFoundException e)
         {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
+            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
         }
 
         var result = results.FirstOrDefault();
@@ -254,7 +263,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
         catch (CommandNotFoundException e)
         {
-            throw new NotSupportedException("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.", e);
+            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
         }
     }
 

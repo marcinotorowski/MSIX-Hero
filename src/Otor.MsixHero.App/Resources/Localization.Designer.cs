@@ -1465,6 +1465,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create shared package container.
+        /// </summary>
+        public static string Dashboard_SharedPackageContainer {
+            get {
+                return ResourceManager.GetString("Dashboard_SharedPackageContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show MSIX dependencies….
         /// </summary>
         public static string Dashboard_ShowDeps {
@@ -5466,6 +5475,375 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_Settings_Visuals_Performance_Hint {
             get {
                 return ResourceManager.GetString("Dialogs_Settings_Visuals_Performance_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add installed….
+        /// </summary>
+        public static string Dialogs_SharedContainer_AddButton {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_AddButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already selected.
+        /// </summary>
+        public static string Dialogs_SharedContainer_AlreadySelected {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_AlreadySelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Building shared package container….
+        /// </summary>
+        public static string Dialogs_SharedContainer_Building {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Building", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy container.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Button_Deploy {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Button_Deploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create XML file….
+        /// </summary>
+        public static string Dialogs_SharedContainer_Button_Xml {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Button_Xml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The container cannot be deployed. There is already a container with that name, and it already contains all required packages..
+        /// </summary>
+        public static string Dialogs_SharedContainer_CannotDeploy_AllPackagesThere {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_CannotDeploy_AllPackagesThere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current container:.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Compare_CurrentContainer {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Compare_CurrentContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed container:.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Compare_InstalledContainer {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Compare_InstalledContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [NEW].
+        /// </summary>
+        public static string Dialogs_SharedContainer_Compare_New {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Compare_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container &apos;{0}&apos; already exists and contains {1} packages. How do you want to proceed?.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerExists {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extend existing container.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerExists_Extend {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerExists_Extend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace existing container.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerExists_Replace {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerExists_Replace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container already exists.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerExists_Title {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerExists_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container for {0}.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerForPkg {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerForPkg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container name.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContainerName {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContainerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue with selection.
+        /// </summary>
+        public static string Dialogs_SharedContainer_ContinueButton {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying….
+        /// </summary>
+        public static string Dialogs_SharedContainer_Deploying {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Deploying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Family name.
+        /// </summary>
+        public static string Dialogs_SharedContainer_FamilyName {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_FamilyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import….
+        /// </summary>
+        public static string Dialogs_SharedContainer_ImportButton {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ImportButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New….
+        /// </summary>
+        public static string Dialogs_SharedContainer_NewButton {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_NewButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying of containers is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature..
+        /// </summary>
+        public static string Dialogs_SharedContainer_NotSupported {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_NotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation type.
+        /// </summary>
+        public static string Dialogs_SharedContainer_OperationType {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_OperationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy the container.
+        /// </summary>
+        public static string Dialogs_SharedContainer_OperationType_Deploy {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_OperationType_Deploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WINDOWS 11 ONLY.
+        /// </summary>
+        public static string Dialogs_SharedContainer_OperationType_DeployWin11 {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_OperationType_DeployWin11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create .XML file.
+        /// </summary>
+        public static string Dialogs_SharedContainer_OperationType_Xml {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_OperationType_Xml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;output-file-path.xml&gt;.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Output_Placeholder {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Output_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package &apos;{0}&apos; is already added to container &apos;{1}&apos;. Windows does not support multiple containers for the same package..
+        /// </summary>
+        public static string Dialogs_SharedContainer_PackageInMultipleContainers {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_PackageInMultipleContainers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages in the container.
+        /// </summary>
+        public static string Dialogs_SharedContainer_PackagesInContainer {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_PackagesInContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Press1 {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Press1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to accept.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Press2 {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Press2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Dialogs_SharedContainer_RemoveButton {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_RemoveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tip: reorder packages by drag-and-drop to set priorities, double click or [F2] to edit..
+        /// </summary>
+        public static string Dialogs_SharedContainer_ReorderTip {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_ReorderTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container has been deployed.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Result_Deployed {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Result_Deployed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container has been merged.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Result_Merged {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Result_Merged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container replaced.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Result_Replaced {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Result_Replaced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected package could not be read..
+        /// </summary>
+        public static string Dialogs_SharedContainer_Selection_Error {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Selection_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some package(s) could not be opened..
+        /// </summary>
+        public static string Dialogs_SharedContainer_Selections_Error {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Selections_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared package container has been installed..
+        /// </summary>
+        public static string Dialogs_SharedContainer_Success_Deploy {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Success_Deploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared package container has been successfully created..
+        /// </summary>
+        public static string Dialogs_SharedContainer_Success_Xml {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Success_Xml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create shared package container definition.
+        /// </summary>
+        public static string Dialogs_SharedContainer_Title {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verifying….
+        /// </summary>
+        public static string Dialogs_SharedContainer_Verifying {
+            get {
+                return ResourceManager.GetString("Dialogs_SharedContainer_Verifying", resourceCulture);
             }
         }
         

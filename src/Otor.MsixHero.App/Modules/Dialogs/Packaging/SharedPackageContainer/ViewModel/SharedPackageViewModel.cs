@@ -10,14 +10,6 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel
 {
-    public enum SharedPackageItemType
-    {
-        New,
-        FilePath,
-        FamilyName,
-        Installed
-    }
-
     public class SharedPackageViewModel : ChangeableContainer
     {
         private bool _isEditing;
@@ -26,7 +18,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         { 
             this.AddChildren
             (
-                this.FamilyName = new("Family name", true, ValidatorFactory.ValidateNotEmptyField()),
+                this.FamilyName = new(Resources.Localization.Dialogs_SharedContainer_FamilyName, true, ValidatorFactory.ValidateNotEmptyField()),
                 this.Type = new ChangeableProperty<SharedPackageItemType>(),
                 this.FullName = new ChangeableProperty<string>(),
                 this.FilePath = new ChangeableProperty<string>()

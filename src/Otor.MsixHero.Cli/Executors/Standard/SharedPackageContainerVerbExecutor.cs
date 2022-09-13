@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,7 +42,7 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
 
     public override Task<int> Execute()
     {
-        if (this.Verb.Output == null)
+        if (!string.IsNullOrEmpty(this.Verb.Output))
         {
             return this.ExecuteXml();
         }
@@ -55,30 +56,11 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
         {
             if (this.Verb.Force || this.Verb.ForceApplicationShutdown || this.Verb.Merge)
             {
-                await this.Console.WriteError("Parameter --output cannot be used if any of the following parameters are used: --force, -f, --forceApplicationShutdown, --merge, -m.");
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_SharedContainer_WrongSet);
                 return StandardExitCodes.ErrorParameter;
             }
 
-            var builder = new SharedPackageContainerBuilder(this.Verb.Name);
-            foreach (var pkg in this.Verb.Packages.Where(p => p != null))
-            {
-                if (File.Exists(pkg))
-                {
-                    await this.Console.WriteInfo(string.Format("Adding file path {0}...", pkg)).ConfigureAwait(false);
-                    await builder.AddFromFilePath(pkg, CancellationToken.None).ConfigureAwait(false);
-                }
-                else if (Regex.IsMatch(pkg, "^[A-Za-z0-9][-\\.A-Za-z0-9]+_[A-Za-z0-9]{13}$"))
-                {
-                    await this.Console.WriteInfo(string.Format("Adding family name {0}...", pkg)).ConfigureAwait(false);
-                    builder.AddFamilyName(pkg);
-                }
-                else
-                {
-                    await this.Console.WriteInfo(string.Format("Adding full package name {0}...", pkg)).ConfigureAwait(false);
-                    builder.AddFullPackageName(pkg);
-                }
-            }
-
+            var builder = await GetBuilder(this.Verb.Name, this.Verb.Packages, this.Console).ConfigureAwait(false);
             var xml = builder.ToXml();
 
             var output = new FileInfo(this.Verb.Output);
@@ -92,6 +74,8 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
             }
 
             await File.WriteAllTextAsync(output.FullName, xml).ConfigureAwait(false);
+
+            await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SharedContainer_SavedInFormat, this.Verb.Output));
             return StandardExitCodes.ErrorSuccess;
         }
         catch (SdkException e)
@@ -112,7 +96,7 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
     {
         if (!this._sharedPackageContainerService.IsSharedPackageContainerSupported())
         {
-            await this.Console.WriteError("This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.");
+            await this.Console.WriteError(Resources.Localization.CLI_Executor_SharedContainer_NotSupported);
             return StandardExitCodes.ErrorNotSupported;
         }
 
@@ -124,25 +108,7 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
 
         try
         {
-            var builder = new SharedPackageContainerBuilder(this.Verb.Name);
-            foreach (var pkg in this.Verb.Packages.Where(p => p != null))
-            {
-                if (File.Exists(pkg))
-                {
-                    await this.Console.WriteInfo(string.Format("Adding file path {0}...", pkg)).ConfigureAwait(false);
-                    await builder.AddFromFilePath(pkg, CancellationToken.None).ConfigureAwait(false);
-                }
-                else if (Regex.IsMatch(pkg, "^[A-Za-z0-9][-\\.A-Za-z0-9]+_[A-Za-z0-9]{13}$"))
-                {
-                    await this.Console.WriteInfo(string.Format("Adding family name {0}...", pkg)).ConfigureAwait(false);
-                    builder.AddFamilyName(pkg);
-                }
-                else
-                {
-                    await this.Console.WriteInfo(string.Format("Adding full package name {0}...", pkg)).ConfigureAwait(false);
-                    builder.AddFullPackageName(pkg);
-                }
-            }
+            var builder = await GetBuilder(this.Verb.Name, this.Verb.Packages, this.Console).ConfigureAwait(false);
 
             ContainerConflictResolution resolution;
             if (this.Verb.Force)
@@ -158,7 +124,16 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
                 resolution = ContainerConflictResolution.Default;
             }
                 
-            await this._sharedPackageContainerService.Add(builder.Build(), this.Verb.ForceApplicationShutdown, resolution, CancellationToken.None).ConfigureAwait(false);
+            var added = await this._sharedPackageContainerService.Add(builder.Build(), this.Verb.ForceApplicationShutdown, resolution, CancellationToken.None).ConfigureAwait(false);
+
+            await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SharedContainer_DeployedAsFormat, this.Verb.Name)).ConfigureAwait(false);
+            await this.Console.WriteSuccess(string.Format(" -> : {0} {2}", Resources.Localization.CLI_Executor_SharedContainer_Id, added.Id)).ConfigureAwait(false);
+            await this.Console.WriteSuccess(" -> " + Resources.Localization.CLI_Executor_SharedContainer_Families + ":").ConfigureAwait(false);
+
+            foreach (var pf in added.PackageFamilies)
+            {
+                await this.Console.WriteSuccess("    * " + pf.FamilyName).ConfigureAwait(false);
+            }
 
             return StandardExitCodes.ErrorSuccess;
         }
@@ -174,5 +149,30 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
             await this.Console.WriteError(e.Message);
             return StandardExitCodes.ErrorGeneric;
         }
+    }
+
+    private static async Task<SharedPackageContainerBuilder> GetBuilder(string containerName, IEnumerable<string> packages, IConsole console)
+    {
+        var builder = new SharedPackageContainerBuilder(containerName);
+        foreach (var pkg in packages.Where(p => p != null))
+        {
+            if (File.Exists(pkg))
+            {
+                await console.WriteInfo(" -> " + string.Format(Resources.Localization.CLI_Executor_SharedContainer_AddingPathFormat, pkg)).ConfigureAwait(false);
+                await builder.AddFromFilePath(pkg, CancellationToken.None).ConfigureAwait(false);
+            }
+            else if (Regex.IsMatch(pkg, "^[A-Za-z0-9][-\\.A-Za-z0-9]+_[A-Za-z0-9]{13}$"))
+            {
+                await console.WriteInfo(" -> " + string.Format(Resources.Localization.CLI_Executor_SharedContainer_AddingFamilyFormat, pkg)).ConfigureAwait(false);
+                builder.AddFamilyName(pkg);
+            }
+            else
+            {
+                await console.WriteInfo(" -> " + string.Format(Resources.Localization.CLI_Executor_SharedContainer_AddingFullNameFormat, pkg)).ConfigureAwait(false);
+                builder.AddFullPackageName(pkg);
+            }
+        }
+
+        return builder;
     }
 }
