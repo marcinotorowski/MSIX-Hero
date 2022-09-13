@@ -295,6 +295,15 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package cannot be installed, because it is not signed by a trusted certificate..
+        /// </summary>
+        public static string Packages_Error_CertTrust {
+            get {
+                return ResourceManager.GetString("Packages_Error_CertTrust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Developer mode must be enabled to use this feature..
         /// </summary>
         public static string Packages_Error_DeveloperMode {

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
@@ -37,8 +38,8 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     [SuppressMessage("ReSharper", "UnusedVariable")]
     public class AppxPackageInstaller : IAppxPackageInstaller
     {
-        private static readonly LogSource Logger = new();        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
-        
+        private static readonly LogSource Logger = new(); protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
+
         public async Task Remove(IReadOnlyCollection<string> packages, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!packages.Any())
@@ -106,7 +107,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 }
             }
         }
-        
+
         public async Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var task = AsyncOperationHelper.ConvertToTask(
@@ -118,180 +119,192 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task Add(string filePath, AddAppxPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            this.SideloadingConfigurator.AssertSideloadingEnabled();
-
-            Logger.Info().WriteLine("Installing package {0}", filePath);
-            if (filePath == null)
+            try
             {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+                this.SideloadingConfigurator.AssertSideloadingEnabled();
 
-            if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
-            {
-                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                Logger.Info().WriteLine("Installing package {0}", filePath);
+                if (filePath == null)
                 {
-                    throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
+                    throw new ArgumentNullException(nameof(filePath));
                 }
 
-                var reader = await AppxManifestSummaryReader.FromManifest(filePath).ConfigureAwait(false);
-
-                DeploymentOptions deploymentOptions = 0;
-
-                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
+                if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                 {
-                    deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
-                {
-                    deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
-                    deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
-                }
-
-                deploymentOptions |= DeploymentOptions.DevelopmentMode;
-
-                await AsyncOperationHelper.ConvertToTask(
-                    PackageManagerWrapper.Instance.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
-                    $"Installing {reader.DisplayName} {reader.Version}…",
-                    cancellationToken,
-                    progress).ConfigureAwait(false);
-            }
-            else if (string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
-            {
-                if (options.HasFlag(AddAppxPackageOptions.AllUsers))
-                {
-                    throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerAllUsers, nameof(options));
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
-                {
-                    throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
-                {
-                    throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerDowngrade, nameof(options));
-                }
-
-                AddPackageByAppInstallerOptions deploymentOptions = 0;
-
-                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
-                {
-                    deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
-                }
-
-                var volume = PackageManagerWrapper.Instance.GetDefaultPackageVolume();
-                await AsyncOperationHelper.ConvertToTask(
-                    PackageManagerWrapper.Instance.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
-                    string.Format(Resources.Localization.Packages_InstallingFrom_Format, Path.GetFileName(filePath)),
-                    cancellationToken,
-                    progress).ConfigureAwait(false);
-            }
-            else
-            {
-                string name, version, publisher;
-
-                DeploymentOptions deploymentOptions = 0;
-
-                switch (Path.GetExtension(filePath))
-                {
-                    case FileConstants.AppxBundleExtension:
-                    case FileConstants.MsixBundleExtension:
+                    if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                     {
-                        IAppxIdentityReader reader = new AppxIdentityReader();
-                        var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);
-                        name = identity.Name;
-                        publisher = identity.Publisher;
-                        version = identity.Version;
-
-                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
-                        {
-                            deploymentOptions |= DeploymentOptions.InstallAllResources;
-                        }
-
-                        break;
+                        throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
                     }
 
-                    default:
+                    var reader = await AppxManifestSummaryReader.FromManifest(filePath).ConfigureAwait(false);
+
+                    DeploymentOptions deploymentOptions = 0;
+
+                    if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                     {
-                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
-                        {
-                            throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
-                        }
-
-                        var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
-                        name = reader.DisplayName;
-                        version = reader.Version;
-                        publisher = reader.Publisher;
-                        break;
-                    }
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
-                {
-                    deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
-                {
-                    deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
-                    deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
-                }
-
-                if (options.HasFlag(AddAppxPackageOptions.AllUsers))
-                {
-                    var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                        PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                        $"Installing {name} {version}…",
-                        cancellationToken,
-                        progress).ConfigureAwait(false);
-
-                    if (!deploymentResult.IsRegistered)
-                    {
-                        throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
+                        deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
                     }
 
-                    var findInstalled = PackageManagerWrapper.Instance.FindPackages(name, publisher).FirstOrDefault();
-                    if (findInstalled == null)
+                    if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
                     {
-                        throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
+                        deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
+                        deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
                     }
 
-                    var familyName = findInstalled.Id.FamilyName;
+                    deploymentOptions |= DeploymentOptions.DevelopmentMode;
 
                     await AsyncOperationHelper.ConvertToTask(
-                        PackageManagerWrapper.Instance.ProvisionPackageForAllUsersAsync(familyName),
-                        string.Format(Resources.Localization.Packages_Provisioning_Format, name, version),
+                        PackageManagerWrapper.Instance.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
+                        $"Installing {reader.DisplayName} {reader.Version}…",
+                        cancellationToken,
+                        progress).ConfigureAwait(false);
+                }
+                else if (string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    if (options.HasFlag(AddAppxPackageOptions.AllUsers))
+                    {
+                        throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerAllUsers, nameof(options));
+                    }
+
+                    if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                    {
+                        throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
+                    }
+
+                    if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
+                    {
+                        throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerDowngrade, nameof(options));
+                    }
+
+                    AddPackageByAppInstallerOptions deploymentOptions = 0;
+
+                    if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
+                    {
+                        deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
+                    }
+
+                    var volume = PackageManagerWrapper.Instance.GetDefaultPackageVolume();
+                    await AsyncOperationHelper.ConvertToTask(
+                        PackageManagerWrapper.Instance.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
+                        string.Format(Resources.Localization.Packages_InstallingFrom_Format, Path.GetFileName(filePath)),
                         cancellationToken,
                         progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                        PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                        string.Format(Resources.Localization.Packages_Installing_Format, name),
-                        cancellationToken,
-                        progress).ConfigureAwait(false);
+                    string name, version, publisher;
 
-                    if (!deploymentResult.IsRegistered)
+                    DeploymentOptions deploymentOptions = 0;
+
+                    switch (Path.GetExtension(filePath))
                     {
-                        var message = string.Format(Resources.Localization.Packages_Error_Install_Format, name, version);
-                        if (!string.IsNullOrEmpty(deploymentResult.ErrorText))
+                        case FileConstants.AppxBundleExtension:
+                        case FileConstants.MsixBundleExtension:
+                            {
+                                IAppxIdentityReader reader = new AppxIdentityReader();
+                                var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);
+                                name = identity.Name;
+                                publisher = identity.Publisher;
+                                version = identity.Version;
+
+                                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                                {
+                                    deploymentOptions |= DeploymentOptions.InstallAllResources;
+                                }
+
+                                break;
+                            }
+
+                        default:
+                            {
+                                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                                {
+                                    throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
+                                }
+
+                                var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
+                                name = reader.DisplayName;
+                                version = reader.Version;
+                                publisher = reader.Publisher;
+                                break;
+                            }
+                    }
+
+                    if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
+                    {
+                        deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
+                    }
+
+                    if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
+                    {
+                        deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
+                        deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
+                    }
+
+                    if (options.HasFlag(AddAppxPackageOptions.AllUsers))
+                    {
+                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                            PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            $"Installing {name} {version}…",
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+
+                        if (!deploymentResult.IsRegistered)
                         {
-                            message += " " + deploymentResult.ErrorText;
+                            throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
                         }
 
-                        if (deploymentResult.ExtendedErrorCode != null)
+                        var findInstalled = PackageManagerWrapper.Instance.FindPackages(name, publisher).FirstOrDefault();
+                        if (findInstalled == null)
                         {
-                            throw new InvalidOperationException(message, deploymentResult.ExtendedErrorCode);
+                            throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
                         }
 
-                        throw new InvalidOperationException(message);
+                        var familyName = findInstalled.Id.FamilyName;
+
+                        await AsyncOperationHelper.ConvertToTask(
+                            PackageManagerWrapper.Instance.ProvisionPackageForAllUsersAsync(familyName),
+                            string.Format(Resources.Localization.Packages_Provisioning_Format, name, version),
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                            PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            string.Format(Resources.Localization.Packages_Installing_Format, name),
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+
+                        if (!deploymentResult.IsRegistered)
+                        {
+                            var message = string.Format(Resources.Localization.Packages_Error_Install_Format, name, version);
+                            if (!string.IsNullOrEmpty(deploymentResult.ErrorText))
+                            {
+                                message += " " + deploymentResult.ErrorText;
+                            }
+
+                            if (deploymentResult.ExtendedErrorCode != null)
+                            {
+                                throw new InvalidOperationException(message, deploymentResult.ExtendedErrorCode);
+                            }
+
+                            throw new InvalidOperationException(message);
+                        }
                     }
                 }
             }
+            catch (COMException e)
+            {
+                if (e.ErrorCode == -2146762487)
+                {
+                    throw new InvalidOperationException("", e);
+                }
+
+                throw;
+            }
         }
-        
+
         public async Task<bool> IsInstalled(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             PackageFindMode actualMode = mode;
