@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
@@ -52,7 +53,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             IMsixHeroApplication application,
             IUacElevation uacElevation,
             IInteractionService interactionService,
-            IAppxPackageQueryService packageQueryService) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
+            IAppxPackageQueryService packageQueryService,
+            IBusyManager busyManager) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
         {
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
@@ -71,7 +73,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             this.Open = new DelegateCommand(this.OnOpen, this.CanOpen);
             
             this.CustomValidation += this.OnCustomValidation;
-            this.InstalledPackages = new InstalledPackages(this, application);
+            this.InstalledPackages = new InstalledPackages(this, application, busyManager);
         }
 
         public InstalledPackages InstalledPackages { get; }

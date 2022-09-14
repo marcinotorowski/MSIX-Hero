@@ -23,6 +23,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Prism.Commands;
@@ -38,7 +39,10 @@ public class InstalledPackages : NotifyPropertyChanged
     private SearchableInstallPackage _selectedItem;
     private string _searchKey;
 
-    public InstalledPackages(SharedPackageContainerViewModel parent, IMsixHeroApplication application)
+    public InstalledPackages(
+        SharedPackageContainerViewModel parent, 
+        IMsixHeroApplication application,
+        IBusyManager busyManager)
     {
         this._parent = parent;
         this._application = application;
@@ -49,6 +53,14 @@ public class InstalledPackages : NotifyPropertyChanged
         this.Refresh = new DelegateCommand(this.OnRefresh);
 
         parent.Packages.Changed += PackagesOnChanged;
+        busyManager.StatusChanged += BusyManagerOnStatusChanged;
+    }
+
+    private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
+    {
+        this.Packages.Progress.Progress = e.Progress;
+        this.Packages.Progress.Message = e.Message;
+        this.Packages.Progress.IsLoading = e.IsBusy;
     }
 
     public AsyncProperty<ObservableCollection<SearchableInstallPackage>> Packages { get; }
@@ -87,7 +99,7 @@ public class InstalledPackages : NotifyPropertyChanged
         get => this._searchKey;
         set
         {
-            var onlyOnVisible = this._searchKey != null && !string.IsNullOrEmpty(value) && this._searchKey.StartsWith(value, StringComparison.OrdinalIgnoreCase);
+            var onlyOnVisible = this._searchKey != null && !string.IsNullOrEmpty(value) && value.Length >= this._searchKey.Length && this._searchKey.StartsWith(value, StringComparison.OrdinalIgnoreCase);
 
             if (!this.SetField(ref this._searchKey, value) || this.Packages.CurrentValue == null)
             {
