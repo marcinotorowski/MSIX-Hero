@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
@@ -38,7 +40,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
 
         using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
         using var command = powerShell.AddCommand("Get-AppSharedPackageContainer");
-        
+
         PSDataCollection<PSObject> results;
         try
         {
@@ -52,26 +54,14 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         foreach (var result in results)
         {
 
-            var baseType = result.BaseObject.GetType();
-            var name = (string)baseType.GetProperty("Name")?.GetValue(result.BaseObject, Array.Empty<object>());
-            var id = (string)baseType.GetProperty("Id")?.GetValue(result.BaseObject, Array.Empty<object>());
-            var packageFamilyNames = (IEnumerable<string>)baseType.GetProperty("PackageFamilyNames")?.GetValue(result.BaseObject, Array.Empty<object>());
-
-            var obj = new Entities.SharedPackageContainer
-            {
-                Name = name,
-                Id = id,
-                PackageFamilies = packageFamilyNames?.Select(pfn => new Entities.SharedPackageFamily { FamilyName = pfn }).ToList()
-            };
-
-            list.Add(obj);
+            list.Add(PsObjectToSharedContainer(result));
         }
 
         return list;
     }
 
     public async Task<Entities.SharedPackageContainer> Add(
-        Entities.SharedPackageContainer container, 
+        Entities.SharedPackageContainer container,
         bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
@@ -123,7 +113,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
     }
 
     public async Task<Entities.SharedPackageContainer> Add(
-        FileInfo containerFile, 
+        FileInfo containerFile,
         bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
@@ -153,35 +143,38 @@ public class SharedPackageContainerService : ISharedPackageContainerService
             }
         }
 
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Add-AppSharedPackageContainer");
+        using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+        {
+            using var command = powerShell.AddCommand("Add-AppSharedPackageContainer");
 
-        command.AddParameter("Path", containerFile.FullName);
+            command.AddParameter("Path", containerFile.FullName);
 
-        switch (containerConflictResolution)
-        {
-            case ContainerConflictResolution.Merge:
-                command.AddParameter("Merge");
-                break;
-            case ContainerConflictResolution.Replace:
-                command.AddParameter("Force");
-                break;
+            switch (containerConflictResolution)
+            {
+                case ContainerConflictResolution.Merge:
+                    command.AddParameter("Merge");
+                    break;
+                case ContainerConflictResolution.Replace:
+                    command.AddParameter("Force");
+                    break;
+            }
+
+            if (forceApplicationShutdown)
+            {
+                command.AddParameter("ForceApplicationShutdown");
+            }
+
+            try
+            {
+                await powerShell.InvokeAsync().ConfigureAwait(false);
+            }
+            catch (CommandNotFoundException e)
+            {
+                throw new NotSupportedException("", e);
+            }
         }
-            
-        if (forceApplicationShutdown)
-        {
-            command.AddParameter("ForceApplicationShutdown");
-        }
-        
-        try
-        {
-            await powerShell.InvokeAsync().ConfigureAwait(false);
-            return await this.GetByName(containerName, cancellationToken).ConfigureAwait(false);
-        }
-        catch (CommandNotFoundException e)
-        {
-            throw new NotSupportedException("", e);
-        }
+
+        return await this.GetByName(containerName, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Remove(string containerName, bool forceApplicationShutdown = false, CancellationToken cancellationToken = default)
@@ -218,7 +211,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         using var command = powerShell.AddCommand("Get-AppSharedPackageContainer");
 
         command.AddParameter("Name", containerName);
-        
+
         PSDataCollection<PSObject> results;
         try
         {
@@ -235,28 +228,16 @@ public class SharedPackageContainerService : ISharedPackageContainerService
             return null;
         }
 
-        var baseType = result.BaseObject.GetType();
-        var name = (string)baseType.GetProperty("Name")?.GetValue(result.BaseObject, Array.Empty<object>());
-        var id = (string)baseType.GetProperty("Id")?.GetValue(result.BaseObject, Array.Empty<object>());
-        var packageFamilyNames = (IEnumerable<string>)baseType.GetProperty("PackageFamilyNames")?.GetValue(result.BaseObject, Array.Empty<object>());
-
-        var obj = new Entities.SharedPackageContainer
-        {
-            Name = name,
-            Id = id,
-            PackageFamilies = packageFamilyNames?.Select(pfn => new Entities.SharedPackageFamily { FamilyName = pfn }).ToList()
-        };
-
-        return obj;
+        return PsObjectToSharedContainer(result);
     }
-       
+
     public async Task Reset(string containerName, CancellationToken cancellationToken = default)
     {
         using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
         using var command = powerShell.AddCommand("Reset-AppSharedPackageContainer");
         command.AddParameter("Name", containerName);
         command.AddParameter("Force");
-        
+
         try
         {
             await powerShell.InvokeAsync().ConfigureAwait(false);
@@ -282,7 +263,7 @@ public class SharedPackageContainerService : ISharedPackageContainerService
 
         return currentVersion >= minimumSupportedVersion;
     }
-    
+
     private async Task<IDictionary<string, string>> GetRegisteredFamilyNames(CancellationToken cancellationToken)
     {
         var all = await this.GetAll(cancellationToken).ConfigureAwait(false);
@@ -298,5 +279,28 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         }
 
         return familyNameToContainerMapping;
+    }
+
+    private static Entities.SharedPackageContainer PsObjectToSharedContainer(PSObject result)
+    {
+        var name = (string)result.Properties["Name"]?.Value;
+        var id = (string)result.Properties["Id"]?.Value;
+
+        var obj = new Entities.SharedPackageContainer
+        {
+            Name = name,
+            Id = id,
+            PackageFamilies = new List<SharedPackageFamily>()
+        };
+
+        if (result.Properties["PackageFamilyNames"].Value.GetType().GetProperty("BaseObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public)?.GetValue(result.Properties["PackageFamilyNames"].Value) is ArrayList packageList)
+        {
+            foreach (var pkg in packageList.OfType<string>())
+            {
+                obj.PackageFamilies.Add(new SharedPackageFamily() { FamilyName = pkg });
+            }
+        }
+
+        return obj;
     }
 }

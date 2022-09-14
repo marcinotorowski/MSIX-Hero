@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities
 {
+    [XmlRoot("AppSharedPackageContainer")]
     public class SharedPackageContainer
     {
         /*
