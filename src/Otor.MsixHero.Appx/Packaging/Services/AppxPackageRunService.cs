@@ -29,6 +29,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {
@@ -65,7 +66,12 @@ namespace Otor.MsixHero.Appx.Packaging.Services
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            SideloadingConfigurator.AssertDeveloperModeEnabled();
+            var windowsVersion = NdDll.RtlGetVersion();
+            // Invoke-CommandInDesktopPackage requires the device to be in Developer mode for Windows 10 builds prior to 18922.
+            if (windowsVersion < new Version(10, 0, 18922))
+            {
+                SideloadingConfigurator.AssertDeveloperModeEnabled();
+            }
 
             Logger.Info().WriteLine("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')…", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
