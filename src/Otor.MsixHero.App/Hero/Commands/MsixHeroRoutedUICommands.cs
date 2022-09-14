@@ -54,6 +54,7 @@ namespace Otor.MsixHero.App.Hero.Commands
             DependencyViewer = new RoutedUICommand { Text = "Analyzes dependencies" };
             Unpack = new RoutedUICommand { Text = "Unpacks a package to a directory" };
             AppInstaller = new RoutedUICommand { Text = "Opens a wizard for .appinstaller generation" };
+            SharedPackageContainer = new RoutedUICommand { Text = "Opens a wizard for Shared App Container generation" };
             ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
             AppAttach = new RoutedUICommand { Text = "Opens a wizard for app attach generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
@@ -128,6 +129,8 @@ namespace Otor.MsixHero.App.Hero.Commands
         public static RoutedUICommand DependencyViewer { get; }
 
         public static RoutedUICommand Winget { get; }
+
+        public static RoutedUICommand SharedPackageContainer { get; }
 
         public static RoutedUICommand AppInstaller { get; }
 

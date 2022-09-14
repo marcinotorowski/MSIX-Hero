@@ -24,12 +24,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using GongSolutions.Wpf.DragDrop;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
@@ -39,10 +41,11 @@ using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
+using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel
 {
-    public class SharedPackageContainerViewModel : ChangeableAutomatedDialogViewModel<SharedPackageContainerVerb>, IDropTarget
+    public class SharedPackageContainerViewModel : ChangeableAutomatedDialogViewModel<SharedPackageContainerVerb>, IDropTarget, IDialogAware
     {
         private readonly IUacElevation _uacElevation;
         private readonly IInteractionService _interactionService;
@@ -77,6 +80,45 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         }
 
         public InstalledPackages InstalledPackages { get; }
+
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            if (parameters.TryGetValue<string>("file", out var file))
+            {
+                try
+                {
+                    if (
+                        string.Equals(".xml", Path.GetExtension(file), StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(file), StringComparison.OrdinalIgnoreCase))
+                    {
+                        var xml = new XmlSerializer(typeof(Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer));
+                        using var fs = File.OpenRead(file);
+                        var parsed = (Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer)xml.Deserialize(fs);
+
+                        foreach (var item in parsed?.PackageFamilies ?? Enumerable.Empty<Appx.Packaging.SharedPackageContainer.Entities.SharedPackageFamily>())
+                        {
+                            this.Packages.Add(SharedPackageViewModel.FromFamilyName(this.PackageQueryService, item.FamilyName));
+                        }
+
+                        this.Name.CurrentValue = parsed?.Name;
+                    }
+                    else
+                    {
+                        var sharedPackage = new SharedPackageViewModel();
+                        sharedPackage.SetFromFilePath(file, CancellationToken.None).GetAwaiter().GetResult();
+                        this.Packages.Add(sharedPackage);
+                        
+                        this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, sharedPackage.DisplayName ?? sharedPackage.FamilyName.CurrentValue.Split('_').First());
+                    }
+
+                    this.Commit();
+                }
+                catch (Exception e)
+                {
+                    this._interactionService.ShowError(e.Message);
+                }
+            }
+        }
 
         private void OnCustomValidation(object sender, ContainerValidationArgs e)
         {
@@ -396,21 +438,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             this.Packages.Add(package);
             this.SelectedPackage = package;
-
+            
             if (string.IsNullOrEmpty(this.Name.CurrentValue))
             {
-                var addedPackage = this.Packages.Last();
-                if (addedPackage.DisplayName != null)
-                {
-                    this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.DisplayName);
-                }
-                else
-                {
-                    this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.FamilyName.CurrentValue.Split('_').First());
-                }
+                this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, package.DisplayName ?? package.FamilyName.CurrentValue.Split('_').First());
             }
         }
-
+        
         private void OnOpen()
         {
             var filterBuilder = new DialogFilterBuilder()
@@ -436,39 +470,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     newPackage.Commit();
                     this.Packages.Add(newPackage);
                     this.SelectedPackage = newPackage;
+                    
+                    if (string.IsNullOrEmpty(this.Name.CurrentValue))
+                    {
+                        this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, newPackage.DisplayName ?? newPackage.FamilyName.CurrentValue.Split('_').First());
+                    }
                 }
                 else
                 {
                     failed.Add(selection);
                 }
             }
-
+            
             if (!failed.Any())
             {
                 if (this.Packages.Count == 1)
                 {
                     this.SelectedPackage = this.Packages.Last();
                 }
-
-                if (string.IsNullOrEmpty(this.Name.CurrentValue))
-                {
-                    this.Name.CurrentValue = this.Packages.Last().DisplayName ?? this.Packages.Last().FamilyName.CurrentValue.Split('_').First();
-                }
-
-                return;
-            }
-
-            var addedPackage = this.Packages.Last();
-            if (addedPackage.DisplayName != null)
-            {
-                this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.DisplayName);
-            }
-            else
-            {
-                this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, addedPackage.FamilyName.CurrentValue.Split('_').First());
-            }
-
-            if (selections.Length == 1)
+            } 
+            else if (selections.Length == 1)
             {
                 this._interactionService.ShowError(Resources.Localization.Dialogs_SharedContainer_Selection_Error);
             }

@@ -8030,6 +8030,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shared Package Container….
+        /// </summary>
+        public static string PackageExpert_App_SendTo_SharedPackageContainer {
+            get {
+                return ResourceManager.GetString("PackageExpert_App_SendTo_SharedPackageContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Winget (YAML) editor….
         /// </summary>
         public static string PackageExpert_App_SendTo_Winget {

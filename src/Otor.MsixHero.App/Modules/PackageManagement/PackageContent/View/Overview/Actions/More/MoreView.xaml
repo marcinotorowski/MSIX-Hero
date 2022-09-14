@@ -83,6 +83,21 @@
             </b:Interaction.Behaviors>
         </Button>
 
+        <Button
+            Style="{StaticResource ActionButton}"
+            CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroRoutedUICommands.SharedPackageContainer}">
+
+            <controls:LabelWithIcon 
+                Icon16x16="{StaticResource SmallCube}"
+                Content="{localization:Loc PackageExpert_App_SendTo_SharedPackageContainer}" />
+
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
         <Label
             Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
             Content="{localization:Loc PackageExpert_App_Other}" />

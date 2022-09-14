@@ -1020,10 +1020,13 @@
 	<data name="PackageExpert_App_SendTo_ModPackage" xml:space="preserve">
     <value>Edytora pakietów modyfikujących…</value>
   </data>
-	<data name="PackageExpert_App_SendTo_Winget" xml:space="preserve">
+  <data name="PackageExpert_App_SendTo_Winget" xml:space="preserve">
     <value>Edytora wingeta (YAML)…</value>
   </data>
-	<data name="PackageExpert_App_Start" xml:space="preserve">
+  <data name="PackageExpert_App_SendTo_SharedPackageContainer" xml:space="preserve">
+    <value>Współdzielonego kontenera…</value>
+  </data>
+  <data name="PackageExpert_App_Start" xml:space="preserve">
     <value>Uruchom</value>
   </data>
 	<data name="PackageExpert_App_Uninstall" xml:space="preserve">

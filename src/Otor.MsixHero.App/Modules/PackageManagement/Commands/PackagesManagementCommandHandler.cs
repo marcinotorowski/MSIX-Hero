@@ -95,6 +95,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.StartApp = new DelegateCommand<object>(this.OnStartApp, this.CanStartApp);
             this.StopApp = new DelegateCommand(this.OnStopApp, this.CanStopApp);
             this.Settings = new DelegateCommand(this.OnSettings);
+            this.ShowSharedPackageContainerDialog = new DelegateCommand<object>(this.OnShowSharedPackageContainerDialog);
         }
 
         public ICommand ShowAppInstallerDialog { get; }
@@ -103,6 +104,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         // ReSharper disable once IdentifierTypo
         public ICommand ShowWingetDialog { get; }
+
+        public ICommand ShowSharedPackageContainerDialog { get; }
 
         public ICommand Refresh { get; }
 
@@ -258,6 +261,36 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     this.OpenSelectionDialog(
                         ModuleNames.Dialogs.Packaging,
                         NavigationPaths.DialogPaths.PackagingModificationPackage);
+                    break;
+            }
+        }
+
+        private void OnShowSharedPackageContainerDialog(object commandParameter)
+        {
+            if (!(commandParameter is DialogTarget dialogTarget))
+            {
+                dialogTarget = DialogTarget.Selection;
+            }
+
+            switch (dialogTarget)
+            {
+                case DialogTarget.Empty:
+                    this.OpenEmptyDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer);
+                    break;
+                case DialogTarget.Ask:
+                    var filterBuilder = new DialogFilterBuilder().WithExtension(".xml").WithAll();
+                    this.OpenBrowseDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer,
+                        "file",
+                        filterBuilder);
+                    break;
+                case DialogTarget.Selection:
+                    this.OpenSelectionDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer);
                     break;
             }
         }

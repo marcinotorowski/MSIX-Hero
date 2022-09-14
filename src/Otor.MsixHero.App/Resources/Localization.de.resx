@@ -1770,7 +1770,10 @@
 	<data name="PackageExpert_App_SendTo_Winget" xml:space="preserve">
     <value>Winget (YAML) Editor…</value>
   </data>
-	<data name="PackageExpert_App_Uninstall" xml:space="preserve">
+  <data name="PackageExpert_App_SendTo_SharedPackageContainer" xml:space="preserve">
+    <value>Shared Package Container…</value>
+  </data>
+  <data name="PackageExpert_App_Uninstall" xml:space="preserve">
     <value>Deinstallieren</value>
   </data>
 	<data name="PackageExpert_CopyPath" xml:space="preserve">

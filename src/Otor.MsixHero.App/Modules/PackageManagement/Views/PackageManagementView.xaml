@@ -32,6 +32,7 @@
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.DismountRegistry}" Command="{Binding CommandHandler.DismountRegistry}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.AppInstaller}" Command="{Binding CommandHandler.ShowAppInstallerDialog}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.Winget}" Command="{Binding CommandHandler.ShowWingetDialog}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.SharedPackageContainer}" Command="{Binding CommandHandler.ShowSharedPackageContainerDialog}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.ModificationPackage}" Command="{Binding CommandHandler.ShowModificationPackageDialog}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.StartPackage}" Command="{Binding CommandHandler.StartApp}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.StopPackage}" Command="{Binding CommandHandler.StopApp}" />

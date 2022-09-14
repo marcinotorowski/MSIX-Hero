@@ -101,6 +101,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             this.ViewDependencies = new DelegateCommand(this.OnViewDependencies, this.CanViewDependencies);
             this.ChangeVolume = new DelegateCommand(this.OnChangeVolume, this.CanChangeVolume);
             this.ShowAppInstallerDialog = new DelegateCommand<object>(this.OnShowAppInstallerDialog);
+            this.ShowSharedPackageContainerDialog = new DelegateCommand<object>(this.OnShowSharedPackageContainerDialog);
             this.ShowModificationPackageDialog = new DelegateCommand<object>(this.OnShowModificationPackageDialog);
             this.ShowWingetDialog = new DelegateCommand<object>(this.OnShowWingetDialog);
             this.MountRegistry = new DelegateCommand(this.OnMountRegistry, this.CanMountRegistry);
@@ -172,6 +173,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         public ICommand AddPackage { get; }
 
         public ICommand ShowAppInstallerDialog { get; }
+
+        public ICommand ShowSharedPackageContainerDialog { get; }
 
         public ICommand ShowModificationPackageDialog { get; }
 
@@ -344,6 +347,36 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                     this.OpenSelectionDialog(
                         ModuleNames.Dialogs.AppInstaller,
                         NavigationPaths.DialogPaths.AppInstallerEditor);
+                    break;
+            }
+        }
+
+        private void OnShowSharedPackageContainerDialog(object commandParameter)
+        {
+            if (!(commandParameter is DialogTarget dialogTarget))
+            {
+                dialogTarget = DialogTarget.Selection;
+            }
+
+            switch (dialogTarget)
+            {
+                case DialogTarget.Empty:
+                    this.OpenEmptyDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer);
+                    break;
+                case DialogTarget.Ask:
+                    var filterBuilder = new DialogFilterBuilder().WithExtension(".xml").WithAll();
+                    this.OpenBrowseDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer,
+                        "file",
+                        filterBuilder);
+                    break;
+                case DialogTarget.Selection:
+                    this.OpenSelectionDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingSharedPackageContainer);
                     break;
             }
         }

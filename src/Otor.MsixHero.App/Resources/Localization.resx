@@ -1026,6 +1026,9 @@
 	<data name="PackageExpert_App_SendTo_Winget" xml:space="preserve">
     <value>Winget (YAML) editor…</value>
   </data>
+	<data name="PackageExpert_App_SendTo_SharedPackageContainer" xml:space="preserve">
+    <value>Shared Package Container…</value>
+  </data>
 	<data name="PackageExpert_App_Start" xml:space="preserve">
     <value>Start</value>
   </data>
