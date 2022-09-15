@@ -9,10 +9,12 @@ Feature highlights:
   * Reworked and extended PSF content viewer
   * More info is now shown, for example total file size, host ID, build meta-data etc.
   * Ability to open dependency packages
+* New tab ("Advanced") in the app installer editor
+* New dialog/tool + CLI command to create and deploy Shared Package Containers
 * Function buttons (Start app, open installaction folder) are now also displayed in package dialog
 * Restyled Event viewer
-* New tab ("Advanced") in the app installer editor
 * Internal notifications using Windows style
+* Internal SDK redistributables upgraded to newest version
 * General improvements, stability and bug fixes
 
 # 2.3.0
