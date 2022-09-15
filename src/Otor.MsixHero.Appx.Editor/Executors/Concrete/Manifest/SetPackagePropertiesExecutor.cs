@@ -54,11 +54,13 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
 
             if (command.ModificationPackage == true)
             {
-                var prop = properties.Element(rootNamespace + "ModificationPackage");
+                var (_, resCap6Namespace) = this.EnsureNamespace(Namespaces.RestrictedCapabilities, 6);
+                var prop = properties.Element(resCap6Namespace + "ModificationPackage");
+                
                 if (prop == null)
                 {
                     Logger.Info().WriteLine(Resources.Localization.AppxEditor_Properties_SettingModPackTrue);
-                    prop = new XElement("ModificationPackage")
+                    prop = new XElement(resCap6Namespace + "ModificationPackage")
                     {
                         Value = "true"
                     };
