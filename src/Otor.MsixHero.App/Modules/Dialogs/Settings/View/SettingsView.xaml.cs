@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Dapplo.Log;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
@@ -136,7 +137,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
         }
-        
+
         private void ToolsDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is ToolsConfigurationViewModel dataContext)
@@ -155,37 +156,51 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
                 this.ToolDisplayName.SelectAll();
             }
         }
-        
-        private void OpenLogsClicked(object sender, RoutedEventArgs e)
+
+        private async void OpenLogsClicked(object sender, RoutedEventArgs e)
         {
-            var logFile = LogManager.LogFile;
-            if (logFile == null)
+            try
             {
-                return;
-            }
+                ((Hyperlink)sender).IsEnabled = false;
+                this.LogsLoading.Visibility = Visibility.Visible;
 
-            var familyName = PackageIdentity.FromCurrentProcess()?.GetFamilyName();
-            if (string.IsNullOrEmpty(familyName))
-            {
-                Logger.Info().WriteLine($"Opening log file {logFile} in notepad.exe...");
+                await Task.Delay(30).ConfigureAwait(true);
 
-                ExceptionGuard.Guard(() =>
+                var logFile = LogManager.LogFile;
+                if (logFile == null)
                 {
-                    var psi = new ProcessStartInfo
-                    {
-                        UseShellExecute = true,
-                        FileName = "notepad.exe",
-                        Arguments = "\"" + logFile + "\""
-                    };
+                    return;
+                }
 
-                    Process.Start(psi);
-                });
+                var familyName = PackageIdentity.FromCurrentProcess()?.GetFamilyName();
+                if (string.IsNullOrEmpty(familyName))
+                {
+                    Logger.Info().WriteLine($"Opening log file {logFile} in notepad.exe...");
+
+                    ExceptionGuard.Guard(() =>
+                    {
+                        var psi = new ProcessStartInfo
+                        {
+                            UseShellExecute = true,
+                            FileName = "notepad.exe",
+                            Arguments = "\"" + logFile + "\""
+                        };
+
+                        Process.Start(psi);
+                    });
+                }
+                else
+                {
+                    var notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe");
+                    Logger.Info().WriteLine($"Opening log file {logFile} in '{notepadPath}' (inside MSIX container)...");
+                    await this._packageRunService.RunToolInContext(familyName, "MSIXHero", notepadPath, logFile).ConfigureAwait(true);
+
+                }
             }
-            else
+            finally
             {
-                var notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe");
-                Logger.Info().WriteLine($"Opening log file {logFile} in '{notepadPath}' (inside MSIX container)...");
-                this._packageRunService.RunToolInContext(familyName, "MSIXHero", notepadPath, logFile);
+                this.LogsLoading.Visibility = Visibility.Collapsed;
+                ((Hyperlink)sender).IsEnabled = true;
             }
         }
     }

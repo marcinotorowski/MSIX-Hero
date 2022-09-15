@@ -661,18 +661,18 @@
                         <TextBlock
                             Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Style="{StaticResource LabelTextBlock}" 
-                            Text="App attach volume creation strategy" />
+                            Text="{localization:Loc Dialogs_Settings_AppAttach_Strategy}" />
 
                         <ComboBox 
                             Margin="0 0 0 16"
                             SelectedValuePath="Tag"
                             SelectedValue="{Binding AppAttachUseMsixMgr.CurrentValue, Mode=TwoWay}">
-                            <ComboBoxItem Content="Default (MSIXMGR)">
+                            <ComboBoxItem Content="{localization:Loc Dialogs_Settings_AppAttach_DefaultStrategy}">
                                 <ComboBoxItem.Tag>
                                     <system:Boolean>True</system:Boolean>
                                 </ComboBoxItem.Tag>
                             </ComboBoxItem>
-                            <ComboBoxItem Content="Alternative (Legacy / MSIX Hero 1.5)">
+                            <ComboBoxItem Content="{localization:Loc Dialogs_Settings_AppAttach_LegacyStrategy}">
                                 <ComboBoxItem.Tag>
                                     <system:Boolean>False</system:Boolean>
                                 </ComboBoxItem.Tag>
@@ -705,17 +705,21 @@
                         <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Url_AppInstaller}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
 
-                        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Logs}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <Label Content="{localization:Loc Dialogs_Settings_Other_Logs}" Style="{StaticResource FormLabel}" />
                         <CheckBox 
                             Content="{localization:Loc Dialogs_Settings_Other_Logs_Verbose}"
                             IsChecked="{Binding VerboseLogging.CurrentValue}" 
                             Margin="0 0 0 6" />
 
-                        <TextBlock>
-                            <Hyperlink Click="OpenLogsClicked">
-                                <Run Text="{localization:Loc Dialogs_Settings_Other_Logs_Open}" />
-                            </Hyperlink>
-                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center">
+                                <Hyperlink Click="OpenLogsClicked">
+                                    <Run Text="{localization:Loc Dialogs_Settings_Other_Logs_Open}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <TextBlock Visibility="Collapsed" Foreground="#888" x:Name="LogsLoading" Text="{localization:Loc Loading_PleaseWait}" Margin="6 0 0 0" VerticalAlignment="Center" />
+                        </StackPanel>
+
                     </StackPanel>
                 </TabItem>
             </TabControl>

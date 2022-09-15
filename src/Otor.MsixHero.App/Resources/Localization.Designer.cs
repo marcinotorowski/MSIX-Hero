@@ -4705,6 +4705,33 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default (MSIXMGR).
+        /// </summary>
+        public static string Dialogs_Settings_AppAttach_DefaultStrategy {
+            get {
+                return ResourceManager.GetString("Dialogs_Settings_AppAttach_DefaultStrategy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alternative (Legacy / MSIX Hero 1.5).
+        /// </summary>
+        public static string Dialogs_Settings_AppAttach_LegacyStrategy {
+            get {
+                return ResourceManager.GetString("Dialogs_Settings_AppAttach_LegacyStrategy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App attach volume creation strategy.
+        /// </summary>
+        public static string Dialogs_Settings_AppAttach_Strategy {
+            get {
+                return ResourceManager.GetString("Dialogs_Settings_AppAttach_Strategy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remote .msix URL.
         /// </summary>
         public static string Dialogs_Settings_AppInstaller_RemoteMsix {
