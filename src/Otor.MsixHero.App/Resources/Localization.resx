@@ -2491,7 +2491,7 @@
     <value>MSIX Hero logging</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Open" xml:space="preserve">
-    <value>Click here to open current logs folder</value>
+    <value>Click here to open the current log file</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Verbose" xml:space="preserve">
     <value>Enable verbose logging</value>

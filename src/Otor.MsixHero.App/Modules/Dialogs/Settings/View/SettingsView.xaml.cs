@@ -28,6 +28,8 @@ using System.Windows.Input;
 using Dapplo.Log;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
+using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
@@ -40,12 +42,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
     public partial class SettingsView
     {
         private static readonly LogSource Logger = new();
-        private readonly IInteractionService interactionService;
+        private readonly IInteractionService _interactionService;
+        private readonly IAppxPackageRunService _packageRunService;
 
-        public SettingsView(IInteractionService interactionService)
+        public SettingsView(
+            IInteractionService interactionService,
+            IAppxPackageRunService packageRunService)
         {
-            this.interactionService = interactionService;
-            InitializeComponent();
+            this._interactionService = interactionService;
+            this._packageRunService = packageRunService;
+            this.InitializeComponent();
             this.DataContextChanged += this.OnDataContextChanged;
 
             if (this.DataContext is SettingsViewModel dataContext)
@@ -112,7 +118,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
                     else if (t.IsFaulted && t.Exception != null)
                     {
                         var exception = t.Exception.GetBaseException();
-                        var result = this.interactionService.ShowError(exception.Message, exception);
+                        var result = this._interactionService.ShowError(exception.Message, exception);
                         if (result == InteractionResult.Retry)
                         {
                             this.SaveExecuted(sender, e);
@@ -149,27 +155,37 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
                 this.ToolDisplayName.SelectAll();
             }
         }
-
+        
         private void OpenLogsClicked(object sender, RoutedEventArgs e)
         {
-            var logFile = LogManager.GetActualLogFile();
-            
-            if (logFile != null)
+            var logFile = LogManager.LogFile;
+            if (logFile == null)
             {
-                Logger.Info().WriteLine("Opening log file " + logFile);
+                return;
+            }
+
+            var familyName = PackageIdentity.FromCurrentProcess()?.GetFamilyName();
+            if (string.IsNullOrEmpty(familyName))
+            {
+                Logger.Info().WriteLine($"Opening log file {logFile} in notepad.exe...");
 
                 ExceptionGuard.Guard(() =>
                 {
-                    Logger.Debug().WriteLine("Starting explorer.exe /e," + Path.GetDirectoryName(logFile));
                     var psi = new ProcessStartInfo
                     {
                         UseShellExecute = true,
-                        FileName = "explorer.exe",
-                        Arguments = "/e," + Path.GetDirectoryName(logFile)
+                        FileName = "notepad.exe",
+                        Arguments = "\"" + logFile + "\""
                     };
 
                     Process.Start(psi);
                 });
+            }
+            else
+            {
+                var notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe");
+                Logger.Info().WriteLine($"Opening log file {logFile} in '{notepadPath}' (inside MSIX container)...");
+                this._packageRunService.RunToolInContext(familyName, "MSIXHero", notepadPath, logFile);
             }
         }
     }

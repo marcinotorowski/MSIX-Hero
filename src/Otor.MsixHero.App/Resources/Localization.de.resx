@@ -3547,7 +3547,7 @@
     <value>MSIX Hero-Protokollierung</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Open" xml:space="preserve">
-    <value>Klicken Sie hier, um den aktuellen Logs-Ordner zu öffnen</value>
+    <value>Klicken Sie hier, um die aktuelle Logs-Datei zu öffnen</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Verbose" xml:space="preserve">
     <value>Ausführliche Protokollierung einschalten</value>

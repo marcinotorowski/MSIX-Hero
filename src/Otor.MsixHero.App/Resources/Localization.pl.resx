@@ -2488,7 +2488,7 @@
     <value>Logowanie MSIX Hero</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Open" xml:space="preserve">
-    <value>Kliknij aby otworzyć folder z logami</value>
+    <value>Kliknij aby otworzyć obecny plik z logami</value>
   </data>
 	<data name="Dialogs_Settings_Other_Logs_Verbose" xml:space="preserve">
     <value>Włącz dokładne logowanie</value>

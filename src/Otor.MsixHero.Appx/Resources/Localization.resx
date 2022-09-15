@@ -531,4 +531,13 @@
   <data name="Packages_Error_CertTrust" xml:space="preserve">
     <value>The package cannot be installed, because it is not signed by a trusted certificate.</value>
   </data>
+  <data name="Packages_Error_FullNameInvalid_Architecture_Format" xml:space="preserve">
+    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid package architecture.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Hash_Format" xml:space="preserve">
+    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid publisher hash.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Version_Format" xml:space="preserve">
+    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid version.</value>
+  </data>
 </root>

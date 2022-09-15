@@ -15,6 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
@@ -34,6 +36,26 @@ namespace Otor.MsixHero.Appx.Packaging
 
         public string GetFamilyName() => this.AppName + "_" + this.PublisherHash;
 
+        public static PackageIdentity FromCurrentProcess()
+        {
+            var packageFullNameLength = 0;
+            var packageFullName = new StringBuilder(0);
+            if (GetCurrentPackageFullName(ref packageFullNameLength, packageFullName) == 15700)
+            {
+                return null;
+            }
+
+            packageFullName = new StringBuilder(packageFullNameLength);
+            if (GetCurrentPackageFullName(ref packageFullNameLength, packageFullName) == 15700)
+            {
+                return null;
+            }
+
+            var fullName = packageFullName.ToString();
+
+            return FromFullName(fullName);
+        }
+
         public static PackageIdentity FromFullName(string packageFullName)
         {
             if (packageFullName == null)
@@ -49,17 +71,17 @@ namespace Otor.MsixHero.Appx.Packaging
 
             if (!Version.TryParse(split[1], out var parsedVersion))
             {
-                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid version.", packageFullName, split[1]), nameof(packageFullName));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FullNameInvalid_Version_Format, packageFullName, split[1]), nameof(packageFullName));
             }
 
             if (!Enum.TryParse(split[2], true, out AppxPackageArchitecture parsedArchitecture))
             {
-                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid package architecture.", packageFullName, split[2]), nameof(packageFullName));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FullNameInvalid_Architecture_Format, packageFullName, split[2]), nameof(packageFullName));
             }
 
             if (string.IsNullOrEmpty(split[4]) || !Regex.IsMatch(split[4], @"^[0123456789abcdefghjkmnpqrstvwxyz]{13}$", RegexOptions.IgnoreCase))
             {
-                throw new ArgumentException(string.Format("The value '{0}' is not a valid full package name. String '{1}' is not a valid publisher hash.", packageFullName, split[4]), nameof(packageFullName));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FullNameInvalid_Hash_Format, packageFullName, split[4]), nameof(packageFullName));
             }
 
             var obj = new PackageIdentity
@@ -118,5 +140,8 @@ namespace Otor.MsixHero.Appx.Packaging
         {
             return $"{this.AppName}_{this.AppVersion}_{this.Architecture:G}_{this.ResourceId}_{this.PublisherHash}";
         }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder packageFullName);
     }
 }

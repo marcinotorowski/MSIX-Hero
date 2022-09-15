@@ -18,8 +18,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using Dapplo.Log;
 using NLog;
 using NLog.Targets;
@@ -30,44 +28,6 @@ namespace Otor.MsixHero.Infrastructure.Logging
     {
         public static string LogFile { get; private set; }
 
-        public static string GetActualLogFile()
-        {
-            if (LogFile == null || File.Exists(LogFile))
-            {
-                return LogFile;
-            }
-
-            // If we are here then it means we are running with identity from an MSIX and that local app data (where the logs are stored by default)
-            // is redirected. So let's make sure we return the correct file.
-            var familyName = GetAppxFamilyNameIfRunningAsUwp();
-            if (string.IsNullOrEmpty(familyName))
-            {
-                return LogFile;
-            }
-            
-            var virtualFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData).Trim('\\') + "\\";
-            if (LogFile.StartsWith(virtualFolder, StringComparison.OrdinalIgnoreCase))
-            {
-                var redirected = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages", familyName, "LocalCache", "Local", LogFile.Remove(0, virtualFolder.Length));
-                if (File.Exists(redirected))
-                {
-                    return redirected;
-                }
-            }
-
-            virtualFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Trim('\\') + "\\";
-            if (LogFile.StartsWith(virtualFolder, StringComparison.OrdinalIgnoreCase))
-            {
-                var redirected = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Packages", familyName, "LocalCache", "Roaming", LogFile.Remove(0, virtualFolder.Length));
-                if (File.Exists(redirected))
-                {
-                    return redirected;
-                }
-            }
-
-            return LogFile;
-        }
-        
         public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Info)
         {
             var assembly = Path.GetFileName((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
@@ -170,32 +130,6 @@ Architecture:   '${environment:PROCESSOR_ARCHITECTURE}'".Replace("${Culture}", C
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern int GetCurrentPackageFullName(
-            ref int packageFullNameLength,
-            StringBuilder packageFullName);
-
-        private static string GetAppxFamilyNameIfRunningAsUwp()
-        {
-            var packageFullNameLength = 0;
-            var packageFullName = new StringBuilder(0);
-            if (GetCurrentPackageFullName(ref packageFullNameLength, packageFullName) == 15700)
-            {
-                return null;
-            }
-
-            packageFullName = new StringBuilder(packageFullNameLength);
-            if (GetCurrentPackageFullName(ref packageFullNameLength, packageFullName) == 15700)
-            {
-                return null;
-            }
-
-            var fullName = packageFullName.ToString().Split('_');
-
-            var familyName = fullName[0] + "_" + fullName[2];
-            return familyName;
         }
     }
 }

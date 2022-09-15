@@ -531,4 +531,13 @@
   <data name="Packages_Error_CertTrust" xml:space="preserve">
     <value>Instalacja nie powiodła się, ponieważ wybrany pakiet nie jest podpisany za pomocą zaufanego certyfikatu.</value>
   </data>
+  <data name="Packages_Error_FullNameInvalid_Architecture_Format" xml:space="preserve">
+    <value>Wartość '{0}' nie jest poprawną pełną nazwą pakietu. Ciąg '{1}' nie jest poprawną architekturą.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Hash_Format" xml:space="preserve">
+    <value>Wartość '{0}' nie jest poprawną pełną nazwą pakietu. Ciąg '{1}' nie jest poprawnym skrótem wydawcy.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Version_Format" xml:space="preserve">
+    <value>Wartość '{0}' nie jest poprawną pełną nazwą pakietu. Ciąg '{1}' nie jest poprawną wersją.</value>
+  </data>
 </root>

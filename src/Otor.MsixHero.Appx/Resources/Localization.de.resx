@@ -531,4 +531,13 @@
   <data name="Packages_Error_CertTrust" xml:space="preserve">
     <value>Die Installation ist fehlgeschlagen, weil das ausgewählte Paket nicht mit einem vertrauenswürdigen Zertifikat signiert ist.</value>
   </data>
+  <data name="Packages_Error_FullNameInvalid_Architecture_Format" xml:space="preserve">
+    <value>Der Wert '{0}' ist kein gültiger vollständiger Paketname. Die Zeichenkette '{1}' ist keine gültige Paketarchitektur.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Hash_Format" xml:space="preserve">
+    <value>Der Wert '{0}' ist kein gültiger vollständiger Paketname. Die Zeichenkette '{1}' ist kein gültiger Publisher-Hash.</value>
+  </data>
+  <data name="Packages_Error_FullNameInvalid_Version_Format" xml:space="preserve">
+    <value>Der Wert '{0}' ist kein gültiger vollständiger Paketname. Die Zeichenkette '{1}' ist keine gültige Version.</value>
+  </data>
 </root>

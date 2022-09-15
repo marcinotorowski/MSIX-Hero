@@ -421,6 +421,33 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid package architecture..
+        /// </summary>
+        public static string Packages_Error_FullNameInvalid_Architecture_Format {
+            get {
+                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Architecture_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid publisher hash..
+        /// </summary>
+        public static string Packages_Error_FullNameInvalid_Hash_Format {
+            get {
+                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Hash_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid version..
+        /// </summary>
+        public static string Packages_Error_FullNameInvalid_Version_Format {
+            get {
+                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Version_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not install {0} {1}..
         /// </summary>
         public static string Packages_Error_Install_Format {

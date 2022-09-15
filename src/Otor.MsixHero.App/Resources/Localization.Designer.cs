@@ -5173,7 +5173,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click here to open current logs folder.
+        ///   Looks up a localized string similar to Click here to open the current log file.
         /// </summary>
         public static string Dialogs_Settings_Other_Logs_Open {
             get {
