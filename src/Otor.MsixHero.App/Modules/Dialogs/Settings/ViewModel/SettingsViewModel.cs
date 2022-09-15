@@ -71,7 +71,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             this.TabAppAttach.AddChildren(
                 this.AppAttachGenerateScripts = new ChangeableProperty<bool>(config.AppAttach?.GenerateScripts == true),
                 this.AppAttachExtractCertificate = new ChangeableProperty<bool>(config.AppAttach?.ExtractCertificate == true),
-                this.AppAttachJunctionPoint = new ChangeableProperty<string>(config.AppAttach?.JunctionPoint ?? "c:\\temp\\msix-app-attach")
+                this.AppAttachJunctionPoint = new ChangeableProperty<string>(config.AppAttach?.JunctionPoint ?? "c:\\temp\\msix-app-attach"),
+                this.AppAttachUseMsixMgr = new ChangeableProperty<bool>(config.AppAttach?.UseMsixMgrForVhdCreation ?? true)
             );
 
             this.TabOther.AddChildren
@@ -254,6 +255,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public ChangeableProperty<bool> AppAttachExtractCertificate { get; }
 
+        public ChangeableProperty<bool> AppAttachUseMsixMgr { get; }
+
         public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
 
         public ValidatedChangeableProperty<string> DefaultRemoteLocationAppInstaller { get; }
@@ -381,6 +384,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
             UpdateConfiguration(newConfiguration.AppAttach, e => e.GenerateScripts, this.AppAttachGenerateScripts);
             UpdateConfiguration(newConfiguration.AppAttach, e => e.ExtractCertificate, this.AppAttachExtractCertificate);
+            UpdateConfiguration(newConfiguration.AppAttach, e => e.UseMsixMgrForVhdCreation, this.AppAttachUseMsixMgr);
             UpdateConfiguration(newConfiguration.AppAttach, e => e.JunctionPoint, this.AppAttachJunctionPoint);
             UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
 

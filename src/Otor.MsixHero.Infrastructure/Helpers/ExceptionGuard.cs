@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.Infrastructure.Helpers
 {
@@ -28,6 +29,60 @@ namespace Otor.MsixHero.Infrastructure.Helpers
         public static T Guard<T>(Func<T> lambda)
         {
             return Guard<Exception, T>(lambda);
+        }
+
+        public static T Guard<T>(Func<Task<T>> taskDelegate)
+        {
+            return Guard<Exception, T>(() => taskDelegate().GetAwaiter().GetResult());
+        }
+
+        public static void Guard(Func<Task> taskDelegate)
+        {
+            Guard<Exception>(() => taskDelegate().GetAwaiter().GetResult());
+        }
+
+        public static Task Guard(Task taskToGuard)
+        {
+            return Guard<Exception>(taskToGuard);
+        }
+
+        public static Task<T> Guard<T>(Task<T> taskToGuard)
+        {
+            return Guard<Exception, T>(taskToGuard);
+        }
+
+        public static async Task<TResult> Guard<TException, TResult>(Task<TResult> taskToGuard) where TException : Exception
+        {
+            try
+            {
+                return await taskToGuard.ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (e is TException)
+                {
+                    return default;
+                }
+
+                throw;
+            }
+        }
+
+        public static async Task Guard<TException>(Task taskToGuard) where TException : Exception
+        {
+            try
+            {
+                await taskToGuard.ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (e is TException)
+                {
+                    return;
+                }
+
+                throw;
+            }
         }
 
         public static void Guard<TException>(Action lambda) where TException : Exception

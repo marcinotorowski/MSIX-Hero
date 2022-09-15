@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Controls;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel;
 using Prism.Ioc;

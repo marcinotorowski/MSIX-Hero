@@ -122,10 +122,12 @@
                                 IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Vhdx}}" 
                                 Content="{localization:Loc Dialogs_AppAttach_Type_Vhdx}" 
                                 Margin="0 0 10 0" />
-                            <RadioButton x:Name="RadioCim" GroupName="type3" IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Cim}}" Margin="0 0 0 0">
+                            <RadioButton 
+                                IsEnabled="{Binding UseMsixMgr}"
+                                x:Name="RadioCim" GroupName="type3" IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Cim}}" Margin="0 0 0 0">
                                 <TextBlock>
-                            <Run Text="{localization:Loc Dialogs_AppAttach_Type_Cim}" />
-                            <Run Text="{localization:Loc Dialogs_AppAttach_Type_Experimental}" BaselineAlignment="Top" FontWeight="Bold" FontSize="8" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                                    <Run Text="{localization:Loc Dialogs_AppAttach_Type_Cim}" />
+                                    <Run Text="{localization:Loc Dialogs_AppAttach_Type_Experimental}" BaselineAlignment="Top" FontWeight="Bold" FontSize="8" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                                 </TextBlock>
                             </RadioButton>
                         </StackPanel>

@@ -28,6 +28,7 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Elevation;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -46,6 +47,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
             
+
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.Files.CollectionChanged += (_, _) =>
             {
@@ -53,7 +55,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                 this.OnPropertyChanged(nameof(IsMoreThanOnePackage));
             };
 
-            var config = configurationService.GetCurrentConfiguration().AppAttach;
+            var config = configurationService.GetCurrentConfiguration().AppAttach ?? new AppAttachConfiguration();
+            this.UseMsixMgr = config.UseMsixMgrForVhdCreation;
 
             this.TabPackages = new ChangeableContainer(this.Files);
             this.TabOptions = new ChangeableContainer(
@@ -235,7 +238,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         public ChangeableProperty<bool> ExtractCertificate { get; }
         
         public ChangeableProperty<AppAttachVolumeType> VolumeType { get; }
-        
+
+        public bool UseMsixMgr { get; }
+
         public ValidatedChangeableProperty<string> FixedSize { get; }
 
         public ChangeableProperty<AppAttachSizeMode> SizeMode { get; }

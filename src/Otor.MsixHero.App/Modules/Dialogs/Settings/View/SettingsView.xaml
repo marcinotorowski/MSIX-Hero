@@ -657,6 +657,27 @@
                             Margin="0 0 0 16"
                             Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Text="{Binding AppAttachJunctionPoint.CurrentValue}" />
+
+                        <TextBlock
+                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource LabelTextBlock}" 
+                            Text="App attach volume creation strategy" />
+
+                        <ComboBox 
+                            Margin="0 0 0 16"
+                            SelectedValuePath="Tag"
+                            SelectedValue="{Binding AppAttachUseMsixMgr.CurrentValue, Mode=TwoWay}">
+                            <ComboBoxItem Content="Default (MSIXMGR)">
+                                <ComboBoxItem.Tag>
+                                    <system:Boolean>True</system:Boolean>
+                                </ComboBoxItem.Tag>
+                            </ComboBoxItem>
+                            <ComboBoxItem Content="Alternative (Legacy / MSIX Hero 1.5)">
+                                <ComboBoxItem.Tag>
+                                    <system:Boolean>False</system:Boolean>
+                                </ComboBoxItem.Tag>
+                            </ComboBoxItem>
+                        </ComboBox>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Other}">

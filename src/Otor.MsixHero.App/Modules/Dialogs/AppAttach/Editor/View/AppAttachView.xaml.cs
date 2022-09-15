@@ -35,7 +35,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
             var pathOutput = ((AppAttachViewModel)this.DataContext).OutputDirectory;
-            Process.Start("explorer.exe", "/select," + pathOutput);
+            Process.Start("explorer.exe", "/e," + pathOutput);
         }
 
         private async void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)

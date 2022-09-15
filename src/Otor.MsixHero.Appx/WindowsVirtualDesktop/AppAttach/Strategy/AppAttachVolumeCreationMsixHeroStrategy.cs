@@ -24,6 +24,7 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.MountVol;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -41,6 +42,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
         public async Task<IAppAttachVolumeCreationStrategyInitialization> Initialize(CancellationToken cancellationToken = default)
         {
+            Logger.Debug().WriteLine("Initializing...");
             bool requiresRestart;
             try
             {
@@ -64,6 +66,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
         public async Task Finish(IAppAttachVolumeCreationStrategyInitialization data, CancellationToken cancellationToken = default)
         {
+            Logger.Debug().WriteLine("Finishing...");
             if (data is InitializationResult result && result.RestartHardwareService)
             {
                 try
@@ -85,6 +88,8 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             CancellationToken cancellationToken = default, 
             IProgress<ProgressData> progressReporter = null)
         {
+            Logger.Debug().WriteLine($"Creating a new volume '{volumePath}' from package '{packagePath}' with desired size = {sizeInMegaBytes} MB...");
+
             if (packagePath == null)
             {
                 throw new ArgumentNullException(nameof(packagePath), Resources.Localization.Packages_Error_EmptyPath);
@@ -178,7 +183,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 }
                 finally
                 {
-                    await wrapper.DismountVhd(tmpPath, cancellationToken).ConfigureAwait(false);
+                    await ExceptionGuard.Guard(wrapper.DismountVhd(tmpPath, cancellationToken)).ConfigureAwait(false);
                 }
 
                 if (File.Exists(tmpPath))

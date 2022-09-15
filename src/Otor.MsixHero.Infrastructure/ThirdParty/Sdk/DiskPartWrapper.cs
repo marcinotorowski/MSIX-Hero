@@ -57,9 +57,9 @@ attach vdisk";
             }
         }
 
-        public async Task CreateVhdAndAssignDriveLetter(string vhdPath, long requiredSize, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task CreateVhdAndAssignDriveLetter(string vhdPath, long requiredSizeInMb, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_CreatingVolume_Format, vhdPath, requiredSize);
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_CreatingVolume_Format, vhdPath, requiredSizeInMb);
 
             switch (Path.GetExtension(vhdPath).ToLowerInvariant())
             {
@@ -72,7 +72,7 @@ attach vdisk";
                     {
                         var content = @"create vdisk file=""{0}"" maximum={1} type=expandable";
 
-                        var requiredSizeMb = (int)(10 * Math.Ceiling(0.1 * requiredSize / 1024 / 1024));
+                        var requiredSizeMb = (int)(10 * Math.Ceiling(0.1 * requiredSizeInMb));
                         await File.WriteAllTextAsync(tempCreateFile, string.Format(content, vhdPath, requiredSizeMb), cancellationToken).ConfigureAwait(false);
                         var arguments = $"/S \"{tempCreateFile}\"";
 
