@@ -14,22 +14,34 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Collections.Generic;
 using MediatR;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
+using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Hero.Commands.EventViewer
 {
-    public class SelectLogCommand : IRequest
+    public class GetEventsCommand : IRequest<IList<AppxEvent>>
     {
-        public SelectLogCommand()
+        public GetEventsCommand()
         {
+            this.Criteria = new EventCriteria();
         }
 
-        public SelectLogCommand(Log log)
+        public GetEventsCommand(EventCriteria eventCriteria)
         {
-            this.SelectedLog = log;
+            this.Criteria = eventCriteria;
         }
 
-        public Log SelectedLog { get; set; }
+        public GetEventsCommand(LogCriteriaTimeSpan timeSpan)
+        {
+            this.Criteria = new EventCriteria
+            {
+                TimeSpan = timeSpan
+            };
+        }
+
+        public EventCriteria Criteria { get; }
     }
 }

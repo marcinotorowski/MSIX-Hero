@@ -4,18 +4,18 @@ using Otor.MsixHero.App.Hero.Executor;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SelectLogsHandler : RequestHandler<SelectLogCommand>
+    public class SelectEventHandler : RequestHandler<SelectEventCommand>
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
 
-        public SelectLogsHandler(IMsixHeroCommandExecutor commandExecutor)
+        public SelectEventHandler(IMsixHeroCommandExecutor commandExecutor)
         {
             this.commandExecutor = commandExecutor;
         }
 
-        protected override void Handle(SelectLogCommand request)
+        protected override void Handle(SelectEventCommand request)
         {
-            this.commandExecutor.ApplicationState.EventViewer.SelectedLog = request.SelectedLog;
+            this.commandExecutor.ApplicationState.EventViewer.SelectedAppxEvent = request.SelectedAppxEvent;
         }
     }
 }

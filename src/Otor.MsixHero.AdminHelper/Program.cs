@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dapplo.Log;
-using Otor.MsixHero.Appx.Diagnostic.Logging;
+using Otor.MsixHero.Appx.Diagnostic.Events;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
@@ -164,7 +164,7 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IRegistryManager, RegistryManager>(registryManager);
                     server.RegisterProxy<IAppxVolumeService, AppxVolumeService>();
                     server.RegisterProxy<IAppxPackageInstallationService, AppxPackageInstallationService>();
-                    server.RegisterProxy<IAppxLogManager, AppxLogManager>();
+                    server.RegisterProxy<IAppxEventService, AppxEventService>();
                     server.RegisterProxy<IAppxPackageRunService, AppxPackageRunService>();
                     server.RegisterProxy<IMsixHeroTranslationService, MsixHeroTranslationService>();
                     server.RegisterProxy<IAppxPackageManagerService, AppxPackageManagerService>();

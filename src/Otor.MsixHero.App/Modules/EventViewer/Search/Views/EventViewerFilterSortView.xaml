@@ -75,7 +75,37 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Resources>
-            <Label MinWidth="160" Margin="8 4" Content="{localization:Loc EventViewer_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
+            <Label MinWidth="160" Margin="8 4" Content="{localization:Loc EventViewer_Filter_TimeSpan}" Style="{StaticResource FormLabelThin}" />
+            <RadioButton
+                GroupName="time1"
+                IsChecked="{Binding TimeSpan, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:LogCriteriaTimeSpan.All}}"
+                Margin="8 0" HorizontalContentAlignment="Stretch">
+
+                <TextBlock Text="{localization:Loc EventViewer_Filter_TimeSpan_All}" />
+            </RadioButton>
+            <RadioButton
+                GroupName="time2"
+                IsChecked="{Binding TimeSpan, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:LogCriteriaTimeSpan.LastWeek}}"
+                Margin="8 0" HorizontalContentAlignment="Stretch">
+
+                <TextBlock Text="{localization:Loc EventViewer_Filter_TimeSpan_Week}" />
+            </RadioButton>
+            <RadioButton
+                GroupName="time3"
+                IsChecked="{Binding TimeSpan, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:LogCriteriaTimeSpan.LastDay}}"
+                Margin="8 0" HorizontalContentAlignment="Stretch">
+
+                <TextBlock Text="{localization:Loc EventViewer_Filter_TimeSpan_Day}" />
+            </RadioButton>
+            <RadioButton
+                GroupName="time4"
+                IsChecked="{Binding TimeSpan, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:LogCriteriaTimeSpan.LastHour}}"
+                Margin="8 0" HorizontalContentAlignment="Stretch">
+
+                <TextBlock Text="{localization:Loc EventViewer_Filter_TimeSpan_Hour}" />
+            </RadioButton>
+
+            <Label MinWidth="160" Margin="8 16 8 4" Content="{localization:Loc EventViewer_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
             <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 GroupName="orderBy1"

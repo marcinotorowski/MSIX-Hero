@@ -26,7 +26,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is LogViewModel logViewModel)
+            if (value is EventViewModel logViewModel)
             {
                 switch (logViewModel.Level)
                 {

@@ -34,20 +34,20 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
         {
             this.application = application;
             this.prismServices = prismServices;
-            application.EventAggregator.GetEvent<UiExecutedEvent<SelectLogCommand>>().Subscribe(this.OnSelectLogCommand);
+            application.EventAggregator.GetEvent<UiExecutedEvent<SelectEventCommand>>().Subscribe(this.OnSelectLogCommand);
         }
         
-        private void OnSelectLogCommand(UiExecutedPayload<SelectLogCommand> command)
+        private void OnSelectLogCommand(UiExecutedPayload<SelectEventCommand> command)
         {
             var parameters = new NavigationParameters();
 
-            if (command.Request.SelectedLog == null)
+            if (command.Request.SelectedAppxEvent == null)
             {
                 prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.NoDetails, UriKind.Relative), parameters);
             }
             else
             {
-                parameters.Add("selection", this.application.ApplicationState.EventViewer.SelectedLog);
+                parameters.Add("selection", this.application.ApplicationState.EventViewer.SelectedAppxEvent);
                 prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.Details, UriKind.Relative), parameters);
             }
         }

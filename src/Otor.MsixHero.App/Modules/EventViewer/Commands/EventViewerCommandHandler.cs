@@ -21,11 +21,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.App.Hero.Commands.Logs;
+using Otor.MsixHero.App.Hero.Commands.EventViewer;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Diagnostic.Logging;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.EventsLoading);
 
-            await executor.Invoke<GetLogsCommand, IList<Log>>(this, new GetLogsCommand(), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetEventsCommand, IList<AppxEvent>>(this, new GetEventsCommand(this._application.ApplicationState.EventViewer.Criteria), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void CanRefresh(object sender, CanExecuteRoutedEventArgs e)
@@ -67,7 +67,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
         {
-            var log = this._application.ApplicationState.EventViewer.SelectedLog;
+            var log = this._application.ApplicationState.EventViewer.SelectedAppxEvent;
             if (log != null)
             {
                 Clipboard.SetText(GetCopyText(log), TextDataFormat.Text);
@@ -76,77 +76,77 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 
         private void CanCopy(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this._application.ApplicationState.EventViewer.SelectedLog != null;
+            e.CanExecute = this._application.ApplicationState.EventViewer.SelectedAppxEvent != null;
         }
 
-        private static string GetCopyText(Log log)
+        private static string GetCopyText(AppxEvent appxEvent)
         {
             var copiedText = new StringBuilder();
 
-            if (log.DateTime != default)
+            if (appxEvent.DateTime != default)
             {
-                copiedText.AppendFormat("DateTime:\t{0}\r\n", log.DateTime);
+                copiedText.AppendFormat("DateTime:\t{0}\r\n", appxEvent.DateTime);
             }
 
-            if (!string.IsNullOrEmpty(log.Level))
+            if (!string.IsNullOrEmpty(appxEvent.Level))
             {
-                copiedText.AppendFormat("Level:\t{0}\r\n", log.Level);
+                copiedText.AppendFormat("Level:\t{0}\r\n", appxEvent.Level);
             }
 
-            if (!string.IsNullOrEmpty(log.Source))
+            if (!string.IsNullOrEmpty(appxEvent.Source))
             {
-                copiedText.AppendFormat("Source:\t{0}\r\n", log.Source);
+                copiedText.AppendFormat("Source:\t{0}\r\n", appxEvent.Source);
             }
 
-            if (log.ActivityId != null)
+            if (appxEvent.ActivityId != null)
             {
-                copiedText.AppendFormat("ActivityId:\t{0}\r\n", log.ActivityId);
+                copiedText.AppendFormat("ActivityId:\t{0}\r\n", appxEvent.ActivityId);
             }
 
-            if (!string.IsNullOrEmpty(log.FilePath))
+            if (!string.IsNullOrEmpty(appxEvent.FilePath))
             {
-                copiedText.AppendFormat("FilePath:\t{0}\r\n", log.FilePath);
+                copiedText.AppendFormat("FilePath:\t{0}\r\n", appxEvent.FilePath);
             }
 
-            if (!string.IsNullOrEmpty(log.PackageName))
+            if (!string.IsNullOrEmpty(appxEvent.PackageName))
             {
-                copiedText.AppendFormat("PackageName:\t{0}\r\n", log.PackageName);
+                copiedText.AppendFormat("PackageName:\t{0}\r\n", appxEvent.PackageName);
             }
 
-            if (!string.IsNullOrEmpty(log.ErrorCode))
+            if (!string.IsNullOrEmpty(appxEvent.ErrorCode))
             {
-                copiedText.AppendFormat("ErrorCode:\t{0}\r\n", log.ErrorCode);
+                copiedText.AppendFormat("ErrorCode:\t{0}\r\n", appxEvent.ErrorCode);
             }
 
-            if (!string.IsNullOrEmpty(log.OpcodeDisplayName))
+            if (!string.IsNullOrEmpty(appxEvent.OpcodeDisplayName))
             {
                 // ReSharper disable once StringLiteralTypo
-                copiedText.AppendFormat("Opcode:\t{0}\r\n", log.OpcodeDisplayName);
+                copiedText.AppendFormat("Opcode:\t{0}\r\n", appxEvent.OpcodeDisplayName);
             }
 
-            if (log.ThreadId != default)
+            if (appxEvent.ThreadId != default)
             {
-                copiedText.AppendFormat("ThreadId:\t{0}\r\n", log.ThreadId);
+                copiedText.AppendFormat("ThreadId:\t{0}\r\n", appxEvent.ThreadId);
             }
 
-            if (!string.IsNullOrEmpty(log.User))
+            if (!string.IsNullOrEmpty(appxEvent.User))
             {
-                copiedText.AppendFormat("User:\t{0}\r\n", log.User);
+                copiedText.AppendFormat("User:\t{0}\r\n", appxEvent.User);
             }
 
-            if (!string.IsNullOrEmpty(log.Message))
+            if (!string.IsNullOrEmpty(appxEvent.Message))
             {
-                copiedText.AppendFormat("Message:\t{0}\r\n", log.Message);
+                copiedText.AppendFormat("Message:\t{0}\r\n", appxEvent.Message);
             }
 
-            if (log.ErrorCode != null && log.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            if (appxEvent.ErrorCode != null && appxEvent.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
                 var errorCodes = new ErrorCodes();
 
                 string text = null;
-                if (ExceptionGuard.Guard(() => errorCodes.TryGetCode(Convert.ToUInt32(log.ErrorCode, 16), out text)) && !string.IsNullOrEmpty(text))
+                if (ExceptionGuard.Guard(() => errorCodes.TryGetCode(Convert.ToUInt32(appxEvent.ErrorCode, 16), out text)) && !string.IsNullOrEmpty(text))
                 {
-                    if (errorCodes.TryGetCode(Convert.ToUInt32(log.ErrorCode, 16), out var message))
+                    if (errorCodes.TryGetCode(Convert.ToUInt32(appxEvent.ErrorCode, 16), out var message))
                     {
                         text += " | " + message;
                     }

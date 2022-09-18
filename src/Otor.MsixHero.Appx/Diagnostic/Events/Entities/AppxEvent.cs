@@ -14,23 +14,32 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Collections.Generic;
-using MediatR;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using System;
 
-namespace Otor.MsixHero.App.Hero.Commands.Logs
+namespace Otor.MsixHero.Appx.Diagnostic.Events.Entities
 {
-    public class GetLogsCommand : IRequest<IList<Log>>
+    public class AppxEvent
     {
-        public GetLogsCommand() : this(0)
-        {
-        }
+        public DateTime DateTime { get; set; }
 
-        public GetLogsCommand(int count)
-        {
-            Count = count;
-        }
+        public string Message { get; set; }
+        
+        public Guid? ActivityId { get; set; }
 
-        public int Count { get; }
+        public string PackageName { get; set; }
+
+        public string FilePath { get; set; }
+
+        public string User { get; set; }
+
+        public string Level { get; set; }
+
+        public int ThreadId { get; set; }
+
+        public string Source { get; set; }
+
+        public string OpcodeDisplayName { get; set; }
+
+        public string ErrorCode { get; set; }
     }
 }

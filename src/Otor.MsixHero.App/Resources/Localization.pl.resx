@@ -919,7 +919,7 @@
     <value>Wyczyść</value>
   </data>
   <data name="EventViewer_Filter_Log" xml:space="preserve">
-    <value>Poziomy zdarzeń</value>
+    <value>Poziomy</value>
   </data>
   <data name="EventViewer_Filter_Log_Error" xml:space="preserve">
     <value>Błąd</value>
@@ -4266,5 +4266,20 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   </data>
   <data name="FilterAll" xml:space="preserve">
     <value>(wszystkie)</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan" xml:space="preserve">
+    <value>Zakres czasu</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_All" xml:space="preserve">
+    <value>Wszystko</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Day" xml:space="preserve">
+    <value>Ostatnie 24 godziny</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Hour" xml:space="preserve">
+    <value>Ostatnia godzina</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
+    <value>Ostatnich 7 dni</value>
   </data>
 </root>

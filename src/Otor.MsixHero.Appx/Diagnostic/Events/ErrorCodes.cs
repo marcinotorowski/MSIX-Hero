@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Otor.MsixHero.Appx.Diagnostic.Logging
+namespace Otor.MsixHero.Appx.Diagnostic.Events
 {
     public class ErrorCodes
     {

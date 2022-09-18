@@ -15,7 +15,7 @@
              Background="#FCFCFC"
              d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
-    <DockPanel DataContext="{Binding SelectedLog}">
+    <DockPanel DataContext="{Binding SelectedEvent}">
         <DockPanel.Resources>
             <converters:EventLogBrushConverter 
                 x:Key="BrushConverter" 

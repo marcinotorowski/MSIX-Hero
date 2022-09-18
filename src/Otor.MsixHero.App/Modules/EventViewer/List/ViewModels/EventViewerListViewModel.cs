@@ -25,13 +25,12 @@ using System.Windows.Data;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
-using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism;
@@ -55,17 +54,17 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             this.application = application;
             this.busyManager = busyManager;
             this.interactionService = interactionService;
-            this.Logs = new ObservableCollection<LogViewModel>();
+            this.Logs = new ObservableCollection<EventViewModel>();
             this.LogsView = CollectionViewSource.GetDefaultView(this.Logs);
             this.LogsView.Filter += Filter;
-            this.Sort(nameof(Log.DateTime), false);
+            this.Sort(nameof(AppxEvent.DateTime), false);
             this.MaxLogs = 250;
             this.End = DateTime.Now;
             this.Start = this.End.Subtract(TimeSpan.FromDays(5));
 
             this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
             this.Progress = new ProgressProperty();
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetLogsCommand, IList<Log>>>().Subscribe(this.OnGetLogs, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetEventsCommand, IList<AppxEvent>>>().Subscribe(this.OnGetLogs, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetEventViewerFilterCommand>>().Subscribe(this.OnSetEventViewerFilterCommand, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetEventViewerSortingCommand>>().Subscribe(this.OnSetEventViewerSortingCommand, ThreadOption.UIThread);
             this.SetSortingAndGrouping();
@@ -83,13 +82,13 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
                 switch (currentSort)
                 {
                     case EventSort.Date:
-                        sortProperty = nameof(LogViewModel.DateTime);
+                        sortProperty = nameof(EventViewModel.DateTime);
                         break;
                     case EventSort.Type:
-                        sortProperty = nameof(LogViewModel.Level);
+                        sortProperty = nameof(EventViewModel.Level);
                         break;
                     case EventSort.PackageName:
-                        sortProperty = nameof(LogViewModel.PackageName);
+                        sortProperty = nameof(EventViewModel.PackageName);
                         break;
                     default:
                         sortProperty = null;
@@ -145,13 +144,13 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             this.SetSortingAndGrouping();
         }
 
-        private void OnGetLogs(UiExecutedPayload<GetLogsCommand, IList<Log>> obj)
+        private void OnGetLogs(UiExecutedPayload<GetEventsCommand, IList<AppxEvent>> obj)
         {
             this.Logs.Clear();
             
             foreach (var item in obj.Result)
             {
-                this.Logs.Add(new LogViewModel(item));
+                this.Logs.Add(new EventViewModel(item));
             }
         }
         
@@ -165,7 +164,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             }
         }
         
-        public ObservableCollection<LogViewModel> Logs { get; }
+        public ObservableCollection<EventViewModel> Logs { get; }
 
         public ICollectionView LogsView { get; }
         
@@ -183,7 +182,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
 
         private bool Filter(object obj)
         {
-            var filtered = (LogViewModel)obj;
+            var filtered = (EventViewModel)obj;
 
             var filterLevel = this.application.ApplicationState.EventViewer.Filter & EventFilter.AllLevels;
             if (filterLevel != 0)
@@ -275,7 +274,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             using var task = this.application.CommandExecutor
                 .WithBusyManager(this.busyManager, OperationType.EventsLoading)
                 .WithErrorHandling(this.interactionService, true)
-                .Invoke<GetLogsCommand, IList<Log>>(this, new GetLogsCommand(), cts.Token);
+                .Invoke<GetEventsCommand, IList<AppxEvent>>(this, new GetEventsCommand(this.application.ApplicationState.EventViewer.Criteria), cts.Token);
 
             this.Progress.MonitorProgress(task, cts);
             await task.ConfigureAwait(false);

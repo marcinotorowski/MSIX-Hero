@@ -17,22 +17,22 @@
 using System;
 using Newtonsoft.Json;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Diagnostic.Logging;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 {
-    public class LogViewModel : NotifyPropertyChanged
+    public class EventViewModel : NotifyPropertyChanged
     {
         private static readonly ErrorCodes ErrorCodes = new();
 
-        public LogViewModel(Log model)
+        public EventViewModel(AppxEvent model)
         {
             this.Model = model;
         }
 
-        public Log Model { get; }
+        public AppxEvent Model { get; }
 
         public int ThreadId => this.Model.ThreadId;
 

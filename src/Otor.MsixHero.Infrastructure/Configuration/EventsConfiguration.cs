@@ -25,6 +25,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         {
             this.Filter = new EventsFilterConfiguration();
             this.Sorting = new EventsSortConfiguration();
+            this.TimeSpan = LogCriteriaTimeSpan.LastDay;
         }
 
         [DataMember(Name = "filter")]
@@ -32,5 +33,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         
         [DataMember(Name = "sorting")]
         public EventsSortConfiguration Sorting { get; set; }
+
+        [DataMember(Name = "timeSpan")]
+        public LogCriteriaTimeSpan TimeSpan { get; set; }
     }
 }

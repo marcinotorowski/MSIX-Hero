@@ -14,18 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using MediatR;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Enums;
-
-namespace Otor.MsixHero.App.Hero.Commands.Logs
+namespace Otor.MsixHero.Appx.Diagnostic.Events.Enums
 {
-    public class OpenEventViewerCommand : IRequest
+    public enum EventCategory
     {
-        public OpenEventViewerCommand(EventLogCategory type)
-        {
-            this.Type = type;
-        }
-
-        public EventLogCategory Type { get; private set; }
+        AppXDeploymentOperational,
+        AppXDeploymentServerOperational,
+        AppXDeploymentServerRestricted
     }
 }

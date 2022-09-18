@@ -14,7 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Hero.State
@@ -26,16 +27,22 @@ namespace Otor.MsixHero.App.Hero.State
             this.Filter = EventFilter.Warning | EventFilter.Error; // default show only warning and errors
             this.SortMode = EventSort.Date;
             this.SortDescending = true;
+            this.Criteria = new EventCriteria
+            {
+                TimeSpan = LogCriteriaTimeSpan.LastDay
+            };
         }
 
         public string SearchKey { get; set; }
 
-        public Log SelectedLog { get; set; }
+        public AppxEvent SelectedAppxEvent { get; set; }
 
         public EventSort SortMode { get; set; }
         
         public bool SortDescending { get; set; }
         
         public EventFilter Filter { get; set; }
+
+        public EventCriteria Criteria { get; set; }
     }
 }

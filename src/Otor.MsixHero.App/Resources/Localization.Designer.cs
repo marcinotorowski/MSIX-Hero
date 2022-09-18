@@ -7666,7 +7666,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log level.
+        ///   Looks up a localized string similar to Level.
         /// </summary>
         public static string EventViewer_Filter_Log {
             get {
@@ -7743,6 +7743,51 @@ namespace Otor.MsixHero.App.Resources {
         public static string EventViewer_Filter_OrderBy_Package {
             get {
                 return ResourceManager.GetString("EventViewer_Filter_OrderBy_Package", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time span.
+        /// </summary>
+        public static string EventViewer_Filter_TimeSpan {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_TimeSpan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string EventViewer_Filter_TimeSpan_All {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_TimeSpan_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 24 hours.
+        /// </summary>
+        public static string EventViewer_Filter_TimeSpan_Day {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_TimeSpan_Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last hour.
+        /// </summary>
+        public static string EventViewer_Filter_TimeSpan_Hour {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_TimeSpan_Hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 7 days.
+        /// </summary>
+        public static string EventViewer_Filter_TimeSpan_Week {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_TimeSpan_Week", resourceCulture);
             }
         }
         

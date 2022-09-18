@@ -922,7 +922,7 @@
     <value>Clear</value>
   </data>
   <data name="EventViewer_Filter_Log" xml:space="preserve">
-    <value>Log level</value>
+    <value>Level</value>
   </data>
   <data name="EventViewer_Filter_Log_Error" xml:space="preserve">
     <value>Error</value>
@@ -4266,5 +4266,20 @@ Click the icon again to remove the star.</value>
   </data>
   <data name="FilterAll" xml:space="preserve">
     <value>(all)</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan" xml:space="preserve">
+    <value>Time span</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Day" xml:space="preserve">
+    <value>Last 24 hours</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Hour" xml:space="preserve">
+    <value>Last hour</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
+    <value>Last 7 days</value>
   </data>
 </root>

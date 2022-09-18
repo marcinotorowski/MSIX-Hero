@@ -16,14 +16,14 @@
 
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 {
     public class EventViewerDetailsViewModel : NotifyPropertyChanged, INavigationAware
     {
-        private LogViewModel selectedLog;
+        private EventViewModel _selectedEvent;
 
         public EventViewerDetailsViewModel()
         {
@@ -35,11 +35,11 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
             if (newSelection == null)
             {
-                this.SelectedLog = null;
+                this.SelectedEvent = null;
             }
-            else if (this.SelectedLog?.Model != newSelection)
+            else if (this.SelectedEvent?.Model != newSelection)
             {
-                this.SelectedLog = new LogViewModel(newSelection);
+                this.SelectedEvent = new EventViewModel(newSelection);
             }
         }
 
@@ -52,21 +52,21 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
         {
         }
 
-        public LogViewModel SelectedLog
+        public EventViewModel SelectedEvent
         {
-            get => this.selectedLog;
-            private set => this.SetField(ref this.selectedLog, value);
+            get => this._selectedEvent;
+            private set => this.SetField(ref this._selectedEvent, value);
         }
 
-        private static Log GetLogFromContext(NavigationContext context)
+        private static AppxEvent GetLogFromContext(NavigationContext context)
         {
-            var key = context.Parameters.Keys.FirstOrDefault(k => context.Parameters[k] is Log);
+            var key = context.Parameters.Keys.FirstOrDefault(k => context.Parameters[k] is AppxEvent);
             if (key == null)
             {
                 return null;
             }
 
-            return (Log) context.Parameters[key];
+            return (AppxEvent) context.Parameters[key];
         }
     }
 }

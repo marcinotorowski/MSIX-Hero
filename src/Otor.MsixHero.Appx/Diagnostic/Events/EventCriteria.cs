@@ -14,20 +14,28 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Enums;
-using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Configuration;
 
-namespace Otor.MsixHero.Appx.Diagnostic.Logging
+namespace Otor.MsixHero.Appx.Diagnostic.Events;
+
+public class EventCriteria
 {
-    public interface IAppxLogManager
+    public EventCriteria()
     {
-        Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
-
-        Task OpenEventViewer(EventLogCategory type, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
+
+    public EventCriteria(int maxCount)
+    {
+        this.MaxCount = maxCount;
+    }
+
+    public EventCriteria(LogCriteriaTimeSpan timeSpan)
+    {
+        this.TimeSpan = timeSpan;
+    }
+    
+    public int? MaxCount { get; set; }
+
+    public LogCriteriaTimeSpan? TimeSpan { get; set; }
+    
 }

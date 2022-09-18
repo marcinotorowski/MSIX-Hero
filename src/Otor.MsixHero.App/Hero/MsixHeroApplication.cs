@@ -19,6 +19,7 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Diagnostic.Events;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 
@@ -69,6 +70,8 @@ namespace Otor.MsixHero.App.Hero
 
                 this.ApplicationState.EventViewer.SortMode = configuration.Events?.Sorting?.SortingMode ?? EventSort.Date;
                 this.ApplicationState.EventViewer.SortDescending = configuration.Events?.Sorting?.Descending == true;
+                this.ApplicationState.EventViewer.Filter = configuration.Events?.Filter?.Filter ?? EventFilter.Warning | EventFilter.Error;
+                this.ApplicationState.EventViewer.Criteria = configuration.Events?.TimeSpan == default ? new EventCriteria() : new EventCriteria(configuration.Events.TimeSpan);
             }
             catch (Exception e)
             {

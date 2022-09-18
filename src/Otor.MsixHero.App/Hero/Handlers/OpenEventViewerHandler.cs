@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Otor.MsixHero.App.Hero.Commands.Logs;
-using Otor.MsixHero.Appx.Diagnostic.Logging;
+using Otor.MsixHero.App.Hero.Commands.EventViewer;
+using Otor.MsixHero.Appx.Diagnostic.Events;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
@@ -25,7 +25,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         private Task OpenEventViewer(OpenEventViewerCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
         {
-            return this.uacElevation.AsAdministrator<IAppxLogManager>().OpenEventViewer(command.Type, cancellationToken, progressData);
+            return this.uacElevation.AsAdministrator<IAppxEventService>().OpenEventViewer(command.Type, cancellationToken, progressData);
         }
     }
 }

@@ -19,7 +19,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
-using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels;
 using Prism.Events;
@@ -38,40 +37,40 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.Views
             this.application = application;
             this.InitializeComponent();
 
-            this.application.EventAggregator.GetEvent<UiFailedEvent<GetLogsCommand>>().Subscribe(this.OnGetLogsCommandFailed, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutingEvent<GetLogsCommand>>().Subscribe(this.OnGetLogsCommandExecuting);
-            this.application.EventAggregator.GetEvent<UiCancelledEvent<GetLogsCommand>>().Subscribe(this.OnGetLogsCommandCancelled, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetLogsCommand>>().Subscribe(this.OnGetLogsCommandExecuted, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiFailedEvent<GetEventsCommand>>().Subscribe(this.OnGetLogsCommandFailed, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutingEvent<GetEventsCommand>>().Subscribe(this.OnGetLogsCommandExecuting);
+            this.application.EventAggregator.GetEvent<UiCancelledEvent<GetEventsCommand>>().Subscribe(this.OnGetLogsCommandCancelled, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetEventsCommand>>().Subscribe(this.OnGetLogsCommandExecuted, ThreadOption.UIThread);
             this.InitializeComponent();
             this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
             this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
         }
-        private void OnGetLogsCommandExecuting(UiExecutingPayload<GetLogsCommand> obj)
+        private void OnGetLogsCommandExecuting(UiExecutingPayload<GetEventsCommand> obj)
         {
             this.ListBox.SelectionChanged -= this.OnSelectionChanged;
         }
 
-        private void OnGetLogsCommandFailed(UiFailedPayload<GetLogsCommand> obj)
+        private void OnGetLogsCommandFailed(UiFailedPayload<GetEventsCommand> obj)
         {
             this.ListBox.SelectionChanged += this.OnSelectionChanged;
         }
 
-        private void OnGetLogsCommandCancelled(UiCancelledPayload<GetLogsCommand> obj)
+        private void OnGetLogsCommandCancelled(UiCancelledPayload<GetEventsCommand> obj)
         {
             this.ListBox.SelectionChanged += this.OnSelectionChanged;
         }
 
-        private void OnGetLogsCommandExecuted(UiExecutedPayload<GetLogsCommand> obj)
+        private void OnGetLogsCommandExecuted(UiExecutedPayload<GetEventsCommand> obj)
         {
-            this.ListBox.SelectedItem = this.ListBox.Items.OfType<LogViewModel>()
-                .FirstOrDefault(item => this.application.ApplicationState.EventViewer.SelectedLog == item.Model);
+            this.ListBox.SelectedItem = this.ListBox.Items.OfType<EventViewModel>()
+                .FirstOrDefault(item => this.application.ApplicationState.EventViewer.SelectedAppxEvent == item.Model);
 
             this.ListBox.SelectionChanged += this.OnSelectionChanged;
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.application.CommandExecutor.Invoke(this, new SelectLogCommand((this.ListBox.SelectedItem as LogViewModel)?.Model));
+            this.application.CommandExecutor.Invoke(this, new SelectEventCommand((this.ListBox.SelectedItem as EventViewModel)?.Model));
         }
         
         private void ListBoxOnKeyDown(object sender, KeyEventArgs e)
@@ -88,7 +87,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.Views
             {
                 this.ListBox.SelectionChanged += this.OnSelectionChanged;
 
-                this.application.CommandExecutor.Invoke(this, new SelectLogCommand((this.ListBox.SelectedItem as LogViewModel)?.Model));
+                this.application.CommandExecutor.Invoke(this, new SelectEventCommand((this.ListBox.SelectedItem as EventViewModel)?.Model));
             }
         }
     }

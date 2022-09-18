@@ -4264,4 +4264,19 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="FilterAll" xml:space="preserve">
     <value>(Alle)</value>
   </data>
+  <data name="EventViewer_Filter_TimeSpan" xml:space="preserve">
+    <value>Zeitraum</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Day" xml:space="preserve">
+    <value>Letzte 24 Stunden</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Hour" xml:space="preserve">
+    <value>Letzte Stunde</value>
+  </data>
+  <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
+    <value>Letzte 7 Tage</value>
+  </data>
 </root>
