@@ -100,7 +100,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
 
             try
             {
-                var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
+                var manager = this._uacClient.AsAdministrator<IAppxVolumeService>();
 
                 var context = this._busyManager.Begin(OperationType.VolumeLoading);
                 try
@@ -141,7 +141,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             try
             {
                 context.Message = Resources.Localization.Volumes_SettingDefault;
-                var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
+                var manager = this._uacClient.AsAdministrator<IAppxVolumeService>();
                 await manager.SetDefault(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -179,7 +179,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             try
             {
                 context.Message = Resources.Localization.Volumes_Mounting;
-                var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
+                var manager = this._uacClient.AsAdministrator<IAppxVolumeService>();
                 await manager.Mount(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -217,7 +217,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             try
             {
                 context.Message = Resources.Localization.Volumes_Dismounting;
-                var manager = this._uacClient.AsAdministrator<IAppxVolumeManager>();
+                var manager = this._uacClient.AsAdministrator<IAppxVolumeService>();
                 await manager.Dismount(this._application.ApplicationState.Volumes.SelectedVolumes.First(), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)

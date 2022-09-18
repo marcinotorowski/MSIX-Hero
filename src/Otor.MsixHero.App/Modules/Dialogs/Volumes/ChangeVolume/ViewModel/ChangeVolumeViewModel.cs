@@ -67,10 +67,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     return;
                 }
 
-                var dr = t.Result.FirstOrDefault();
+                var dr = t.Result.LastOrDefault();
                 if (dr != null)
                 {
-                    this.TargetVolume.CurrentValue = dr.Name;
+                    this.TargetVolume.CurrentValue = dr.Model;
                     this.TargetVolume.Commit();
                 }
 
@@ -80,7 +80,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
             });
 
             this.AllVolumes = new AsyncProperty<List<VolumeCandidateViewModel>>();
-            this.TargetVolume = new ChangeableProperty<string>();
+            this.TargetVolume = new ChangeableProperty<AppxVolume>();
             this.CurrentVolume = new AsyncProperty<VolumeCandidateViewModel>();
 
             this.AddChildren(this.TargetVolume);
@@ -90,7 +90,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
         public AsyncProperty<VolumeCandidateViewModel> CurrentVolume { get; }
 
-        public ChangeableProperty<string> TargetVolume { get; }
+        public ChangeableProperty<AppxVolume> TargetVolume { get; }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
@@ -104,7 +104,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                 return false;
             }
 
-            if (string.Equals(this.CurrentVolume.CurrentValue?.Name, this.TargetVolume.CurrentValue, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(this.CurrentVolume.CurrentValue?.Name, this.TargetVolume.CurrentValue?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 if (this.AllVolumes.CurrentValue.Count - 1 == 1)
                 {
@@ -146,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                         return false;
                     }
 
-                    this.TargetVolume.CurrentValue = suggestion?.Name;
+                    this.TargetVolume.CurrentValue = suggestion?.Model;
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
             var id = Path.GetFileName(this._packageInstallLocation);
 
-            await this._uacElevation.AsAdministrator<IAppxVolumeManager>().MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
+            await this._uacElevation.AsAdministrator<IAppxVolumeService>().MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
 
             progress.Report(new ProgressData(100, Resources.Localization.Dialogs_ChangeVolume_ReadingPackages));
 
@@ -194,14 +194,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetAllVolumes()
         {
-            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeManager>();
+            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeService>();
             var disks = await mgr.GetAll().ConfigureAwait(false);
             return disks.Where(d => !d.IsOffline).Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
         }
 
         private async Task<VolumeCandidateViewModel> GetCurrentVolume(string packagePath)
         {
-            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeManager>();
+            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeService>();
             var disk = await mgr.GetVolumeForPath(packagePath).ConfigureAwait(false);
             if (disk == null)
             {
@@ -228,7 +228,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
                 var allVolumes = this.AllVolumes.CurrentValue;
                 var newVolume = allVolumes.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? allVolumes.FirstOrDefault();
-                this.TargetVolume.CurrentValue = newVolume?.Name;
+                this.TargetVolume.CurrentValue = newVolume?.Model;
             });
         }
     }

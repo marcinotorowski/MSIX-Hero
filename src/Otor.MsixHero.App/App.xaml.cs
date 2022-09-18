@@ -159,7 +159,7 @@ namespace Otor.MsixHero.App
             var uacClient = new SimpleUacElevationClient(new ElevatedProcessClientHandler(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msixhero-uac.exe"), "--selfElevate --single", "--selfElevate"));
             
             // Registration of proxies for UAC handling
-            uacClient.RegisterProxy<IAppxVolumeManager>(this.Container);
+            uacClient.RegisterProxy<IAppxVolumeService>(this.Container);
             uacClient.RegisterProxy<IRegistryManager>(this.Container);
             uacClient.RegisterProxy<ISigningManager>(this.Container);
             uacClient.RegisterProxy<IAppxLogManager>(this.Container);
@@ -173,7 +173,7 @@ namespace Otor.MsixHero.App
             
             containerRegistry.RegisterSingleton<IUacElevation>(() => uacClient);
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
-            containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
+            containerRegistry.RegisterSingleton<IAppxVolumeService, AppxVolumeService>();
             containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
             containerRegistry.RegisterSingleton<IRegistryManager, RegistryManager>();
             containerRegistry.RegisterSingleton<IMsixHeroTranslationService, MsixHeroTranslationService>();

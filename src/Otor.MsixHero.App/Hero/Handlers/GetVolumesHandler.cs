@@ -15,16 +15,16 @@ namespace Otor.MsixHero.App.Hero.Handlers
     public class GetVolumesHandler : IRequestHandler<GetVolumesCommand, IList<AppxVolume>>
     {
         private readonly IMsixHeroCommandExecutor _commandExecutor;
-        private readonly IAppxVolumeManager _volumeManagerProvider;
+        private readonly IAppxVolumeService _volumeServiceProvider;
         private readonly IBusyManager _busyManager;
 
         public GetVolumesHandler(
             IMsixHeroCommandExecutor commandExecutor,
-            IAppxVolumeManager volumeManagerProvider,
+            IAppxVolumeService volumeServiceProvider,
             IBusyManager busyManager)
         {
             this._commandExecutor = commandExecutor;
-            this._volumeManagerProvider = volumeManagerProvider;
+            this._volumeServiceProvider = volumeServiceProvider;
             this._busyManager = busyManager;
         }
 
@@ -33,7 +33,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             var context = this._busyManager.Begin(OperationType.VolumeLoading);
             try
             {
-                var manager = this._volumeManagerProvider;
+                var manager = this._volumeServiceProvider;
 
                 var selected = this._commandExecutor.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).ToArray();
 

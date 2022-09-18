@@ -30,9 +30,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel.Items
 
         public string PackageStorePath => this.Model.PackageStorePath;
         
-        public long SizeTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
+        public ulong SizeTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
 
-        public long TotalSize => this.Model.Capacity;
+        public ulong TotalSize => this.Model.Capacity;
 
         public string DiskLabel => this.Model.DiskLabel;
 

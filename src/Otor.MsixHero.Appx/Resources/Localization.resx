@@ -258,6 +258,9 @@
   <data name="Packages_GettingApps" xml:space="preserve">
     <value>Getting installed apps…</value>
   </data>
+  <data name="Volumes_Moving" xml:space="preserve">
+    <value>Moving to another volume…</value>
+  </data>
   <data name="Packages_InstallingFrom_Format" xml:space="preserve">
     <value>Installing from {0}…</value>
   </data>

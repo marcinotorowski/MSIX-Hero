@@ -19,60 +19,41 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Management.Deployment;
 using Microsoft.Win32.SafeHandles;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Interop;
 
 namespace Otor.MsixHero.Appx.Volumes
 {
-    public class AppxVolumeManager : IAppxVolumeManager
+    public class AppxVolumeService : IAppxVolumeService
     {
         private static readonly LogSource Logger = new();
+
         public async Task<AppxVolume> GetDefault(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Get-AppxDefaultVolume");
-
-            var result = await session.InvokeAsync(progress).ConfigureAwait(false);
-
-            var item = result.FirstOrDefault();
-            if (item == null)
+            var pkgManager = PackageManagerSingleton.Instance;
+            var defaultVolume = pkgManager.GetDefaultPackageVolume();
+            if (defaultVolume == null)
             {
                 return null;
             }
 
-            var baseType = item.BaseObject.GetType();
-            var name = (string) baseType.GetProperty("Name")?.GetValue(item.BaseObject);
-            var packageStorePath = (string) baseType.GetProperty("PackageStorePath")?.GetValue(item.BaseObject);
-
-            var letter = packageStorePath != null && packageStorePath.Length > 2 && packageStorePath[1] == ':' ? packageStorePath.Substring(0, 1) + ":\\" : null;
-
-            var appxVolume = new AppxVolume { Name = name, PackageStorePath = packageStorePath };
-
-            if (letter == null) return appxVolume;
-            var drive = DriveInfo.GetDrives().First(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
-            appxVolume.IsDriveReady = drive.IsReady;
-            appxVolume.DiskLabel = drive.VolumeLabel;
-            appxVolume.Capacity = drive.TotalSize;
-            appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
-
-            return appxVolume;
+            var vol = await this.GetVolume(defaultVolume, false, cancellationToken).ConfigureAwait(false);
+            vol.IsDefault = true;
+            return vol;
         }
-
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once InconsistentNaming
-        private const int FILE_SHARE_READ = 1;
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once InconsistentNaming
-        private const int FILE_SHARE_WRITE = 2;
-
+        
         // ReSharper disable once InconsistentNaming
         private const int CREATION_DISPOSITION_OPEN_EXISTING = 3;
         // ReSharper disable once InconsistentNaming
@@ -124,108 +105,38 @@ namespace Otor.MsixHero.Appx.Volumes
                 path = target;
             }
 
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Get-AppPackageVolume");
-            command.AddParameter("Path", path);
-
-            var result = await session.InvokeAsync(progress).ConfigureAwait(false);
-
-            var item = result.FirstOrDefault();
-            if (item == null)
-            {
-                return null;
-            }
-            
-            var name = (string)item.Properties.FirstOrDefault(p => p.Name == "Name")?.Value;
-            var packageStorePath = (string)item.Properties.FirstOrDefault(p => p.Name == "PackageStorePath")?.Value;
-            
-            var letter = packageStorePath != null && packageStorePath.Length > 2 && packageStorePath[1] == ':' ? packageStorePath.Substring(0, 1) + ":\\" : null;
-
-            var appxVolume = new AppxVolume { Name = name, PackageStorePath = packageStorePath };
-
-            if (letter == null)
-            {
-                return appxVolume;
-            }
-            
-            var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
-            if (drive == null)
-            {
-                return appxVolume;
-            }
-                
-            appxVolume.IsDriveReady = drive.IsReady;
-            appxVolume.DiskLabel = drive.VolumeLabel;
-            appxVolume.Capacity = drive.TotalSize;
-            appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
-
-            return appxVolume;
+            var pkgManager = PackageManagerSingleton.Instance;
+            var allVolumes = await AsyncOperationHelper.ConvertToTask(pkgManager.GetPackageVolumesAsync(), cancellationToken).ConfigureAwait(false);
+            var item = allVolumes.FirstOrDefault(v => path.StartsWith(v.PackageStorePath?.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar));
+            return await this.GetVolume(item, true, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<AppxVolume>> GetAll(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Get-AppxVolume");
-
-            var results = await session.InvokeAsync(progress).ConfigureAwait(false);
-            if (!results.Any())
-            {
-                return new List<AppxVolume>();
-            }
-
-            var list = new List<AppxVolume>();
-
-            foreach (var item in results)
-            {
-                var packageStorePath = (string)item.Properties.FirstOrDefault(p => p.Name == "PackageStorePath")?.Value;
-                if (string.IsNullOrEmpty(packageStorePath))
-                {
-                    Logger.Warn().WriteLine("Empty path for " + item);
-                    continue;
-                }
-                
-                var isOffline = true == (bool?)item.Properties.FirstOrDefault(p => p.Name == "IsOffline")?.Value;
-                var name = (string)item.Properties.FirstOrDefault(p => p.Name == "Name")?.Value;
-                var isSystemVolume = true == (bool?)item.Properties.FirstOrDefault(p => p.Name == "IsSystemVolume")?.Value;
-                
-                list.Add(new AppxVolume { Name = name, PackageStorePath = packageStorePath, IsOffline = isOffline, IsSystem = isSystemVolume });
-            }
-
-            var drives = DriveInfo.GetDrives();
-            foreach (var drive in list.Where(c => c.PackageStorePath.IndexOf(":\\", StringComparison.Ordinal) == 1))
-            {
-                var letter = drive.PackageStorePath.Substring(0, 3);
-                var matchingDrive = drives.FirstOrDefault(d => string.Equals(d.RootDirectory.FullName, letter, StringComparison.OrdinalIgnoreCase));
-                if (matchingDrive?.IsReady == true)
-                {
-                    drive.Capacity = matchingDrive.TotalSize;
-                    drive.AvailableFreeSpace = matchingDrive.AvailableFreeSpace;
-                    drive.DiskLabel = matchingDrive.VolumeLabel;
-                    drive.IsDriveReady = true;
-                }
-            }
-
-            return list.OrderBy(l => l.PackageStorePath).ToList();
+            var pkgManager = PackageManagerSingleton.Instance;
+            var allVolumes = await AsyncOperationHelper.ConvertToTask(pkgManager.GetPackageVolumesAsync(), cancellationToken).ConfigureAwait(false);
+            return await this.GetVolumes(allVolumes, true, cancellationToken).ToListAsync(cancellationToken).ConfigureAwait(false);
         }
         
         public async Task<AppxVolume> Add(string drivePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Add-AppxVolume");
-            command.AddParameter("Path", drivePath);
-
-            var results = await session.InvokeAsync(progress).ConfigureAwait(false);
-            var obj = results.FirstOrDefault();
-            if (obj == null)
+            var pkgVolume = await AsyncOperationHelper.ConvertToTask(PackageManagerSingleton.Instance.AddPackageVolumeAsync(drivePath), cancellationToken).ConfigureAwait(false);
+            if (pkgVolume == null)
             {
                 throw new InvalidOperationException(string.Format(Resources.Localization.Packages_Error_VolumeCreation_Format, drivePath));
             }
 
-            var baseType = obj.BaseObject.GetType();
-            var name = (string)baseType.GetProperty("Name")?.GetValue(obj.BaseObject);
-            var packageStorePath = (string)baseType.GetProperty("PackageStorePath")?.GetValue(obj.BaseObject);
+            return await this.GetVolume(pkgVolume, true, cancellationToken).ConfigureAwait(false);
+        }
 
-            return new AppxVolume { Name = name, PackageStorePath = packageStorePath };
+        private async Task<AppxVolume> GetVolume(PackageVolume volume, bool resolveDefaultVolume, CancellationToken cancellationToken)
+        {
+            if (volume == null)
+            {
+                return null;
+            }
+
+            return await this.GetVolumes(new[] { volume }, resolveDefaultVolume, cancellationToken).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task Delete(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -252,30 +163,45 @@ namespace Otor.MsixHero.Appx.Volumes
             await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
-        public async Task MovePackageToVolume(string volumePackagePath, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task MovePackageToVolume(AppxVolume volume, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Move-AppxPackage");
-            command.AddParameter("Package", packageFullName);
-            command.AddParameter("Volume", volumePackagePath);
 
-            Logger.Debug().WriteLine($"Executing Move-AppxPackage -Package \"{packageFullName}\" -Volume \"{volumePackagePath}\"…");
-            await session.InvokeAsync(progress).ConfigureAwait(false);
-        }
-
-        public Task MovePackageToVolume(AppxVolume volume, AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
             if (volume == null)
             {
                 throw new ArgumentNullException(nameof(volume));
             }
 
-            if (package == null)
+            if (packageFullName == null)
             {
-                throw new ArgumentNullException(nameof(package));
+                throw new ArgumentNullException(nameof(packageFullName));
             }
 
-            return this.MovePackageToVolume(volume.Name, package.FullName, cancellationToken, progress);
+            var targetVolumes = await AsyncOperationHelper.ConvertToTask(PackageManagerSingleton.Instance.GetPackageVolumesAsync(), cancellationToken).ConfigureAwait(false);
+            var targetVolume = targetVolumes.First(v => string.Equals(v.PackageStorePath, volume.PackageStorePath, StringComparison.OrdinalIgnoreCase));
+
+            var r = await AsyncOperationHelper.ConvertToTask(
+                PackageManagerSingleton.Instance.MovePackageToVolumeAsync(
+                    packageFullName,
+                    DeploymentOptions.None,
+                    targetVolume),
+                Resources.Localization.Volumes_Moving,
+                cancellationToken, 
+                progress).ConfigureAwait(false);
+
+            if (r.IsRegistered)
+            {
+                return;
+            }
+
+            if (r.ExtendedErrorCode != null)
+            {
+                throw r.ExtendedErrorCode;
+            }
+        }
+
+        public Task MovePackageToVolume(AppxVolume volume, AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            return this.MovePackageToVolume(volume, package.FullName, cancellationToken, progress);
         }
 
         public async Task Delete(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -380,6 +306,7 @@ namespace Otor.MsixHero.Appx.Volumes
             }
 
             cancellationToken.ThrowIfCancellationRequested();
+            
             if (onlyUnused)
             {
                 var allVolumes = await this.GetAll(cancellationToken, progress).ConfigureAwait(false);
@@ -416,8 +343,8 @@ namespace Otor.MsixHero.Appx.Volumes
 
                 matching.IsDriveReady = drive.IsReady;
                 matching.DiskLabel = drive.VolumeLabel;
-                matching.Capacity = drive.TotalSize;
-                matching.AvailableFreeSpace = drive.AvailableFreeSpace;
+                matching.Capacity = (ulong)drive.TotalSize;
+                matching.AvailableFreeSpace = (ulong)drive.AvailableFreeSpace;
             }
 
             return result;
@@ -446,6 +373,71 @@ namespace Otor.MsixHero.Appx.Volumes
             }
 
             return null;
+        }
+
+        private async IAsyncEnumerable<AppxVolume> GetVolumes(IEnumerable<PackageVolume> allVolumes, bool resolveDefaultVolume, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            var list = new List<AppxVolume>();
+
+            var defaultVol = resolveDefaultVolume ? await this.GetDefault(cancellationToken).ConfigureAwait(false) : null;
+            foreach (var item in allVolumes)
+            {
+                if (!item.IsAppxInstallSupported)
+                {
+                    continue;
+                }
+
+                if (!item.IsFullTrustPackageSupported)
+                {
+                    continue;
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var packageStorePath = item.PackageStorePath;
+                if (string.IsNullOrEmpty(packageStorePath))
+                {
+                    Logger.Warn().WriteLine("Empty path for " + item);
+                    continue;
+                }
+
+                var isOffline = item.IsOffline;
+                var name = item.Name;
+                var isSystemVolume = item.IsSystemVolume;
+
+                list.Add(new AppxVolume
+                {
+                    Name = name,
+                    PackageStorePath = packageStorePath,
+                    IsDefault = string.Equals(item.Name, defaultVol?.Name, StringComparison.OrdinalIgnoreCase),
+                    IsOffline = isOffline,
+                    IsSystem = isSystemVolume,
+                    AvailableFreeSpace = await AsyncOperationHelper.ConvertToTask(item.GetAvailableSpaceAsync(), cancellationToken).ConfigureAwait(false)
+                });
+            }
+
+            var drives = DriveInfo.GetDrives();
+            foreach (var drive in list.Where(c => c.PackageStorePath.IndexOf(":\\", StringComparison.Ordinal) == 1))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var letter = drive.PackageStorePath.Substring(0, 3);
+                var matchingDrive = drives.FirstOrDefault(d => string.Equals(d.RootDirectory.FullName, letter, StringComparison.OrdinalIgnoreCase));
+                if (matchingDrive?.IsReady != true)
+                {
+                    continue;
+                }
+
+                drive.Capacity = (ulong)matchingDrive.TotalSize;
+                drive.DiskLabel = matchingDrive.VolumeLabel;
+                drive.IsDriveReady = true;
+            }
+
+            foreach (var item in list.OrderBy(l => l.PackageStorePath))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return item;
+            }
         }
     }
 }

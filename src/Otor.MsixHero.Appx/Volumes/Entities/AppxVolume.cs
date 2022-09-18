@@ -32,15 +32,15 @@ namespace Otor.MsixHero.Appx.Volumes.Entities
         public bool IsDefault { get; set; }
 
         [XmlAttribute]
-        public long Capacity { get; set; }
+        public ulong Capacity { get; set; }
 
         [XmlAttribute]
         public string DiskLabel { get; set; }
 
         [XmlAttribute]
-        public long AvailableFreeSpace { get; set; }
+        public ulong AvailableFreeSpace { get; set; }
 
-        public long OccupiedSpace => this.Capacity - this.AvailableFreeSpace;
+        public ulong OccupiedSpace => this.Capacity - this.AvailableFreeSpace;
         public int Percent => this.AvailableFreeSpace == 0 ? 0 : (int)(100 * (float)(Capacity - AvailableFreeSpace) / AvailableFreeSpace);
 
         [XmlAttribute]

@@ -96,7 +96,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
             
             cancellationToken.ThrowIfCancellationRequested();
             
-            var volume = await this._elevation.AsAdministrator<IAppxVolumeManager>().Add(drivePath, cancellationToken, progress).ConfigureAwait(false);
+            var volume = await this._elevation.AsAdministrator<IAppxVolumeService>().Add(drivePath, cancellationToken, progress).ConfigureAwait(false);
             if (volume == null)
             {
                 return false;
@@ -105,7 +105,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
             if (this.SetAsDefault.CurrentValue)
             {
                 progress.Report(new ProgressData(80, Resources.Localization.Dialogs_NewVolume_ChangingDefault));
-                await this._elevation.AsAdministrator<IAppxVolumeManager>().SetDefault(drivePath, cancellationToken).ConfigureAwait(false);
+                await this._elevation.AsAdministrator<IAppxVolumeService>().SetDefault(drivePath, cancellationToken).ConfigureAwait(false);
             }
 
             progress.Report(new ProgressData(90, Resources.Localization.Dialogs_NewVolume_Reading));
@@ -116,7 +116,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetLetters()
         {
-            var mgr = this._elevation.AsCurrentUser<IAppxVolumeManager>();
+            var mgr = this._elevation.AsCurrentUser<IAppxVolumeService>();
             var disks = await mgr.GetAvailableDrivesForAppxVolume(true).ConfigureAwait(false);
             return disks.Select(r => new VolumeCandidateViewModel(r)).ToList();
         }

@@ -72,7 +72,7 @@
                         <ComboBox 
                             MinHeight="57" 
                             HorizontalContentAlignment="Stretch" 
-                            SelectedValuePath="Name" 
+                            SelectedValuePath="Model"
                             SelectedValue="{Binding TargetVolume.CurrentValue}" 
                             SelectionChanged="Selector_OnSelectionChanged"
                             ItemsSource="{Binding AllVolumes.CurrentValue}" 

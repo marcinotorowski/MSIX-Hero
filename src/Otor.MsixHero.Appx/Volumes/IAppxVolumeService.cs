@@ -24,7 +24,7 @@ using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Volumes
 {
-    public interface IAppxVolumeManager
+    public interface IAppxVolumeService
     {
         Task<List<AppxVolume>> GetAll(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
         
@@ -52,8 +52,8 @@ namespace Otor.MsixHero.Appx.Volumes
 
         Task<List<AppxVolume>> GetAvailableDrivesForAppxVolume(bool onlyUnused, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task MovePackageToVolume(string volumePackagePath, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
-
         Task MovePackageToVolume(AppxVolume volume, AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        
+        Task MovePackageToVolume(AppxVolume volume, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

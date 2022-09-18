@@ -162,7 +162,7 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<ISigningManager, SigningManager>(signingManager);
                     server.RegisterProxy<IAppAttachManager, AppAttachManager>(appAttachManager);
                     server.RegisterProxy<IRegistryManager, RegistryManager>(registryManager);
-                    server.RegisterProxy<IAppxVolumeManager, AppxVolumeManager>();
+                    server.RegisterProxy<IAppxVolumeService, AppxVolumeService>();
                     server.RegisterProxy<IAppxPackageInstallationService, AppxPackageInstallationService>();
                     server.RegisterProxy<IAppxLogManager, AppxLogManager>();
                     server.RegisterProxy<IAppxPackageRunService, AppxPackageRunService>();

@@ -33,9 +33,9 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
 
         public bool IsOffline => this.Model.IsOffline;
 
-        public long SpaceTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
+        public ulong SpaceTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
 
-        public long Capacity => this.Model.Capacity;
+        public ulong Capacity => this.Model.Capacity;
 
         public string Label => this.Model.DiskLabel;
         

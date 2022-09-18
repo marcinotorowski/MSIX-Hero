@@ -1328,5 +1328,14 @@ namespace Otor.MsixHero.Appx.Resources {
                 return ResourceManager.GetString("System_Service_wuauserv", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moving to another volume….
+        /// </summary>
+        public static string Volumes_Moving {
+            get {
+                return ResourceManager.GetString("Volumes_Moving", resourceCulture);
+            }
+        }
     }
 }

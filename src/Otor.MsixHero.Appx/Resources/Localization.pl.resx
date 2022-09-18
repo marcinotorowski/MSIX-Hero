@@ -258,6 +258,9 @@
   <data name="Packages_GettingApps" xml:space="preserve">
     <value>Czytanie zainstalowanych aplikacji…</value>
   </data>
+  <data name="Volumes_Moving" xml:space="preserve">
+    <value>Przesuwanie na inny wolumin…</value>
+  </data>
   <data name="Packages_InstallingFrom_Format" xml:space="preserve">
     <value>Instalowanie z {0}…</value>
   </data>
