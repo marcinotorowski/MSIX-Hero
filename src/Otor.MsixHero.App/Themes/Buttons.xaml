@@ -189,6 +189,8 @@
 
     <Style TargetType="ButtonBase" x:Key="ActionButtonBase">
         <Setter Property="Height" Value="44"/>
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="10 0" />

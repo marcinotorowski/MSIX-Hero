@@ -13,6 +13,7 @@
     xmlns:sourceView="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Installation.Source"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance installation:PackageInstallationViewModel}">
     <DockPanel>
@@ -109,7 +110,8 @@
                                 <DockPanel>
                                     <Border DockPanel.Dock="Left" Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                            <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                            <Image helpers:ImageExtension.SourceImagePath="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                            <!--<Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" /> -->
                                         </Border>
                                     </Border>
 

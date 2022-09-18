@@ -9,6 +9,7 @@
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
     d:DataContext="{d:DesignInstance viewModel:SharedPackageContainerViewModel}">
     <UserControl.Resources>
@@ -172,7 +173,7 @@
                                                                         VerticalAlignment="Center" HorizontalAlignment="Left">
                                                                     <Image
                                                                         x:Name="ImageLogo"
-                                                                        Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}"
+                                                                        helpers:ImageExtension.SourceImagePath="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}"
                                                                         VerticalAlignment="Center" HorizontalAlignment="Center"
                                                                         MaxWidth="48" MaxHeight="48" Stretch="Uniform"
                                                                         StretchDirection="DownOnly" />

@@ -7,6 +7,7 @@
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
              xmlns:star="clr-namespace:Otor.MsixHero.App.Controls.Star"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SelectableInstalledPackageViewModel}">
     <DockPanel>
         <Border
@@ -14,7 +15,8 @@
             Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid>
                 <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                    <Image helpers:ImageExtension.SourceImagePath="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" /> 
+                    <!-- <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />-->
                 </Border>
                 <Border
                     ToolTip="{localization:Loc Packages_List_AppRunning}" 
