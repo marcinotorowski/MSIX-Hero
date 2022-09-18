@@ -10,157 +10,193 @@
     xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.Converters"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+    xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Packaging.Installation.Enums;assembly=Otor.MsixHero.Appx"
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     FocusManager.IsFocusScope="True"
     d:DesignHeight="340" d:DesignWidth="500" d:DataContext="{d:DesignInstance viewModels:PackageFilterSortViewModel}">
-    <UniformGrid Margin="8" Columns="2" Rows="1">
-        <StackPanel VerticalAlignment="Top">
-            <StackPanel.Resources>
-                <Style TargetType="RadioButton">
-                    <Setter Property="Height" Value="30" />
-                    <Setter Property="Padding" Value="4 0 " />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="RadioButton">
-                                <Border Background="{TemplateBinding Background}">
-                                    <DockPanel Margin="{TemplateBinding Padding}">
-                                        <Path Opacity="0" x:Name="Checkmark" Fill="{TemplateBinding Foreground}" Data="{StaticResource SmallCheckMark}" Style="{StaticResource SmallIcon}" DockPanel.Dock="Left" VerticalAlignment="Center" />
-                                        <ContentPresenter Margin="4 0 0 0" VerticalAlignment="Center" />
-                                    </DockPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Trigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation To="1.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.EnterActions>
-                                        <Trigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation To="0.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.ExitActions>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
-                        </Trigger>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
+    <controls:ProgressOverlay 
+        IsShown="{Binding IsBusy}">
+        <UniformGrid Margin="8" Columns="2" Rows="1">
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel.Resources>
+                    <Style TargetType="RadioButton">
+                        <Setter Property="Height" Value="30" />
+                        <Setter Property="Padding" Value="4 0 " />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <DockPanel Margin="{TemplateBinding Padding}">
+                                            <Path Opacity="0" x:Name="Checkmark" Fill="{TemplateBinding Foreground}" Data="{StaticResource SmallCheckMark}" Style="{StaticResource SmallIcon}" DockPanel.Dock="Left" VerticalAlignment="Center" />
+                                            <ContentPresenter Margin="4 0 0 0" VerticalAlignment="Center" />
+                                        </DockPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation To="1.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
 
-                <Style TargetType="Path" x:Key="Sort" BasedOn="{StaticResource SmallIcon}">
-                    <Setter Property="Fill" Value="#666" />
-                    <Setter Property="Data" Value="{StaticResource SmallSortAscending}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDescending}">
-                            <DataTrigger.Value>
-                                <system:Boolean>True</system:Boolean>
-                            </DataTrigger.Value>
-                            <DataTrigger.Setters>
-                                <Setter Property="Data" Value="{StaticResource SmallSortDescending}" />
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </StackPanel.Resources>
-            <Label Margin="8 4" Content="{localization:Loc Packages_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
-            <RadioButton
+                    <Style TargetType="Path" x:Key="Sort" BasedOn="{StaticResource SmallIcon}">
+                        <Setter Property="Fill" Value="#666" />
+                        <Setter Property="Data" Value="{StaticResource SmallSortAscending}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDescending}">
+                                <DataTrigger.Value>
+                                    <system:Boolean>True</system:Boolean>
+                                </DataTrigger.Value>
+                                <DataTrigger.Setters>
+                                    <Setter Property="Data" Value="{StaticResource SmallSortDescending}" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+
+                <DockPanel>
+                    <Label DockPanel.Dock="Top" Margin="8 4" Content="{localization:Loc Packages_Filter_Source}" Style="{StaticResource FormLabelThin}" />
+
+                    <RadioButton
+                    GroupName="s1"
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}"
+                    Margin="8 0"
+                    DockPanel.Dock="Top" Content="{localization:Loc Packages_Filter_Source_User}" />
+                    <RadioButton
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}"
+                    GroupName="s2"
+                    Margin="8 0"
+                    DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{localization:Loc Packages_Filter_Source_AllUser}" />
+                            <Image 
+                            VerticalAlignment="Center" 
+                            Source="{x:Static interop:WindowsIcons.UacShield}" 
+                            Stretch="None" 
+                            Margin="4 0 0 0"
+                            UseLayoutRounding="True" 
+                            SnapsToDevicePixels="True">
+                            </Image>
+                        </StackPanel>
+                    </RadioButton>
+
+                </DockPanel>
+
+                <Label Margin="8 16 8 4" Content="{localization:Loc Packages_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
+                <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 GroupName="orderBy1"
                 IsChecked="{Binding Sort, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageSort.Name}}"
                 Margin="8 0" HorizontalContentAlignment="Stretch">
-                <DockPanel>
-                    <Path 
+                    <DockPanel>
+                        <Path 
                         Visibility="{Binding Sort, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:PackageSort.Name}}"
                         DockPanel.Dock="Right" 
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Name}" />
-                </DockPanel>
-            </RadioButton>
-            <RadioButton 
+                        <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Name}" />
+                    </DockPanel>
+                </RadioButton>
+                <RadioButton 
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 IsChecked="{Binding Sort, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageSort.Publisher}}"
                 GroupName="orderBy2" Margin="8 0">
-                <DockPanel>
-                    <Path 
+                    <DockPanel>
+                        <Path 
                         Visibility="{Binding Sort, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:PackageSort.Publisher}}"
                         DockPanel.Dock="Right" 
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Publisher}" />
-                </DockPanel>
-            </RadioButton>
-            <RadioButton
+                        <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Publisher}" />
+                    </DockPanel>
+                </RadioButton>
+                <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 IsChecked="{Binding Sort, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageSort.Architecture}}"
                 GroupName="orderBy3" 
                 Margin="8 0">
-                <DockPanel>
-                    <Path 
+                    <DockPanel>
+                        <Path 
                         Visibility="{Binding Sort, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:PackageSort.Architecture}}"
                         DockPanel.Dock="Right" 
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Architecture}" />
-                </DockPanel>
-            </RadioButton>
-            <RadioButton
+                        <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_Architecture}" />
+                    </DockPanel>
+                </RadioButton>
+                <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 IsChecked="{Binding Sort, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageSort.InstallDate}}"
                 GroupName="orderBy4" 
                 Margin="8 0">
-                <DockPanel>
-                    <Path 
+                    <DockPanel>
+                        <Path 
                         Visibility="{Binding Sort, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:PackageSort.InstallDate}}"
                         DockPanel.Dock="Right" 
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_InstallDate}" />
-                </DockPanel>
-            </RadioButton>
+                        <TextBlock Text="{localization:Loc Packages_Filter_OrderBy_InstallDate}" />
+                    </DockPanel>
+                </RadioButton>
 
-            <Label Margin="8 16 8 4" Content="{localization:Loc Packages_Filter_GroupBy}" Style="{StaticResource FormLabelThin}" />
-            <RadioButton
+                <Label Margin="8 16 8 4" Content="{localization:Loc Packages_Filter_GroupBy}" Style="{StaticResource FormLabelThin}" />
+                <RadioButton
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.None}}"
                 GroupName="groupBy1" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_None}" />
-            <RadioButton 
+                <RadioButton 
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.Publisher}}"
                 GroupName="groupBy2" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_Publisher}" />
-            <RadioButton 
+                <RadioButton 
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.Architecture}}"
-                GroupName="groupBy4" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_Architecture}" />            
-            <RadioButton 
+                GroupName="groupBy4" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_Architecture}" />
+                <RadioButton 
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.InstallDate}}"
                 GroupName="groupBy5" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_InstallDate}" />
-            <RadioButton 
+                <RadioButton 
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.Type}}"
                 GroupName="groupBy3" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_Category}" />
-        </StackPanel>
-        <StackPanel VerticalAlignment="Top">
-            <StackPanel.Resources>
-                <converters:FilterHeaderVisibilityConverter x:Key="FilterHeaderVisibilityConverter" />
-            </StackPanel.Resources>
-            <DockPanel Margin="8 4 8 4">
-                <Label Margin="0" Content="{localization:Loc Packages_Filter_Activity}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                <TextBlock
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel.Resources>
+                    <converters:FilterHeaderVisibilityConverter x:Key="FilterHeaderVisibilityConverter" />
+                </StackPanel.Resources>
+                <DockPanel Margin="8 4 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Activity}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <TextBlock
                     Visibility="{Binding FilterRunning, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
                     Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Hyperlink 
@@ -168,14 +204,28 @@
                         CommandParameter="{x:Static viewModels:ClearFilter.Activity}">
                         <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
-                </TextBlock>
-            </DockPanel>
-            <CheckBox IsChecked="{Binding FilterRunning}" Margin="8 4" Content="{localization:Loc Packages_Filter_Activity_RunningNow}" />
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterRunning}" Margin="8 4" Content="{localization:Loc Packages_Filter_Activity_RunningNow}" />
 
-            <DockPanel Margin="8 16 8 4">
-                <Label Margin="0" Content="{localization:Loc Packages_Filter_AppType}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterTypeCaption}" />
-                <TextBlock
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppInstaller}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <TextBlock
+                    Visibility="{Binding FilterHasAppInstaller, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
+                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Hyperlink 
+                        Command="{Binding Clear}" 
+                        CommandParameter="{x:Static viewModels:ClearFilter.AppInstaller}">
+                        <Run Text="{localization:Loc Button_Clear}" />
+                    </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterHasAppInstaller}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppInstaller_Defined}" />
+
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppType}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterTypeCaption}" />
+                    <TextBlock
                     Visibility="{Binding FilterTypeCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
                     Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Hyperlink 
@@ -183,15 +233,15 @@
                         CommandParameter="{x:Static viewModels:ClearFilter.Type}">
                         <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
-                </TextBlock>
-            </DockPanel>
-            <CheckBox IsChecked="{Binding FilterMainApp}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_MainApp}" />
-            <CheckBox IsChecked="{Binding FilterAddOn}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_AddOn}" />
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterMainApp}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_MainApp}" />
+                <CheckBox IsChecked="{Binding FilterAddOn}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_AddOn}" />
 
-            <DockPanel Margin="8 16 8 4">
-                <Label Margin="0" Content="{localization:Loc Packages_Filter_Category}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterCategoryCaption}" />
-                <TextBlock
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Category}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterCategoryCaption}" />
+                    <TextBlock
                     Visibility="{Binding FilterCategoryCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
                     Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Hyperlink 
@@ -199,16 +249,16 @@
                         CommandParameter="{x:Static viewModels:ClearFilter.Category}">
                         <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
-                </TextBlock>
-            </DockPanel>
-            <CheckBox IsChecked="{Binding FilterStore}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Store}" />
-            <CheckBox IsChecked="{Binding FilterSideLoaded}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Sideloaded}" />
-            <CheckBox IsChecked="{Binding FilterSystem}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_SystemApp}" />
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterStore}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Store}" />
+                <CheckBox IsChecked="{Binding FilterSideLoaded}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Sideloaded}" />
+                <CheckBox IsChecked="{Binding FilterSystem}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_SystemApp}" />
 
-            <DockPanel Margin="8 16 8 4">
-                <Label Margin="0" Content="{localization:Loc Packages_Filter_Architecture}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterArchitectureCaption}" />
-                <TextBlock
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Architecture}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterArchitectureCaption}" />
+                    <TextBlock
                     Visibility="{Binding FilterArchitectureCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
                     Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Hyperlink 
@@ -216,15 +266,16 @@
                         CommandParameter="{x:Static viewModels:ClearFilter.Architecture}">
                         <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
-                </TextBlock>
-            </DockPanel>
-            <UniformGrid Margin="4">
-                <CheckBox IsChecked="{Binding FilterNeutral}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_Neutral}" />
-                <CheckBox IsChecked="{Binding FilterX86}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_32Bit}" />
-                <CheckBox IsChecked="{Binding FilterX64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_64Bit}" />
-                <CheckBox IsChecked="{Binding FilterArm}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM}" />
-                <CheckBox IsChecked="{Binding FilterArm64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM64}" />
-            </UniformGrid>
-        </StackPanel>
-    </UniformGrid>
+                    </TextBlock>
+                </DockPanel>
+                <UniformGrid Margin="4">
+                    <CheckBox IsChecked="{Binding FilterNeutral}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_Neutral}" />
+                    <CheckBox IsChecked="{Binding FilterX86}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_32Bit}" />
+                    <CheckBox IsChecked="{Binding FilterX64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_64Bit}" />
+                    <CheckBox IsChecked="{Binding FilterArm}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM}" />
+                    <CheckBox IsChecked="{Binding FilterArm64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM64}" />
+                </UniformGrid>
+            </StackPanel>
+        </UniformGrid>
+    </controls:ProgressOverlay>
 </UserControl>

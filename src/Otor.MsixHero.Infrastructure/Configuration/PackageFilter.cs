@@ -56,6 +56,10 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         AllArchitectures = x64 | x86 | Neutral | Arm | Arm64,
 
-        Default = AllArchitectures | InstalledAndRunning | Developer | Store | MainApps
+        NoAppInstaller = 1 << 12,
+
+        HasAppInstaller = 1 << 13,
+
+        Default = AllArchitectures | InstalledAndRunning | Developer | Store | MainApps | NoAppInstaller | HasAppInstaller
     }
 }

@@ -92,7 +92,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
                 var val = this.application.ApplicationState.EventViewer.Filter & EventFilter.AllLevels;
                 if (val == 0 || val == EventFilter.AllLevels)
                 {
-                    return "(all)";
+                    return Resources.Localization.FilterAll;
                 }
 
                 var selected = 0;

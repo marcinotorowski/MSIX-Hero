@@ -353,6 +353,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
+            var packageFilterHasAppInstallerFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.HasAppInstaller;
+            if (packageFilterHasAppInstallerFlags == PackageFilter.HasAppInstaller)
+            {
+                if (!item.HasAppInstaller)
+                {
+                    return false;
+                }
+            }
+
             // If the user searched nothing, return all packages
             if (string.IsNullOrWhiteSpace(this._application.ApplicationState.Packages.SearchKey))
             {

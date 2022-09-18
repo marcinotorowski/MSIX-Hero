@@ -18,8 +18,9 @@
         <Border 
             IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
             DockPanel.Dock="Top" Height="44">
-            <WrapPanel>
+            <controls:ButtonRowPanel>
                 <Button 
+                    controls:ButtonRowPanel.Order="1"
                     Command="Refresh"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
@@ -28,6 +29,7 @@
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
                 <Button 
+                    controls:ButtonRowPanel.Order="2"
                     Command="New"
                     Style="{StaticResource ActionButton}" x:Name="ButtonInstall">
                     <controls:LabelWithIcon 
@@ -35,7 +37,7 @@
                         Content="{localization:Loc Volumes_Create}"
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
-            </WrapPanel>
+            </controls:ButtonRowPanel>
         </Border>
 
         <controls:ProgressOverlay

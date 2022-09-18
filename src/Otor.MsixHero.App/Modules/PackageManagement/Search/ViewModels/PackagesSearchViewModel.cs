@@ -53,13 +53,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             eventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
         }
-
-        private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)
-        {
-            this.OnPropertyChanged(nameof(SearchKey));
-        }
-
-
+        
         public string SearchKey
         {
             get => this.application.ApplicationState.Packages.SearchKey;
@@ -79,8 +73,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 this.LoadContext(value ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser);
             }
         }
-
-
+        
         private void OnGetPackages(UiFailedPayload<GetPackagesCommand> obj)
         {
             this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
@@ -106,6 +99,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 .WithErrorHandling(this.interactionService, true);
 
             await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)
+        {
+            this.OnPropertyChanged(nameof(SearchKey));
         }
     }
 }

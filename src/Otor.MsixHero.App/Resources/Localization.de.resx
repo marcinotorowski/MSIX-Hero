@@ -582,6 +582,15 @@
   <data name="Packages_Filter_Category" xml:space="preserve">
     <value>Kategorie</value>
   </data>
+  <data name="Packages_Filter_Source" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="Packages_Filter_Source_User" xml:space="preserve">
+    <value>Installiert für den aktuellen Benutzer</value>
+  </data>
+  <data name="Packages_Filter_Source_AllUser" xml:space="preserve">
+    <value>Installiert für alle Benutzer</value>
+  </data>
   <data name="Packages_Filter_GroupBy_Architecture" xml:space="preserve">
     <value>Architektur</value>
   </data>
@@ -1820,6 +1829,12 @@
   </data>
   <data name="Packages_Filter_Activity_RunningNow" xml:space="preserve">
     <value>Läuft jetzt</value>
+  </data>
+  <data name="Packages_Filter_AppInstaller" xml:space="preserve">
+    <value>Automatische Updates</value>
+  </data>
+  <data name="Packages_Filter_AppInstaller_Defined" xml:space="preserve">
+    <value>Bietet automatische Aktualisierungen mit App-Installer</value>
   </data>
   <data name="Packages_Filter_AppType" xml:space="preserve">
     <value>Typ der Anwendung</value>
@@ -4242,5 +4257,11 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   </data>
   <data name="Dialogs_Settings_AppAttach_Strategy" xml:space="preserve">
     <value>Strategie zur Erstellung von App-Attach-Volumes</value>
+  </data>
+  <data name="Packages_Actions_ViewSettings" xml:space="preserve">
+    <value>Ansicht</value>
+  </data>
+  <data name="FilterAll" xml:space="preserve">
+    <value>(Alle)</value>
   </data>
 </root>

@@ -27,8 +27,10 @@ namespace Otor.MsixHero.App.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LabelWithIcon), new FrameworkPropertyMetadata(typeof(LabelWithIcon)));
         }
 
+        // ReSharper disable once InconsistentNaming
         public static readonly DependencyProperty Icon16x16Property = DependencyProperty.Register("Icon16x16", typeof(Geometry), typeof(LabelWithIcon), new PropertyMetadata(Geometry.Empty));
 
+        // ReSharper disable once InconsistentNaming
         public Geometry Icon16x16   
         {
             get => (Geometry)GetValue(Icon16x16Property);

@@ -7783,6 +7783,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (all).
+        /// </summary>
+        public static string FilterAll {
+            get {
+                return ResourceManager.GetString("FilterAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last 6 months.
         /// </summary>
         public static string HumanDate_Last6Months {
@@ -10145,6 +10154,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string Packages_Actions_ViewSettings {
+            get {
+                return ResourceManager.GetString("Packages_Actions_ViewSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calculating….
         /// </summary>
         public static string Packages_Calculating {
@@ -10168,6 +10186,24 @@ namespace Otor.MsixHero.App.Resources {
         public static string Packages_Filter_Activity_RunningNow {
             get {
                 return ResourceManager.GetString("Packages_Filter_Activity_RunningNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-updates.
+        /// </summary>
+        public static string Packages_Filter_AppInstaller {
+            get {
+                return ResourceManager.GetString("Packages_Filter_AppInstaller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offers app installer auto-update.
+        /// </summary>
+        public static string Packages_Filter_AppInstaller_Defined {
+            get {
+                return ResourceManager.GetString("Packages_Filter_AppInstaller_Defined", resourceCulture);
             }
         }
         
@@ -10384,6 +10420,33 @@ namespace Otor.MsixHero.App.Resources {
         public static string Packages_Filter_OrderBy_Publisher {
             get {
                 return ResourceManager.GetString("Packages_Filter_OrderBy_Publisher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source.
+        /// </summary>
+        public static string Packages_Filter_Source {
+            get {
+                return ResourceManager.GetString("Packages_Filter_Source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed for all users.
+        /// </summary>
+        public static string Packages_Filter_Source_AllUser {
+            get {
+                return ResourceManager.GetString("Packages_Filter_Source_AllUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed for the current user.
+        /// </summary>
+        public static string Packages_Filter_Source_User {
+            get {
+                return ResourceManager.GetString("Packages_Filter_Source_User", resourceCulture);
             }
         }
         

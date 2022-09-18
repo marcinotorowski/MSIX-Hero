@@ -1161,6 +1161,12 @@
   <data name="Packages_Filter_Activity_RunningNow" xml:space="preserve">
     <value>Running now</value>
   </data>
+  <data name="Packages_Filter_AppInstaller" xml:space="preserve">
+    <value>Auto-updates</value>
+  </data>
+  <data name="Packages_Filter_AppInstaller_Defined" xml:space="preserve">
+    <value>Offers app installer auto-update</value>
+  </data>
   <data name="Packages_Filter_AppType" xml:space="preserve">
     <value>Application type</value>
   </data>
@@ -1190,6 +1196,15 @@
   </data>
   <data name="Packages_Filter_Category" xml:space="preserve">
     <value>Category</value>
+  </data>
+  <data name="Packages_Filter_Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="Packages_Filter_Source_User" xml:space="preserve">
+    <value>Installed for the current user</value>
+  </data>
+  <data name="Packages_Filter_Source_AllUser" xml:space="preserve">
+    <value>Installed for all users</value>
   </data>
   <data name="Packages_Filter_Category_Sideloaded" xml:space="preserve">
     <value>Side-loaded</value>
@@ -4245,5 +4260,11 @@ Click the icon again to remove the star.</value>
   </data>
   <data name="Dialogs_Settings_AppAttach_Strategy" xml:space="preserve">
     <value>App attach volume creation strategy</value>
+  </data>
+  <data name="Packages_Actions_ViewSettings" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="FilterAll" xml:space="preserve">
+    <value>(all)</value>
   </data>
 </root>

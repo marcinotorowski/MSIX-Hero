@@ -40,7 +40,7 @@
     </commands:RoutedCommandHandlers.Commands>
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0 0 0 1" SnapsToDevicePixels="True" UseLayoutRounding="True">
-            <WrapPanel>
+            <controls:ButtonRowPanel>
                 <Button 
                     Command="Refresh" 
                     Style="{StaticResource ActionButton}">
@@ -49,7 +49,7 @@
                         Content="{localization:Loc System_Refresh}"
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
-            </WrapPanel>
+            </controls:ButtonRowPanel>
         </Border>
 
         <ScrollViewer 

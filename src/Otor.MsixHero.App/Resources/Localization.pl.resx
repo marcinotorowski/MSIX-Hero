@@ -1158,6 +1158,12 @@
   <data name="Packages_Filter_Activity_RunningNow" xml:space="preserve">
     <value>Aktualnie uruchomione</value>
   </data>
+  <data name="Packages_Filter_AppInstaller" xml:space="preserve">
+    <value>Automatyczne aktualizacje</value>
+  </data>
+  <data name="Packages_Filter_AppInstaller_Defined" xml:space="preserve">
+    <value>Oferuje aktualizacje przez app installer</value>
+  </data>
   <data name="Packages_Filter_AppType" xml:space="preserve">
     <value>Typ aplikacji</value>
   </data>
@@ -1184,6 +1190,15 @@
   </data>
   <data name="Packages_Filter_Architecture_Neutral" xml:space="preserve">
     <value>Neutralna</value>
+  </data>
+  <data name="Packages_Filter_Source" xml:space="preserve">
+    <value>Żródło</value>
+  </data>
+  <data name="Packages_Filter_Source_User" xml:space="preserve">
+    <value>Zainstalowane dla obecnego użytkownika</value>
+  </data>
+  <data name="Packages_Filter_Source_AllUser" xml:space="preserve">
+    <value>Zainstalowane dla wszystkich użytkowników</value>
   </data>
   <data name="Packages_Filter_Category" xml:space="preserve">
     <value>Kategoria</value>
@@ -4245,5 +4260,11 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   </data>
   <data name="Dialogs_Settings_AppAttach_Strategy" xml:space="preserve">
     <value>Strategia tworzenia woluminów app attach</value>
+  </data>
+  <data name="Packages_Actions_ViewSettings" xml:space="preserve">
+    <value>Widok</value>
+  </data>
+  <data name="FilterAll" xml:space="preserve">
+    <value>(wszystkie)</value>
   </data>
 </root>

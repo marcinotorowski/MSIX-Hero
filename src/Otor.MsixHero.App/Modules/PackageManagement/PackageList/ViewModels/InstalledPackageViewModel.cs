@@ -39,6 +39,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
         public string Description => this.Model.Description;
 
         public string DisplayName => this.Model.DisplayName;
+        
+        public bool HasAppInstaller => this.Model.AppInstallerUri != null;
 
         public bool IsProvisioned => this.Model.IsProvisioned;
 
