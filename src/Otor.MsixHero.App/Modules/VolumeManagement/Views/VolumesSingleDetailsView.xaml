@@ -12,47 +12,51 @@
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Common.Volume.Converters"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:VolumesSingleDetailsViewModel}">
+             d:DesignHeight="650" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:VolumesSingleDetailsViewModel}">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
-            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+        <Border Height="44" DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
+            <controls:ButtonRowPanel>
 
                 <Button 
                      Command="{x:Static commands:MsixHeroRoutedUICommands.SetVolumeAsDefault}"
                      Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallOk}"
                         Content="{localization:Loc Volumes_ContextMenu_SetDefault}" />
                 </Button>
 
                 <Button 
-                     Command="{x:Static commands:MsixHeroRoutedUICommands.DismountVolume}"
-                     Style="{StaticResource ActionButtonHideWhenDisabled}">
-                    <controls:LabelWithIcon 
-                        Style="{StaticResource ActionLabelWithIcon}"
-                        Icon16x16="{StaticResource SmallPlugOut}"
-                        Content="{localization:Loc Volumes_ContextMenu_Dismount}" />
-                </Button>
-
-                <Button 
                      Command="{x:Static commands:MsixHeroRoutedUICommands.MountVolume}"
                      Style="{StaticResource ActionButtonHideWhenDisabled}">
                     <controls:LabelWithIcon 
+                        VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlugin}"
                         Content="{localization:Loc Volumes_ContextMenu_Mount}" />
                 </Button>
 
                 <Button 
+                    Command="{x:Static commands:MsixHeroRoutedUICommands.DismountVolume}"
+                    Style="{StaticResource ActionButtonHideWhenDisabled}">
+                    <controls:LabelWithIcon 
+                        VerticalAlignment="Center"
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallPlugOut}"
+                        Content="{localization:Loc Volumes_ContextMenu_Dismount}" />
+                </Button>
+
+                <Button 
                     Command="Delete"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallRemoveApp}"
                         Content="{localization:Loc Volumes_ContextMenu_Remove}" />
                 </Button>
-            </WrapPanel>
+            </controls:ButtonRowPanel>
         </Border>
 
         <DockPanel VerticalAlignment="Top" ClipToBounds="True">
@@ -79,7 +83,6 @@
                         Style="{StaticResource LargeIcon}" />
                 </background:AcrylicBackgroundControl.TintContent>
             </background:AcrylicBackgroundControl>
-
 
             <Border
                 Margin="8" 
@@ -162,9 +165,15 @@
                                         ToolTip="{localization:Loc Volumes_SystemVolume_Tooltip}"
                                         Background="Transparent"
                                         Margin="16 0">
-                                        <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_SystemVolume_Caption}">
-                                            <controls:LabelWithIcon Foreground="{StaticResource CardHeaderSecondLineBrush}" Icon16x16="{StaticResource SmallMicrosoftWindows}" Margin="0 4 0 0"
-                                                                    Content="{localization:Loc Volumes_Yes_Label}" />
+                                        <HeaderedContentControl 
+                                            Style="{StaticResource CardHeader}" 
+                                            Header="{localization:Loc Volumes_SystemVolume_Caption}">
+                                            <controls:LabelWithIcon 
+                                                HorizontalAlignment="Left"
+                                                Foreground="{StaticResource CardHeaderSecondLineBrush}" 
+                                                Icon16x16="{StaticResource SmallMicrosoftWindows}" 
+                                                Margin="0 4 0 0"
+                                                Content="{localization:Loc Volumes_Yes_Label}" />
                                         </HeaderedContentControl>
                                     </Border>
 
@@ -175,13 +184,12 @@
                                         Background="Transparent"
                                         Margin="16 0">
                                         <HeaderedContentControl Style="{StaticResource CardHeader}" Header="{localization:Loc Volumes_DefaultVolume_Caption}">
-                                            <StackPanel 
-                                                Orientation="Horizontal">
-                                                <Path Data="{StaticResource SmallOk}" Fill="{StaticResource CardHeaderSecondLineBrush}" Style="{StaticResource SmallIcon}" />
-                                                <TextBlock 
-                                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
-                                                    Text="{localization:Loc Volumes_Yes_Label}" />
-                                            </StackPanel>
+                                            <controls:LabelWithIcon
+                                                Margin="0 4 0 0"
+                                                HorizontalAlignment="Left"
+                                                Foreground="{StaticResource CardHeaderSecondLineBrush}" 
+                                                Content="{localization:Loc Volumes_Yes_Label}"
+                                                Icon16x16="{StaticResource SmallOk}" />
                                         </HeaderedContentControl>
                                     </Border>
                                 </StackPanel>

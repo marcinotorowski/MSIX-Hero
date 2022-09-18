@@ -73,7 +73,7 @@
     </Style>
 
     <Style TargetType="local:LabelWithIcon" BasedOn="{StaticResource {x:Type local:LabelWithIcon}}" x:Key="ActionLabelWithIcon">
-        <Setter Property="Focusable" Value="False"></Setter>
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
         <Setter Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
     </Style>
