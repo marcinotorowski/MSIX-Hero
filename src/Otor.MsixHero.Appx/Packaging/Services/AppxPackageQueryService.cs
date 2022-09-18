@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -379,8 +380,13 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                 {
                     installDate = item.InstalledDate.LocalDateTime;
                 }
-                catch (Exception e)
+                catch (COMException e)
                 {
+                    if (e.ErrorCode != -2147023728)
+                    {
+                        throw;
+                    }
+
                     Logger.Warn().WriteLine("Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
                     Logger.Verbose().WriteLine(e);
                     installDate = DateTime.MinValue;
