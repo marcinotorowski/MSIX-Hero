@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Input;
@@ -33,7 +32,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
 {
     public enum ClearFilter
     {
-        Level
+        Level,
+        Source
     }
 
     public class EventViewerFilterSortViewModel : NotifyPropertyChanged
@@ -75,12 +75,6 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             set => this._application.CommandExecutor.Invoke(this, new SetEventViewerSortingCommand(value, this.IsDescending));
         }
 
-        public bool FilterError
-        {
-            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.Error);
-            set => this.SetEventViewerFilter(EventFilter.Error, value);
-        }
-
         public LogCriteriaTimeSpan TimeSpan
         {
             get => this._application.ApplicationState.EventViewer.Criteria.TimeSpan ?? LogCriteriaTimeSpan.LastDay;
@@ -102,6 +96,12 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             await executor.Invoke<GetEventsCommand, IList<AppxEvent>>(this, new GetEventsCommand(value), CancellationToken.None).ConfigureAwait(false);
         }
 
+        public bool FilterError
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.Error);
+            set => this.SetEventViewerFilter(EventFilter.Error, value);
+        }
+
         public bool FilterWarning
         {
             get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.Warning);
@@ -120,6 +120,78 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             set => this.SetEventViewerFilter(EventFilter.Info, value);
         }
 
+        public bool FilterSourcePackagingPerformance
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.PackagingPerformance);
+            set => this.SetEventViewerFilter(EventFilter.PackagingPerformance, value);
+        }
+
+        public bool FilterSourcePackagingDebug
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.PackagingDebug);
+            set => this.SetEventViewerFilter(EventFilter.PackagingDebug, value);
+        }
+
+        public bool FilterSourcePackagingOperational
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.PackagingOperational);
+            set => this.SetEventViewerFilter(EventFilter.PackagingOperational, value);
+        }
+
+        public bool FilterSourceDeploymentServerRestricted
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentServerRestricted);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentServerRestricted, value);
+        }
+
+        public bool FilterSourceDeploymentServerDebug
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentServerDebug);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentServerDebug, value);
+        }
+
+        public bool FilterSourceDeploymentServerOperational
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentServerOperational);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentServerOperational, value);
+        }
+
+        public bool FilterSourceDeploymentServerDiagnostic
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentServerDiagnostic);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentServerDiagnostic, value);
+        }
+
+        public bool FilterSourceDeploymentDiagnostic
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentDiagnostic);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentDiagnostic, value);
+        }
+
+        public bool FilterSourceDeploymentOperational
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.DeploymentOperational);
+            set => this.SetEventViewerFilter(EventFilter.DeploymentOperational, value);
+        }
+
+        public bool FilterSourcePackaging
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.AllPackaging);
+            set => this.SetEventViewerFilter(EventFilter.AllPackaging, value);
+        }
+
+        public bool FilterSourceDeployment
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.AllDeployment);
+            set => this.SetEventViewerFilter(EventFilter.AllDeployment, value);
+        }
+
+        public bool FilterSourceDeploymentServer
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.AllDeploymentServer);
+            set => this.SetEventViewerFilter(EventFilter.AllDeploymentServer, value);
+        }
+        
         public string FilterLevelCaption
         {
             get
@@ -155,6 +227,36 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             }
         }
         
+        public string FilterSourceCaption
+        {
+            get
+            {
+                var val = this._application.ApplicationState.EventViewer.Filter & EventFilter.AllSources;
+                if (val == 0 || val == EventFilter.AllSources)
+                {
+                    return Resources.Localization.FilterAll;
+                }
+
+                var selected = 0;
+                if (this.FilterSourceDeployment)
+                {
+                    selected++;
+                }
+
+                if (this.FilterSourceDeploymentServer)
+                {
+                    selected++;
+                }
+
+                if (this.FilterSourcePackaging)
+                {
+                    selected++;
+                }
+
+                return $"({selected}/3)";
+            }
+        }
+        
         private void OnSetEventViewerSorting(UiExecutedPayload<SetEventViewerSortingCommand> obj)
         {
             this.OnPropertyChanged(nameof(IsDescending));
@@ -167,6 +269,11 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             this.OnPropertyChanged(nameof(FilterInfo));
             this.OnPropertyChanged(nameof(FilterWarning));
             this.OnPropertyChanged(nameof(FilterVerbose));
+            this.OnPropertyChanged(nameof(FilterSourcePackaging));
+            this.OnPropertyChanged(nameof(FilterSourceDeployment));
+            this.OnPropertyChanged(nameof(FilterSourceDeploymentServer));
+
+            this.OnPropertyChanged(nameof(FilterSourceCaption));
             this.OnPropertyChanged(nameof(FilterLevelCaption));
         }
 
@@ -207,6 +314,9 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             {
                 case ClearFilter.Level:
                     this.SetEventViewerFilter(EventFilter.All, true);
+                    break;
+                case ClearFilter.Source:
+                    this.SetEventViewerFilter(EventFilter.AllSources, true);
                     break;
             }
         }

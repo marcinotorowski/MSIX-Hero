@@ -173,6 +173,24 @@
             <CheckBox IsChecked="{Binding FilterWarning}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Warn}" />
             <CheckBox IsChecked="{Binding FilterInfo}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Info}" />
             <CheckBox IsChecked="{Binding FilterVerbose}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Verbose}" />
+
+            <DockPanel Margin="8 16 8 4">
+                <Label Margin="0" Content="{localization:Loc EventViewer_Details_EventSource}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterSourceCaption}" />
+                <TextBlock
+                    Visibility="{Binding FilterLevelCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
+                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Hyperlink 
+                        Command="{Binding Clear}" 
+                        CommandParameter="{x:Static viewModels:ClearFilter.Source}">
+                        <Run Text="{localization:Loc EventViewer_Filter_Clear}" />
+                    </Hyperlink>
+                </TextBlock>
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding FilterSourceDeploymentServer}" Margin="8 4" Content="Appx → DeploymentServer" />
+            <CheckBox IsChecked="{Binding FilterSourcePackaging}" Margin="8 4" Content="Appx → Packaging" />
+            <CheckBox IsChecked="{Binding FilterSourceDeployment}" Margin="8 4" Content="Appx → Deployment" />
         </StackPanel>
     </UniformGrid>
 </UserControl>

@@ -36,10 +36,10 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events.Entities
 
         public int ThreadId { get; set; }
 
-        public string Source { get; set; }
-
         public string OpcodeDisplayName { get; set; }
 
         public string ErrorCode { get; set; }
+        
+        public string Source { get; set; }
     }
 }

@@ -44,7 +44,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(this.ErrorCode))
+                if (!string.IsNullOrWhiteSpace(this.ErrorCode) && this.HasTranslatedErrorCode)
                 {
                     return $"Error {this.ErrorCode}";
                 }
@@ -191,6 +191,16 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
         }
 
         public string Source => this.Model.Source;
+
+        public string ShortSource
+        {
+            get
+            {
+                var indexOf = this.Model.Source.LastIndexOf('/');
+                return this.Model.Source.Substring(indexOf + 1);
+            }
+        }
+
 
         public string OpcodeDisplayName => this.Model.OpcodeDisplayName;
 

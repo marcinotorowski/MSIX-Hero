@@ -166,15 +166,9 @@
 
                                     <TextBlock 
                                         Visibility="{Binding HasPackageName, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                        Text="{Binding Path=Source, Mode=OneTime}" 
+                                        Text="{Binding Path=ShortSource, Mode=OneTime}" 
                                         controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
                                         TextTrimming="CharacterEllipsis" />
-
-                                    <!--<TextBlock 
-                                        Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Text="{Binding Path=TranslatedErrorCode, Mode=OneTime}" 
-                                        controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
-                                        TextTrimming="CharacterEllipsis" Opacity="0.65" />-->
 
                                     <TextBlock 
                                         Text="{Binding Path=CompactMessage, Mode=OneTime}" 

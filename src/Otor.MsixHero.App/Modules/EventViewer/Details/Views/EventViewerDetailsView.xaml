@@ -108,6 +108,7 @@
                                         Style="{StaticResource CardHeader}">
                                     <TextBlock 
                                             HorizontalAlignment="Stretch"
+                                            TextWrapping="Wrap"
                                             Foreground="{StaticResource CardHeaderSecondLineBrush}"
                                             Text="{Binding Source, FallbackValue='n/a', Mode=OneWay}" />
                                 </HeaderedContentControl>
@@ -194,36 +195,6 @@
 
                         </StackPanel>
                     </cards:Card>
-
-                    <cards:Card Visibility="{Binding HasPackageName, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <cards:Card.Icon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
-                        </cards:Card.Icon>
-                        <StackPanel>
-                            <HeaderedContentControl 
-                                Visibility="{Binding PackageName, Converter={StaticResource StringNonEmptyToVisibilityConverter}}"
-                                Header="{localization:Loc EventViewer_Details_PackageName}"
-                                Style="{StaticResource CardHeader}" >
-                                <TextBox 
-                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
-                                    Style="{StaticResource TextBlock}"
-                                    Text="{Binding PackageName, Mode=OneWay, FallbackValue='Package Name', TargetNullValue='n/a'}" />
-
-                            </HeaderedContentControl>
-                            
-                            <HeaderedContentControl 
-                                Visibility="{Binding HasUniqueFilePath, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Header="{localization:Loc EventViewer_Details_PackageFile}"
-                                Style="{StaticResource CardHeader}" 
-                                Margin="0 16 0 0" />
-
-                                <TextBox 
-                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
-                                    Style="{StaticResource TextBlock}" 
-                                    Text="{Binding FilePath, Mode=OneWay, FallbackValue='File path'}" />
-
-                        </StackPanel>
-                    </cards:Card>
                     
                     <cards:Card>
                         <cards:Card.Icon>
@@ -302,6 +273,36 @@
                                     TextWrapping="Wrap"
                                     Text="{Binding TroubleshootingDescription, FallbackValue='n/a', Mode=OneWay}" />
                             </HeaderedContentControl>
+                        </StackPanel>
+                    </cards:Card>
+
+                    <cards:Card Visibility="{Binding HasPackageName, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <cards:Card.Icon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPackage}" />
+                        </cards:Card.Icon>
+                        <StackPanel>
+                            <HeaderedContentControl 
+                                Visibility="{Binding PackageName, Converter={StaticResource StringNonEmptyToVisibilityConverter}}"
+                                Header="{localization:Loc EventViewer_Details_PackageName}"
+                                Style="{StaticResource CardHeader}" >
+                                <TextBox 
+                                    Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                    Style="{StaticResource TextBlock}"
+                                    Text="{Binding PackageName, Mode=OneWay, FallbackValue='Package Name', TargetNullValue='n/a'}" />
+
+                            </HeaderedContentControl>
+
+                            <HeaderedContentControl 
+                                Visibility="{Binding HasUniqueFilePath, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="{localization:Loc EventViewer_Details_PackageFile}"
+                                Style="{StaticResource CardHeader}" 
+                                Margin="0 16 0 0" />
+
+                            <TextBox 
+                                Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                Style="{StaticResource TextBlock}" 
+                                Text="{Binding FilePath, Mode=OneWay, FallbackValue='File path'}" />
+
                         </StackPanel>
                     </cards:Card>
 

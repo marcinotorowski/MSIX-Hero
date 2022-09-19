@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Events
 {
@@ -15,6 +16,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                 return true;
             }
 
+            if (errorCode != 0 && this.GetWin32ErrorDescription(errorCode, out _))
+            {
+                message = $"0x{errorCode:x8}";
+                return true;
+            }
+
             message = null;
             return false;
         }
@@ -27,6 +34,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                 return true;
             }
 
+            if (errorCode != 0 && this.GetWin32ErrorDescription(errorCode, out var exception))
+            {
+                message = exception.Message;
+                return true;
+            }
+
             message = null;
             return false;
         }
@@ -36,6 +49,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
             if (_codes.Value.TryGetValue(errorCode, out var definition))
             {
                 message = definition.Code;
+                return true;
+            }
+
+            if (errorCode != 0 && this.GetWin32ErrorDescription(errorCode, out var error))
+            {
+                message = error.Message;
                 return true;
             }
 
@@ -74,8 +93,22 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
 
             public string Description { get; }
         }
-    }
 
+        private bool GetWin32ErrorDescription(uint errorCode, out Exception error)
+        {
+            try
+            {
+                error = new Win32Exception((int)errorCode);
+                return !string.IsNullOrEmpty(error.Message) && !error.Message.StartsWith("Unknown error (");
+            }
+            catch
+            {
+                error = null;
+                return false;
+            }
+        }
+    }
+    
     public class ErrorCodesFactory
     {
         public IEnumerable<ErrorCodes.ErrorCode> GetKnownErrors()

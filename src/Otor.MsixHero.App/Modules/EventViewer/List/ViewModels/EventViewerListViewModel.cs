@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
 using Otor.MsixHero.App.Hero.Events.Base;
@@ -217,6 +216,79 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
                         }
 
                         break;
+                }
+            }
+
+            var filterType = this.application.ApplicationState.EventViewer.Filter & EventFilter.AllSources;
+            if (filterType != 0)
+            {
+                switch (filtered.Source)
+                {
+                    case AppxEventSources.DeploymentDiagnostic:
+                        if ((filterType & EventFilter.DeploymentDiagnostic) != EventFilter.DeploymentDiagnostic)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.DeploymentOperational:
+                        if ((filterType & EventFilter.DeploymentOperational) != EventFilter.DeploymentOperational)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.PackagingDebug:
+                        if ((filterType & EventFilter.PackagingDebug) != EventFilter.PackagingDebug)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.PackagingOperational:
+                        if ((filterType & EventFilter.PackagingOperational) != EventFilter.PackagingOperational)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.PackagingPerformance:
+                        if ((filterType & EventFilter.PackagingPerformance) != EventFilter.PackagingPerformance)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.DeploymentServerDebug:
+                        if ((filterType & EventFilter.DeploymentServerDebug) != EventFilter.DeploymentServerDebug)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.DeploymentServerRestricted:
+                        if ((filterType & EventFilter.DeploymentServerRestricted) != EventFilter.DeploymentServerRestricted)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.DeploymentServerDiagnostic:
+                        if ((filterType & EventFilter.DeploymentServerDiagnostic) != EventFilter.DeploymentServerDiagnostic)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventSources.DeploymentServerOperational:
+                        if ((filterType & EventFilter.DeploymentServerOperational) != EventFilter.DeploymentServerOperational)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    default:
+                        return false;
                 }
             }
 

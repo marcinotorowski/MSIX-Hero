@@ -77,7 +77,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
             using var eventLogSession = new EventLogSession();
 
             // ReSharper disable once AccessToDisposedClosure
-            var validLogNames = await Task.Run(() => eventLogSession.GetLogNames().Where(l => l.Contains("Appx", StringComparison.OrdinalIgnoreCase)).ToList(), cancellationToken).ConfigureAwait(false);
+            var validLogNames = await Task.Run(() => eventLogSession.GetLogNames().Where(IsLogKnown).ToList(), cancellationToken).ConfigureAwait(false);
             var processingTasks = new List<Task>();
 
             const int maxTasksAtTime = 5;
@@ -107,6 +107,25 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
             }
 
             return allLogs.ToList();
+        }
+
+        private static bool IsLogKnown(string logName)
+        {
+            switch (logName)
+            {
+                case AppxEventSources.DeploymentDiagnostic:
+                case AppxEventSources.DeploymentOperational:
+                case AppxEventSources.PackagingDebug:
+                case AppxEventSources.PackagingOperational:
+                case AppxEventSources.PackagingPerformance:
+                case AppxEventSources.DeploymentServerDebug:
+                case AppxEventSources.DeploymentServerRestricted:
+                case AppxEventSources.DeploymentServerDiagnostic:
+                case AppxEventSources.DeploymentServerOperational:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public Task OpenEventViewer(EventCategory type, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -146,18 +165,35 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
             IDictionary<SecurityIdentifier, string> cachedUsers,
             CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            // Assume that there are about 1000 entries in a log file. This is obviously a blind shot, but event viewer
-            // is a forward-only reader, so unless the user specifies the max count there is no way to figure our how
-            // to report the progress (and even if the max has been given, there is no guarantee that there are so many
-            // entries.
-            var progressCount = eventCriteria.MaxCount ?? 1000;
-
             progress.Report(new ProgressData(0, string.Format(Resources.Localization.Events_Reading, logName)));
+            
+            if (string.Equals(AppxEventSources.DeploymentServerRestricted, logName, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    progress.Report(new ProgressData(100, string.Format(Resources.Localization.Events_Reading, logName)));
+                    return;
+                }
+            }
+
             var logObj = new EventLogConfiguration(logName, session);
+            
+            var info = session.GetLogInformation(logName, PathType.LogName);
+            var progressCount = info.RecordCount;
+            if (!progressCount.HasValue)
+            {
+                progressCount = 0;
+            }
+
+            if (eventCriteria.MaxCount.HasValue)
+            {
+                progressCount = Math.Min(eventCriteria.MaxCount.Value, progressCount.Value);
+            }
 
             // var providerMetadata = new ProviderMetadata(logObj.OwningProviderName, eventLogSession, CultureInfo.CurrentCulture);
 
             var elq = new EventLogQuery(logObj.LogName, PathType.LogName);
+
 
             using var elr = new EventLogReader(elq);
 
@@ -220,10 +256,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                         newLog.DateTime = eventLogRecord.TimeCreated.Value;
                     }
 
-                    newLog.Source = logObj.LogName.IndexOf('/') == -1
-                        ? eventLogRecord.LogName
-                        : eventLogRecord.LogName.Remove(0, eventLogRecord.LogName.IndexOf('/') + 1);
-
+                    newLog.Source = logObj.LogName;
                     newLog.Level = eventLogRecord.LevelDisplayName;
                     newLog.Message = eventLogRecord.FormatDescription();
 
@@ -286,13 +319,11 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                             }
                         }
 
-                        if (newLog.Level == "Error")
+                        // note: look for exit codes in hexadecimal format. Exclude ones following the string "with flags".
+                        reg = Regex.Match(newLog.Message, @"(?<!with flags )\b0[xX][0-9A-Fa-f]{1,8}\b");
+                        if (reg.Success)
                         {
-                            reg = Regex.Match(newLog.Message, @"\b0x[0-9A-F]{8}\b");
-                            if (reg.Success)
-                            {
-                                newLog.ErrorCode = reg.Value;
-                            }
+                            newLog.ErrorCode = reg.Value;
                         }
                     }
 

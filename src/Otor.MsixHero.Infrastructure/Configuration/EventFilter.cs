@@ -26,7 +26,26 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         Error     = 1 << 2,
         Verbose   = 1 << 3,
         AllLevels = Warning | Info | Error | Verbose,
-        All       = AllLevels,
-        Default   = Warning | Error | Info
+
+        PackagingPerformance = 1 << 4,
+        PackagingOperational = 1 << 5,
+        PackagingDebug = 1 << 6,
+        AllPackaging = PackagingPerformance | PackagingOperational | PackagingDebug,
+        
+        DeploymentServerOperational = 1 << 7,
+        DeploymentServerDiagnostic = 1 << 8,
+        DeploymentServerDebug = 1 << 9,
+        DeploymentServerRestricted = 1 << 10,
+        AllDeploymentServer = DeploymentServerOperational | DeploymentServerDiagnostic | DeploymentServerDebug | DeploymentServerRestricted,
+
+        DeploymentOperational = 1 << 11,
+        DeploymentDiagnostic = 1 << 12,
+        AllDeployment = DeploymentOperational | DeploymentDiagnostic,
+
+        AllSources = AllPackaging | AllDeploymentServer | AllDeployment,
+            
+        All       = AllLevels | AllSources | AllSources,
+
+        Default   = Warning | Error | Info | AllDeployment | DeploymentServerOperational | DeploymentServerDebug | DeploymentServerDiagnostic
     }
 }

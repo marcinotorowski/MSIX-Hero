@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -39,8 +38,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             {
                 var logs = await this._uacElevation.AsHighestAvailable<IAppxEventService>().GetEvents(request.Criteria, cancellationToken, context).ConfigureAwait(false);
                 this._application.ApplicationState.EventViewer.Criteria = request.Criteria;
-
-
+                
                 var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
                 cleanConfig.Events ??= new EventsConfiguration();
                 cleanConfig.Events.Filter ??= new EventsFilterConfiguration();
