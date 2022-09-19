@@ -391,13 +391,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             switch (this.CreationMode.CurrentValue)
             {
                 case ViewModel.CreationMode.Xml:
+                    this.Verb.Name = this.Name.CurrentValue;
                     this.Verb.Output = this.Output.CurrentValue ?? Resources.Localization.Dialogs_SharedContainer_Output_Placeholder;
+                    this.Verb.ForceApplicationShutdown = false;
+
                     this.Verb.Force = false;
                     this.Verb.Merge = false;
-                    this.Verb.ForceApplicationShutdown = false;
                     break;
+
                 case ViewModel.CreationMode.Deploy:
-                    this.Verb.Output = null;
+                    this.Verb.Name = null;
+                    this.Verb.Output = this.Output.CurrentValue;
+                    this.Verb.ForceApplicationShutdown = true;
 
                     switch (this.Resolution.CurrentValue)
                     {
@@ -412,8 +417,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                             break;
                     }
 
-                    this.Verb.ForceApplicationShutdown = true;
-                    this.Verb.Output = this.Output.CurrentValue;
                     break;
             }
 
