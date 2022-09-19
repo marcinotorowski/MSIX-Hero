@@ -392,6 +392,11 @@ namespace Otor.MsixHero.Appx.Volumes
                     continue;
                 }
 
+                if (!item.SupportsHardLinks)
+                {
+                    continue;
+                }
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var packageStorePath = item.PackageStorePath;
