@@ -87,7 +87,7 @@
             <Border
                 Margin="8" 
                 ClipToBounds="True" DockPanel.Dock="Top">
-                <DockPanel Margin="8" VerticalAlignment="Top">
+                <DockPanel SnapsToDevicePixels="True" UseLayoutRounding="True" Margin="4 12 8 8" VerticalAlignment="Top">
                     <Border 
                         Background="{StaticResource MsixHero.Brushes.Accent}"
                         Width="48" 
@@ -98,7 +98,7 @@
                             Style="{StaticResource LargeIcon}" />
                     </Border>
 
-                    <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Volume.PackageStorePath}" FontSize="16" FontFamily="{StaticResource SourceSansPro}" TextWrapping="Wrap" />
                         <TextBlock Text="{Binding Volume.Name}" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
                     </StackPanel>

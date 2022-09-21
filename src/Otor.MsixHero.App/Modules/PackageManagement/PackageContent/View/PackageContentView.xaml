@@ -32,38 +32,39 @@
         <DockPanel.Resources>
             <DataTemplate DataType="{x:Type overview:PackageOverviewViewModel}">
                 <ScrollViewer 
+                    Margin="8 4"
                     VerticalScrollBarVisibility="Auto" 
                     HorizontalScrollBarVisibility="Disabled">
-                    <overviewView:PackageOverviewView Margin="8 0" />
+                    <overviewView:PackageOverviewView Margin="0" />
                 </ScrollViewer>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type capabilities:PackageCapabilitiesViewModel}">
-                <capabilitiesViews:PackageCapabilitiesView Margin="8 0" />
+                <capabilitiesViews:PackageCapabilitiesView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type applications:PackageApplicationsViewModel}">
-                <applicationsView:PackageApplicationsView Margin="8 0" />
+                <applicationsView:PackageApplicationsView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type psf:PackagePsfViewModel}">
-                <psfView:PackagePsfView Margin="8 0" />
+                <psfView:PackagePsfView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type files:PackageFilesViewModel}">
-                <filesView:PackageFilesView Margin="8 0" />
+                <filesView:PackageFilesView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type registry:PackageRegistryViewModel}">
-                <registryView:PackageRegistryView Margin="8 0" />
+                <registryView:PackageRegistryView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type dependencies:PackageDependenciesViewModel}">
-                <dependenciesView:PackageDependenciesView Margin="8 0" />
+                <dependenciesView:PackageDependenciesView Margin="12 8" />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type installation:PackageInstallationViewModel}">
-                <installationView:PackageInstallationView Margin="8 0" />
+                <installationView:PackageInstallationView Margin="12 8" />
             </DataTemplate>
         </DockPanel.Resources>
 
@@ -98,19 +99,22 @@
             Message="{Binding Progress.Message}">
             <DockPanel>
                 <view:HeaderView 
-                    Margin="8"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    Margin="4 12 4 4"
                     DockPanel.Dock="Top" 
                     DataContext="{Binding Header}" />
 
                 <transitionContentControl:TransitioningContentControl
-            DockPanel.Dock="Top"
-            Content="{Binding CurrentItem}"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            Transition="Drop" 
-            Direction="{Binding TransitionDirection}" />
+                    DockPanel.Dock="Top"
+                    Content="{Binding CurrentItem}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Transition="Drop" 
+                    Padding="0"
+                    Direction="{Binding TransitionDirection}" />
             </DockPanel>
         </controls:ProgressOverlay>
     </DockPanel>

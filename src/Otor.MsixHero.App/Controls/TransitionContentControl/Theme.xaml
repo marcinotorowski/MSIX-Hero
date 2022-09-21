@@ -469,6 +469,7 @@
             </VisualStateManager.VisualStateGroups>
 
             <Image 
+                Margin="{TemplateBinding Padding}"
                 x:Name="PART_PreviousImageSite"
                 Source="{x:Null}"
                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -486,6 +487,7 @@
             <ContentPresenter
                 x:Name="PART_CurrentContentPresentationSite"
                 Content="{x:Null}"
+                Margin="{TemplateBinding Padding}"
                 ContentTemplate="{TemplateBinding ContentTemplate}"
                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -504,6 +506,7 @@
     <ControlTemplate x:Key="TransitioningControlTemplateTier0" TargetType="transitionContentControl:TransitioningContentControl">
         <Grid x:Name="PART_Container">
             <ContentPresenter
+                Margin="{TemplateBinding Padding}"
                 x:Name="PART_CurrentContentPresentationSite"
                 Content="{x:Null}"
                 ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -985,6 +988,7 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Image 
+                            Margin="{TemplateBinding Padding}"
                             x:Name="PART_PreviousImageSite"
                             Source="{x:Null}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -1000,6 +1004,7 @@
                         </Image>
 
                         <ContentPresenter
+                            Margin="{TemplateBinding Padding}"
                             x:Name="PART_CurrentContentPresentationSite"
                             Content="{x:Null}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -1024,15 +1029,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="transitionContentControl:TransitioningContentControl">
-                    <Grid x:Name="PART_Container">
-                        <ContentPresenter
-                            x:Name="PART_CurrentContentPresentationSite"
-                            Content="{x:Null}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                        </ContentPresenter>
-                    </Grid>
+                    <ContentPresenter
+                        Margin="{TemplateBinding Padding}"
+                        x:Name="PART_CurrentContentPresentationSite"
+                        Content="{x:Null}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    </ContentPresenter>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -26,7 +26,7 @@
                     Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
             </Grid>
 
-            <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+            <StackPanel Margin="10 0 0 0" VerticalAlignment="Center">
                 <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" />
                 <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis">
                     <Run Text="{localization:Loc PackageExpert_Version}" Foreground="#aa000000" />
