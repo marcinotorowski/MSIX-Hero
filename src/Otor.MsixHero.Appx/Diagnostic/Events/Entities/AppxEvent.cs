@@ -18,6 +18,17 @@ using System;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Events.Entities
 {
+    public enum AppxEventType : byte
+    {
+        // https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.tracing.eventlevel?view=net-6.0
+        None = 0,
+        Critical = 1,
+        Error = 2,
+        Warning = 3,
+        Information = 4,
+        Verbose = 5,
+    }
+
     public class AppxEvent
     {
         public DateTime DateTime { get; set; }
@@ -32,7 +43,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events.Entities
 
         public string User { get; set; }
 
-        public string Level { get; set; }
+        public AppxEventType Type { get; set; }
 
         public int ThreadId { get; set; }
 

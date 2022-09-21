@@ -88,9 +88,9 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
                 copiedText.AppendFormat("DateTime:\t{0}\r\n", appxEvent.DateTime);
             }
 
-            if (!string.IsNullOrEmpty(appxEvent.Level))
+            if (appxEvent.Type != AppxEventType.None)
             {
-                copiedText.AppendFormat("Level:\t{0}\r\n", appxEvent.Level);
+                copiedText.AppendFormat("Level:\t{0:G}\r\n", appxEvent.Type);
             }
 
             if (!string.IsNullOrEmpty(appxEvent.Source))

@@ -121,6 +121,7 @@
                                     BrushInformation="#2B579A"
                                     BrushWarning="DarkOrange"
                                     BrushVerbose="Gray"
+                                    BrushCritical="#333333"
                                     BrushError="IndianRed" />
 
                                 <converters:EventLogIconConverter 

@@ -49,7 +49,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
                     return $"Error {this.ErrorCode}";
                 }
 
-                return this.DisplayedLevel;
+                return this.DisplayedType;
             }
         }
 
@@ -168,24 +168,26 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 
         public bool HasUniqueFilePath => !string.IsNullOrWhiteSpace(this.Model.FilePath) && this.Model.FilePath != this.Model.PackageName;
 
-        public string Level => this.Model.Level;
+        public AppxEventType Type => this.Model.Type;
 
-        public string DisplayedLevel
+        public string DisplayedType
         {
             get
             {
-                switch (this.Model.Level.ToLowerInvariant())
+                switch (this.Model.Type)
                 {
-                    case "error":
+                    case AppxEventType.Error:
                         return Resources.Localization.EventViewer_Filter_Log_Error;
-                    case "warning":
+                    case AppxEventType.Warning:
                         return Resources.Localization.EventViewer_Filter_Log_Warn;
-                    case "verbose":
+                    case AppxEventType.Verbose:
                         return Resources.Localization.EventViewer_Filter_Log_Verbose;
-                    case "information":
+                    case AppxEventType.Information:
                         return Resources.Localization.EventViewer_Filter_Log_Info;
+                    case AppxEventType.Critical:
+                        return Resources.Localization.EventViewer_Filter_Log_Critical;
                     default:
-                        return this.Model.Level;
+                        return this.Model.Type.ToString("G");
                 }
             }
         }

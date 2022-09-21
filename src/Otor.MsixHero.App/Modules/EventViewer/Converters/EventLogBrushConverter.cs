@@ -19,6 +19,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels;
+using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Converters
 {
@@ -28,13 +29,15 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
         {
             if (value is EventViewModel logViewModel)
             {
-                switch (logViewModel.Level)
+                switch (logViewModel.Type)
                 {
-                    case "Warning":
+                    case AppxEventType.Warning:
                         return this.BrushWarning;
-                    case "Error":
+                    case AppxEventType.Error:
                         return this.BrushError;
-                    case "Verbose":
+                    case AppxEventType.Critical:
+                        return this.BrushCritical;
+                    case AppxEventType.Verbose:
                         return this.BrushVerbose;
                 }
             }
@@ -43,6 +46,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
         }
 
         public Brush BrushError { get; set; }
+        
+        public Brush BrushCritical { get; set; }
 
         public Brush BrushWarning { get; set; }
 

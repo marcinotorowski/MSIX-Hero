@@ -1716,6 +1716,9 @@
   <data name="EventViewer_Filter_Log_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
+  <data name="EventViewer_Filter_Log_Critical" xml:space="preserve">
+    <value>Kritisch</value>
+  </data>
   <data name="EventViewer_Filter_Log_Info" xml:space="preserve">
     <value>Information</value>
   </data>

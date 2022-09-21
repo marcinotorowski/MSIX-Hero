@@ -7675,6 +7675,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Critical.
+        /// </summary>
+        public static string EventViewer_Filter_Log_Critical {
+            get {
+                return ResourceManager.GetString("EventViewer_Filter_Log_Critical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string EventViewer_Filter_Log_Error {

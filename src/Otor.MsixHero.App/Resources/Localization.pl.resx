@@ -927,6 +927,9 @@
   <data name="EventViewer_Filter_Log_Info" xml:space="preserve">
     <value>Informacja</value>
   </data>
+  <data name="EventViewer_Filter_Log_Critical" xml:space="preserve">
+    <value>Krytyczny</value>
+  </data>
   <data name="EventViewer_Filter_Log_Verbose" xml:space="preserve">
     <value>Wiadomość szczegółowa</value>
   </data>

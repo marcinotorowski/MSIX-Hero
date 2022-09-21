@@ -930,6 +930,9 @@
   <data name="EventViewer_Filter_Log_Info" xml:space="preserve">
     <value>Information</value>
   </data>
+  <data name="EventViewer_Filter_Log_Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
   <data name="EventViewer_Filter_Log_Verbose" xml:space="preserve">
     <value>Verbose</value>
   </data>

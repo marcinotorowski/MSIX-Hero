@@ -102,6 +102,12 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
             set => this.SetEventViewerFilter(EventFilter.Error, value);
         }
 
+        public bool FilterCritical
+        {
+            get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.Critical);
+            set => this.SetEventViewerFilter(EventFilter.Critical, value);
+        }
+
         public bool FilterWarning
         {
             get => this._application.ApplicationState.EventViewer.Filter.HasFlag(EventFilter.Warning);
@@ -223,7 +229,12 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
                     selected++;
                 }
 
-                return $"({selected}/4)";
+                if (this.FilterCritical)
+                {
+                    selected++;
+                }
+
+                return $"({selected}/5)";
             }
         }
         
@@ -265,6 +276,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
 
         private void OnSetEventViewerFilter(UiExecutedPayload<SetEventViewerFilterCommand> obj)
         {
+            this.OnPropertyChanged(nameof(FilterCritical));
             this.OnPropertyChanged(nameof(FilterError));
             this.OnPropertyChanged(nameof(FilterInfo));
             this.OnPropertyChanged(nameof(FilterWarning));

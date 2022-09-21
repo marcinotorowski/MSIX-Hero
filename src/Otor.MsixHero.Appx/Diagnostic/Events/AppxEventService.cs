@@ -257,7 +257,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                     }
 
                     newLog.Source = logObj.LogName;
-                    newLog.Level = eventLogRecord.LevelDisplayName;
+                    newLog.Type = eventLogRecord.Level == null ? AppxEventType.Information : (AppxEventType)eventLogRecord.Level;
                     newLog.Message = eventLogRecord.FormatDescription();
 
                     newLog.ThreadId = eventLogRecord.ThreadId ?? 0;

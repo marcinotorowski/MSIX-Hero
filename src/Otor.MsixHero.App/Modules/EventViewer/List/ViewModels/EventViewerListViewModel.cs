@@ -84,7 +84,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
                         sortProperty = nameof(EventViewModel.DateTime);
                         break;
                     case EventSort.Type:
-                        sortProperty = nameof(EventViewModel.Level);
+                        sortProperty = nameof(EventViewModel.DisplayedType);
                         break;
                     case EventSort.PackageName:
                         sortProperty = nameof(EventViewModel.PackageName);
@@ -186,36 +186,46 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             var filterLevel = this.application.ApplicationState.EventViewer.Filter & EventFilter.AllLevels;
             if (filterLevel != 0)
             {
-                switch (filtered.Level)
+                switch (filtered.Type)
                 {
-                    case "Error":
+                    case AppxEventType.Error:
                         if (!filterLevel.HasFlag(EventFilter.Error))
                         {
                             return false;
                         }
 
                         break;
-                    case "Warning":
+                    case AppxEventType.Warning:
                         if (!filterLevel.HasFlag(EventFilter.Warning))
                         {
                             return false;
                         }
 
                         break;
-                    case "Information":
+                    case AppxEventType.Critical:
+                        if (!filterLevel.HasFlag(EventFilter.Critical))
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case AppxEventType.Information:
                         if (!filterLevel.HasFlag(EventFilter.Info))
                         {
                             return false;
                         }
 
                         break;
-                    case "Verbose":
+                    case AppxEventType.Verbose:
                         if (!filterLevel.HasFlag(EventFilter.Verbose))
                         {
                             return false;
                         }
 
                         break;
+
+                    default:
+                        return false;
                 }
             }
 

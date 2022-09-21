@@ -25,7 +25,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         Info      = 1 << 1,
         Error     = 1 << 2,
         Verbose   = 1 << 3,
-        AllLevels = Warning | Info | Error | Verbose,
+        Critical  = 1 << 13,
+        AllLevels = Warning | Info | Error | Verbose | Critical,
 
         PackagingPerformance = 1 << 4,
         PackagingOperational = 1 << 5,

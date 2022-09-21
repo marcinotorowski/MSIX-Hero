@@ -169,6 +169,7 @@
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>
+            <CheckBox IsChecked="{Binding FilterCritical}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Critical}" />
             <CheckBox IsChecked="{Binding FilterError}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Error}" />
             <CheckBox IsChecked="{Binding FilterWarning}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Warn}" />
             <CheckBox IsChecked="{Binding FilterInfo}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Info}" />
