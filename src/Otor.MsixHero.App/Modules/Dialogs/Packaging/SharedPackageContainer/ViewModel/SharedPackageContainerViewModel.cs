@@ -386,12 +386,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         protected override void UpdateVerbData()
         {
-            this.Verb.Name = this.Verb.Name;
+            this.Verb.Name = this.Name.CurrentValue;
 
             switch (this.CreationMode.CurrentValue)
             {
                 case ViewModel.CreationMode.Xml:
-                    this.Verb.Name = this.Name.CurrentValue;
                     this.Verb.Output = this.Output.CurrentValue ?? Resources.Localization.Dialogs_SharedContainer_Output_Placeholder;
                     this.Verb.ForceApplicationShutdown = false;
 
@@ -400,7 +399,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     break;
 
                 case ViewModel.CreationMode.Deploy:
-                    this.Verb.Name = null;
                     this.Verb.Output = this.Output.CurrentValue;
                     this.Verb.ForceApplicationShutdown = true;
 
