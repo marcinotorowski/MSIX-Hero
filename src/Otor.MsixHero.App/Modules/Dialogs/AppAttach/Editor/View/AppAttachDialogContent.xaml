@@ -176,20 +176,20 @@
                     Text="{Binding JunctionPoint.CurrentValue}" />
 
                 <TextBlock
-                    IsEnabled="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    IsEnabled="{Binding CanChangeSize, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                     Style="{StaticResource LabelTextBlock}" 
                     Text="{localization:Loc Dialogs_AppAttach_VhdVolumeSize}" />
                 <RadioButton 
-                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    IsEnabled="{Binding CanChangeSize}"
                     x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" 
                     Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Auto}" />
                 <RadioButton 
-                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    IsEnabled="{Binding CanChangeSize}"
                     x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" 
                     Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Dynamic}" Margin="0 6" />
                 <StackPanel 
-                    Visibility="{Binding IsMoreThanOnePackage, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                    Orientation="Horizontal" IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
+                    Orientation="Horizontal" 
+                    IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
                     <xctk:ButtonSpinner VerticalContentAlignment="Center" Content="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
                     <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
                 </StackPanel>

@@ -51,8 +51,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.Files.CollectionChanged += (_, _) =>
             {
+                this.OnPropertyChanged(nameof(CanChangeSize));
                 this.OnPropertyChanged(nameof(IsOnePackage));
                 this.OnPropertyChanged(nameof(IsMoreThanOnePackage));
+
+                if (this.Files.Count > 1)
+                {
+                    this.SizeMode.CurrentValue = AppAttachSizeMode.Auto;
+                }
             };
 
             var config = configurationService.GetCurrentConfiguration().AppAttach ?? new AppAttachConfiguration();
@@ -220,18 +226,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
         public ChangeableProperty<bool> GenerateScripts { get; }
 
-        public bool EnableAdvanced
-        {
-            get
-            {
-                if (this.VolumeType.CurrentValue == AppAttachVolumeType.Cim)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        }
+        public bool EnableAdvanced => this.VolumeType.CurrentValue != AppAttachVolumeType.Cim;
 
         public ChangeableProperty<string> JunctionPoint { get; }
 
@@ -244,6 +239,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         public ValidatedChangeableProperty<string> FixedSize { get; }
 
         public ChangeableProperty<AppAttachSizeMode> SizeMode { get; }
+
+        public bool CanChangeSize => this.Files.Count <= 1 && this.VolumeType.CurrentValue != AppAttachVolumeType.Cim;
 
         public string OutputDirectory { get; private set; }
         
@@ -376,6 +373,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         private void VolumeTypeOnChanged(object sender, EventArgs e)
         {
             this.OnPropertyChanged(nameof(EnableAdvanced));
+            this.OnPropertyChanged(nameof(CanChangeSize));
         }
     }
 }
