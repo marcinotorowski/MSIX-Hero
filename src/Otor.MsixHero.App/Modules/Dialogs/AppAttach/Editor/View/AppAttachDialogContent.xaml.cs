@@ -19,7 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Helpers.DragAndDrop;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel;
-using Xceed.Wpf.Toolkit;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
 {
@@ -87,20 +86,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
         private void OnDragLeave(object sender, DragEventArgs e)
         {
             DropFileObject.SetIsDragging((DependencyObject)sender, false);
-        }
-
-        private void OnSpin(object sender, SpinEventArgs e)
-        {
-            var spinner = (ButtonSpinner)sender;
-            var content = spinner.Content as string;
-
-            int.TryParse(content ?? "0", out var value);
-            if (e.Direction == SpinDirection.Increase)
-                value += 10;
-            else
-                value -= 10;
-
-            spinner.Content = value.ToString();
         }
     }
 }

@@ -190,7 +190,7 @@
                 <StackPanel 
                     Orientation="Horizontal" 
                     IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
-                    <xctk:ButtonSpinner VerticalContentAlignment="Center" Content="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
+                    <xctk:IntegerUpDown Minimum="0" VerticalContentAlignment="Center" Text="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Increment="10" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
                     <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
                 </StackPanel>
             </StackPanel>

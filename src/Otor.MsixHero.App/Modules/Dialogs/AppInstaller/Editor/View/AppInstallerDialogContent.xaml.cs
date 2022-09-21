@@ -17,8 +17,6 @@
 using System.Linq;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel;
-using Xceed.Wpf.Toolkit;
-using YamlDotNet.Core.Tokens;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View
 {
@@ -27,35 +25,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View
         public AppInstallerDialogContent()
         {
             InitializeComponent();
-        }
-
-        private void Spinner_OnSpin(object sender, SpinEventArgs e)
-        {
-            var spinner = (ButtonSpinner)sender;
-
-            if (spinner.Content is string contentString)
-            {
-                if (!int.TryParse(contentString, out var value))
-                {
-                    return;
-                }
-
-                if (e.Direction == SpinDirection.Increase)
-                    value++;
-                else
-                    value--;
-
-                spinner.Content = value.ToString();
-            }
-            else if (spinner.Content is int contentInt)
-            {
-                if (e.Direction == SpinDirection.Increase)
-                    contentInt++;
-                else
-                    contentInt--;
-
-                spinner.Content = contentInt;
-            }
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

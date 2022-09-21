@@ -280,67 +280,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type xctk:ButtonSpinner}" x:Key="{x:Type xctk:ButtonSpinner}">
-        <Setter Property="MinHeight" Value="{StaticResource MsixHero.Button.Height}" />
-        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Normal.Border.Brush}" />
-        <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Normal.Background.Brush}" />
-        <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Normal.Foreground.Brush}" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.TextBox.Normal.Foreground.Brush}" />
-        <Setter Property="BorderThickness" Value="{StaticResource MsixHero.Button.Normal.Border.Thickness}" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
-        <Style.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsFocused" Value="true" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.Setters>
-                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Focused.Border.Brush}" />
-                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Focused.Background.Brush}" />
-                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Focused.Foreground.Brush}" />
-                </MultiTrigger.Setters>
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsMouseOver" Value="true" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.Setters>
-                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Hovered.Border.Brush}" />
-                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Hovered.Background.Brush}" />
-                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Hovered.Foreground.Brush}" />
-                </MultiTrigger.Setters>
-            </MultiTrigger>
-            <Trigger Property="Validation.HasError" Value="True">
-                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Validation}" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsKeyboardFocusWithin" Value="True" />
-                    <Condition Property="Validation.HasError" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.Setters>
-                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Editing.Border.Brush}" />
-                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Editing.Background.Brush}" />
-                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Editing.Foreground.Brush}" />
-                </MultiTrigger.Setters>
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsFocused" Value="True" />
-                    <Condition Property="Validation.HasError" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.Setters>
-                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Editing.Border.Brush}" />
-                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Editing.Background.Brush}" />
-                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Editing.Foreground.Brush}" />
-                </MultiTrigger.Setters>
-            </MultiTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style TargetType="{x:Type xctk:IntegerUpDown}" x:Key="{x:Type xctk:IntegerUpDown}">
         <Setter Property="MinHeight" Value="{StaticResource MsixHero.Button.Height}" />
         <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Normal.Border.Brush}" />
