@@ -127,12 +127,12 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
             var added = await this._sharedPackageContainerService.Add(builder.Build(), this.Verb.ForceApplicationShutdown, resolution, CancellationToken.None).ConfigureAwait(false);
 
             await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SharedContainer_DeployedAsFormat, this.Verb.Name)).ConfigureAwait(false);
-            await this.Console.WriteSuccess(string.Format(" -> : {0} {2}", Resources.Localization.CLI_Executor_SharedContainer_Id, added.Id)).ConfigureAwait(false);
-            await this.Console.WriteSuccess(" -> " + Resources.Localization.CLI_Executor_SharedContainer_Families + ":").ConfigureAwait(false);
+            await this.Console.WriteSuccess($" -> : {Resources.Localization.CLI_Executor_SharedContainer_Id} {added.Id}").ConfigureAwait(false);
+            await this.Console.WriteSuccess($" -> {Resources.Localization.CLI_Executor_SharedContainer_Families}:").ConfigureAwait(false);
 
             foreach (var pf in added.PackageFamilies)
             {
-                await this.Console.WriteSuccess("    * " + pf.FamilyName).ConfigureAwait(false);
+                await this.Console.WriteSuccess($"    * {pf.FamilyName}").ConfigureAwait(false);
             }
 
             return StandardExitCodes.ErrorSuccess;
