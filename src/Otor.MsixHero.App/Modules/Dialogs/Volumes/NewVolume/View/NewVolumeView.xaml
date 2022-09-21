@@ -47,12 +47,18 @@
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <controls:ProgressOverlay IsShown="{Binding Letters.Progress.IsLoading}" Message="{localization:Loc Dialogs_NewVolume_GettingDrives}">
-                    <StackPanel>
+                    <StackPanel IsEnabled="{Binding HasAnyLetter}">
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
                             Text="{localization:Loc Dialogs_NewVolume_Drive}" 
                             Margin="0 16 0 6" />
-                        <ComboBox MinHeight="57" HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.Progress.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ComboBox
+                            MinHeight="57" 
+                            HorizontalContentAlignment="Stretch" 
+                            SelectedValuePath="PackageStorePath" 
+                            SelectedValue="{Binding SelectedLetter.CurrentValue}" 
+                            ItemsSource="{Binding Letters.CurrentValue}" 
+                            IsEnabled="{Binding Letters.Progress.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
                                     <volume:VolumeControl
@@ -67,6 +73,13 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+
+                        <TextBlock 
+                            Text="{localization:Loc Dialogs_NewVolume_None}"
+                            Foreground="DarkRed"
+                            TextWrapping="Wrap"
+                            Margin="0 6"
+                            Visibility="{Binding HasAnyLetter, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
 
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"

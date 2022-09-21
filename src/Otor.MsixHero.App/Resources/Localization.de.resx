@@ -4282,4 +4282,7 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
     <value>Letzte 7 Tage</value>
   </data>
+  <data name="Dialogs_NewVolume_None" xml:space="preserve">
+    <value>Es sind keine Datenträger für ein neues MSIX-Paketvolumen verfügbar.</value>
+  </data>
 </root>

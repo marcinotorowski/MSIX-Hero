@@ -4285,4 +4285,7 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
     <value>Ostatnich 7 dni</value>
   </data>
+  <data name="Dialogs_NewVolume_None" xml:space="preserve">
+    <value>Nie istnieje żaden wolny dysk do stworzenia nowego woluminu dla pakietów MSIX.</value>
+  </data>
 </root>

@@ -4285,4 +4285,7 @@ Click the icon again to remove the star.</value>
   <data name="EventViewer_Filter_TimeSpan_Week" xml:space="preserve">
     <value>Last 7 days</value>
   </data>
+  <data name="Dialogs_NewVolume_None" xml:space="preserve">
+    <value>There are no disks available for a new MSIX package volume.</value>
+  </data>
 </root>

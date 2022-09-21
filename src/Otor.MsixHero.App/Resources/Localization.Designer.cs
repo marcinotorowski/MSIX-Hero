@@ -3841,6 +3841,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no disks available for a new MSIX package volume..
+        /// </summary>
+        public static string Dialogs_NewVolume_None {
+            get {
+                return ResourceManager.GetString("Dialogs_NewVolume_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add volume.
         /// </summary>
         public static string Dialogs_NewVolume_OkButton {

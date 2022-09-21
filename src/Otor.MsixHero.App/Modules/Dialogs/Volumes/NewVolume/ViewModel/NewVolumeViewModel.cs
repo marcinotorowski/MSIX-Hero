@@ -36,6 +36,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
     public class NewVolumeViewModel : ChangeableDialogViewModel
     {
         private readonly IMsixHeroApplication _application;
+        private readonly IInteractionService _interactionService;
         private readonly IUacElevation _elevation;
 
         public NewVolumeViewModel(
@@ -43,13 +44,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
             IInteractionService interactionService,
             IUacElevation elevation) : base("New volume", interactionService)
         {
+            this.HasAnyLetter = true;
+
+            this._interactionService = interactionService;
             this._application = application;
             this._elevation = elevation;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
             // This can be longer…
             var taskForFreeLetters = this.GetLetters();
-
             taskForFreeLetters.ContinueWith(t =>
             {
                 if (t.IsCanceled || t.IsFaulted)
@@ -66,8 +69,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
 #pragma warning disable 4014
                 this.Letters.Load(Task.FromResult(t.Result));
+                this.HasAnyLetter = t.Result.Any();
+                this.OnPropertyChanged(nameof(this.HasAnyLetter));
 #pragma warning restore 4014
-            });
+            },
+            CancellationToken.None,
+            TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, 
+            TaskScheduler.FromCurrentSynchronizationContext());
 
             this.Letters = new AsyncProperty<List<VolumeCandidateViewModel>>();
             this.SelectedLetter = new ChangeableProperty<string>();
@@ -84,12 +92,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
         public AsyncProperty<List<VolumeCandidateViewModel>> Letters { get; }
 
+        public bool HasAnyLetter { get; private set; }
+
         public ChangeableProperty<bool> SetAsDefault { get; }
 
         public ChangeableProperty<string> SelectedLetter { get; }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            if (!this.HasAnyLetter)
+            {
+                this._interactionService.ShowError(Resources.Localization.Dialogs_NewVolume_None);
+                return false;
+            }
+
             var drivePath = System.IO.Path.Combine(this.SelectedLetter.CurrentValue ?? "C:\\", this.Path.CurrentValue ?? string.Empty);
 
             progress.Report(new ProgressData(20, Resources.Localization.Dialogs_NewVolume_Adding));
