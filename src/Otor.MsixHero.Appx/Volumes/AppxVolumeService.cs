@@ -397,6 +397,13 @@ namespace Otor.MsixHero.Appx.Volumes
                     continue;
                 }
 
+                if (item.MountPoint == item.PackageStorePath)
+                {
+                    // workaround?
+                    Logger.Warn().WriteLine($"Ignoring drive {item.PackageStorePath}...");
+                    continue;
+                }
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var packageStorePath = item.PackageStorePath;
