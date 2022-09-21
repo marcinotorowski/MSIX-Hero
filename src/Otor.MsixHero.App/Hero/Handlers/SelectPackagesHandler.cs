@@ -5,7 +5,7 @@ using System.Threading;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
@@ -23,7 +23,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         protected override void Handle(SelectPackagesCommand request)
         {
-            IList<InstalledPackage> selected;
+            IList<PackageEntry> selected;
             List<string> actualSelection;
 
             switch (request.SelectionMode)
@@ -59,7 +59,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             
             if (!actualSelection.Any())
             {
-                selected = new List<InstalledPackage>();
+                selected = new List<PackageEntry>();
             }
             else if (actualSelection.Count == 1)
             {
@@ -67,7 +67,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 {
                     this._packageListSynchronizer.EnterReadLock();
                     var singleSelection = this._commandExecutor.ApplicationState.Packages.AllPackages.FirstOrDefault(a => string.Equals(a.PackageFullName, actualSelection[0], StringComparison.OrdinalIgnoreCase));
-                    selected = singleSelection != null ? new List<InstalledPackage> { singleSelection } : new List<InstalledPackage>();
+                    selected = singleSelection != null ? new List<PackageEntry> { singleSelection } : new List<PackageEntry>();
                 }
                 finally
                 {

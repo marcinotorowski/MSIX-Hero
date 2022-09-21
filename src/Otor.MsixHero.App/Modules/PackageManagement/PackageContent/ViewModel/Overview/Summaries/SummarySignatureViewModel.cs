@@ -22,6 +22,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Signing;
@@ -42,7 +43,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         private string _certificateFile;
         private string _packagePath;
 
-        public SummarySignatureViewModel(IPackageContentItemNavigation navigation, IInteractionService interactionService, IUacElevation uacElevation)
+        public SummarySignatureViewModel(IInteractionService interactionService, IUacElevation uacElevation)
         {
             this._interactionService = interactionService;
             this._uacElevation = uacElevation;
@@ -103,7 +104,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public AsyncProperty<TrustStatus> TrustStatus { get; } = new AsyncProperty<TrustStatus>(isLoading: true);
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             return this.TrustStatus.Load(this.LoadSignature(filePath, cancellationToken));
         }

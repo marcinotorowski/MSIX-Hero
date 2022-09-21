@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Mvvm.Changeable;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Services;
@@ -35,19 +35,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             return newObj;
         }
         
-        public static SharedPackageViewModel FromInstalledPackage(InstalledPackage installedPackage)
+        public static SharedPackageViewModel FromInstalledPackage(PackageEntry packageEntry)
         {
             var newObj = new SharedPackageViewModel();
-            newObj.FamilyName.CurrentValue = installedPackage.PackageFamilyName;
-            newObj.DisplayName = installedPackage.DisplayName;
-            newObj.FilePath.CurrentValue = installedPackage.ManifestLocation;
+            newObj.FamilyName.CurrentValue = packageEntry.PackageFamilyName;
+            newObj.DisplayName = packageEntry.DisplayName;
+            newObj.FilePath.CurrentValue = packageEntry.ManifestPath;
             newObj.Type.CurrentValue = SharedPackageItemType.FilePath;
-            newObj.Color = installedPackage.TileColor;
-            newObj.PublisherDisplayName = installedPackage.DisplayName;
-            newObj.Version = installedPackage.DisplayName;
-            newObj.LogoPath = installedPackage.Image;
+            newObj.Color = packageEntry.TileColor;
+            newObj.PublisherDisplayName = packageEntry.DisplayName;
+            newObj.Version = packageEntry.DisplayName;
+            newObj.LogoPath = packageEntry.ImagePath;
+            newObj.Logo = packageEntry.ImageContent;
             newObj.Type.CurrentValue = SharedPackageItemType.Installed;
-            newObj.FullName.CurrentValue = installedPackage.PackageFullName;
+            newObj.FullName.CurrentValue = packageEntry.PackageFullName;
             newObj.Commit();
 
             return newObj;
@@ -96,7 +97,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 var installedPackage = await packageQueryService.GetInstalledPackageByFamilyName(familyName, cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (installedPackage != null)
                 {
-                    var ip = await this.SetFromFilePath(installedPackage.ManifestLocation, cancellationToken).ConfigureAwait(false);
+                    var ip = await this.SetFromFilePath(installedPackage.ManifestPath, cancellationToken).ConfigureAwait(false);
                     this.Type.CurrentValue = SharedPackageItemType.FamilyName;
                     return ip;
                 }
@@ -136,7 +137,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 this.FilePath.CurrentValue = filePath;
                 this.PublisherDisplayName = pkg.PublisherDisplayName;
                 this.Logo = pkg.Logo;
-                this.LogoPath = null;
                 this.Version = pkg.Version;
                 this.FamilyName.CurrentValue = pkg.FamilyName;
                 this.FullName.CurrentValue = pkg.FullName;

@@ -17,332 +17,300 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
-using Otor.MsixHero.Appx.Diagnostic.Registry;
-using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
-using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.Appx.Packaging.Services
+namespace Otor.MsixHero.Appx.Packaging.Services;
+
+public class AppxPackageQueryService : IAppxPackageQueryService
 {
-    [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class AppxPackageQueryService : IAppxPackageQueryService
+    public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
+
+    private static readonly LogSource Logger = new();
+    private readonly IConfigurationService _configurationService;
+
+    public AppxPackageQueryService(IConfigurationService configurationService)
     {
-        public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
+        this._configurationService = configurationService;
+    }
 
-        private static readonly LogSource Logger = new();
-        private readonly IRegistryManager _registryManager;
-        public readonly IConfigurationService ConfigurationService;
+    public Task<List<User>> GetUsersForPackage(PackageEntry packageEntry, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        return GetUsersForPackage(packageEntry.Name, cancellationToken, progress);
+    }
 
-        public AppxPackageQueryService(IRegistryManager registryManager, IConfigurationService configurationService)
+    public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        Logger.Info().WriteLine("Getting users who installed package {0}…", packageName);
+        if (!await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
         {
-            _registryManager = registryManager;
-            ConfigurationService = configurationService;
+            Logger.Info().WriteLine("The user is not administrator. Returning an empty list.");
+            return new List<User>();
         }
 
-        public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            return GetUsersForPackage(package.Name, cancellationToken, progress);
-        }
-
-        public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            Logger.Info().WriteLine("Getting users who installed package {0}…", packageName);
-            if (!await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+        var result = await Task.Run(
+            () =>
             {
-                Logger.Info().WriteLine("The user is not administrator. Returning an empty list.");
-                return new List<User>();
-            }
+                var list = PackageManager.Value.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
+                return list;
+            },
+            cancellationToken).ConfigureAwait(false);
 
-            var result = await Task.Run(
-                () =>
-                {
-                    var list = PackageManager.Value.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
-                    return list;
-                },
-                cancellationToken).ConfigureAwait(false);
+        Logger.Info().WriteLine("Returning {0} users…", result.Count);
+        return result;
+    }
 
-            Logger.Info().WriteLine("Returning {0} users…", result.Count);
-            return result;
+    public Task<List<PackageEntry>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        return QueryInstalledPackages(null, mode, cancellationToken, progress);
+    }
+
+    public async Task<List<PackageEntry>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        if (mode == PackageFindMode.Auto)
+        {
+            mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
         }
 
-        public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageFullName) : PackageManager.Value.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
+        if (find == null)
         {
-            return QueryInstalledPackages(null, mode, cancellationToken, progress);
-        }
+            var packageIdentity = PackageIdentity.FromFullName(packageFullName);
+            find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManager.Value.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
 
-        public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            if (mode == PackageFindMode.Auto)
-            {
-                mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
-            }
-
-            var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageFullName) : PackageManager.Value.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
             if (find == null)
             {
-                var packageIdentity = PackageIdentity.FromFullName(packageFullName);
-                find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManager.Value.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
+                return new List<PackageEntry>();
+            }
+        }
 
-                if (find == null)
+        var dependencies = find.Dependencies;
+
+        var list = new List<PackageEntry>();
+
+        foreach (var dep in dependencies.Where(p => p.IsOptional))
+        {
+            var converted = await dep.ToPackageEntry(false, cancellationToken).ConfigureAwait(false);
+            list.Add(converted);
+        }
+
+        return list;
+    }
+
+    public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        using var reader = new PackageIdentityFileReaderAdapter(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers, packageName);
+        var manifestReader = new AppxManifestReader();
+        // ReSharper disable once AccessToDisposedClosure
+        var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+        return package;
+    }
+
+    public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        using IAppxFileReader reader = new FileInfoFileReaderAdapter(manifestPath);
+        var manifestReader = new AppxManifestReader();
+        // ReSharper disable once AccessToDisposedClosure
+        var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+        return package;
+    }
+
+    public async Task<PackageEntry> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        var pkgs = await QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
+        return pkgs.FirstOrDefault();
+    }
+
+    public async Task<PackageEntry> GetInstalledPackageByFamilyName(string familyName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+        if (mode == PackageFindMode.Auto)
+        {
+            mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+        }
+
+        Package found;
+
+        switch (mode)
+        {
+            case PackageFindMode.CurrentUser:
+                found = await Task.Run(() => PackageManager.Value.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                break;
+            case PackageFindMode.AllUsers:
+                found = await Task.Run(() => PackageManager.Value.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                break;
+            default:
+                throw new InvalidOperationException();
+        }
+
+        if (found == null)
+        {
+            return null;
+        }
+
+        return await GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<List<PackageEntry>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+    {
+        var list = new List<PackageEntry>();
+        var provisioned = new HashSet<string>();
+
+        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+        if (mode == PackageFindMode.Auto)
+        {
+            mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+        }
+
+        progress?.Report(new ProgressData(0, Resources.Localization.Packages_GettingApps));
+
+        if (isAdmin)
+        {
+            Logger.Info().WriteLine("Getting provisioned packages…");
+            var tempFile = Path.GetTempFileName();
+            try
+            {
+                var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";
+                var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
                 {
-                    return new List<InstalledPackage>();
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Logger.Debug().WriteLine("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
+                var p = Process.Start(proc);
+                if (p == null)
+                {
+                    Logger.Error().WriteLine("Could not get the list of provisioned apps.");
+                }
+                else
+                {
+                    await p.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+                    foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
+                    {
+                        provisioned.Add(line.Replace("~", string.Empty));
+                    }
                 }
             }
-
-            var dependencies = find.Dependencies;
-
-            var list = new List<InstalledPackage>();
-
-            foreach (var dep in dependencies.Where(p => p.IsOptional))
+            finally
             {
-                var converted = await ConvertFrom(dep, cancellationToken).ConfigureAwait(false);
-                list.Add(converted);
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
             }
-
-            return list;
         }
 
-        public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        progress?.Report(new ProgressData(5, Resources.Localization.Packages_GettingApps));
+
+        IList<Package> allPackages;
+
+        if (string.IsNullOrEmpty(packageName))
         {
-            using var reader = new PackageIdentityFileReaderAdapter(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers, packageName);
-            var manifestReader = new AppxManifestReader();
-            // ReSharper disable once AccessToDisposedClosure
-            var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
-            return package;
-        }
-
-        public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            using IAppxFileReader reader = new FileInfoFileReaderAdapter(manifestPath);
-            var manifestReader = new AppxManifestReader();
-            // ReSharper disable once AccessToDisposedClosure
-            var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
-            return package;
-        }
-
-        public async Task<InstalledPackage> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            var pkgs = await QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
-            return pkgs.FirstOrDefault();
-        }
-
-        public async Task<InstalledPackage> GetInstalledPackageByFamilyName(string familyName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
-            if (mode == PackageFindMode.Auto)
-            {
-                mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
-            }
-
-            Package found;
-
+            Logger.Info().WriteLine("Getting all packages by find mode = '{0}'", mode);
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
-                    found = await Task.Run(() => PackageManager.Value.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                    allPackages = await Task.Run(() => PackageManager.Value.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
                 case PackageFindMode.AllUsers:
-                    found = await Task.Run(() => PackageManager.Value.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                    allPackages = await Task.Run(() => PackageManager.Value.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
                 default:
-                    throw new InvalidOperationException();
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
-
-            if (found == null)
+        }
+        else
+        {
+            Logger.Info().WriteLine("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
+            switch (mode)
             {
-                return null;
-            }
+                case PackageFindMode.CurrentUser:
+                {
+                    var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
 
-            return await GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
+                    allPackages = new List<Package>();
+                    if (pkg != null)
+                    {
+                        allPackages.Add(pkg);
+                    }
+
+                    break;
+                }
+
+                case PackageFindMode.AllUsers:
+                {
+                    var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
+
+                    allPackages = new List<Package>();
+                    if (pkg != null)
+                    {
+                        allPackages.Add(pkg);
+                    }
+
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
         }
 
-        private async Task<List<InstalledPackage>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        progress?.Report(new ProgressData(30, Resources.Localization.Packages_GettingApps));
+
+        var total = 10.0;
+        var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
+        
+        var tasks = new HashSet<Task<PackageEntry>>();
+        var config = await this._configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
+
+        int maxThreads;
+        if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
         {
-            var list = new List<InstalledPackage>();
-            var provisioned = new HashSet<string>();
+            maxThreads = 1;
+        }
+        else if (config.Advanced?.MaxThreadsForGetPackages == null)
+        {
+            maxThreads = Environment.ProcessorCount;
+        }
+        else
+        {
+            maxThreads = Math.Min(config.Advanced?.MaxThreadsForGetPackages ?? 1, Environment.ProcessorCount);
+        }
 
-            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
-            if (mode == PackageFindMode.Auto)
+        var sw = new Stopwatch();
+        sw.Start();
+
+        foreach (var item in allPackages)
+        {
+            total += single;
+            progress?.Report(new ProgressData((int)total, Resources.Localization.Packages_GettingApps));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (tasks.Count >= maxThreads)
             {
-                mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
-            }
+                var awaited = await Task.WhenAny(tasks).ConfigureAwait(false);
+                tasks.Remove(awaited);
 
-            progress?.Report(new ProgressData(0, Resources.Localization.Packages_GettingApps));
-
-            if (isAdmin)
-            {
-                Logger.Info().WriteLine("Getting provisioned packages…");
-                var tempFile = Path.GetTempFileName();
-                try
-                {
-                    var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";
-                    var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
-                    {
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    Logger.Debug().WriteLine("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
-                    var p = Process.Start(proc);
-                    if (p == null)
-                    {
-                        Logger.Error().WriteLine("Could not get the list of provisioned apps.");
-                    }
-                    else
-                    {
-                        await p.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-                        foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
-                        {
-                            provisioned.Add(line.Replace("~", string.Empty));
-                        }
-                    }
-                }
-                finally
-                {
-                    if (File.Exists(tempFile))
-                    {
-                        File.Delete(tempFile);
-                    }
-                }
-            }
-
-            progress?.Report(new ProgressData(5, Resources.Localization.Packages_GettingApps));
-
-            IList<Package> allPackages;
-
-            if (string.IsNullOrEmpty(packageName))
-            {
-                Logger.Info().WriteLine("Getting all packages by find mode = '{0}'", mode);
-                switch (mode)
-                {
-                    case PackageFindMode.CurrentUser:
-                        allPackages = await Task.Run(() => PackageManager.Value.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case PackageFindMode.AllUsers:
-                        allPackages = await Task.Run(() => PackageManager.Value.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-                }
-            }
-            else
-            {
-                Logger.Info().WriteLine("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
-                switch (mode)
-                {
-                    case PackageFindMode.CurrentUser:
-                        {
-                            var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
-
-                            allPackages = new List<Package>();
-                            if (pkg != null)
-                            {
-                                allPackages.Add(pkg);
-                            }
-
-                            break;
-                        }
-
-                    case PackageFindMode.AllUsers:
-                        {
-                            var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
-
-                            allPackages = new List<Package>();
-                            if (pkg != null)
-                            {
-                                allPackages.Add(pkg);
-                            }
-
-                            break;
-                        }
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-                }
-            }
-
-            progress?.Report(new ProgressData(30, Resources.Localization.Packages_GettingApps));
-
-            var total = 10.0;
-            var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
-
-            var all = allPackages.Count;
-
-            var tasks = new HashSet<Task<InstalledPackage>>();
-            var config = await ConfigurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
-
-            int maxThreads;
-            if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
-            {
-                maxThreads = 1;
-            }
-            else if (config.Advanced?.MaxThreadsForGetPackages == null)
-            {
-                maxThreads = Environment.ProcessorCount;
-            }
-            else
-            {
-                maxThreads = Math.Min(config.Advanced?.MaxThreadsForGetPackages ?? 1, Environment.ProcessorCount);
-            }
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            foreach (var item in allPackages)
-            {
-                total += single;
-                progress?.Report(new ProgressData((int)total, Resources.Localization.Packages_GettingApps));
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (tasks.Count >= maxThreads)
-                {
-                    var awaited = await Task.WhenAny(tasks).ConfigureAwait(false);
-                    tasks.Remove(awaited);
-
-                    var converted = await awaited.ConfigureAwait(false);
-                    if (converted != null)
-                    {
-                        converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
-                        if (provisioned.Contains(converted.PackageFullName))
-                        {
-                            converted.IsProvisioned = true;
-                        }
-
-                        list.Add(converted);
-                    }
-                }
-
-                tasks.Add(ConvertFrom(item, cancellationToken, progress));
-            }
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            foreach (var item in tasks)
-            {
-                var converted = await item.ConfigureAwait(false);
-
+                var converted = await awaited.ConfigureAwait(false);
                 if (converted != null)
                 {
-                    converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
                     if (provisioned.Contains(converted.PackageFullName))
                     {
                         converted.IsProvisioned = true;
@@ -352,213 +320,62 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                 }
             }
 
-            sw.Stop();
-
-            Logger.Info().WriteLine("Returning {0} packages (the operation took {1})…", list.Count, sw.Elapsed);
-            return list;
+            tasks.Add(item.ToPackageEntry(false, cancellationToken));
         }
 
-        private async Task<InstalledPackage> ConvertFrom(Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+        foreach (var item in tasks)
         {
-            Logger.Debug().WriteLine("Getting details about package {0}…", item.Id.Name);
-            string installLocation;
-            DateTime installDate;
-            try
-            {
-                installLocation = item.InstalledLocation?.Path;
-            }
-            catch (Exception e)
-            {
-                Logger.Warn().WriteLine("Installed location for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
-                Logger.Verbose().WriteLine(e);
-                installLocation = null;
-            }
+            var converted = await item.ConfigureAwait(false);
 
-            if (installLocation != null)
+            if (converted != null)
             {
-                try
+                if (provisioned.Contains(converted.PackageFullName))
                 {
-                    installDate = item.InstalledDate.LocalDateTime;
-                }
-                catch (COMException e)
-                {
-                    if (e.ErrorCode != -2147023728)
-                    {
-                        throw;
-                    }
-
-                    Logger.Warn().WriteLine("Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
-                    Logger.Verbose().WriteLine(e);
-                    installDate = DateTime.MinValue;
-                }
-            }
-            else
-            {
-                installDate = DateTime.MinValue;
-            }
-
-            MsixPackageVisuals details;
-            RegistryMountState hasRegistry;
-
-            if (installLocation == null)
-            {
-                hasRegistry = RegistryMountState.NotApplicable;
-                details = new MsixPackageVisuals(item.Id.Name, item.Id.Publisher, null, null, "#000000", 0);
-            }
-            else
-            {
-                details = await GetVisualsFromManifest(installLocation, cancellationToken).ConfigureAwait(false);
-                hasRegistry = await _registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
-            }
-
-            var pkg = new InstalledPackage
-            {
-                DisplayName = details.DisplayName,
-                Name = item.Id.Name,
-                Image = details.Logo,
-                PackageFullName = item.Id.FullName,
-                InstallLocation = installLocation,
-                PackageFamilyName = item.Id.FamilyName,
-                Description = details.Description,
-                DisplayPublisherName = details.DisplayPublisherName,
-                Publisher = item.Id.Publisher,
-                ResourceId = item.Id.ResourceId,
-                Architecture = Enum.Parse<AppxPackageArchitecture>(item.Id.Architecture.ToString(), true),
-                IsFramework = item.IsFramework,
-                IsOptional = item.IsOptional,
-                TileColor = details.Color,
-                PackageType = details.PackageType,
-                Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
-                SignatureKind = Convert(item.SignatureKind),
-                HasRegistry = hasRegistry,
-                InstallDate = installDate,
-                AppInstallerUri = item.GetAppInstallerInfo()?.Uri
-            };
-
-            if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
-                                            pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
-                                            pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
-            {
-                var priFile = Path.Combine(installLocation, "resources.pri");
-
-                pkg.DisplayName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayName);
-                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayPublisherName);
-                pkg.Description = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.Description);
-
-                if (string.IsNullOrEmpty(pkg.DisplayName))
-                {
-                    pkg.DisplayName = pkg.Name;
+                    converted.IsProvisioned = true;
                 }
 
-                if (string.IsNullOrEmpty(pkg.DisplayPublisherName))
-                {
-                    pkg.DisplayPublisherName = pkg.Publisher;
-                }
+                list.Add(converted);
             }
-
-            return pkg;
         }
 
-        private static string SidToAccountName(string sidString)
+        sw.Stop();
+
+        Logger.Info().WriteLine("Returning {0} packages (the operation took {1})…", list.Count, sw.Elapsed);
+        return list;
+    }
+    
+    private static string SidToAccountName(string sidString)
+    {
+        var sid = new SecurityIdentifier(sidString);
+        try
         {
-            var sid = new SecurityIdentifier(sidString);
-            try
-            {
-                var account = (NTAccount)sid.Translate(typeof(NTAccount));
-                return account.ToString();
-            }
-            catch (IdentityNotMappedException)
-            {
-                return sidString;
-            }
+            var account = (NTAccount)sid.Translate(typeof(NTAccount));
+            return account.ToString();
         }
-
-        private static async Task<MsixPackageVisuals> GetVisualsFromManifest(string installLocation, CancellationToken cancellationToken = default)
+        catch (IdentityNotMappedException)
         {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var reader = await AppxManifestSummaryReader.FromInstallLocation(installLocation).ConfigureAwait(false);
-                var logo = Path.Combine(installLocation, reader.Logo);
-
-                if (File.Exists(Path.Combine(installLocation, logo)))
-                {
-                    return new MsixPackageVisuals(
-                        reader.DisplayName,
-                        reader.DisplayPublisher,
-                        logo,
-                        reader.Description,
-                        reader.AccentColor,
-                        reader.PackageType);
-                }
-
-                var extension = Path.GetExtension(logo);
-                var baseName = Path.GetFileNameWithoutExtension(logo);
-                var baseFolder = Path.GetDirectoryName(logo);
-
-                logo = null;
-
-                // ReSharper disable once AssignNullToNotNullAttribute
-                var dirInfo = new DirectoryInfo(Path.Combine(installLocation, baseFolder));
-                if (dirInfo.Exists)
-                {
-                    var found = dirInfo.EnumerateFiles(baseName + "*" + extension).FirstOrDefault();
-                    if (found != null)
-                    {
-                        logo = found.FullName;
-                    }
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-                return new MsixPackageVisuals(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor, reader.PackageType);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                return new MsixPackageVisuals();
-            }
+            return sidString;
         }
+    }
 
-        private static SignatureKind Convert(PackageSignatureKind signatureKind)
+    public struct MsixPackageVisuals
+    {
+        public MsixPackageVisuals(string displayName, string displayPublisherName, string logoRelativePath, string description, string color, MsixPackageType packageType)
         {
-            switch (signatureKind)
-            {
-                case PackageSignatureKind.None:
-                    return SignatureKind.Unsigned;
-                case PackageSignatureKind.Developer:
-                    return SignatureKind.Developer;
-                case PackageSignatureKind.Enterprise:
-                    return SignatureKind.Enterprise;
-                case PackageSignatureKind.Store:
-                    return SignatureKind.Store;
-                case PackageSignatureKind.System:
-                    return SignatureKind.System;
-                default:
-                    throw new NotSupportedException();
-            }
+            DisplayName = displayName;
+            DisplayPublisherName = displayPublisherName;
+            LogoRelativePath = logoRelativePath;
+            Description = description;
+            Color = color;
+            PackageType = packageType;
         }
 
-        public struct MsixPackageVisuals
-        {
-            public MsixPackageVisuals(string displayName, string displayPublisherName, string logo, string description, string color, MsixPackageType packageType)
-            {
-                DisplayName = displayName;
-                DisplayPublisherName = displayPublisherName;
-                Logo = logo;
-                Description = description;
-                Color = color;
-                PackageType = packageType;
-            }
-
-            public string Description;
-            public string DisplayName;
-            public string DisplayPublisherName;
-            public string Logo;
-            public string Color;
-            public MsixPackageType PackageType;
-        }
+        public string Description;
+        public string DisplayName;
+        public string DisplayPublisherName;
+        public string LogoRelativePath;
+        public string Color;
+        public MsixPackageType PackageType;
     }
 }

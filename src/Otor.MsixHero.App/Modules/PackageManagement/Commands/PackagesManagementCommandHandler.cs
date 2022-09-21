@@ -30,7 +30,6 @@ using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
@@ -194,7 +193,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             var selected = selection.First();
-            if (selected?.InstallLocation == null)
+            if (selected?.InstallDirPath == null)
             {
                 return false;
             }
@@ -337,7 +336,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var manager = this._uacElevation.AsAdministrator<IRegistryManager>();
-                await manager.MountRegistry(selection.First(), true).ConfigureAwait(false);
+                await manager.MountRegistry(selection.First().Name, selection.First().InstallDirPath, true).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -353,7 +352,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 return;
             }
 
-            if (selection.First().InstallLocation == null)
+            if (selection.First().InstallDirPath == null)
             {
                 return;
             }
@@ -361,7 +360,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var manager = this._uacElevation.AsAdministrator<IRegistryManager>();
-                await manager.DismountRegistry(selection.First()).ConfigureAwait(false);
+                await manager.DismountRegistry(selection.First().Name).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -378,7 +377,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             var selected = selection.First();
-            if (selected?.InstallLocation == null)
+            if (selected?.InstallDirPath == null)
             {
                 return false;
             }
@@ -386,7 +385,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IRegistryManager>();
-                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallDirPath, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.NotMounted;
             }
             catch (Exception)
@@ -404,7 +403,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             var selected = selection.First();
-            if (selected.InstallLocation == null)
+            if (selected.InstallDirPath == null)
             {
                 return false;
             }
@@ -412,7 +411,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IRegistryManager>();
-                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallDirPath, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.Mounted;
             }
             catch (Exception)
@@ -427,7 +426,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
@@ -485,7 +484,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 #pragma warning restore 4014
                 }
 
-                var allPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                var allPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
                     
                 if (appxIdentity != null)
                 {
@@ -532,7 +531,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
-                await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
+                await manager.Run(selection.ManifestPath, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
             {
@@ -722,19 +721,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this._application.ApplicationState.Packages.SelectedPackages.Any(p => p.SignatureKind == SignatureKind.Store || p.AppInstallerUri != null);
         }
 
-        private bool CanChangeVolume() => this.GetSingleOrDefaultSelection()?.InstallLocation != null;
+        private bool CanChangeVolume() => this.GetSingleOrDefaultSelection()?.InstallDirPath != null;
 
         private void OnChangeVolume()
         {
             var selection = this.GetSingleOrDefaultSelection();
-            if (selection?.InstallLocation == null)
+            if (selection?.InstallDirPath == null)
             {
                 return;
             }
 
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Volumes);
             IDialogParameters parameters = new DialogParameters();
-            parameters.Add("file", this.GetSingleOrDefaultSelection().InstallLocation);
+            parameters.Add("file", this.GetSingleOrDefaultSelection().InstallDirPath);
 
             this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesChangeVolume, parameters, this.OnDialogOpened);
         }
@@ -750,7 +749,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
             var parameters = new DialogParameters
             {
-                { "file", selection.ManifestLocation }
+                { "file", selection.ManifestPath }
             };
 
             this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, parameters, this.OnDialogOpened);
@@ -847,7 +846,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         break;
                 }
 
-                await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -878,28 +877,28 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private void OnOpenManifest()
         {
             var package = this.GetSingleOrDefaultSelection();
-            if (package?.ManifestLocation == null)
+            if (package?.ManifestPath == null)
             {
                 return;
             }
 
             var config = this._configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            this._fileInvoker.Execute(config.ManifestEditorType, config.ManifestEditor, package.ManifestLocation);
+            this._fileInvoker.Execute(config.ManifestEditorType, config.ManifestEditor, package.ManifestPath);
         }
 
         private void OnOpenConfigJson()
         {
             var package = this.GetSingleOrDefaultSelection();
-            if (package?.PsfConfig == null)
+            if (package?.PsfConfigPath == null)
             {
                 return;
             }
             
             var config = this._configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            this._fileInvoker.Execute(config.PsfEditorType, config.PsfEditor, package.PsfConfig);
+            this._fileInvoker.Execute(config.PsfEditorType, config.PsfEditor, package.PsfConfigPath);
         }
 
-        private InstalledPackage GetSingleOrDefaultSelection()
+        private PackageEntry GetSingleOrDefaultSelection()
         {
             if (this._application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
@@ -985,7 +984,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                             toCopy.AppendLine(pkg.Publisher);
                             break;
                         case PackageProperty.InstallPath:
-                            toCopy.AppendLine(pkg.InstallLocation);
+                            toCopy.AppendLine(pkg.InstallDirPath);
                             break;
                     }
                 }
@@ -1008,12 +1007,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private void OnOpenExplorer()
         {
             var selection = this.GetSingleOrDefaultSelection();
-            if (selection?.ManifestLocation == null)
+            if (selection?.ManifestPath == null)
             {
                 return;
             }
             
-            Process.Start("explorer.exe", "/select," + selection.ManifestLocation);
+            Process.Start("explorer.exe", "/select," + selection.ManifestPath);
         }
 
         private bool CanOpenUserExplorer()
@@ -1073,7 +1072,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             string moduleName,
             string navigationPath,
             string fileParameterName = "file",
-            Func<InstalledPackage, string> valueGetter = null)
+            Func<PackageEntry, string> valueGetter = null)
         {
             var selected = this._application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (selected == null)
@@ -1083,7 +1082,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 
             var parameters = new DialogParameters
             {
-                { fileParameterName, valueGetter == null ? selected.ManifestLocation : valueGetter(selected) }
+                { fileParameterName, valueGetter == null ? selected.ManifestPath : valueGetter(selected) }
             };
 
             this._prismServices.ModuleManager.LoadModule(moduleName);

@@ -27,31 +27,55 @@ namespace Otor.MsixHero.App.Helpers
                 throw new NotSupportedException();
             }
 
-            if (e.NewValue == DependencyProperty.UnsetValue || e.NewValue is not string newValueAsString)
+            if (e.NewValue == DependencyProperty.UnsetValue)
             {
                 image.Source = null;
                 return;
             }
 
-            if (!File.Exists(newValueAsString))
+            if (e.NewValue is BitmapImage bitmapImage)
+            {
+                image.Source = bitmapImage;
+            }
+            else if (e.NewValue is byte[] byteArray)
+            {
+                var memStream = new MemoryStream(byteArray);
+
+                var bi = new BitmapImage();
+                bi.BeginInit();
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.StreamSource = memStream;
+                bi.EndInit();
+                bi.Freeze();
+
+                image.Source = bi;
+            }
+            else if(e.NewValue is string newValueAsString && !string.IsNullOrEmpty(newValueAsString))
+            {
+                if (!File.Exists(newValueAsString))
+                {
+                    image.Source = null;
+                    return;
+                }
+
+                var fileStream = File.OpenRead(newValueAsString);
+                var memStream = new MemoryStream();
+                fileStream.CopyTo(memStream);
+                memStream.Seek(0, SeekOrigin.Begin);
+
+                var bi = new BitmapImage();
+                bi.BeginInit();
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.StreamSource = memStream;
+                bi.EndInit();
+                bi.Freeze();
+
+                image.Source = bi;
+            }
+            else
             {
                 image.Source = null;
-                return;
             }
-
-            var fileStream = File.OpenRead(newValueAsString);
-            var memStream = new MemoryStream();
-            fileStream.CopyTo(memStream);
-            memStream.Seek(0, SeekOrigin.Begin);
-            
-            var bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.StreamSource = memStream;
-            bi.EndInit();
-            bi.Freeze();
-
-            image.Source = bi;
         }
     }
 }

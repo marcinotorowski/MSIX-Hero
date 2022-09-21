@@ -17,7 +17,7 @@
 using System.Collections;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
@@ -33,14 +33,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
                 this.FilePath =
 
                     // ReSharper disable once PossibleMultipleEnumeration
-                    pkgs.OfType<InstalledPackage>().FirstOrDefault()?.ManifestLocation ??
+                    pkgs.OfType<PackageEntry>().FirstOrDefault()?.ManifestPath ??
 
                     // ReSharper disable once PossibleMultipleEnumeration
                     pkgs.OfType<string>().FirstOrDefault();
             }
-            else if (navigationContext.Parameters.First().Value is InstalledPackage ip)
+            else if (navigationContext.Parameters.First().Value is PackageEntry ip)
             {
-                this.FilePath = ip.InstallLocation;
+                this.FilePath = ip.InstallDirPath;
             }
             else if (navigationContext.Parameters.First().Value is string fp)
             {

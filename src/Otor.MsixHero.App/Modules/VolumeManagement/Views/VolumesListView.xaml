@@ -24,6 +24,7 @@
                     Command="Refresh"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         Icon16x16="{StaticResource SmallRefresh}"
                         Content="{localization:Loc Volumes_Refresh}"
                         Style="{StaticResource ActionLabelWithIcon}" />

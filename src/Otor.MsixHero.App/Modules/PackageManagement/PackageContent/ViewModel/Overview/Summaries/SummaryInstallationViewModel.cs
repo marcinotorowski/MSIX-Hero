@@ -14,14 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Prism.Commands;
@@ -43,22 +44,23 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public bool PreciseDate { get; }
 
-        public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             this.IsInstalled = true;
-            if (model.Source is NotInstalledSource)
+            
+            if (installationEntry == null)
             {
                 this.FirstLine = Resources.Localization.PackageExpert_Installation_Status;
             }
-            else if (model.Source.InstallDate != default)
+            else if (installationEntry.InstallDate != default)
             {
                 if (this.PreciseDate)
                 {
-                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, model.Source.InstallDate);
+                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, installationEntry.InstallDate);
                 }
                 else
                 {
-                    var dateHumanized = model.Source.InstallDate.ToString();
+                    var dateHumanized = installationEntry.InstallDate.ToString();
                     this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, dateHumanized);
                 }
             }
@@ -67,36 +69,47 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 this.FirstLine = Resources.Localization.PackageExpert_Installation_StatusDateUnknown;
             }
 
-            if (model.Source is NotInstalledSource)
+            if (installationEntry == null || installationEntry.InstallDate == null)
             {
                 this.IsInstalled = false;
                 this.SecondLine = Resources.Localization.PackageExpert_Installation_NotInstalled;
             }
-            else if (model.Source is StorePackageSource)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_Store;
-            }
-            else if (model.Source is AppInstallerPackageSource)
+            else if (installationEntry.AppInstallerUri != null)
             {
                 this.SecondLine = Resources.Localization.PackageExpert_Installation_AppInstaller;
-            }
-            else if (model.Source is SystemSource)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_System;
-            }
-            else if (model.Source is DeveloperSource)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Dev;
-            }
-            else if (model.Source is StandardSource)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_SideLoading;
+                this.IsInstalled = true;
             }
             else
             {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Unknown;
+                switch (installationEntry.SignatureKind)
+                {
+                    case SignatureKind.Store:
+                        this.IsInstalled = true;
+                        this.SecondLine = Resources.Localization.PackageExpert_Installation_Store;
+                        break;
+                    case SignatureKind.Unsigned:
+                        this.IsInstalled = true;
+                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Dev;
+                        break;
+                    case SignatureKind.System:
+                        this.IsInstalled = true;
+                        this.IsInstalled = true;
+                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_System;
+                        break;
+                    case SignatureKind.Enterprise:
+                    case SignatureKind.Developer:
+                        this.IsInstalled = true;
+                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_SideLoading;
+                        break;
+                    case SignatureKind.Unknown:
+                        this.IsInstalled = false;
+                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Unknown;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
-
+            
             this.ThirdLine = this.AddOnsCount > 1 ? string.Format(Resources.Localization.PackageExpert_Installation_AddOnX, this.AddOnsCount) : Resources.Localization.PackageExpert_Installation_AddOn1;
 
             this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);

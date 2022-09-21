@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.More;
@@ -26,8 +27,13 @@ public class MoreViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationA
 {
     private bool _isInstalled;
 
-    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+    public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
+        if (installEntry != null)
+        {
+            this._isInstalled = true;
+        }
+
         return Task.CompletedTask;
     }
 

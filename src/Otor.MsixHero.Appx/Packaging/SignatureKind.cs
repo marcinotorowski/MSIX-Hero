@@ -14,12 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
+namespace Otor.MsixHero.Appx.Packaging
 {
-    public class NotInstalledSource : AppxSource
+    public enum SignatureKind
     {
-        public NotInstalledSource() : base(null)
-        {
-        }
+        Store,
+        Unsigned,
+        System,
+        Enterprise,
+        Developer,
+        Unknown
     }
 }

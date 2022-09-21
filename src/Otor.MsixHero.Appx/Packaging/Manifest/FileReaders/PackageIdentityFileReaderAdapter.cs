@@ -126,6 +126,21 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             return this.adapter.GetResource(resourceFilePath);
         }
 
+        public bool DirectoryExists(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return true;
+            }
+
+            if (this.adapter == null)
+            {
+                this.adapter = this.GetAdapter();
+            }
+
+            return this.adapter.DirectoryExists(directoryPath);
+        }
+
         public bool FileExists(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))

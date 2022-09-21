@@ -37,23 +37,26 @@
                         DockPanel.Dock="Top" 
                         Style="{StaticResource LabelTextBlock}"
                         Text="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List}" />
-                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <controls:ButtonRowPanel DockPanel.Dock="Top">
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="New">
                             <controls:LabelWithIcon
+                                IsCollapsible="True"
                                 Icon16x16="{StaticResource SmallPlus}"
                                 Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_Add}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Open">
                             <controls:LabelWithIcon
+                                IsCollapsible="True"
                                 Icon16x16="{StaticResource SmallOpen}"
                                 Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_AddFolder}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Delete">
                             <controls:LabelWithIcon
+                                IsCollapsible="True"
                                 Icon16x16="{StaticResource SmallRemove}" 
                                 Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_Remove}" />
                         </Button>
-                    </WrapPanel>
+                    </controls:ButtonRowPanel>
                     <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
                         <ListBox
                             x:Name="ListBox"

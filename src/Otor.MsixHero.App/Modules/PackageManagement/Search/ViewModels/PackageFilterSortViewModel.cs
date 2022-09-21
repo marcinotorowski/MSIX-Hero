@@ -23,7 +23,7 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -373,10 +373,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             switch (mode)
             {
                 case PackageContext.AllUsers:
-                    await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
+                    await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
                     break;
                 case PackageContext.CurrentUser:
-                    await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+                    await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
                     break;
             }
         }

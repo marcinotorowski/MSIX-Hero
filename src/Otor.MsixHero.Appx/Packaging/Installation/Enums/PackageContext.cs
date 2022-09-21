@@ -18,6 +18,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
 {
     public enum PackageContext
     {
+        NotInstalled = 0,
         CurrentUser = 1,
         AllUsers = 2
     }

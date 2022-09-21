@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel;
 
@@ -24,7 +24,7 @@ public class SearchableInstallPackage : InstalledPackageViewModel
     private bool _isEnabled = true;
     private bool _isVisible = true;
 
-    public SearchableInstallPackage(InstalledPackage package) : base(package)
+    public SearchableInstallPackage(PackageEntry packageEntry) : base(packageEntry)
     {
     }
     

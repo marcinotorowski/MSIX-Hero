@@ -10,15 +10,14 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Commo
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.InstalledBy;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Elevation;
-using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 using Prism.Commands;
 
@@ -47,7 +46,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
 
         public SummaryInstallationViewModel Summary { get; }
         
-        public ObservableCollection<InstalledPackage> AddOns { get; private set; }
+        public ObservableCollection<PackageEntry> AddOns { get; private set; }
 
         public UserDetailsViewModel Users { get; private set; }
 
@@ -62,6 +61,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             get
             {
                 return this._findUsers ??= new DelegateCommand(
+                    // ReSharper disable once AsyncVoidLambda
                     async () =>
                     {
 #pragma warning disable 4014
@@ -76,17 +76,24 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             }
         }
 
-        protected override async Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override async Task DoLoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
-            await this.Summary.LoadPackage(model, filePath, cancellationToken).ConfigureAwait(false);
+            var t1 = this.Summary.LoadPackage(model, installationEntry, filePath, cancellationToken);
+            var t2 = PackageEntryFactory.FromFilePath(filePath, cancellationToken: cancellationToken);
+            await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
-            if (model.Source is StorePackageSource storePackageSource)
+            var installPackage = await t2.ConfigureAwait(false);
+            if (installPackage == null)
             {
-                this.ExtraSourceInformation = new StorePackageSourceViewModel(storePackageSource);
+                this.ExtraSourceInformation = null;
             }
-            else if (model.Source is AppInstallerPackageSource appInstallerPackageSource)
+            else if (installPackage.SignatureKind == SignatureKind.Store)
             {
-                this.ExtraSourceInformation = new AppInstallerSourceViewModel(appInstallerPackageSource);
+                this.ExtraSourceInformation = new StorePackageSourceViewModel(installPackage.PackageFamilyName);
+            }
+            else if (installPackage.AppInstallerUri != null)
+            {
+                this.ExtraSourceInformation = new AppInstallerSourceViewModel(installPackage.AppInstallerUri);
             }
             else
             {
@@ -95,8 +102,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
 
             this._filePath = filePath;
             
-            var addOns = new ObservableCollection<InstalledPackage>();
-            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken);
+            var addOns = new ObservableCollection<PackageEntry>();
 
             var usersTask = this.GetUsers(model, false, cancellationToken);
             var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);

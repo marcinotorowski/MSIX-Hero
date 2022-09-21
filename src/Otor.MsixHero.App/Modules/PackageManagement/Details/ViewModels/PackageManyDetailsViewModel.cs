@@ -2,9 +2,8 @@
 using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
-using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -34,7 +33,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
             }
         }
 
-        public ObservableCollection<InstalledPackage> Apps { get; private set; } = new ObservableCollection<InstalledPackage>();
+        public ObservableCollection<PackageEntry> Apps { get; private set; } = new();
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {

@@ -11,22 +11,30 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SelectableInstalledPackageViewModel}">
     <DockPanel>
         <Border
+            Panel.ZIndex="2"
+            ClipToBounds="False"
             x:Name="Logo"
-            Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Grid>
+            Background="#DDDDDD" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Canvas 
+                Width="32" Height="32" 
+                ClipToBounds="False">
                 <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <Image helpers:ImageExtension.SourceImagePath="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" /> 
+                    <Image
+                        helpers:ImageExtension.SourceImagePath="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" 
+                        Source="{StaticResource DummyLogo}"
+                        VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" /> 
                     <!-- <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />-->
                 </Border>
                 <Border
+                    ClipToBounds="False"
+                    Canvas.Right="-5"
+                    Canvas.Bottom="-5"
                     ToolTip="{localization:Loc Packages_List_AppRunning}" 
                     Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="Green" BorderBrush="White" BorderThickness="2">
                     <Path Width="6" Height="8" Fill="White" StrokeThickness="0" Data="M 2 0 L 6 4 2 8 Z" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <Border.RenderTransform>
-                        <TranslateTransform X="8" Y="8" />
-                    </Border.RenderTransform>
+                    
                 </Border>
-            </Grid>
+            </Canvas>
         </Border>
 
         <star:StarControl
@@ -38,10 +46,11 @@
             IsChecked="{Binding HasStar, Mode=TwoWay}" />
 
         <StackPanel 
+            Panel.ZIndex="1"
             x:Name="Column2"
             DockPanel.Dock="Right">
             <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-            <TextBlock Text="{Binding InstallDate, Mode=OneTime, StringFormat='d'}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            <TextBlock Text="{Binding InstallDate, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
         </StackPanel>
 
         <StackPanel 

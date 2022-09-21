@@ -1,13 +1,18 @@
-﻿using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+﻿using System;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source
 {
     public class AppInstallerSourceViewModel : PackageSourceViewModel
     {
-        public AppInstallerSourceViewModel(AppInstallerPackageSource src) : base(src)
+        public AppInstallerSourceViewModel(string src)
+        {
+            this.AppInstallerUri = src;
+        }
+
+        public AppInstallerSourceViewModel(Uri src) : this(src.ToString())
         {
         }
 
-        public string AppInstallerUri => ((AppInstallerPackageSource)this.Src).AppInstallerUri?.ToString();
+        public string AppInstallerUri { get; }
     }
 }

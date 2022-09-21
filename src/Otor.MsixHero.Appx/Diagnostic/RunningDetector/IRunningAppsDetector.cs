@@ -21,6 +21,6 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 {
     public interface IRunningAppsDetector : IObservable<ActivePackageFullNames>, IDisposable
     {
-        IList<string> GetCurrentlyRunningPackageNames();
+        IList<string> GetCurrentlyRunningPackageFamilyNames();
     }
 }

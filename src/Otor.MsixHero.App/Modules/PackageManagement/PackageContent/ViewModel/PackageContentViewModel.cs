@@ -54,7 +54,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             this.Items = new ObservableCollection<IPackageContentItem>();
             this.Header = new HeaderViewModel(this);
 
-            var packageOverview = new PackageOverviewViewModel(this, interactionService, configurationService, eventAggregator, uacElevation, prismServices);
+            var packageOverview = new PackageOverviewViewModel(this, interactionService, uacElevation, prismServices);
             var packageCapabilities = new PackageCapabilitiesViewModel(this);
             var packageApplications = new PackageApplicationsViewModel(this);
             var packagePsf = new PackagePsfViewModel(this);
@@ -128,7 +128,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                 value.IsActive = true;
 
                 this._currentItem = value;
-                this.OnPropertyChanged(nameof(CurrentItem));
+                this.OnPropertyChanged();
             }
         }
 
@@ -161,9 +161,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             }
             else if (objectToLoad is AppxPackage appxPackage)
             {
-                await this.LoadPackage(appxPackage, appxPackage.Path).ConfigureAwait(false);
+                // may require revisiting
+                var entry = await PackageEntryFactory.FromFilePath(appxPackage.PackagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+                await this.LoadPackage(appxPackage, entry, appxPackage.PackagePath).ConfigureAwait(false);
             }
-            else if (objectToLoad is InstalledPackage installedPackage)
+            else if (objectToLoad is PackageEntry installedPackage)
             {
                 using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, installedPackage.PackageFullName);
                 await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
@@ -183,7 +185,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
         public async Task LoadPackage(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             var manifestReader = new AppxManifestReader();
-            var pkg = await manifestReader.Read(fileReader, cancellationToken).ConfigureAwait(false);
+
+            var t1 = manifestReader.Read(fileReader, cancellationToken);
+            var t2 = PackageEntryFactory.FromReader(fileReader, cancellationToken: cancellationToken);
+
+            await Task.WhenAll(t1, t2).ConfigureAwait(false);
+
+            var pkg = await t1.ConfigureAwait(false);
+            var entry = await t2.ConfigureAwait(false);
 
             var path = fileReader switch
             {
@@ -193,10 +202,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                 _ => throw new NotSupportedException()
             };
 
-            await this.LoadPackage(pkg, path).ConfigureAwait(false);
+            await this.LoadPackage(pkg, entry, path).ConfigureAwait(false);
         }
 
-        public async Task LoadPackage(AppxPackage model, string filePath)
+        public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath)
         {
             this._lastPackageRequest = filePath;
 
@@ -242,7 +251,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                     this.OnPropertyChanged(nameof(this.TileColor));
                     this.OnPropertyChanged(nameof(this.Logo));
 
-                    await Task.WhenAll(this._loadPackageHandlers.Select(t => t.LoadPackage(model, filePath, newCancellationToken))).ConfigureAwait(false);
+                    await Task.WhenAll(this._loadPackageHandlers.Select(t => t.LoadPackage(model, installationEntry, filePath, newCancellationToken))).ConfigureAwait(false);
                 }
                 finally
                 {

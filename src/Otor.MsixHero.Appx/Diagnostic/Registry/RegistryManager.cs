@@ -29,11 +29,6 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
 {
     public class RegistryManager : IRegistryManager
     {
-        public Task<RegistryMountState> GetRegistryMountState(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            return this.GetRegistryMountState(package.InstallLocation, package.Name, cancellationToken);
-        }
-
         public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             RegistryMountState hasRegistry;
@@ -54,12 +49,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
 
             return Task.FromResult(hasRegistry);
         }
-
-        public Task DismountRegistry(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            return this.DismountRegistry(package.Name, cancellationToken, progress);
-        }
-
+        
         public Task DismountRegistry(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proc = new ProcessStartInfo("cmd.exe", "/c REG UNLOAD " + CommandLineHelper.EncodeParameterArgument(@"HKLM\MSIX-Hero-" + packageName));
@@ -99,12 +89,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
 
             return tcs.Task;
         }
-
-        public Task MountRegistry(InstalledPackage package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            return this.MountRegistry(package.Name, package.InstallLocation, startRegedit, cancellationToken);
-        }
-
+        
         public Task MountRegistry(string packageName, string installLocation, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (startRegedit)

@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Open;
@@ -30,13 +31,13 @@ public class OpenViewModel : NotifyPropertyChanged, ILoadPackage
 
     public string UserDirectory { get; private set; }
 
-    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+    public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
-        UserDirectory = Path.Combine("%localappdata%", "Packages", model.FamilyName, "LocalCache");
+        UserDirectory = installEntry?.UserDirPath ?? Path.Combine("%localappdata%", "Packages", model.FamilyName, "LocalCache");
 
         if (filePath != null)
         {
-            RootDirectory = filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
+            RootDirectory = installEntry?.InstallDirPath ?? filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
         }
         else
         {

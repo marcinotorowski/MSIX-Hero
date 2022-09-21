@@ -25,6 +25,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Prism.Commands;
@@ -49,7 +50,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public string SecondLine { get; private set; }
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             this.EstimateFilesCount(model, filePath, cancellationToken);
             return Task.CompletedTask;
@@ -57,6 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         private async void EstimateFilesCount(AppxPackage model, string filePath, CancellationToken cancellationToken)
         {
+            this.IsEstimated = false;
             var fileReader = FileReaderFactory.CreateFileReader(filePath);
 
             var count = 0;
@@ -102,7 +104,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
                 }
                 else if (this.IsEstimated)
                 {
-                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + "" + string.Format(Resources.Localization.PackageExpert_Files_Summary_Estimated, count, Convert(size));
+                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Estimated, count, Convert(size));
                 }
                 else
                 {

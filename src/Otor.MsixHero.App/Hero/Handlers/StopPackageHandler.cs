@@ -18,7 +18,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         protected override Task Handle(StopPackageCommand request, CancellationToken cancellationToken)
         {
-            return this.uacElevation.AsHighestAvailable<IAppxPackageManagerService>().Stop(request.Package.PackageFullName, cancellationToken);
+            return this.uacElevation.AsHighestAvailable<IAppxPackageManagerService>().Stop(request.PackageEntry.PackageFullName, cancellationToken);
         }
     }
 }

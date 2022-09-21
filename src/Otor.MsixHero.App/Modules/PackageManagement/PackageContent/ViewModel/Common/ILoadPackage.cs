@@ -16,13 +16,14 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 
 public interface ILoadPackage
 {
-    Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken);
+    Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken);
 }
 
 public interface IInstallationAware

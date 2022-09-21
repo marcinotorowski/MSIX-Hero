@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
@@ -64,7 +65,7 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage, IInstallation
         set => this.SetField(ref this._isInstalled, value);
     }
 
-    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+    public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
         var apps = new ObservableCollection<ApplicationViewModel>();
 

@@ -18,9 +18,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
 
@@ -28,11 +28,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryPackagingInformationViewModel : NotifyPropertyChanged, ILoadPackage
     {
-        public SummaryPackagingInformationViewModel(IPackageContentItemNavigation navigation, PrismServices prismServices)
-        {
-        }
-        
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             this.BuildInfo = model.BuildInfo;
             this.WindowsVersion = model.BuildInfo?.OperatingSystem?.TechnicalVersion;

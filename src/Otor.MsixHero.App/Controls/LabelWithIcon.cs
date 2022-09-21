@@ -22,19 +22,25 @@ namespace Otor.MsixHero.App.Controls
 {
     public class LabelWithIcon : ContentControl
     {
+        public static readonly DependencyProperty IsCollapsibleProperty = DependencyProperty.Register(nameof(IsCollapsible), typeof(bool), typeof(LabelWithIcon), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty Icon16x16Property = DependencyProperty.Register("Icon16x16", typeof(Geometry), typeof(LabelWithIcon), new PropertyMetadata(Geometry.Empty));
+
         static LabelWithIcon()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LabelWithIcon), new FrameworkPropertyMetadata(typeof(LabelWithIcon)));
         }
-
-        // ReSharper disable once InconsistentNaming
-        public static readonly DependencyProperty Icon16x16Property = DependencyProperty.Register("Icon16x16", typeof(Geometry), typeof(LabelWithIcon), new PropertyMetadata(Geometry.Empty));
-
-        // ReSharper disable once InconsistentNaming
+        
         public Geometry Icon16x16   
         {
             get => (Geometry)GetValue(Icon16x16Property);
             set => SetValue(Icon16x16Property, value);
+        }
+
+        public bool IsCollapsible
+        {
+            get => (bool)GetValue(IsCollapsibleProperty);
+            set => SetValue(IsCollapsibleProperty, value);
         }
     }
 }

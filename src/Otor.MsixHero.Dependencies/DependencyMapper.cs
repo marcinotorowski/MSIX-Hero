@@ -201,7 +201,7 @@ namespace Otor.MsixHero.Dependencies
             progressForGettingAddOns.Report(new ProgressData(0, Resources.Localization.Dependencies_ReadingOptionalPackages));
             foreach (var addOnPackage in allPackages.Where(installedPackage => installedPackage.IsOptional))
             {
-                using var fileReader = FileReaderFactory.CreateFileReader(addOnPackage.ManifestLocation);
+                using var fileReader = FileReaderFactory.CreateFileReader(addOnPackage.ManifestPath);
                 addOnPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
             }
 
@@ -234,7 +234,7 @@ namespace Otor.MsixHero.Dependencies
 
                     if (candidate != null)
                     {
-                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestLocation);
+                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestPath);
                         consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
                     }
                 }
@@ -251,7 +251,7 @@ namespace Otor.MsixHero.Dependencies
 
                     if (candidate != null)
                     {
-                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestLocation);
+                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestPath);
                         consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
                     }
                 }

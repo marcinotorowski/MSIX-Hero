@@ -39,7 +39,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
             return returned;
         }
         
-        public IList<string> GetCurrentlyRunningPackageNames()
+        public IList<string> GetCurrentlyRunningPackageFamilyNames()
         {
             Logger.Info().WriteLine("Getting the list of running apps…");
 

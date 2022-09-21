@@ -247,6 +247,19 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             return this.msixPackage.Entries.Any(e => string.Equals(filePath, e.FullName, StringComparison.OrdinalIgnoreCase));
         }
 
+        public bool DirectoryExists(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return false;
+            }
+
+            this.EnsureInitialized();
+
+            directoryPath = directoryPath.Replace(Path.DirectorySeparatorChar, '/').TrimEnd('/') + '/';
+            return this.msixPackage.Entries.Any(e => e.FullName.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase));
+        }
+
         public void Dispose()
         {
             if (this.disposableStreams == null)

@@ -18,15 +18,16 @@ using System;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 {
-    public abstract class AppxSource
+    public abstract class AppxSource2
     {
-        protected AppxSource(string rootDirectory, DateTime? installDate = default)
+        protected AppxSource2(string rootDirectory, DateTime? installDate = default)
         {
             this.RootDirectory = rootDirectory;
-            InstallDate = installDate;
+            this.InstallDate = installDate;
         }
 
         public string RootDirectory { get; }
+
         public DateTime? InstallDate { get; }
     }
 }

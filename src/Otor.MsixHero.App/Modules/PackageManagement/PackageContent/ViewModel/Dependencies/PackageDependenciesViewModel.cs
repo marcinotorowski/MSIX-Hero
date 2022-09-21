@@ -9,6 +9,7 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
@@ -41,7 +42,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
                     var pkg = manager.GetInstalledPackageByFamilyName(familyName).GetAwaiter().GetResult();
 
                     var dialogOpener = new DialogOpener(prismServices, interactionService);
-                    dialogOpener.OpenMsix(new FileInfo(pkg.ManifestLocation));
+                    dialogOpener.OpenMsix(new FileInfo(pkg.ManifestPath));
                 });
             });
         }
@@ -74,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
         
         public bool HasSystemDependencies => this.SystemDependencies?.Any() == true;
 
-        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override Task DoLoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             this.SoftwareDependencies = new ObservableCollection<SoftwareDependencyViewModel>(model.PackageDependencies.Select(d => new SoftwareDependencyViewModel(d)));
             this.SystemDependencies = new ObservableCollection<SystemDependencyViewModel>(model.OperatingSystemDependencies.Select(d => new SystemDependencyViewModel(d)));

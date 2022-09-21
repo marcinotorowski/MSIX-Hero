@@ -70,7 +70,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             }
         }
 
-        public async Task Remove(IReadOnlyCollection<InstalledPackage> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task Remove(IReadOnlyCollection<PackageEntry> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!packages.Any())
             {

@@ -27,6 +27,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
         bool FileExists(string filePath);
 
+        bool DirectoryExists(string filePath);
+
         IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, CancellationToken cancellationToken = default);
         
         IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default);

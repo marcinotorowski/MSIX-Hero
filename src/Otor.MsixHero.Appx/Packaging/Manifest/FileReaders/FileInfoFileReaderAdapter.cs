@@ -123,6 +123,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var resourceDir = Path.GetDirectoryName(resourceFilePath);
 
             var dirsToTry = new Queue<string>();
+            // ReSharper disable once AssignNullToNotNullAttribute
             dirsToTry.Enqueue(string.IsNullOrEmpty(resourceDir) ? this._appxManifestFile.DirectoryName : Path.Combine(this._appxManifestFile.DirectoryName, resourceDir));
 
             while (dirsToTry.Any())
@@ -140,11 +141,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     var name = Regex.Replace(matchingFile.Name, @"\.[^\.\-]+-[^\.\-]+", string.Empty);
                     if (string.Equals(name, fileName, StringComparison.OrdinalIgnoreCase))
                     {
+                        // ReSharper disable once AssignNullToNotNullAttribute
                         return this.GetFile(Path.GetRelativePath(this._appxManifestFile.DirectoryName, matchingFile.FullName));
                     }
                 }
 
-                var matchingDirectories = dirInfo.EnumerateDirectories().Where(d => Regex.IsMatch(dirInfo.Name, @".[^\.\-]+-[^\.\-]+"));
+                var matchingDirectories = dirInfo.EnumerateDirectories().Where(d => Regex.IsMatch(d.Name, @".[^\.\-]+-[^\.\-]+"));
                 foreach (var matchingDirectory in matchingDirectories)
                 {
                     dirsToTry.Enqueue(matchingDirectory.FullName);
@@ -168,6 +170,22 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             // ReSharper disable once PossibleNullReferenceException
             return File.Exists(Path.Combine(this._appxManifestFile.Directory.FullName, filePath));
+        }
+
+        public bool DirectoryExists(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return true;
+            }
+
+            if (this._appxManifestFile?.Directory?.FullName == null)
+            {
+                return false;
+            }
+
+            // ReSharper disable once PossibleNullReferenceException
+            return Directory.Exists(Path.Combine(this._appxManifestFile.Directory.FullName, directoryPath));
         }
 
         void IDisposable.Dispose()

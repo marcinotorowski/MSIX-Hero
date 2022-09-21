@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -26,14 +26,14 @@ namespace Otor.MsixHero.App.Hero.State
     {
         public PackagesState()
         {
-            this.AllPackages = new List<InstalledPackage>();
-            this.SelectedPackages = new List<InstalledPackage>();
+            this.AllPackages = new List<PackageEntry>();
+            this.SelectedPackages = new List<PackageEntry>();
             this.Mode = PackageContext.CurrentUser;
         }
 
-        public List<InstalledPackage> AllPackages { get; }
+        public List<PackageEntry> AllPackages { get; }
 
-        public List<InstalledPackage> SelectedPackages { get; }
+        public List<PackageEntry> SelectedPackages { get; }
 
         public PackageFilter Filter { get; set; }
         

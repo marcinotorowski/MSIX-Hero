@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
 
@@ -37,7 +38,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
 
         public ICommand GoBack { get; }
 
-        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override Task DoLoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             var startMenuApps = new ObservableCollection<ApplicationViewModel>();
             var commandLineApps = new ObservableCollection<ApplicationViewModel>();

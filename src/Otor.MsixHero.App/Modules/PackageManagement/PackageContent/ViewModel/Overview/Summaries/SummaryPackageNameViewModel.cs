@@ -20,6 +20,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
 using Prism.Services.Dialogs;
@@ -47,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public ICommand OpenPackageNameCalculator { get; }
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             this.DisplayName = model.DisplayName;
             this.Description = model.Description;

@@ -393,20 +393,22 @@
                             Grid.Column="0"
                             Background="{StaticResource MsixHero.Brushes.Light7}"
                             SnapsToDevicePixels="True" UseLayoutRounding="True">
-                            <WrapPanel Orientation="Horizontal">
+                            <controls1:ButtonRowPanel>
                                 <Button Command="New" Style="{StaticResource ActionButton}">
                                     <controls1:LabelWithIcon 
+                                        IsCollapsible="True"
                                         Icon16x16="{StaticResource SmallPlus}"
                                         Content="{localization:Loc Dialogs_Settings_Commands_New}"
                                         Style="{StaticResource ActionLabelWithIcon}" />
                                 </Button>
                                 <Button Command="Delete" Style="{StaticResource ActionButton}">
                                     <controls1:LabelWithIcon 
+                                        IsCollapsible="True"
                                         Icon16x16="{StaticResource SmallRemove}"
                                         Content="{localization:Loc Dialogs_Settings_Commands_Remove}"
                                         Style="{StaticResource ActionLabelWithIcon}" />
                                 </Button>
-                            </WrapPanel>
+                            </controls1:ButtonRowPanel>
                         </Border>
 
 

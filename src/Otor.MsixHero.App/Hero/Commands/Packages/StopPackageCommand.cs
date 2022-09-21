@@ -15,17 +15,17 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using MediatR;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
     public class StopPackageCommand : IRequest
     {
-        public StopPackageCommand(InstalledPackage installedPackage)
+        public StopPackageCommand(PackageEntry packageEntry)
         {
-            this.Package = installedPackage;
+            this.PackageEntry = packageEntry;
         }
 
-        public InstalledPackage Package { get; }
+        public PackageEntry PackageEntry { get; }
     }
 }

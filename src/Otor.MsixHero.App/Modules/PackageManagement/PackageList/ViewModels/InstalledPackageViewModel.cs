@@ -14,12 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-using Otor.MsixHero.App.Hero.Commands.Packages;
-using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
@@ -27,12 +23,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
     public class InstalledPackageViewModel : NotifyPropertyChanged
     {
-        public InstalledPackageViewModel(InstalledPackage package)
+        public InstalledPackageViewModel(PackageEntry packageEntry)
         {
-            this.Model = package;
+            this.Model = packageEntry;
         }
 
-        public InstalledPackage Model { get; }
+        public PackageEntry Model { get; }
 
         public bool IsAddon => this.Model.IsOptional;
 
@@ -52,17 +48,33 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public string DisplayPublisherName => this.Model.DisplayPublisherName;
 
-        public string InstallLocation => this.Model.InstallLocation;
+        public string InstallLocation => this.Model.InstallDirPath;
 
-        public string ManifestLocation => this.Model.ManifestLocation;
+        public string ManifestLocation => this.Model.ManifestPath;
 
         public MsixPackageType PackageType => this.Model.PackageType;
 
         public string DisplayPackageType => PackageTypeConverter.GetPackageTypeStringFrom(this.Model.PackageType);
 
-        public string Image => this.Model.Image;
+        public object Image
+        {
+            get
+            {
+                if (this.Model.ImageContent != null)
+                {
+                    return this.Model.ImageContent;
+                }
 
-        public DateTime InstallDate => this.Model.InstallDate;
+                if (this.Model.ImagePath != null)
+                {
+                    return this.Model.ImagePath;
+                }
+
+                return null;
+            }
+        }
+
+        public string InstallDate => this.Model.InstallDate?.ToString("d");
 
         public string TileColor => this.Model.TileColor;
 
@@ -111,10 +123,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
         }
 
-        public string UserDataPath => this.Model.UserDataPath;
+        public string UserDataPath => this.Model.UserDirPath;
 
 
-        public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)
+        public static explicit operator PackageEntry(InstalledPackageViewModel installedPackageViewModel)
         {
             return installedPackageViewModel.Model;
         }

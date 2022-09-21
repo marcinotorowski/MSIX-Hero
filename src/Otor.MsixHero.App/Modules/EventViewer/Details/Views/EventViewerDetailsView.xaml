@@ -35,17 +35,18 @@
         </DockPanel.Resources>
 
         <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
-            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+            <controls:ButtonRowPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 
                 <Button 
                     Command="Copy"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallCdRom}"
                         Content="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" />
                 </Button>
-            </WrapPanel>
+            </controls:ButtonRowPanel>
         </Border>
 
         <background:AcrylicBackgroundControl

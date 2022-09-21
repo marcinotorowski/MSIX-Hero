@@ -16,47 +16,38 @@
 
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
     public static class AppxManifestSummaryReader
     {
         private static readonly LogSource Logger = new();        
+
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, ReadMode mode = ReadMode.Minimal)
         {
-            Logger.Info().WriteLine("Reading application manifest {0}…", fullMsixFilePath);
-            
+            Logger.Info().WriteLine("Reading application manifest from {0}…", fullMsixFilePath);
+
             if (!File.Exists(fullMsixFilePath))
             {
                 throw new FileNotFoundException("MSIX file does not exist.", fullMsixFilePath);
             }
             
-            try
-            {
-                Logger.Debug().WriteLine("Opening file as ZIP…");
-                using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
+            using var reader = FileReaderFactory.CreateFileReader(fullMsixFilePath);
+            var package = reader.GetFile(FileConstants.AppxManifestFile);
+            return await FromManifest(package, mode).ConfigureAwait(false);
+        }      
 
-                Logger.Debug().WriteLine("Getting entry {0}…", FileConstants.AppxManifestFile);
-                var entry = zipFile.GetEntry(FileConstants.AppxManifestFile) ?? zipFile.Entries.FirstOrDefault(e => string.Equals(e.FullName, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase));
-                if (entry == null)
-                {
-                    throw new FileNotFoundException("Manifest file not found.");
-                }
-
-                await using var stream = entry.Open();
-                return await FromManifest(stream, mode).ConfigureAwait(false);
-            }
-            catch (InvalidDataException e)
-            {
-                throw new InvalidOperationException("File " + fullMsixFilePath + " does not seem to be a valid MSIX package.", e);
-            }
+        public static async Task<AppxManifestSummary> FromMsix(IAppxFileReader msixFileReader, ReadMode mode = ReadMode.Minimal)
+        {
+            var package = msixFileReader.GetFile(FileConstants.AppxManifestFile);
+            return await FromManifest(package, mode).ConfigureAwait(false);
         }
 
         public static Task<AppxManifestSummary> FromInstallLocation(string installLocation, ReadMode mode = ReadMode.Minimal)

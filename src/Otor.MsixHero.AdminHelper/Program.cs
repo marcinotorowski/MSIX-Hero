@@ -156,7 +156,7 @@ namespace Otor.MsixHero.AdminHelper
                     var signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
                     var appAttachManager = new AppAttachManager(signingManager, configurationService);
                     var registryManager = new RegistryManager();
-                    var appxPackageQuery = new AppxPackageQueryService(registryManager, configurationService);
+                    var appxPackageQuery = new AppxPackageQueryService(configurationService);
                     
                     var server = new SimpleElevationServer();
                     server.RegisterProxy<ISigningManager, SigningManager>(signingManager);

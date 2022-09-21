@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry.Items;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
 
@@ -25,7 +26,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.R
 
         public ICommand GoBack { get; }
 
-        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override Task DoLoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             this.RegistryTree = new RegistryTreeViewModel(filePath);
             this.OnPropertyChanged(null);

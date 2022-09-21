@@ -25,7 +25,6 @@ using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
@@ -64,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         private readonly FileInvoker _fileInvoker;
         private string _filePath;
         private AppxPackage _packageDetails;
-        private InstalledPackage _installedPackage;
+        private PackageEntry _packageEntry;
         private readonly IMsixHeroApplication _application;
 
         public PackageExpertCommandHandler(
@@ -136,7 +135,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             {
                 this._filePath = value;
                 this._packageDetails = null;
-                this._installedPackage = null;
+                this._packageEntry = null;
 
                 if (value != null)
                 {
@@ -147,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                         var isInstalled = this._packageInstallationService.IsInstalled(this.FilePath).GetAwaiter().GetResult();
                         if (isInstalled)
                         {
-                            this._installedPackage = this._queryService.GetInstalledPackage(pkg.FullName).GetAwaiter().GetResult();
+                            this._packageEntry = this._queryService.GetInstalledPackage(pkg.FullName).GetAwaiter().GetResult();
                         }
 
                         this._packageDetails = pkg;
@@ -220,7 +219,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 return;
             }
 
-            if (this._installedPackage.SignatureKind == SignatureKind.System)
+            if (this._packageEntry.SignatureKind == SignatureKind.System)
             {
                 var buttons = new[]
                 {
@@ -239,22 +238,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 .WithBusyManager(this._busyManager, OperationType.Other)
                 .WithErrorHandling(this._interactionService, true);
 
-            await executor.Invoke(this, new StopPackageCommand(this._installedPackage), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke(this, new StopPackageCommand(this._packageEntry), CancellationToken.None).ConfigureAwait(false);
         }
         
         private bool CanStopApp()
         {
-            if (this._application.ApplicationState.Packages.ActivePackageNames == null || this._installedPackage == null)
+            if (this._application.ApplicationState.Packages.ActivePackageNames == null || this._packageEntry == null)
             {
                 return false;
             }
             
-            if (this._installedPackage.InstallLocation == null)
+            if (this._packageEntry.InstallDirPath == null)
             {
                 return false;
             }
 
-            return this._application.ApplicationState.Packages.ActivePackageNames?.Contains(this._installedPackage.PackageFamilyName) == true;
+            return this._application.ApplicationState.Packages.ActivePackageNames?.Contains(this._packageEntry.PackageFamilyName) == true;
         }
 
         // ReSharper disable once IdentifierTypo
@@ -383,7 +382,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private async void OnMountRegistry()
         {
-            if (this._installedPackage == null)
+            if (this._packageEntry == null)
             {
                 return;
             }
@@ -391,7 +390,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var manager = this._uacElevation.AsAdministrator<IRegistryManager>();
-                await manager.MountRegistry(this._installedPackage, true).ConfigureAwait(false);
+                await manager.MountRegistry(this._packageEntry.Name, this._packageEntry.InstallDirPath, true).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -401,12 +400,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private async void OnDismountRegistry()
         {
-            if (this._installedPackage == null)
+            if (this._packageEntry == null)
             {
                 return;
             }
 
-            if (this._installedPackage.InstallLocation == null)
+            if (this._packageEntry.InstallDirPath == null)
             {
                 return;
             }
@@ -414,7 +413,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var manager = this._uacElevation.AsAdministrator<IRegistryManager>();
-                await manager.DismountRegistry(this._installedPackage).ConfigureAwait(false);
+                await manager.DismountRegistry(this._packageEntry.Name).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -424,7 +423,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         
         private bool CanMountRegistry()
         {
-            if (this._installedPackage?.InstallLocation == null)
+            if (this._packageEntry?.InstallDirPath == null)
             {
                 return false;
             }
@@ -432,7 +431,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IRegistryManager>();
-                var regState = manager.GetRegistryMountState(this._installedPackage.InstallLocation, this._installedPackage.Name).GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(this._packageEntry.InstallDirPath, this._packageEntry.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.NotMounted;
             }
             catch (Exception)
@@ -443,7 +442,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private bool CanDismountRegistry()
         {
-            if (this._installedPackage?.InstallLocation == null)
+            if (this._packageEntry?.InstallDirPath == null)
             {
                 return false;
             }
@@ -451,7 +450,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IRegistryManager>();
-                var regState = manager.GetRegistryMountState(this._installedPackage.InstallLocation, this._installedPackage.Name).GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(this._packageEntry.InstallDirPath, this._packageEntry.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.Mounted;
             }
             catch (Exception)
@@ -462,7 +461,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         
         private async void OnStartApp(object parameter)
         {
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection == null)
             {
                 return;
@@ -471,7 +470,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             try
             {
                 var manager = this._uacElevation.AsCurrentUser<IAppxPackageRunService>();
-                await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
+                await manager.Run(selection.ManifestPath, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
             {
@@ -503,7 +502,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 return;
             }
 
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection == null)
             {
                 return;
@@ -528,8 +527,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         
         private async void OnCheckUpdates()
         {
-            var isAppInstaller = this._installedPackage.AppInstallerUri != null;
-            var isStore = this._installedPackage.SignatureKind == SignatureKind.Store;
+            var isAppInstaller = this._packageEntry.AppInstallerUri != null;
+            var isStore = this._packageEntry.SignatureKind == SignatureKind.Store;
 
             if (!isAppInstaller && !isStore)
             {
@@ -550,7 +549,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 return;
             }
 
-            var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(this._installedPackage.PackageFullName)).ConfigureAwait(false);
+            var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(this._packageEntry.PackageFullName)).ConfigureAwait(false);
             string msg;
 
             var askForUpdate = false;
@@ -586,7 +585,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             {
                 if (this._interactionService.ShowMessage(msg, new[] { Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateNow }, Resources.Localization.PackageExpert_Commands_AppInstaller_UpdateCheck_Result, systemButtons: InteractionResult.Close) == 0)
                 {
-                    this.UpdatePackageFromAppInstaller(this._installedPackage.AppInstallerUri.ToString());
+                    this.UpdatePackageFromAppInstaller(this._packageEntry.AppInstallerUri.ToString());
                 }
             }
         }
@@ -658,35 +657,35 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             }
         }
         
-        private bool CanAddPackage() => this._installedPackage == null;
+        private bool CanAddPackage() => this._packageEntry == null;
         
         private bool CanRefresh() => true;
 
         private bool CanCheckUpdates()
         {
-            return this._installedPackage?.SignatureKind == SignatureKind.Store || this._installedPackage?.AppInstallerUri != null;
+            return this._packageEntry?.SignatureKind == SignatureKind.Store || this._packageEntry?.AppInstallerUri != null;
         }
 
-        private bool CanChangeVolume() => this._installedPackage?.InstallLocation != null;
+        private bool CanChangeVolume() => this._packageEntry?.InstallDirPath != null;
 
         private void OnChangeVolume()
         {
-            var selection = this._installedPackage;
-            if (selection?.InstallLocation == null)
+            var selection = this._packageEntry;
+            if (selection?.InstallDirPath == null)
             {
                 return;
             }
 
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Volumes);
             IDialogParameters parameters = new DialogParameters();
-            parameters.Add("file", this._installedPackage.InstallLocation);
+            parameters.Add("file", this._packageEntry.InstallDirPath);
 
             this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesChangeVolume, parameters, this.OnDialogOpened);
         }
 
         private void OnViewDependencies()
         {
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection == null)
             {
                 return;
@@ -695,7 +694,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
             var parameters = new DialogParameters
             {
-                { "file", selection.ManifestLocation }
+                { "file", selection.ManifestPath }
             };
 
             this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, parameters, this.OnDialogOpened);
@@ -723,7 +722,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                     Resources.Localization.PackageExpert_Commands_DoNotRemove
                 };
 
-                var caption = string.Format(Resources.Localization.PackageExpert_Commands_ConfirmRemovalSingle, this._installedPackage.DisplayName, this._installedPackage.Version);
+                var caption = string.Format(Resources.Localization.PackageExpert_Commands_ConfirmRemovalSingle, this._packageEntry.DisplayName, this._packageEntry.Version);
 
                 var selectedOption = this._interactionService.ShowMessage(caption, options, Resources.Localization.PackageExpert_Commands_Removing, systemButtons: InteractionResult.Cancel);
                 if (selectedOption != 0)
@@ -738,16 +737,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 if (forAllUsers)
                 {
                     var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstallationService>();
-                    await adminManager.Deprovision(this._installedPackage.PackageFamilyName, CancellationToken.None).ConfigureAwait(false);
+                    await adminManager.Deprovision(this._packageEntry.PackageFamilyName, CancellationToken.None).ConfigureAwait(false);
                 }
 
                 var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstallationService>();
-                var removedPackageName = this._installedPackage.DisplayName;
+                var removedPackageName = this._packageEntry.DisplayName;
 
                 await manager.Remove(
                     new []
                     {
-                        this._installedPackage
+                        this._packageEntry
                     }, 
                     progress: context).ConfigureAwait(false);
                 
@@ -771,37 +770,37 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private bool CanRemovePackage() => this.IsCurrentPresentAndInstalled();
 
-        private bool CanOpenStore() => this._installedPackage?.SignatureKind == SignatureKind.Store;
+        private bool CanOpenStore() => this._packageEntry?.SignatureKind == SignatureKind.Store;
 
         private bool CanOpenPsfConfig()
         {
-            return this._installedPackage?.PackageType == MsixPackageType.Win32Psf;
+            return this._packageEntry?.PackageType == MsixPackageType.Win32Psf;
         }
 
         private bool CanOpenManifest() => this.IsCurrentPresentAndInstalled();
 
         private void OnOpenManifest()
         {
-            var package = this._installedPackage;
-            if (package?.ManifestLocation == null)
+            var package = this._packageEntry;
+            if (package?.ManifestPath == null)
             {
                 return;
             }
 
             var config = this._configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            this._fileInvoker.Execute(config.ManifestEditorType, config.ManifestEditor, package.ManifestLocation);
+            this._fileInvoker.Execute(config.ManifestEditorType, config.ManifestEditor, package.ManifestPath);
         }
 
         private void OnOpenConfigJson()
         {
-            var package = this._installedPackage;
-            if (package?.PsfConfig == null)
+            var package = this._packageEntry;
+            if (package?.PsfConfigPath == null)
             {
                 return;
             }
             
             var config = this._configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            this._fileInvoker.Execute(config.PsfEditorType, config.PsfEditor, package.PsfConfig);
+            this._fileInvoker.Execute(config.PsfEditorType, config.PsfEditor, package.PsfConfigPath);
         }
         
         private bool IsCurrentPresent()
@@ -811,12 +810,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private bool IsCurrentPresentAndInstalled()
         {
-            return this._packageDetails != null && this._installedPackage != null;
+            return this._packageDetails != null && this._packageEntry != null;
         }
 
         private void OnOpenStore()
         {
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection == null)
             {
                 return;
@@ -849,7 +848,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             {
                 var toCopy = new StringBuilder();
 
-                var pkg = this._installedPackage;
+                var pkg = this._packageEntry;
 
                 switch (requiredParameter)
                 {
@@ -875,7 +874,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                         toCopy.AppendLine(pkg.Publisher);
                         break;
                     case PackageProperty.InstallPath:
-                        toCopy.AppendLine(pkg.InstallLocation);
+                        toCopy.AppendLine(pkg.InstallDirPath);
                         break;
                 }
 
@@ -896,18 +895,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private void OnOpenExplorer()
         {
-            var selection = this._installedPackage;
-            if (selection?.ManifestLocation == null)
+            var selection = this._packageEntry;
+            if (selection?.ManifestPath == null)
             {
                 return;
             }
             
-            Process.Start("explorer.exe", "/select," + selection.ManifestLocation);
+            Process.Start("explorer.exe", "/select," + selection.ManifestPath);
         }
 
         private bool CanOpenUserExplorer()
         {
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection?.PackageFamilyName == null)
             {
                 return false;
@@ -919,7 +918,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private void OnOpenUserExplorer()
         {
-            var selection = this._installedPackage;
+            var selection = this._packageEntry;
             if (selection?.PackageFamilyName == null)
             {
                 return;
@@ -972,7 +971,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
                 
             var parameters = new DialogParameters
             {
-                { fileParameterName, valueGetter == null ? selected.Path : valueGetter(selected) }
+                { fileParameterName, valueGetter == null ? selected.PackagePath : valueGetter(selected) }
             };
 
             this._prismServices.ModuleManager.LoadModule(moduleName);

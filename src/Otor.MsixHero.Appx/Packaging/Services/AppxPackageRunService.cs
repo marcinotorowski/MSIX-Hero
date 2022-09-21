@@ -23,7 +23,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Exceptions;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Dapplo.Log;
@@ -38,11 +37,11 @@ namespace Otor.MsixHero.Appx.Packaging.Services
     {
         private static readonly LogSource Logger = new(); protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
 
-        public async Task RunToolInContext(InstalledPackage package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task RunToolInContext(PackageEntry packageEntry, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            if (package == null)
+            if (packageEntry == null)
             {
-                throw new ArgumentNullException(nameof(package));
+                throw new ArgumentNullException(nameof(packageEntry));
             }
 
             if (toolPath == null)
@@ -50,7 +49,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                 throw new ArgumentNullException(nameof(toolPath));
             }
 
-            using IAppxFileReader reader = new FileInfoFileReaderAdapter(package.ManifestLocation);
+            using IAppxFileReader reader = new FileInfoFileReaderAdapter(packageEntry.ManifestPath);
             var maniReader = new AppxManifestReader();
             var manifest = await maniReader.Read(reader, cancellationToken).ConfigureAwait(false);
 
@@ -59,7 +58,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                 throw new InvalidOperationException(Resources.Localization.Packages_Error_NoEntryPointCmd);
             }
 
-            await RunToolInContext(package.PackageFamilyName, manifest.Applications[0].Id, toolPath, arguments, cancellationToken, progress).ConfigureAwait(false);
+            await RunToolInContext(packageEntry.PackageFamilyName, manifest.Applications[0].Id, toolPath, arguments, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -116,9 +115,9 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             }
         }
 
-        public Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(PackageEntry packageEntry, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return Run(package.ManifestLocation, appId, cancellationToken, progress);
+            return Run(packageEntry.ManifestPath, appId, cancellationToken, progress);
         }
 
         public async Task Run(string packageManifestLocation, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

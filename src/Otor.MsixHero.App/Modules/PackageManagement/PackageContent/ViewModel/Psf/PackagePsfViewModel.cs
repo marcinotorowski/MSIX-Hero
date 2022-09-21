@@ -39,7 +39,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.P
 
         public ICommand GoBack { get; }
 
-        protected override async Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override async Task DoLoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
             this.Psf = null;
             using var reader = FileReaderFactory.CreateFileReader(filePath);

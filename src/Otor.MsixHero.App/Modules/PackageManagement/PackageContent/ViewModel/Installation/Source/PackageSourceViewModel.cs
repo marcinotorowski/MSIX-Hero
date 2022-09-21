@@ -15,16 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source;
 
 public abstract class PackageSourceViewModel : NotifyPropertyChanged
 {
-    protected readonly AppxSource Src;
-
-    protected PackageSourceViewModel(AppxSource src)
-    {
-        this.Src = src;
-    }
 }

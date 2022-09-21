@@ -16,7 +16,7 @@
 
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 
@@ -26,7 +26,7 @@ public class SelectableInstalledPackageViewModel : InstalledPackageViewModel
     private bool _hasStar;
     private bool _isVisible;
 
-    public SelectableInstalledPackageViewModel(InstalledPackage package, IMsixHeroCommandExecutor commandExecutor, bool star = false) : base(package)
+    public SelectableInstalledPackageViewModel(PackageEntry packageEntry, IMsixHeroCommandExecutor commandExecutor, bool star = false) : base(packageEntry)
     {
         this._commandExecutor = commandExecutor;
         this._hasStar = star;

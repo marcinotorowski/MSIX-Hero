@@ -49,11 +49,12 @@
     <Style TargetType="local:LabelWithIcon">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="IsCollapsible" Value="False" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:LabelWithIcon">
-                    <local:LabelWithIconPanel VerticalAlignment="Stretch">
+                    <DockPanel VerticalAlignment="Stretch">
                         <Path 
                             VerticalAlignment="Center" 
                             Margin="0" 
@@ -66,10 +67,34 @@
                             Margin="4 0 0 0"
                             TextBlock.Foreground="{TemplateBinding Foreground}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </local:LabelWithIconPanel>
+                    </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsCollapsible" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="local:LabelWithIcon">
+                            <local:LabelWithIconPanel VerticalAlignment="Stretch">
+                                <Path 
+                                    VerticalAlignment="Center" 
+                                    Margin="0" 
+                                    Data="{TemplateBinding Icon16x16}" 
+                                    Fill="{TemplateBinding Foreground}" 
+                                    Width="16" 
+                                    Height="16" />
+
+                                <ContentPresenter 
+                                    Margin="4 0 0 0"
+                                    TextBlock.Foreground="{TemplateBinding Foreground}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </local:LabelWithIconPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="local:LabelWithIcon" BasedOn="{StaticResource {x:Type local:LabelWithIcon}}" x:Key="ActionLabelWithIcon">

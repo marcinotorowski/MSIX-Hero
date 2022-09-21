@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
@@ -28,7 +29,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
         {
         }
 
-        public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             DisplayName = model.DisplayName;
             PublisherDisplayName = model.PublisherDisplayName;
@@ -52,7 +53,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
 
             if (string.IsNullOrEmpty(TileColor))
             {
-                TileColor = "#666666";
+                // TileColor = "#aaaaaa";
             }
 
             OnPropertyChanged(null);

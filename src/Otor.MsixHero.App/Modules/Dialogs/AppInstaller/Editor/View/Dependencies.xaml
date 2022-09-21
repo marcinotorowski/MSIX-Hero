@@ -139,11 +139,12 @@
         </Grid.ColumnDefinitions>
 
         <Border Background="{StaticResource MsixHero.Brushes.Light7}" Grid.Column="0" Grid.Row="0">
-            <WrapPanel>
+            <controls1:ButtonRowPanel>
                 <ToggleButton 
                     x:Name="ToggleNew"
                     Style="{StaticResource ActionPopupToggleButton}">
                     <controls1:LabelWithIcon 
+                        IsCollapsible="True"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlus}"
                         Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New}" />
@@ -194,11 +195,12 @@
 
                 <Button Command="{Binding Browse}" Style="{StaticResource ActionButton}">
                     <controls1:LabelWithIcon 
+                        IsCollapsible="True"
                         Icon16x16="{StaticResource SmallOpen}"
                         Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New_Browse}"
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
-            </WrapPanel>
+            </controls1:ButtonRowPanel>
         </Border>
 
         <ListBox 

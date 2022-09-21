@@ -21,6 +21,7 @@
                      Command="{x:Static commands:MsixHeroRoutedUICommands.SetVolumeAsDefault}"
                      Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallOk}"
@@ -31,6 +32,7 @@
                      Command="{x:Static commands:MsixHeroRoutedUICommands.MountVolume}"
                      Style="{StaticResource ActionButtonHideWhenDisabled}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlugin}"
@@ -41,6 +43,7 @@
                     Command="{x:Static commands:MsixHeroRoutedUICommands.DismountVolume}"
                     Style="{StaticResource ActionButtonHideWhenDisabled}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlugOut}"
@@ -51,6 +54,7 @@
                     Command="Delete"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
+                        IsCollapsible="True"
                         VerticalAlignment="Center"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallRemoveApp}"

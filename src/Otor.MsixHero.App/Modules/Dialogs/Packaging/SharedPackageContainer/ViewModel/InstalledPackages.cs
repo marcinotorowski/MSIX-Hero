@@ -24,7 +24,7 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Prism.Commands;
 
@@ -73,11 +73,11 @@ public class InstalledPackages : NotifyPropertyChanged
 
     private async Task<ObservableCollection<SearchableInstallPackage>> GetInstalledApps()
     {
-        IList<InstalledPackage> srcPackages = this._application.ApplicationState.Packages.AllPackages;
+        IList<PackageEntry> srcPackages = this._application.ApplicationState.Packages.AllPackages;
 
         if (srcPackages?.Any() != true)
         {
-            srcPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser)).ConfigureAwait(false);
+            srcPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser)).ConfigureAwait(false);
         }
 
         var currentSelection = new HashSet<string>(this._parent.Packages.Select(p => p.FamilyName.CurrentValue), StringComparer.Ordinal);

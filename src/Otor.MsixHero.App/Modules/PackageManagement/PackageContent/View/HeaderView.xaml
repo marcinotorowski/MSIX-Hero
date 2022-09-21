@@ -22,6 +22,7 @@
                     Height="48"
                     SnapsToDevicePixels="True"
                     UseLayoutRounding="True"
+                    StretchDirection="DownOnly"
                     Stretch="Uniform"
                     Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
             </Grid>

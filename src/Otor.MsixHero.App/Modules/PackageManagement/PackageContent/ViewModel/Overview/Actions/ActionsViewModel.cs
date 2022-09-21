@@ -6,6 +6,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overv
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Open;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -30,22 +31,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             this.More = new MoreViewModel();
         }
 
-        public async Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             await Task.WhenAll(
-                Start.LoadPackage(model, filePath, cancellationToken),
-                Open.LoadPackage(model, filePath, cancellationToken),
-                More.LoadPackage(model, filePath, cancellationToken)).ConfigureAwait(false);
+                Start.LoadPackage(model, installationEntry, filePath, cancellationToken),
+                Open.LoadPackage(model, installationEntry, filePath, cancellationToken),
+                More.LoadPackage(model, installationEntry, filePath, cancellationToken)).ConfigureAwait(false);
 
-            if (filePath.StartsWith("C:\\Program Files\\WindowsApps\\", StringComparison.OrdinalIgnoreCase))
-            {
-                this.IsInstalled = true;
-            }
-            else
-            {
-                var installedPackage = ExceptionGuard.Guard(() => this._packageQueryService.GetInstalledPackage(model.FullName, cancellationToken: cancellationToken).GetAwaiter().GetResult());
-                this.IsInstalled = installedPackage != null;
-            }
+            this.IsInstalled = installationEntry?.InstallDate != null;
         }
 
         public StartViewModel Start { get; }

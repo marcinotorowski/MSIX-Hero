@@ -25,7 +25,7 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             this._interactionService = interactionService;
 
             // reloading packages
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<PackageEntry>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
 
             // selecting packages
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesExecuted);
@@ -100,7 +100,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         .CommandExecutor
                         .WithBusyManager(this._busyManager, OperationType.PackageLoading)
                         .WithErrorHandling(this._interactionService, true)
-                        .Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.Auto));
+                        .Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.Auto));
                 }
 
                 this._firstRun = false;
@@ -214,7 +214,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
         }
         
-        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> eventPayload)
+        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<PackageEntry>> eventPayload)
         {
             this._packagesSync.EnterWriteLock();
 

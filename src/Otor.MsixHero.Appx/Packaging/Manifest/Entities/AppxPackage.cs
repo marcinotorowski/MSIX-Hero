@@ -25,13 +25,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
     public class AppxPackage
     {
         public string RootFolder { get; set; }
+        
+        public string PackagePath { get; set; }
 
         public string Name { get; set; }
         
         public string FullName { get; set; }
-
-        public string Path { get; set; }
-
+        
         public string Publisher { get; set; }
         
         public string ResourceId { get; set; }
@@ -75,7 +75,5 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
         public List<AppxCapability> Capabilities { get; set; }
 
         public bool PackageIntegrity { get; set; }
-
-        public AppxSource Source { get; set; }
     }
 }

@@ -16,12 +16,12 @@
 
 using System.Collections.Generic;
 using MediatR;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
-    public class GetPackagesCommand : IRequest<IList<InstalledPackage>>
+    public class GetPackagesCommand : IRequest<IList<PackageEntry>>
     {
         public PackageFindMode? FindMode { get; }
 

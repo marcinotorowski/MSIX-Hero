@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
 
@@ -43,9 +44,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
 
         public ICommand GoBack { get; }
 
-        protected override Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        protected override Task DoLoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.Capabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName)); ;
+            this.Capabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
             this.GeneralCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.General).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
             this.RestrictedCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.Restricted).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));
             this.CustomCapabilities = new ObservableCollection<CapabilityViewModel>(model.Capabilities.Where(c => c.Type == CapabilityType.Custom).Select(c => new CapabilityViewModel(c)).OrderBy(c => c.SortingIndex).ThenBy(c => c.DisplayName));

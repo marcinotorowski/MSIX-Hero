@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
@@ -25,7 +26,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
 public abstract class PackageLazyLoadingViewModel : NotifyPropertyChanged, IPackageContentItem, ILoadPackage
 {
     private bool _isActive;
-    private (AppxPackage, string) _pending;
+    private (AppxPackage, PackageEntry, string) _pending;
 
     public abstract PackageContentViewType Type { get; }
 
@@ -41,23 +42,23 @@ public abstract class PackageLazyLoadingViewModel : NotifyPropertyChanged, IPack
 
             if (value && _pending != default)
             {
-                DoLoadPackage(_pending.Item1, _pending.Item2, CancellationToken.None);
+                DoLoadPackage(_pending.Item1, _pending.Item2, _pending.Item3, CancellationToken.None);
                 _pending = default;
             }
         }
     }
 
-    public Task LoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken)
+    public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
     {
         if (IsActive)
         {
             _pending = default;
-            return DoLoadPackage(model, filePath, cancellationToken);
+            return DoLoadPackage(model, installationEntry, filePath, cancellationToken);
         }
 
-        _pending = new(model, filePath);
+        _pending = new(model, installationEntry, filePath);
         return Task.CompletedTask;
     }
 
-    protected abstract Task DoLoadPackage(AppxPackage model, string filePath, CancellationToken cancellationToken);
+    protected abstract Task DoLoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken);
 }

@@ -82,6 +82,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             return this._adapter.EnumerateFiles(rootRelativePath, cancellationToken);
         }
 
+        public bool DirectoryExists(string directoryPath)
+        {
+            return string.IsNullOrWhiteSpace(directoryPath) || this._adapter.DirectoryExists(directoryPath);
+        }
+
         public bool FileExists(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))

@@ -62,17 +62,21 @@
                 BorderThickness="{StaticResource CardBorderThickness}" BorderBrush="{StaticResource CardBorderBrush}"
                 DockPanel.Dock="Bottom">
                 <DockPanel>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <controls:ButtonRowPanel DockPanel.Dock="Top">
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="New">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_NewButton}" />
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_NewButton}" />
                         </Button>
 
                         <ToggleButton 
                             IsChecked="{Binding InstalledPackages.IsVisible}"
                             Style="{StaticResource ActionPopupToggleButton}"
                             x:Name="AddNew">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_AddButton}" />
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallPlus}" Content="{localization:Loc Dialogs_SharedContainer_AddButton}" />
                         </ToggleButton>
 
                         <Popup 
@@ -215,17 +219,28 @@
                         </Popup>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="Open">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallOpen}" Content="{localization:Loc Dialogs_SharedContainer_ImportButton}" />
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallOpen}" Content="{localization:Loc Dialogs_SharedContainer_ImportButton}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left"
                             Command="Delete">
-                            <controls:LabelWithIcon Icon16x16="{StaticResource SmallRemove}" Content="{localization:Loc Dialogs_SharedContainer_RemoveButton}" />
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallRemove}" Content="{localization:Loc Dialogs_SharedContainer_RemoveButton}" />
                         </Button>
-                    </StackPanel>
+                    </controls:ButtonRowPanel>
 
                     <DockPanel DockPanel.Dock="Bottom">
-                        <controls:LabelWithIcon Margin="7.5" Icon16x16="{StaticResource SmallHelp}">
+                        <controls:LabelWithIcon 
+                            IsCollapsible="False"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch" 
+                            Margin="7.5" 
+                            Icon16x16="{StaticResource SmallHelp}">
                             <TextBlock
+                                HorizontalAlignment="Stretch"
+                                Foreground="{StaticResource MsixHero.Brushes.Foreground}"
                                 Text="{localization:Loc Dialogs_SharedContainer_ReorderTip}"
                                 TextWrapping="Wrap" />
                         </controls:LabelWithIcon>

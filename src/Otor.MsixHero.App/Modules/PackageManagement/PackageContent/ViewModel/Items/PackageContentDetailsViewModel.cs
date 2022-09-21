@@ -20,7 +20,6 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items
@@ -106,9 +105,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
         public string RootDirectory { get; }
 
         public AppxPackage Model { get; private set; }
-
-        public bool HasAppInstallerUri => this.Model.Source is AppInstallerPackageSource;
-
+        
         public bool PackageIntegrity { get; }
 
         public CapabilitiesViewModel Capabilities { get; }

@@ -14,15 +14,13 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
-
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Installation.Source;
 
 public class StorePackageSourceViewModel : PackageSourceViewModel
 {
-    public StorePackageSourceViewModel(StorePackageSource src) : base(src)
+    public StorePackageSourceViewModel(string familyName)
     {
-        this.FamilyName = src.FamilyName;
+        this.FamilyName = familyName;
     }
 
     public string FamilyName { get; }

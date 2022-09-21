@@ -8,7 +8,7 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
@@ -17,7 +17,7 @@ using Prism.Events;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class GetPackagesHandler : IRequestHandler<GetPackagesCommand, IList<InstalledPackage>>, IObserver<ActivePackageFullNames>
+    public class GetPackagesHandler : IRequestHandler<GetPackagesCommand, IList<PackageEntry>>, IObserver<ActivePackageFullNames>
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IBusyManager busyManager;
@@ -40,7 +40,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             this.detector = detector;
         }
 
-        public async Task<IList<InstalledPackage>> Handle(GetPackagesCommand request, CancellationToken cancellationToken)
+        public async Task<IList<PackageEntry>> Handle(GetPackagesCommand request, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin(OperationType.PackageLoading);
             try
@@ -80,7 +80,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 this.commandExecutor.ApplicationState.Packages.AllPackages.Clear();
                 this.commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
 
-                var currentlyRunning = new HashSet<string>(this.detector.GetCurrentlyRunningPackageNames(), StringComparer.Ordinal);
+                var currentlyRunning = new HashSet<string>(this.detector.GetCurrentlyRunningPackageFamilyNames(), StringComparer.Ordinal);
 
                 foreach (var item in this.commandExecutor.ApplicationState.Packages.AllPackages)
                 {
