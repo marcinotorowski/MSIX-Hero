@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -119,83 +120,96 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (ProcessWrapperException e)
             {
-                var findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Error info: error ", StringComparison.OrdinalIgnoreCase));
-                if (findSimilar != null)
+                var exception = GetExceptionFromMakeAppxOutput(e.StandardError, e.ExitCode) ??
+                                GetExceptionFromMakeAppxOutput(e.StandardOutput, e.ExitCode);
+
+                if (exception != null)
                 {
-                    findSimilar = findSimilar.Substring("MakeAppx : error: Error info: error ".Length);
-
-                    var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+): ");
-                    if (error.Success)
-                    {
-                        findSimilar = findSimilar.Substring(error.Length).Trim();
-                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, e.ExitCode);
-                    }
-
-                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, e.ExitCode);
-                }
-
-                findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
-                if (findSimilar != null)
-                {
-                    var manifestError = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Manifest validation error: "));
-                    manifestError = manifestError?.Substring("MakeAppx : error: Manifest validation error: ".Length);
-
-                    findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
-
-                    int exitCode;
-                    var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+) \\- ");
-                    if (error.Success)
-                    {
-                        if (!string.IsNullOrEmpty(manifestError))
-                        {
-                            findSimilar = manifestError;
-                        }
-                        else
-                        {
-                            findSimilar = findSimilar.Substring(error.Length).Trim();
-                        }
-
-                        if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
-                        {
-                            throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
-                        }
-
-                        if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
-                        {
-                            exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
-                            if (exitCode != 0)
-                            {
-                                throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
-                            }
-                        }
-
-                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
-                    }
-
-                    if (!string.IsNullOrEmpty(manifestError))
-                    {
-                        findSimilar = manifestError;
-                    }
-
-                    if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
-                    {
-                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
-                    }
-
-                    if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
-                    {
-                        exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
-                        if (exitCode != 0)
-                        {
-                            throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
-                        }
-                    }
-
-                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
+                    throw exception;
                 }
 
                 throw;
             }
+        }
+
+        private static Exception GetExceptionFromMakeAppxOutput(IList<string> outputLines, int exitCode)
+        {
+            var findSimilar = outputLines.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Error info: error ", StringComparison.OrdinalIgnoreCase));
+            if (findSimilar != null)
+            {
+                findSimilar = findSimilar.Substring("MakeAppx : error: Error info: error ".Length);
+
+                var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+): ");
+                if (error.Success)
+                {
+                    findSimilar = findSimilar.Substring(error.Length).Trim();
+                    return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, exitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
+                }
+
+                return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, exitCode) + " " + findSimilar, exitCode);
+            }
+
+            findSimilar = outputLines.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
+            if (findSimilar != null)
+            {
+                var manifestError = outputLines.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Manifest validation error: "));
+                manifestError = manifestError?.Substring("MakeAppx : error: Manifest validation error: ".Length);
+
+                findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
+                
+                var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+) \\- ");
+                if (error.Success)
+                {
+                    if (!string.IsNullOrEmpty(manifestError))
+                    {
+                        findSimilar = manifestError;
+                    }
+                    else
+                    {
+                        findSimilar = findSimilar.Substring(error.Length).Trim();
+                    }
+
+                    int parsedExitCode;
+                    if (int.TryParse(error.Groups[1].Value, out parsedExitCode) && parsedExitCode > 0)
+                    {
+                        return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, parsedExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
+                    }
+
+                    if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
+                    {
+                        parsedExitCode = Convert.ToInt32(error.Groups[1].Value, 16);
+                        if (parsedExitCode != 0)
+                        {
+                            return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, parsedExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
+                        }
+                    }
+
+                    return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, exitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
+                }
+
+                if (!string.IsNullOrEmpty(manifestError))
+                {
+                    findSimilar = manifestError;
+                }
+
+                if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
+                {
+                    return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, exitCode) + " " + findSimilar, exitCode);
+                }
+
+                if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
+                {
+                    exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
+                    if (exitCode != 0)
+                    {
+                        return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, exitCode) + " " + findSimilar, exitCode);
+                    }
+                }
+
+                return new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, exitCode) + " " + findSimilar, exitCode);
+            }
+
+            return null;
         }
 
         private class PackUnPackProgressWrapper
