@@ -4288,4 +4288,16 @@ Click the icon again to remove the star.</value>
   <data name="Dialogs_NewVolume_None" xml:space="preserve">
     <value>There are no disks available for a new MSIX package volume.</value>
   </data>
+  <data name="PackageExpert_Virtualization_Files_LearnMore" xml:space="preserve">
+    <value>Learn more about file system write virtualization</value>
+  </data>
+  <data name="PackageExpert_Virtualization_File_Disabled" xml:space="preserve">
+    <value>Virtualization for the file system is disabled for this application.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_Disabled" xml:space="preserve">
+    <value>Virtualization for the registry is disabled for this application.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_LearnMore" xml:space="preserve">
+    <value>Learn more about registry write virtualization</value>
+  </data>
 </root>

@@ -13,6 +13,8 @@
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d"
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
 
     <commands:RoutedCommandHandlers.Commands>
@@ -53,16 +55,22 @@
         </Style>
 
     </mvvm:Dialog.WindowStyle>
-    <DockPanel>
+    <Grid HorizontalAlignment="Stretch">
         <controls:ProgressOverlay 
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
             Visibility="{Binding Path=CommandHandler.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
             IsShown="{Binding Progress.IsLoading}" 
             Progress="{Binding Progress.Progress}" 
             Message="{Binding Progress.Message}" 
             CancelCommand="{Binding Progress.Cancel}" 
             SupportsCancelling="{Binding Progress.SupportsCancelling}">
-            <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
+            <Border
+                HorizontalAlignment="Stretch"
+                Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
                 <ContentControl 
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
                     mvvm:RegionManager.RegionContext="{Binding CommandHandler.FilePath}"
                     mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.PackageExpert}" />
             </Border>
@@ -96,5 +104,5 @@
                     Margin="0 16 0 0" HorizontalAlignment="Center" Command="Refresh" Content="{localization:Loc Packages_Actions_Refresh}" />
             </StackPanel>
         </Border>
-    </DockPanel>
+    </Grid>
 </UserControl>

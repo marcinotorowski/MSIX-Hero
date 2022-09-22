@@ -4285,4 +4285,16 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="Dialogs_NewVolume_None" xml:space="preserve">
     <value>Es sind keine Datenträger für ein neues MSIX-Paketvolumen verfügbar.</value>
   </data>
+  <data name="PackageExpert_Virtualization_Files_LearnMore" xml:space="preserve">
+    <value>Mehr über die Dateisystem-Virtualisierung</value>
+  </data>
+  <data name="PackageExpert_Virtualization_File_Disabled" xml:space="preserve">
+    <value>Die Dateisystem-Virtualisierung ist für diese Anwendung deaktiviert.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_Disabled" xml:space="preserve">
+    <value>Die Registry-Virtualisierung ist für diese Anwendung deaktiviert.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_LearnMore" xml:space="preserve">
+    <value>Mehr über die Registry-Virtualisierung</value>
+  </data>
 </root>

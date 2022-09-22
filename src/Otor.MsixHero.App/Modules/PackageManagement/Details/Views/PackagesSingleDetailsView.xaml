@@ -8,8 +8,13 @@
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
              xmlns:viewModels1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels"
              mc:Ignorable="d" 
+             HorizontalAlignment="Stretch"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels1:PackagesSingleDetailsViewModel}">
-    <ContentControl 
-        mvvm:RegionManager.RegionContext="{Binding FilePath}"
-        mvvm:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.PackageExpert}" />
+    <Border>
+        <ContentControl 
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            mvvm:RegionManager.RegionContext="{Binding FilePath}"
+            mvvm:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.PackageExpert}" />
+    </Border>
 </UserControl>

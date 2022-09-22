@@ -199,6 +199,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             cancellationToken.ThrowIfCancellationRequested();
             if (nodeProperties != null)
             {
+                appxPackage.RegistryVirtualizationEnabled = nodeProperties.Element(desktop6 + "RegistryWriteVirtualization")?.Value != "disabled";
+                appxPackage.FileVirtualizationEnabled = nodeProperties.Element(desktop6 + "FileSystemWriteVirtualization")?.Value != "disabled";
                 foreach (var node in nodeProperties.Elements())
                 {
                     switch (node.Name.LocalName)
@@ -245,6 +247,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                             break;
                     }
                 }
+            }
+            else
+            {
+                appxPackage.RegistryVirtualizationEnabled = true;
+                appxPackage.FileVirtualizationEnabled = true;
             }
 
             cancellationToken.ThrowIfCancellationRequested();

@@ -104,9 +104,13 @@
     </Style>
 
     <ControlTemplate x:Key="ProgressOverlayControlTemplateTier0" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
-            <Border 
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
+            <Border
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
                 <StackPanel 
@@ -197,9 +201,13 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ProgressOverlayControlTemplateTier1" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
             <Border 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
                 <StackPanel 
@@ -307,8 +315,11 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ProgressOverlayControlTemplateTier2" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
             <Border 
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
@@ -444,9 +455,13 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ProgressOverlayCompactControlTemplateTier0" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
             <Border 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
                 <StackPanel 
@@ -532,9 +547,13 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ProgressOverlayCompactControlTemplateTier1" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
             <Border 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
                 <StackPanel 
@@ -638,9 +657,13 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ProgressOverlayCompactControlTemplateTier2" TargetType="local:ProgressOverlay">
-        <Grid>
-            <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+        <Grid
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" >
+            <ContentPresenter
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                x:Name="PART_Content" IsHitTestVisible="True" />
             <Border 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                 x:Name="PART_ProgressReport"
                 Background="{TemplateBinding Background}" IsHitTestVisible="False">
                 <StackPanel 
@@ -772,6 +795,10 @@
     </ControlTemplate>
 
     <Style x:Key="CompactOverlay" TargetType="local:ProgressOverlay">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="0">
                 <Setter Property="Template" Value="{StaticResource ProgressOverlayCompactControlTemplateTier0}" />
@@ -788,6 +815,7 @@
     <Style TargetType="local:ProgressOverlay">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}" Value="0">

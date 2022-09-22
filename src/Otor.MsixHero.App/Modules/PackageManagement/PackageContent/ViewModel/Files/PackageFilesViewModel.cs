@@ -16,6 +16,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
     {
         private readonly IAppxFileViewer _fileViewer;
         private readonly FileInvoker _fileInvoker;
+        private bool _isVirtualizationDisabled;
 
         public PackageFilesViewModel(IPackageContentItemNavigation navigation, IAppxFileViewer fileViewer, FileInvoker fileInvoker)
         {
@@ -26,7 +27,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
                 navigation.SetCurrentItem(PackageContentViewType.Overview);
             });
         }
-        
+
+        public bool IsVirtualizationDisabled
+        {
+            get => this._isVirtualizationDisabled;
+            private set => this.SetField(ref this._isVirtualizationDisabled, value);
+        }
+
         public override PackageContentViewType Type => PackageContentViewType.Files;
 
         public FileTreeViewModel FileTree { get; private set; }
@@ -35,6 +42,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.F
 
         protected override Task DoLoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
+            this.IsVirtualizationDisabled = !model.FileVirtualizationEnabled;
             this.FileTree = new FileTreeViewModel(filePath, this._fileViewer, this._fileInvoker);
             this.OnPropertyChanged(nameof(this.FileTree));
             return Task.CompletedTask;

@@ -60,6 +60,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 
         public string Version { get; set; }
 
+        public bool RegistryVirtualizationEnabled { get; set; }
+        
+        public bool FileVirtualizationEnabled { get; set; }
+
         public AppxPackageArchitecture ProcessorArchitecture { get; set; }
         
         public List<AppxPackageDependency> PackageDependencies { get; set; }

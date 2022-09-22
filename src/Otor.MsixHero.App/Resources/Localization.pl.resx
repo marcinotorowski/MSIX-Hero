@@ -4288,4 +4288,16 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="Dialogs_NewVolume_None" xml:space="preserve">
     <value>Nie istnieje żaden wolny dysk do stworzenia nowego woluminu dla pakietów MSIX.</value>
   </data>
+  <data name="PackageExpert_Virtualization_Files_LearnMore" xml:space="preserve">
+    <value>Dowiedz się więcej na temat wirtualizacji systemu plików</value>
+  </data>
+  <data name="PackageExpert_Virtualization_File_Disabled" xml:space="preserve">
+    <value>Wirtualizacja systemu plików jest wyłączona dla tej aplikacji.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_Disabled" xml:space="preserve">
+    <value>Wirtualizacja rejestru jest wyłączona dla tej aplikacji.</value>
+  </data>
+  <data name="PackageExpert_Virtualization_Registry_LearnMore" xml:space="preserve">
+    <value>Dowiedz się więcej na temat wirtualizacji rejestru</value>
+  </data>
 </root>

@@ -10172,6 +10172,42 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Virtualization for the file system is disabled for this application..
+        /// </summary>
+        public static string PackageExpert_Virtualization_File_Disabled {
+            get {
+                return ResourceManager.GetString("PackageExpert_Virtualization_File_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about file system write virtualization.
+        /// </summary>
+        public static string PackageExpert_Virtualization_Files_LearnMore {
+            get {
+                return ResourceManager.GetString("PackageExpert_Virtualization_Files_LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtualization for the registry is disabled for this application..
+        /// </summary>
+        public static string PackageExpert_Virtualization_Registry_Disabled {
+            get {
+                return ResourceManager.GetString("PackageExpert_Virtualization_Registry_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about registry write virtualization.
+        /// </summary>
+        public static string PackageExpert_Virtualization_Registry_LearnMore {
+            get {
+                return ResourceManager.GetString("PackageExpert_Virtualization_Registry_LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package publisher.
         /// </summary>
         public static string PackagePublisher {

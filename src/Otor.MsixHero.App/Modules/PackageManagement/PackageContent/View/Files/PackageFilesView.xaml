@@ -13,6 +13,7 @@
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items"
              xmlns:files="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance files:PackageFilesViewModel}">
 
@@ -21,7 +22,7 @@
             DockPanel.Dock="Top"
             ShowArrow="False"
             Command="{Binding GoBack}" 
-            Margin="0 0 0 0">
+            Margin="0 0 0 8">
             <cards:CardAction.Icon>
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
@@ -33,8 +34,31 @@
                 </HeaderedContentControl>
             </cards:CardAction.Content>
         </cards:CardAction>
+
+        <cards:Card 
+            Visibility="{Binding IsVirtualizationDisabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+            IsLoading="{Binding IsLoading}"
+            Background="LightYellow"
+            DockPanel.Dock="Top" 
+            Padding="8"
+            Margin="0 0 0 -1">
+            <controls:LabelWithIcon 
+                IsCollapsible="False" 
+                Icon16x16="{StaticResource SmallError}">
+                <TextBlock TextWrapping="Wrap">
+                    <Run Text="{localization:Loc PackageExpert_Virtualization_File_Disabled}" />
+                    <Hyperlink>
+                        <b:Interaction.Behaviors>
+                            <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/virtualization-files" />
+                        </b:Interaction.Behaviors>
+
+                        <Run Text="{localization:Loc PackageExpert_Virtualization_Files_LearnMore}" />
+                    </Hyperlink>
+                </TextBlock>
+            </controls:LabelWithIcon>
+        </cards:Card>
         <Border 
-            Margin="0 8"
+            Margin="0 0 0 0"
             Background="{StaticResource CardBackgroundBrush}" 
             BorderThickness="{StaticResource CardBorderThickness}" 
             BorderBrush="{StaticResource CardBorderBrush}">

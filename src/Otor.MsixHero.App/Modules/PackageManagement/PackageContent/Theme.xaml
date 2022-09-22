@@ -2,10 +2,15 @@
                     xmlns:packageContent="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent"
                     xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View">
     <Style TargetType="packageContent:PackageContentHost">
+        <Setter Property="Background" Value="Green" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="packageContent:PackageContentHost">
-                    <view:PackageContentView />
+                    <Border Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                        <view:PackageContentView HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

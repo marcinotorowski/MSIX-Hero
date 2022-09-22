@@ -10,6 +10,7 @@
              xmlns:registry="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance registry:PackageRegistryViewModel}">
 
@@ -18,7 +19,7 @@
             DockPanel.Dock="Top"
             ShowArrow="False"
             Command="{Binding GoBack}" 
-            Margin="0 0 0 0">
+            Margin="0 0 0 8">
             <cards:CardAction.Icon>
                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUndo}" />
             </cards:CardAction.Icon>
@@ -30,8 +31,31 @@
                 </HeaderedContentControl>
             </cards:CardAction.Content>
         </cards:CardAction>
+
+        <cards:Card 
+            Visibility="{Binding IsVirtualizationDisabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+            IsLoading="{Binding IsLoading}"
+            Background="LightYellow"
+            DockPanel.Dock="Top" 
+            Padding="8"
+            Margin="0 0 0 -1">
+            <controls:LabelWithIcon 
+                IsCollapsible="False" 
+                Icon16x16="{StaticResource SmallError}">
+                <TextBlock TextWrapping="Wrap">
+                    <Run Text="{localization:Loc PackageExpert_Virtualization_Registry_Disabled}" />
+                    <Hyperlink>
+                        <b:Interaction.Behaviors>
+                            <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/virtualization-registry" />
+                        </b:Interaction.Behaviors>
+
+                        <Run Text="{localization:Loc PackageExpert_Virtualization_Registry_LearnMore}" />
+                    </Hyperlink>
+                </TextBlock>
+            </controls:LabelWithIcon>
+        </cards:Card>
         <Border 
-            Margin="0 8"
+            Margin="0 0 0 8"
             Background="{StaticResource CardBackgroundBrush}" 
             BorderThickness="{StaticResource CardBorderThickness}" 
             BorderBrush="{StaticResource CardBorderBrush}">
