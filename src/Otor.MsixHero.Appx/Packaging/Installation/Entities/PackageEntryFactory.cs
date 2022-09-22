@@ -244,16 +244,17 @@ public static class PackageEntryFactory
             InstallDate = installDate,
             AppInstallerUri = originalPackageEntry.GetAppInstallerInfo()?.Uri
         };
-        
+
         if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                         pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                         pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
         {
             var priFile = Path.Combine(installLocation, "resources.pri");
+            var resourceTranslator = new ResourceTranslator(originalPackageEntry.Id.FullName, priFile);
 
-            pkg.DisplayName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayName);
-            pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.DisplayPublisherName);
-            pkg.Description = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageFullName, pkg.Description);
+            pkg.DisplayName = resourceTranslator.Translate(pkg.DisplayName);
+            pkg.DisplayPublisherName = resourceTranslator.Translate(pkg.DisplayPublisherName);
+            pkg.Description = resourceTranslator.Translate(pkg.Description);
 
             if (string.IsNullOrEmpty(pkg.DisplayName))
             {
@@ -327,7 +328,7 @@ public static class PackageEntryFactory
             return new AppxPackageQueryService.MsixPackageVisuals();
         }
     }
-    
+
     private static SignatureKind ConvertSignatureKind(PackageSignatureKind signatureKind)
     {
         switch (signatureKind)

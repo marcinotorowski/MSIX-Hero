@@ -55,7 +55,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
             throw new NotSupportedException(Resources.Localization.Packages_Error_SrcNotSupported);
         }
-        
+
         public async Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default)
         {
             var result = await this.Read(fileReader, cancellationToken).ConfigureAwait(false);
@@ -76,7 +76,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     }
                 }
             }
-            
+
             return result;
         }
 
@@ -93,7 +93,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             // var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
             // var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
             var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2013/bundle");
-                
+
             var identity = document.Root.Element(ns + "Identity");
             if (identity == null)
             {
@@ -355,10 +355,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         appxApplication.Description = visualElements.Attribute("Description")?.Value;
                         appxApplication.DisplayName = visualElements.Attribute("DisplayName")?.Value;
                         appxApplication.BackgroundColor = visualElements.Attribute("BackgroundColor")?.Value;
-                        appxApplication.Square150x150Logo = visualElements.Attribute("Square150x150Logo")?.Value; 
+                        appxApplication.Square150x150Logo = visualElements.Attribute("Square150x150Logo")?.Value;
                         appxApplication.Square44x44Logo = visualElements.Attribute("Square44x44Logo")?.Value;
                         appxApplication.Visible = visualElements.Attribute("AppListEntry")?.Value != "none";
-                            
+
                         var defaultTile = visualElements.Element(uap + "DefaultTile");
                         if (defaultTile != null)
                         {
@@ -396,7 +396,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                     appxPackage.Applications.Add(appxApplication);
                 }
-                    
+
                 foreach (var psfApp in appxPackage.Applications)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -432,44 +432,44 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                                 break;
                             case "TargetDeviceFamily":
-                            {
-                                /*
-                                    <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
-                                    */
-
-                                var minVersion = node.Attribute("MinVersion")?.Value;
-                                var maxVersion = node.Attribute("MaxVersionTested")?.Value;
-                                var name = node.Attribute("Name")?.Value;
-
-                                appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
                                 {
-                                    Minimum = WindowsNames.GetOperatingSystemFromNameAndVersion(name, minVersion),
-                                    Tested = WindowsNames.GetOperatingSystemFromNameAndVersion(name, maxVersion),
-                                });
+                                    /*
+                                        <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
+                                        */
 
-                                break;
-                            }
+                                    var minVersion = node.Attribute("MinVersion")?.Value;
+                                    var maxVersion = node.Attribute("MaxVersionTested")?.Value;
+                                    var name = node.Attribute("Name")?.Value;
+
+                                    appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
+                                    {
+                                        Minimum = WindowsNames.GetOperatingSystemFromNameAndVersion(name, minVersion),
+                                        Tested = WindowsNames.GetOperatingSystemFromNameAndVersion(name, maxVersion),
+                                    });
+
+                                    break;
+                                }
 
                             case "PackageDependency":
-                            {
-                                /*
-                                    <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
-                                    */
-
-                                var minVersion = node.Attribute("MinVersion")?.Value;
-                                var name = node.Attribute("Name")?.Value;
-                                var publisher = node.Attribute("Publisher")?.Value;
-
-                                var appxDependency = new AppxPackageDependency
                                 {
-                                    Publisher = publisher,
-                                    Name = name,
-                                    Version = minVersion
-                                };
+                                    /*
+                                        <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+                                        */
 
-                                appxPackage.PackageDependencies.Add(appxDependency);
-                                break;
-                            }
+                                    var minVersion = node.Attribute("MinVersion")?.Value;
+                                    var name = node.Attribute("Name")?.Value;
+                                    var publisher = node.Attribute("Publisher")?.Value;
+
+                                    var appxDependency = new AppxPackageDependency
+                                    {
+                                        Publisher = publisher,
+                                        Name = name,
+                                        Version = minVersion
+                                    };
+
+                                    appxPackage.PackageDependencies.Add(appxDependency);
+                                    break;
+                                }
                         }
                     }
                 }
@@ -479,7 +479,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             {
                 var min = nodePrerequisitesRoot.Element(ns2 + "OSMinVersion")?.Value;
                 var max = nodePrerequisitesRoot.Element(ns2 + "OSMaxVersionTested")?.Value;
-                    
+
                 appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
                 {
                     Minimum = min == null ? null : WindowsNames.GetOperatingSystemFromNameAndVersion("Windows.Desktop", min),
@@ -563,30 +563,32 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         }
                     }
 
-                    package.DisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.DisplayName);
-                    package.Description = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.Description);
-                    package.PublisherDisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.PublisherDisplayName);
+                    var resourceTranslator = new ResourceTranslator(package.FullName, priFullPath);
+
+                    package.DisplayName = resourceTranslator.Translate(package.DisplayName);
+                    package.Description = resourceTranslator.Translate(package.Description);
+                    package.PublisherDisplayName = resourceTranslator.Translate(package.PublisherDisplayName);
 
                     if (string.IsNullOrEmpty(package.DisplayName))
                     {
                         package.DisplayName = package.Name;
                     }
-                    
+
                     if (string.IsNullOrEmpty(package.PublisherDisplayName))
                     {
                         package.PublisherDisplayName = package.Publisher;
                     }
-                    
+
                     foreach (var app in package.Applications ?? Enumerable.Empty<AppxApplication>())
                     {
-                        app.DisplayName = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.DisplayName);
-                        
+                        app.DisplayName = resourceTranslator.Translate(app.DisplayName);
+
                         if (string.IsNullOrEmpty(app.DisplayName))
                         {
                             app.DisplayName = app.Id;
-                        }    
-                        
-                        app.Description = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.Description);
+                        }
+
+                        app.Description = resourceTranslator.Translate(app.Description);
                     }
                 }
 

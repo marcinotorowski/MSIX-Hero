@@ -19,26 +19,65 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Otor.MsixHero.Infrastructure.Helpers;
 using PriFormat;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
-    public static class StringLocalizer
+    public class ResourceTranslator
     {
-        public static string Localize(string priFile, string appId, string packageFullName, string resourceId)
+        private readonly string _packageFullName;
+        private readonly string _priFile;
+        private readonly Lazy<PriFile> _parsedPriFile;
+        private readonly string _packageName;
+
+        public ResourceTranslator(string packageFullName, string priFile)
+        {
+            this._packageFullName = packageFullName;
+            this._priFile = priFile;
+            this._parsedPriFile = new Lazy<PriFile>(() => GetPriFileFromFilePath(priFile));
+            this._packageName = PackageIdentity.FromFullName(packageFullName).AppName;
+        }
+
+        public static string Translate(string priFile, string packageFullName, string resourceId)
+        {
+            var resourceTranslator = new ResourceTranslator(packageFullName, priFile);
+            return resourceTranslator.Translate(resourceId);
+        }
+
+        public string Translate(string resourceId)
+        {
+            return Translate(this._parsedPriFile, this._priFile, this._packageName, this._packageFullName, resourceId);
+        }
+
+        private static PriFile GetPriFileFromFilePath(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            using var stream = File.OpenRead(filePath);
+
+            // This is important, some packages have "broken" or "unsupported" PRI files.
+            // In this case it is better to return the original untranslated string rather than panic.
+            // ReSharper disable once AccessToDisposedClosure
+            return ExceptionGuard.Guard(() => PriFile.Parse(stream)); 
+        }
+
+        private static string Translate(Lazy<PriFile> parsedPriFile, string priFilePath, string appId, string packageFullName, string resourceId)
         {
             if (resourceId == null || !resourceId.StartsWith("ms-resource:"))
             {
                 return resourceId;
             }
 
-            if (!File.Exists(priFile))
+            if (priFilePath == null)
             {
                 return resourceId;
             }
 
             var outBuff = new StringBuilder(1024);
-
 
             resourceId = resourceId.Remove(0, "ms-resource:".Length);
             if (string.IsNullOrEmpty(resourceId))
@@ -50,7 +89,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
             if (resourceId.StartsWith("//"))
             {
-                fullString = "@{" + priFile + "?ms-resource:" + resourceId.TrimEnd('/') + "}";
+                fullString = "@{" + priFilePath + "?ms-resource:" + resourceId.TrimEnd('/') + "}";
                 if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
                 {
                     return outBuff.ToString();
@@ -74,10 +113,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             {
                 var split = resourceId.Split('/');
                 var newResourceId = string.Join('/', split.Take(1)) + "/" + string.Join('.', split.Skip(1));
-                msResource = "ms-resource://" + appId + "/resources/" + newResourceId.TrimEnd('/') ;
+                msResource = "ms-resource://" + appId + "/resources/" + newResourceId.TrimEnd('/');
             }
 
-            fullString = "@{" + priFile + "?" + msResource + "}";
+            fullString = "@{" + priFilePath + "?" + msResource + "}";
 
             if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
             {
@@ -90,13 +129,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 return outBuff.ToString();
             }
 
-            using var s = File.OpenRead(priFile);
-            var pri= PriFile.Parse(s);
-            var name = pri.Sections.OfType<HierarchicalSchemaSection>().FirstOrDefault(s => s.UniqueName != null);
+            var name = parsedPriFile.Value.Sections.OfType<HierarchicalSchemaSection>().FirstOrDefault(s => s.UniqueName != null);
             if (name != null)
             {
                 msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + "Resources/" + resourceId.TrimEnd('/');
-                fullString = "@{" + priFile + "?" + msResource + "}";
+                fullString = "@{" + priFilePath + "?" + msResource + "}";
 
                 if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
                 {
@@ -104,7 +141,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 }
 
                 msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + resourceId.TrimEnd('/');
-                fullString = "@{" + priFile + "?" + msResource + "}";
+                fullString = "@{" + priFilePath + "?" + msResource + "}";
 
                 if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
                 {
@@ -114,7 +151,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
             return resourceId;
         }
-        
+
         [DllImport("shlwapi.dll", BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = false, ThrowOnUnmappableChar = true)]
         private static extern int SHLoadIndirectString(string pszSource, StringBuilder pszOutBuf, int cchOutBuf, IntPtr ppvReserved);
     }
