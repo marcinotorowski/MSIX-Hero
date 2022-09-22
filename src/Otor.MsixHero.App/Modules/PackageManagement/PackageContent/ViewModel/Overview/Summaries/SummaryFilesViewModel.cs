@@ -21,7 +21,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
@@ -36,7 +35,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
     {
         private static readonly TimeSpan MaxScanTime = TimeSpan.FromSeconds(5);
         private static readonly int MaxFileCount = 10000;
-        
+        private bool _isLoading;
+
         public SummaryFilesViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Files));
@@ -52,109 +52,125 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
+#pragma warning disable CS4014
             this.EstimateFilesCount(model, filePath, cancellationToken);
+#pragma warning restore CS4014
             return Task.CompletedTask;
         }
 
-        private async void EstimateFilesCount(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        public bool IsLoading
         {
-            this.IsEstimated = false;
-            var fileReader = FileReaderFactory.CreateFileReader(filePath);
+            get => this._isLoading;
+            set => this.SetField(ref this._isLoading, value);
+        }
 
-            var count = 0;
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            this.Estimating.IsLoading = true;
-            this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
-            this.SecondLine = Resources.Localization.Loading_PleaseWait;
-            this.OnPropertyChanged(nameof(SecondLine));
-
+        private async Task EstimateFilesCount(AppxPackage model, string filePath, CancellationToken cancellationToken)
+        {
+            this.IsLoading = true;
             try
             {
-                var executables = model
-                    .Applications
-                    .Where(a => !string.IsNullOrEmpty(a?.Executable))
-                    .OrderByDescending(a => a.Visible ? 1 : 0)
-                    .ThenByDescending(a => a.Description?.Length ?? -1)
-                    .SelectMany(a => a.Proxy?.Executable == null ? new[] { a.Executable } : new[] { a.Executable, a.Proxy.Executable })
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Take(2)
-                    .ToArray();
+                this.IsEstimated = false;
+                var fileReader = FileReaderFactory.CreateFileReader(filePath);
 
-                long size = 0;
-                await foreach (var f in fileReader.EnumerateFiles(null, "*", SearchOption.AllDirectories, cancellationToken).ConfigureAwait(false))
+                var count = 0;
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                this.Estimating.IsLoading = true;
+                this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
+                this.SecondLine = Resources.Localization.Loading_PleaseWait;
+                this.OnPropertyChanged(nameof(SecondLine));
+
+                try
                 {
-                    count++;
-                    size += f.Size;
+                    var executables = model
+                        .Applications
+                        .Where(a => !string.IsNullOrEmpty(a?.Executable))
+                        .OrderByDescending(a => a.Visible ? 1 : 0)
+                        .ThenByDescending(a => a.Description?.Length ?? -1)
+                        .SelectMany(a => a.Proxy?.Executable == null ? new[] { a.Executable } : new[] { a.Executable, a.Proxy.Executable })
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .Take(2)
+                        .ToArray();
 
-                    if (stopWatch.Elapsed > MaxScanTime || count > MaxFileCount)
+                    long size = 0;
+                    await foreach (var f in fileReader.EnumerateFiles(null, "*", SearchOption.AllDirectories, cancellationToken).ConfigureAwait(false))
                     {
-                        this.IsEstimated = true;
-                        break;
-                    }
-                }
+                        count++;
+                        size += f.Size;
 
-                this.FileSize = size;
-                this.FilesCount = count;
-                this.OtherFilesCount = count;
-
-                if (count == 0)
-                {
-                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
-                }
-                else if (this.IsEstimated)
-                {
-                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Estimated, count, Convert(size));
-                }
-                else
-                {
-                    this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Exact, count, Convert(size));
-                }
-                
-                switch (executables.Length)
-                {
-                    case 0:
-                        if (this.OtherFilesCount == 0)
+                        if (stopWatch.Elapsed > MaxScanTime || count > MaxFileCount)
                         {
-                            this.SecondLine = Resources.Localization.PackageExpert_Files_Summary_None;
+                            this.IsEstimated = true;
+                            break;
                         }
-                        else
-                        {
+                    }
+
+                    this.FileSize = size;
+                    this.FilesCount = count;
+                    this.OtherFilesCount = count;
+
+                    if (count == 0)
+                    {
+                        this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files;
+                    }
+                    else if (this.IsEstimated)
+                    {
+                        this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Estimated, count, Convert(size));
+                    }
+                    else
+                    {
+                        this.FirstLine = Resources.Localization.PackageExpert_Tabs_Files + ": " + string.Format(Resources.Localization.PackageExpert_Files_Summary_Exact, count, Convert(size));
+                    }
+
+                    switch (executables.Length)
+                    {
+                        case 0:
+                            if (this.OtherFilesCount == 0)
+                            {
+                                this.SecondLine = Resources.Localization.PackageExpert_Files_Summary_None;
+                            }
+                            else
+                            {
+                                this.SecondLine =
+                                    this.IsEstimated
+                                        ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGenericPlus, this.OtherFilesCount)
+                                        : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGeneric, this.OtherFilesCount);
+                            }
+                            break;
+                        case 1:
+                            this.OtherFilesCount--;
                             this.SecondLine =
                                 this.IsEstimated
-                                    ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGenericPlus, this.OtherFilesCount)
-                                    : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesGeneric, this.OtherFilesCount);
-                        }
-                        break;
-                    case 1:
-                        this.OtherFilesCount--;
-                        this.SecondLine =
-                            this.IsEstimated
-                                ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1Plus, Path.GetFileName(executables[0]), this.OtherFilesCount)
-                                : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1, Path.GetFileName(executables[0]), this.OtherFilesCount);
-                        break;
+                                    ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1Plus, Path.GetFileName(executables[0]), this.OtherFilesCount)
+                                    : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe1, Path.GetFileName(executables[0]), this.OtherFilesCount);
+                            break;
 
-                    default:
-                        this.OtherFilesCount -= 2;
-                        this.SecondLine =
-                            this.IsEstimated
-                                ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2Plus, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount)
-                                : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount);
-                        break;
+                        default:
+                            this.OtherFilesCount -= 2;
+                            this.SecondLine =
+                                this.IsEstimated
+                                    ? string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2Plus, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount)
+                                    : string.Format(Resources.Localization.PackageExpert_Files_Summary_FilesExe2, Path.GetFileName(executables[0]), Path.GetFileName(executables[1]), this.OtherFilesCount);
+                            break;
+                    }
                 }
-            }
-            catch (OperationCanceledException)
-            {
+                catch (OperationCanceledException)
+                {
+                }
+                finally
+                {
+                    stopWatch.Stop();
+                    this.Estimating.IsLoading = false;
+                    this.OnPropertyChanged(nameof(IsEstimated));
+                    this.OnPropertyChanged(nameof(FirstLine));
+                    this.OnPropertyChanged(nameof(SecondLine));
+                    this.OnPropertyChanged(nameof(FilesCount));
+                    this.OnPropertyChanged(nameof(OtherFilesCount));
+                }
             }
             finally
             {
-                stopWatch.Stop();
-                this.Estimating.IsLoading = false;
-                this.OnPropertyChanged(nameof(IsEstimated));
-                this.OnPropertyChanged(nameof(FirstLine));
-                this.OnPropertyChanged(nameof(SecondLine));
-                this.OnPropertyChanged(nameof(FilesCount));
-                this.OnPropertyChanged(nameof(OtherFilesCount));
+                this.IsLoading = false;
             }
         }
 

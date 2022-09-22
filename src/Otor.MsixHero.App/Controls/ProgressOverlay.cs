@@ -26,7 +26,7 @@ namespace Otor.MsixHero.App.Controls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressOverlay), new FrameworkPropertyMetadata(typeof(ProgressOverlay)));
         }
-
+        
         public static readonly DependencyProperty ProgressProperty =  DependencyProperty.Register("Progress", typeof(double), typeof(ProgressOverlay), new PropertyMetadata(0.0));
 
         public static readonly DependencyProperty MessageProperty =  DependencyProperty.Register("Message", typeof(string), typeof(ProgressOverlay), new PropertyMetadata(MsixHero.App.Resources.Localization.Loading_PleaseWait));

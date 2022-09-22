@@ -27,26 +27,42 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
 public class OpenViewModel : NotifyPropertyChanged, ILoadPackage
 {
+    private bool _isLoading;
+
+    public bool IsLoading
+    {
+        get => this._isLoading;
+        private set => this.SetField(ref this._isLoading, value);
+    }
+
     public string RootDirectory { get; private set; }
 
     public string UserDirectory { get; private set; }
 
     public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
-        UserDirectory = installEntry?.UserDirPath ?? Path.Combine("%localappdata%", "Packages", model.FamilyName, "LocalCache");
-
-        if (filePath != null)
+        try
         {
-            RootDirectory = installEntry?.InstallDirPath ?? filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
+            this.IsLoading = true;
+            this.UserDirectory = installEntry?.UserDirPath ?? Path.Combine("%localappdata%", "Packages", model.FamilyName, "LocalCache");
+
+            if (filePath != null)
+            {
+                this.RootDirectory = installEntry?.InstallDirPath ?? filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
+            }
+            else
+            {
+                this.RootDirectory = null;
+            }
+
+            this.OnPropertyChanged(nameof(UserDirectory));
+            this.OnPropertyChanged(nameof(RootDirectory));
+
+            return Task.CompletedTask;
         }
-        else
+        finally
         {
-            RootDirectory = null;
+            this.IsLoading = false;
         }
-
-        OnPropertyChanged(nameof(UserDirectory));
-        OnPropertyChanged(nameof(RootDirectory));
-
-        return Task.CompletedTask;
     }
 }

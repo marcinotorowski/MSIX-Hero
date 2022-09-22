@@ -25,39 +25,45 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
 {
     public class HeaderViewModel : NotifyPropertyChanged, ILoadPackage
     {
-        public HeaderViewModel(IPackageContentItemNavigation _)
+        private bool _isLoading;
+        
+        public bool IsLoading
         {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
-            DisplayName = model.DisplayName;
-            PublisherDisplayName = model.PublisherDisplayName;
-            Publisher = model.Publisher;
-            Version = model.Version;
-            Logo = model.Logo;
-
-            TileColor = null;
-
-            if (model.Applications != null)
+            try
             {
-                foreach (var item in model.Applications)
+                this.IsLoading = true;
+                this.DisplayName = model.DisplayName;
+                this.PublisherDisplayName = model.PublisherDisplayName;
+                this.Publisher = model.Publisher;
+                this.Version = model.Version;
+                this.Logo = model.Logo;
+                this.TileColor = null;
+
+                if (model.Applications != null)
                 {
-                    if (string.IsNullOrEmpty(TileColor))
+                    foreach (var item in model.Applications)
                     {
-                        TileColor = item.BackgroundColor;
-                        break;
+                        if (string.IsNullOrEmpty(TileColor))
+                        {
+                            this.TileColor = item.BackgroundColor;
+                            break;
+                        }
                     }
                 }
+                
+                this.OnPropertyChanged(null);
+                return Task.CompletedTask;
             }
-
-            if (string.IsNullOrEmpty(TileColor))
+            finally
             {
-                // TileColor = "#aaaaaa";
+                this.IsLoading = false;
             }
-
-            OnPropertyChanged(null);
-            return Task.CompletedTask;
         }
 
         public string PublisherDisplayName { get; private set; }

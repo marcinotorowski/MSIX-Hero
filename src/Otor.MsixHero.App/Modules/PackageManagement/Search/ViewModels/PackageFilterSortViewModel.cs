@@ -49,6 +49,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         private readonly IBusyManager _busyManager;
         private PackageContext _source;
         private bool _isBusy;
+        private int _progress;
 
         public PackageFilterSortViewModel(
             IMsixHeroApplication application, 
@@ -85,6 +86,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         {
             get => this._isBusy;
             private set => this.SetField(ref this._isBusy, value);
+        }
+
+        public int Progress
+        {
+            get => this._progress;
+            private set => this.SetField(ref this._progress, value);
         }
 
         public ICommand Clear { get; }
@@ -320,6 +327,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             }
 
             this.IsBusy = e.IsBusy;
+            this.Progress = e.Progress;
         }
 
         private void OnSetPackageFilter(UiExecutedPayload<SetPackageFilterCommand> obj)

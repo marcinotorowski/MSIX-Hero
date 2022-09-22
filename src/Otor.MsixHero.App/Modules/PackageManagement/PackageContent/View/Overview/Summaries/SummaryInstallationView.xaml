@@ -11,7 +11,9 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryInstallationViewModel}">
 
-    <cards:CardAction Command="{Binding Details}">
+    <cards:CardAction 
+        IsLoading="{Binding IsLoading}"
+        Command="{Binding Details}">
         <!-- Margin="0 0 0 8" -->
         <cards:CardAction.Content>
             <HeaderedContentControl Style="{StaticResource CardHeader}" Content="{Binding SecondLine}">

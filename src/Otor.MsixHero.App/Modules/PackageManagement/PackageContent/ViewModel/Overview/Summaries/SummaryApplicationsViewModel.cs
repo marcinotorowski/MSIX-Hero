@@ -31,9 +31,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryApplicationsViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
         public SummaryApplicationsViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Applications));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
@@ -42,43 +50,53 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            var promotedApplication = model.Applications.FirstOrDefault(ma => ma.Visible) ??
-                                      model.Applications.FirstOrDefault(a => a.ExecutionAlias?.Any(ea => !string.IsNullOrEmpty(ea)) == true) ??
-                                      model.Applications.FirstOrDefault();
+            try
+            {
+                this.IsLoading = true;
 
-            if (promotedApplication == null)
-            {
-                // no applications
-                this.SecondLine = Resources.Localization.PackageExpert_Applications_None;
-            }
-            else
-            {
-                var otherApps = model.Applications.Count - 1;
-                var promotedName = promotedApplication.DisplayName;
-                if (promotedApplication.EntryPoint == "Windows.FullTrustApplication")
+                var promotedApplication = model.Applications.FirstOrDefault(ma => ma.Visible) ??
+                                          model.Applications.FirstOrDefault(a => a.ExecutionAlias?.Any(ea => !string.IsNullOrEmpty(ea)) == true) ??
+                                          model.Applications.FirstOrDefault();
+
+                if (promotedApplication == null)
                 {
-                    promotedName += " [" + Path.GetFileName(promotedApplication.Proxy?.Executable ?? promotedApplication.Executable) + "]";
+                    // no applications
+                    this.SecondLine = Resources.Localization.PackageExpert_Applications_None;
+                }
+                else
+                {
+                    var otherApps = model.Applications.Count - 1;
+                    var promotedName = promotedApplication.DisplayName;
+                    if (promotedApplication.EntryPoint == "Windows.FullTrustApplication")
+                    {
+                        promotedName += " [" + Path.GetFileName(promotedApplication.Proxy?.Executable ?? promotedApplication.Executable) + "]";
+                    }
+
+                    switch (otherApps)
+                    {
+                        case 0:
+                            this.SecondLine = promotedName;
+                            break;
+                        case 1:
+                            this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_OneExtra, promotedName);
+                            break;
+                        default:
+                            this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_XExtra, promotedName, otherApps);
+                            break;
+                    }
                 }
 
-                switch (otherApps)
-                {
-                    case 0:
-                        this.SecondLine = promotedName;
-                        break;
-                    case 1:
-                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_OneExtra, promotedName);
-                        break;
-                    default:
-                        this.SecondLine = string.Format(Resources.Localization.PackageExpert_Applications_XExtra, promotedName, otherApps);
-                        break;
-                }
+                this.AppCount = model.Applications.Count;
+                this.Apps = new ObservableCollection<ApplicationVisualSummaryViewModel>(model.Applications.Where(a => a.Visible).Select(app => new ApplicationVisualSummaryViewModel(app, model)));
+
+                this.OnPropertyChanged(null);
+                return Task.CompletedTask;
+
             }
-
-            this.AppCount = model.Applications.Count;
-            this.Apps = new ObservableCollection<ApplicationVisualSummaryViewModel>(model.Applications.Where(a => a.Visible).Select(app => new ApplicationVisualSummaryViewModel(app, model)));
-
-            this.OnPropertyChanged(null);
-            return Task.CompletedTask;
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         public int AppCount { get; private set; }

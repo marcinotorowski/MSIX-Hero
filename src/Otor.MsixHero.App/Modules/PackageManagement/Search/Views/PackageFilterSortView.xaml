@@ -18,6 +18,8 @@
     FocusManager.IsFocusScope="True"
     d:DesignHeight="340" d:DesignWidth="500" d:DataContext="{d:DesignInstance viewModels:PackageFilterSortViewModel}">
     <controls:ProgressOverlay 
+        Style="{StaticResource CompactOverlay}"
+        Progress="{Binding Progress}"
         IsShown="{Binding IsBusy}">
         <UniformGrid Margin="8" Columns="2" Rows="1">
             <StackPanel VerticalAlignment="Top">

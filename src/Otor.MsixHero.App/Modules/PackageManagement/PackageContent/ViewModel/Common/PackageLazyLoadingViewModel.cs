@@ -27,6 +27,13 @@ public abstract class PackageLazyLoadingViewModel : NotifyPropertyChanged, IPack
 {
     private bool _isActive;
     private (AppxPackage, PackageEntry, string) _pending;
+    private bool _isLoading;
+
+    public bool IsLoading
+    {
+        get => this._isLoading;
+        private set => this.SetField(ref this._isLoading, value);
+    }
 
     public abstract PackageContentViewType Type { get; }
 
@@ -48,16 +55,25 @@ public abstract class PackageLazyLoadingViewModel : NotifyPropertyChanged, IPack
         }
     }
 
-    public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
+    public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
     {
         if (IsActive)
         {
             _pending = default;
-            return DoLoadPackage(model, installationEntry, filePath, cancellationToken);
+            try
+            {
+                this.IsLoading = true;
+                await DoLoadPackage(model, installationEntry, filePath, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
-
-        _pending = new(model, installationEntry, filePath);
-        return Task.CompletedTask;
+        else
+        {
+            _pending = new(model, installationEntry, filePath);
+        }
     }
 
     protected abstract Task DoLoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken);

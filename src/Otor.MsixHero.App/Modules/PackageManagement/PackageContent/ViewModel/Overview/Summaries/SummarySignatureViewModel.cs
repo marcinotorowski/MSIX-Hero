@@ -43,6 +43,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         private string _certificateFile;
         private string _packagePath;
 
+        private bool _isLoading;
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
+        }
+
         public SummarySignatureViewModel(IInteractionService interactionService, IUacElevation uacElevation)
         {
             this._interactionService = interactionService;
@@ -59,6 +67,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         {
             get
             {
+                // ReSharper disable once AsyncVoidLambda
                 return this._trustMe ??= new DelegateCommand(async () =>
                     {
                         if (this._certificateFile == null)
@@ -106,40 +115,49 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            return this.TrustStatus.Load(this.LoadSignature(filePath, cancellationToken));
+            var _ = this.TrustStatus.Load(this.LoadSignature(filePath, cancellationToken));
+            return Task.CompletedTask;
         }
 
         private async Task<TrustStatus> LoadSignature(string packagePath, CancellationToken cancellationToken)
         {
-            this._packagePath = packagePath;
-            using var source = FileReaderFactory.CreateFileReader(this._packagePath);
-
-            this._certificateFile = null;
-
-            if (source is ZipArchiveFileReaderAdapter zipFileReader)
+            try
             {
-                this._certificateFile = zipFileReader.PackagePath;
-                var signTask = this._uacElevation.AsHighestAvailable<ISigningManager>().IsTrusted(zipFileReader.PackagePath, cancellationToken);
-                await this.TrustStatus.Load(signTask);
-                return await signTask.ConfigureAwait(false);
-            }
+                this.IsLoading = true;
+                this._packagePath = packagePath;
+                using var source = FileReaderFactory.CreateFileReader(this._packagePath);
 
-            if (source is IAppxDiskFileReader fileReader)
-            {
-                var file = new FileInfo(Path.Combine(fileReader.RootDirectory, "AppxSignature.p7x"));
-                
-                if (file.Exists)
+                this._certificateFile = null;
+
+                if (source is ZipArchiveFileReaderAdapter zipFileReader)
                 {
-                    this._certificateFile = file.FullName;
-                    var signTask = this._uacElevation.AsHighestAvailable<ISigningManager>().IsTrusted(file.FullName, cancellationToken);
+                    this._certificateFile = zipFileReader.PackagePath;
+                    var signTask = this._uacElevation.AsHighestAvailable<ISigningManager>().IsTrusted(zipFileReader.PackagePath, cancellationToken);
                     await this.TrustStatus.Load(signTask);
                     return await signTask.ConfigureAwait(false);
                 }
-            }
 
-            // not signed
-            await this.TrustStatus.Load(Task.FromResult(default(TrustStatus))).ConfigureAwait(false);
-            return default;
+                if (source is IAppxDiskFileReader fileReader)
+                {
+                    var file = new FileInfo(Path.Combine(fileReader.RootDirectory, "AppxSignature.p7x"));
+                    
+                    if (file.Exists)
+                    {
+                        this._certificateFile = file.FullName;
+                        var signTask = this._uacElevation.AsHighestAvailable<ISigningManager>().IsTrusted(file.FullName, cancellationToken);
+                        await this.TrustStatus.Load(signTask);
+                        return await signTask.ConfigureAwait(false);
+                    }
+                }
+
+                // not signed
+                await this.TrustStatus.Load(Task.FromResult(default(TrustStatus))).ConfigureAwait(false);
+                return default;
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
     }
 }

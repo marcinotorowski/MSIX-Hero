@@ -31,84 +31,101 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryCapabilitiesViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
         public SummaryCapabilitiesViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Capabilities));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            var stringBuilder = new StringBuilder();
-
-            this.Count = 0;
-            foreach (var capability in model.Capabilities.Where(c => c.Name == "runFullTrust" || c.Name == "allowElevation"))
+            try
             {
-                if (this.Count >= 2)
-                {
-                    break;
-                }
+                this.IsLoading = true;
 
-                this.Count++;
+                var stringBuilder = new StringBuilder();
 
-                if (stringBuilder.Length != 0)
+                this.Count = 0;
+                foreach (var capability in model.Capabilities.Where(c => c.Name == "runFullTrust" || c.Name == "allowElevation"))
                 {
-                    stringBuilder.Append(", ");
-                }
-
-                switch (capability.Name)
-                {
-                    case "runFullTrust":
-                        stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Trust);
+                    if (this.Count >= 2)
+                    {
                         break;
-                    case "allowElevation":
-                        stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Elevation);
+                    }
+
+                    this.Count++;
+
+                    if (stringBuilder.Length != 0)
+                    {
+                        stringBuilder.Append(", ");
+                    }
+
+                    switch (capability.Name)
+                    {
+                        case "runFullTrust":
+                            stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Trust);
+                            break;
+                        case "allowElevation":
+                            stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_Elevation);
+                            break;
+                    }
+                }
+
+                foreach (var capability in model.Capabilities.Where(c => c.Name != "runFullTrust" && c.Name != "allowElevation"))
+                {
+                    if (this.Count >= 2)
+                    {
                         break;
-                }
-            }
+                    }
 
-            foreach (var capability in model.Capabilities.Where(c => c.Name != "runFullTrust" && c.Name != "allowElevation"))
-            {
-                if (this.Count >= 2)
+                    this.Count++;
+
+                    if (stringBuilder.Length != 0)
+                    {
+                        stringBuilder.Append(", ");
+                    }
+
+                    stringBuilder.Append(CapabilityTranslationProvider.ToDisplayName(capability.Name));
+                }
+                
+                if (model.Capabilities.Count - this.Count == 1)
                 {
-                    break;
+                    stringBuilder.Append(' ');
+                    stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_OneAnother);
                 }
-
-                this.Count++;
-
-                if (stringBuilder.Length != 0)
+                else if (model.Capabilities.Count - this.Count > 0)
                 {
-                    stringBuilder.Append(", ");
+                    stringBuilder.Append(' ');
+                    stringBuilder.AppendFormat(Resources.Localization.PackageExpert_Capabilities_Summary_XOther, model.Capabilities.Count - this.Count);
                 }
 
-                stringBuilder.Append(CapabilityTranslationProvider.ToDisplayName(capability.Name));
-            }
-            
-            if (model.Capabilities.Count - this.Count == 1)
-            {
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Resources.Localization.PackageExpert_Capabilities_Summary_OneAnother);
-            }
-            else if (model.Capabilities.Count - this.Count > 0)
-            {
-                stringBuilder.Append(' ');
-                stringBuilder.AppendFormat(Resources.Localization.PackageExpert_Capabilities_Summary_XOther, model.Capabilities.Count - this.Count);
-            }
+                this.Count = model.Capabilities.Count;
+                if (stringBuilder.Length == 0)
+                {
+                    this.Summary = Resources.Localization.PackageExpert_Capabilities_Summary_None;
+                }
+                else
+                {
+                    this.Summary = stringBuilder.ToString(0, 1).ToUpper() + stringBuilder.ToString(1, stringBuilder.Length - 1);
+                }
+                
+                this.OnPropertyChanged(null);
 
-            this.Count = model.Capabilities.Count;
-            if (stringBuilder.Length == 0)
-            {
-                this.Summary = Resources.Localization.PackageExpert_Capabilities_Summary_None;
+                return Task.CompletedTask;
             }
-            else
+            finally
             {
-                this.Summary = stringBuilder.ToString(0, 1).ToUpper() + stringBuilder.ToString(1, stringBuilder.Length - 1);
+                this.IsLoading = false;
             }
-            
-            this.OnPropertyChanged(null);
-
-            return Task.CompletedTask;
         }
         
         public int Count { get; private set; }

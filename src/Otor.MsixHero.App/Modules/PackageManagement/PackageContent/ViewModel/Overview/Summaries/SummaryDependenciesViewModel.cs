@@ -29,9 +29,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryDependenciesViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
         public SummaryDependenciesViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Dependencies));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
@@ -44,39 +52,48 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.Count = model.OperatingSystemDependencies.Count + model.PackageDependencies.Count;
-            this.HasAny = this.Count > 0;
-
-            if (model.OperatingSystemDependencies.Any())
+            try
             {
-                if (this.Count == 1)
+                this.IsLoading = true;
+
+                this.Count = model.OperatingSystemDependencies.Count + model.PackageDependencies.Count;
+                this.HasAny = this.Count > 0;
+
+                if (model.OperatingSystemDependencies.Any())
                 {
-                    this.Summary = FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum);
+                    if (this.Count == 1)
+                    {
+                        this.Summary = FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum);
+                    }
+                    else
+                    {
+                        this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum), this.Count - 1);
+                    }
+                }
+                else if (model.PackageDependencies.Any())
+                {
+                    if (this.Count - 1 == 0)
+                    {
+                        this.Summary = model.PackageDependencies[0].Name;
+                    }
+                    else
+                    {
+                        this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, model.PackageDependencies[0].Name, this.Count - 1);
+                    }
                 }
                 else
                 {
-                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, FormatSystemDependency(model.OperatingSystemDependencies[0].Minimum), this.Count - 1);
+                    this.Summary = Resources.Localization.PackageExpert_Dependencies_Summary_None;
                 }
-            }
-            else if (model.PackageDependencies.Any())
-            {
-                if (this.Count - 1 == 0)
-                {
-                    this.Summary = model.PackageDependencies[0].Name;
-                }
-                else
-                {
-                    this.Summary = string.Format(Resources.Localization.PackageExpert_Dependencies_Summary_XOther, model.PackageDependencies[0].Name, this.Count - 1);
-                }
-            }
-            else
-            {
-                this.Summary = Resources.Localization.PackageExpert_Dependencies_Summary_None;
-            }
-            
-            this.OnPropertyChanged(null);
+                
+                this.OnPropertyChanged(null);
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         private static string FormatSystemDependency(AppxTargetOperatingSystem os)

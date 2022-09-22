@@ -41,13 +41,15 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
     private bool _isActive;
     private Tuple<AppxPackage, PackageEntry, string> _pendingPackage;
 
+    private bool _isLoading;
+
     public PackageOverviewViewModel(
         IPackageContentItemNavigation navigation,
         IInteractionService interactionService,
         IUacElevation uacElevation,
         PrismServices prismServices)
     {
-        _loadPackageHandlers.Add(SummarySummaryPackageName = new SummaryPackageNameViewModel(navigation, prismServices));
+        _loadPackageHandlers.Add(SummarySummaryPackageName = new SummaryPackageNameViewModel(prismServices));
         _loadPackageHandlers.Add(SummaryPackagingInformation = new SummaryPackagingInformationViewModel());
         _loadPackageHandlers.Add(SummarySummarySignature = new SummarySignatureViewModel(interactionService, uacElevation));
         _loadPackageHandlers.Add(SummarySummaryDependencies = new SummaryDependenciesViewModel(navigation));
@@ -57,6 +59,12 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         _loadPackageHandlers.Add(SummaryRegistry = new SummaryRegistryViewModel(navigation));
         _loadPackageHandlers.Add(SummarySummaryCapabilities = new SummaryCapabilitiesViewModel(navigation));
         _loadPackageHandlers.Add(SummaryApplications = new SummaryApplicationsViewModel(navigation));
+    }
+
+    public bool IsLoading
+    {
+        get => this._isLoading;
+        private set => this.SetField(ref this._isLoading, value);
     }
 
     public PackageContentViewType Type => PackageContentViewType.Overview;
@@ -104,9 +112,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
     public SummaryInstallationViewModel SummarySummaryInstallation { get; }
 
     public SummaryCapabilitiesViewModel SummarySummaryCapabilities { get; }
-
-    public ProgressProperty Progress { get; } = new ProgressProperty();
-
+    
     public string FilePath { get; private set; }
 
     public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
@@ -118,8 +124,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
             return;
         }
 
-        var originalProgress = Progress.IsLoading;
-        Progress.IsLoading = true;
+        this.IsLoading = true;
         try
         {
             await Task.WhenAll(_loadPackageHandlers.Select(t => t.LoadPackage(model, installationEntry, filePath, cancellationToken))).ConfigureAwait(false);
@@ -129,15 +134,13 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         }
         finally
         {
-            Progress.IsLoading = originalProgress;
+            this.IsLoading = false;
         }
     }
 
     public async Task LoadPackage(IAppxFileReader reader, CancellationToken cancellationToken)
     {
-        var originalProgress = Progress.IsLoading;
-
-        this.Progress.IsLoading = true;
+        this.IsLoading = true;
 
         try
         {
@@ -160,7 +163,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
         }
         finally
         {
-            this.Progress.IsLoading = originalProgress;
+            this.IsLoading = false;
         }
     }
 

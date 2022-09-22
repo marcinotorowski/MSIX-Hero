@@ -33,9 +33,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryRegistryViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
         public SummaryRegistryViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Registry));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
@@ -44,13 +52,28 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
+            this.IsLoading = true;
+
             var fileReader = FileReaderFactory.CreateFileReader(filePath);
             this.HasRegistry = fileReader.FileExists("Registry.dat");
             this.OnPropertyChanged(nameof(HasRegistry));
 
             if (this.HasRegistry)
             {
-                this.EstimateRegistryCount(fileReader, cancellationToken);
+                this.EstimateRegistryCount(fileReader, cancellationToken).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        this.HasRegistry = false;
+                    }
+
+                    this.IsLoading = false;
+                }, 
+                CancellationToken.None);
+            }
+            else
+            {
+                this.IsLoading = false;
             }
 
             return Task.CompletedTask;
@@ -59,7 +82,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         public bool HasRegistry { get; private set; }
 
 
-        private async void EstimateRegistryCount(IAppxFileReader fileReader, CancellationToken cancellationToken)
+        private async Task EstimateRegistryCount(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             await using var f = fileReader.GetFile("Registry.dat");
             using var appxRegistryReader = new AppxRegistryReader(f);

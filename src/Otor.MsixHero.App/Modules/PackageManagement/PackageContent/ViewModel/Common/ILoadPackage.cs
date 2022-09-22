@@ -23,6 +23,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.C
 
 public interface ILoadPackage
 {
+    bool IsLoading { get; }
+
     Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken);
 }
 

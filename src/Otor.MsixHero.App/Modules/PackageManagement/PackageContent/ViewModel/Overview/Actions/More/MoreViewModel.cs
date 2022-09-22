@@ -27,6 +27,8 @@ public class MoreViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationA
 {
     private bool _isInstalled;
 
+    public bool IsLoading => false;
+
     public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
         if (installEntry != null)

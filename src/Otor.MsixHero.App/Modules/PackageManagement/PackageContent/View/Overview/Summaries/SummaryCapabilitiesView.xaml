@@ -10,7 +10,9 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryCapabilitiesViewModel}">
 
-    <cards:CardAction Command="{Binding Details}">
+    <cards:CardAction
+        IsLoading="{Binding IsLoading}" 
+        Command="{Binding Details}">
         <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCapability}" />
         </cards:CardAction.Icon>

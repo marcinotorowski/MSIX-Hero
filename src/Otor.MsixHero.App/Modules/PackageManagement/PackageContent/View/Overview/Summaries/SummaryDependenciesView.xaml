@@ -11,7 +11,9 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" d:DataContext="{d:DesignInstance summaries:SummaryDependenciesViewModel}">
 
-    <cards:CardAction Command="{Binding Details}">
+    <cards:CardAction
+        IsLoading="{Binding IsLoading}"
+        Command="{Binding Details}">
         <cards:CardAction.Icon>
             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWindows}" />
         </cards:CardAction.Icon>
@@ -19,7 +21,11 @@
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}">
                 <HeaderedContentControl.Content>
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Summary}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
+                    <TextBlock 
+                        TextWrapping="Wrap" 
+                        TextTrimming="CharacterEllipsis"
+                        MaxHeight="60"
+                        Text="{Binding Summary}" Foreground="{StaticResource CardHeaderSecondLineBrush}" />
                 </HeaderedContentControl.Content>
                 <HeaderedContentControl.Header>
                     <TextBlock Tag="">

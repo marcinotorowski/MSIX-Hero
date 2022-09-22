@@ -29,7 +29,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryPackageNameViewModel : NotifyPropertyChanged, ILoadPackage
     {
-        public SummaryPackageNameViewModel(IPackageContentItemNavigation navigation, PrismServices prismServices)
+        private bool _isLoading;
+
+        public SummaryPackageNameViewModel(PrismServices prismServices)
         {
             this.OpenPackageNameCalculator = new DelegateCommand(() =>
             {
@@ -46,24 +48,39 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             });
         }
 
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
+        }
+
         public ICommand OpenPackageNameCalculator { get; }
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.DisplayName = model.DisplayName;
-            this.Description = model.Description;
-            this.Publisher = model.Publisher;
-            this.ResourceId = model.ResourceId;
-            this.FamilyName = model.FamilyName;
-            this.Architecture = model.ProcessorArchitecture.ToString();
-            this.PackageFullName = model.FullName;
-            this.PublisherDisplayName = model.PublisherDisplayName;
-            this.Version = model.Version;
-            this.Name = model.Name;
-            
-            this.OnPropertyChanged(null);
+            try
+            {
+                this.IsLoading = true;
 
-            return Task.CompletedTask;
+                this.DisplayName = model.DisplayName;
+                this.Description = model.Description;
+                this.Publisher = model.Publisher;
+                this.ResourceId = model.ResourceId;
+                this.FamilyName = model.FamilyName;
+                this.Architecture = model.ProcessorArchitecture.ToString();
+                this.PackageFullName = model.FullName;
+                this.PublisherDisplayName = model.PublisherDisplayName;
+                this.Version = model.Version;
+                this.Name = model.Name;
+                
+                this.OnPropertyChanged(null);
+
+                return Task.CompletedTask;
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
         
         public string PackageFullName { get; private set; }

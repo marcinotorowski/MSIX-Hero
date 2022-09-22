@@ -31,92 +31,109 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryPsfViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
         public SummaryPsfViewModel(IPackageContentItemNavigation navigation)
         {
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Psf));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
 
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.HasPsf = model.Applications.Any(a => a.Proxy != null && a.Proxy.Type == ApplicationProxyType.PackageSupportFramework);
-
-            var psfDescriptors = model.Applications.Select(a => a.Proxy).OfType<PsfApplicationProxy>();
-
-            // ReSharper disable PossibleMultipleEnumeration
-            var hasRedirections = psfDescriptors.Any(p => p.FileRedirections?.Any() == true);
-            var hasTracing = psfDescriptors.Any(p => p.Tracing != null);
-            var hasOtherFixUps = psfDescriptors.Any(p => p.OtherFixups?.Any() == true);
-            var hasElectron = psfDescriptors.Any(p => p.Electron != null);
-            var hasScripts = psfDescriptors.Any(p => p.Scripts?.Any() == true);
-            // ReSharper restore PossibleMultipleEnumeration
-
-            var secondLine = new StringBuilder(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Header);
-            secondLine.Append(" ");
-            var count = 0;
-            if (hasRedirections)
+            try
             {
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (count++ > 0)
+                this.IsLoading = true;
+
+                this.HasPsf = model.Applications.Any(a => a.Proxy != null && a.Proxy.Type == ApplicationProxyType.PackageSupportFramework);
+
+                var psfDescriptors = model.Applications.Select(a => a.Proxy).OfType<PsfApplicationProxy>();
+
+                // ReSharper disable PossibleMultipleEnumeration
+                var hasRedirections = psfDescriptors.Any(p => p.FileRedirections?.Any() == true);
+                var hasTracing = psfDescriptors.Any(p => p.Tracing != null);
+                var hasOtherFixUps = psfDescriptors.Any(p => p.OtherFixups?.Any() == true);
+                var hasElectron = psfDescriptors.Any(p => p.Electron != null);
+                var hasScripts = psfDescriptors.Any(p => p.Scripts?.Any() == true);
+                // ReSharper restore PossibleMultipleEnumeration
+
+                var secondLine = new StringBuilder(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Header);
+                secondLine.Append(" ");
+                var count = 0;
+                if (hasRedirections)
                 {
-                    secondLine.Append(", ");
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (count++ > 0)
+                    {
+                        secondLine.Append(", ");
+                    }
+
+                    secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Redirections);
                 }
 
-                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Redirections);
-            }
-
-            if (hasScripts)
-            {
-                if (count++ > 0)
+                if (hasScripts)
                 {
-                    secondLine.Append(", ");
+                    if (count++ > 0)
+                    {
+                        secondLine.Append(", ");
+                    }
+
+                    secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Scripts);
                 }
 
-                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Scripts);
-            }
-
-            if (hasTracing)
-            {
-                if (count++ > 0)
+                if (hasTracing)
                 {
-                    secondLine.Append(", ");
+                    if (count++ > 0)
+                    {
+                        secondLine.Append(", ");
+                    }
+
+                    secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Tracing);
                 }
 
-                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Tracing);
-            }
-
-            if (hasElectron)
-            {
-                if (count++ > 0)
+                if (hasElectron)
                 {
-                    secondLine.Append(", ");
+                    if (count++ > 0)
+                    {
+                        secondLine.Append(", ");
+                    }
+
+                    secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Electron);
                 }
 
-                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Electron);
-            }
-
-            if (hasOtherFixUps)
-            {
-                if (count++ > 0)
+                if (hasOtherFixUps)
                 {
-                    secondLine.Append(", ");
+                    if (count++ > 0)
+                    {
+                        secondLine.Append(", ");
+                    }
+
+                    secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Custom);
                 }
 
-                secondLine.Append(Resources.Localization.PackageExpert_PSF_SummaryBuilder_Custom);
-            }
+                if (count == 0)
+                {
+                    this.SecondLine = Resources.Localization.PackageExpert_PSF_Summary_Custom;
+                }
+                else
+                {
+                    this.SecondLine = secondLine.ToString();
+                }
 
-            if (count == 0)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_PSF_Summary_Custom;
+                this.OnPropertyChanged(null);
+                return Task.CompletedTask;
             }
-            else
+            finally
             {
-                this.SecondLine = secondLine.ToString();
+                this.IsLoading = false;  
             }
-
-            this.OnPropertyChanged(null);
-            return Task.CompletedTask;
         }
 
         public string SecondLine { get; private set; }

@@ -35,6 +35,7 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage, IInstallation
     private readonly IConfigurationService _configurationService;
     private ObservableCollection<ToolViewModel> _tools;
     private bool _isInstalled;
+    private bool _isLoading;
 
     public StartViewModel(
         IEventAggregator eventAggregator, 
@@ -42,6 +43,12 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage, IInstallation
     {
         _configurationService = configurationService;
         eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(OnToolsChanged, ThreadOption.UIThread);
+    }
+
+    public bool IsLoading
+    {
+        get => this._isLoading;
+        private set => this.SetField(ref this._isLoading, value);
     }
 
     public ObservableCollection<ApplicationViewModel> Applications { get; private set; }
@@ -67,22 +74,30 @@ public class StartViewModel : NotifyPropertyChanged, ILoadPackage, IInstallation
 
     public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
     {
-        var apps = new ObservableCollection<ApplicationViewModel>();
-
-        if (model.Applications != null)
+        try
         {
-            foreach (var item in model.Applications)
+            this.IsLoading = true;
+            var apps = new ObservableCollection<ApplicationViewModel>();
+
+            if (model.Applications != null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                apps.Add(new ApplicationViewModel(item, model));
+                foreach (var item in model.Applications)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    apps.Add(new ApplicationViewModel(item, model));
+                }
             }
+
+            this.Applications = apps;
+            OnPropertyChanged(nameof(Applications));
+            OnPropertyChanged(nameof(IsInstalled));
+
+            return Task.CompletedTask;
         }
-
-        this.Applications = apps;
-        OnPropertyChanged(nameof(Applications));
-        OnPropertyChanged(nameof(IsInstalled));
-
-        return Task.CompletedTask;
+        finally
+        {
+            this.IsLoading = false;
+        }
     }
 
     private void CreateTools(bool raisePropertyChangedEvents)

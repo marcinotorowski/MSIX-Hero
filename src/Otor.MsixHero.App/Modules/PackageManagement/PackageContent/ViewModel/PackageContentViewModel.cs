@@ -50,9 +50,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             IAppxFileViewer fileViewer,
             FileInvoker fileInvoker)
         {
-            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(packageQueryService, eventAggregator, configurationService));
+            this._loadPackageHandlers.Add(this.Actions = new ActionsViewModel(eventAggregator, configurationService));
             this.Items = new ObservableCollection<IPackageContentItem>();
-            this.Header = new HeaderViewModel(this);
+            this.Header = new HeaderViewModel();
 
             var packageOverview = new PackageOverviewViewModel(this, interactionService, uacElevation, prismServices);
             var packageCapabilities = new PackageCapabilitiesViewModel(this);

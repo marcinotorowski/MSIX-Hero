@@ -28,22 +28,39 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class SummaryPackagingInformationViewModel : NotifyPropertyChanged, ILoadPackage
     {
+        private bool _isLoading;
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
+        }
+
         public Task LoadPackage(AppxPackage model, PackageEntry installEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.BuildInfo = model.BuildInfo;
-            this.WindowsVersion = model.BuildInfo?.OperatingSystem?.TechnicalVersion;
-
-            if (this.BuildInfo?.Components != null)
+            try
             {
-                this.Components = new ObservableCollection<PackagingInformationComponentViewModel>(this.BuildInfo.Components.Select(kv => new PackagingInformationComponentViewModel(kv.Key, kv.Value)));
-            }
-            else
-            {
-                this.Components = null;
-            }
+                this.IsLoading = true;
 
-            this.OnPropertyChanged(null);
-            return Task.CompletedTask;
+                this.BuildInfo = model.BuildInfo;
+                this.WindowsVersion = model.BuildInfo?.OperatingSystem?.TechnicalVersion;
+
+                if (this.BuildInfo?.Components != null)
+                {
+                    this.Components = new ObservableCollection<PackagingInformationComponentViewModel>(this.BuildInfo.Components.Select(kv => new PackagingInformationComponentViewModel(kv.Key, kv.Value)));
+                }
+                else
+                {
+                    this.Components = null;
+                }
+
+                this.OnPropertyChanged(null);
+                return Task.CompletedTask;
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         public bool HasBuildInfo => this.BuildInfo != null;

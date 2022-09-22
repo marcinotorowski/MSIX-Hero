@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.More;
@@ -8,8 +7,6 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overv
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 
@@ -17,28 +14,40 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 {
     public class ActionsViewModel : NotifyPropertyChanged, ILoadPackage, IInstallationAware
     {
-        private readonly IAppxPackageQueryService _packageQueryService;
         private bool _isInstalled;
+        private bool _isLoading;
 
-        public ActionsViewModel(
-            IAppxPackageQueryService packageQueryService,
-            IEventAggregator eventAggregator, 
+        public ActionsViewModel(IEventAggregator eventAggregator, 
             IConfigurationService configurationService)
         {
-            this._packageQueryService = packageQueryService;
             this.Start = new StartViewModel(eventAggregator, configurationService);
             this.Open = new OpenViewModel();
             this.More = new MoreViewModel();
         }
 
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
+        }
+
         public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
-            await Task.WhenAll(
-                Start.LoadPackage(model, installationEntry, filePath, cancellationToken),
-                Open.LoadPackage(model, installationEntry, filePath, cancellationToken),
-                More.LoadPackage(model, installationEntry, filePath, cancellationToken)).ConfigureAwait(false);
+            try
+            {
+                this.IsLoading = true;
 
-            this.IsInstalled = installationEntry?.InstallDate != null;
+                await Task.WhenAll(
+                    Start.LoadPackage(model, installationEntry, filePath, cancellationToken),
+                    Open.LoadPackage(model, installationEntry, filePath, cancellationToken),
+                    More.LoadPackage(model, installationEntry, filePath, cancellationToken)).ConfigureAwait(false);
+
+                this.IsInstalled = installationEntry?.InstallDate != null;
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         public StartViewModel Start { get; }

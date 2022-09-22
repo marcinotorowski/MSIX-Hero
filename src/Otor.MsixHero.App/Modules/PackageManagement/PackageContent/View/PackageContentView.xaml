@@ -93,10 +93,11 @@
         </background:AcrylicBackgroundControl>
 
         <controls:ProgressOverlay 
+            Style="{StaticResource CompactOverlay}"
             DockPanel.Dock="Top"
             Progress="{Binding Progress.Progress}"
             IsShown="{Binding Progress.IsLoading}" 
-            Message="{Binding Progress.Message}">
+            Message="">
             <DockPanel>
                 <view:HeaderView 
                     SnapsToDevicePixels="True"

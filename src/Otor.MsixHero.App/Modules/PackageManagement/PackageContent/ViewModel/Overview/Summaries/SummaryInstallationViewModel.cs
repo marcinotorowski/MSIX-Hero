@@ -33,11 +33,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
     {
         private readonly IUacElevation _uacElevation;
 
+        private bool _isLoading;
+
         public SummaryInstallationViewModel(IPackageContentItemNavigation navigation, IUacElevation uacElevation, bool preciseDate)
         {
             this._uacElevation = uacElevation;
             this.PreciseDate = preciseDate;
             this.Details = new DelegateCommand(() => navigation.SetCurrentItem(PackageContentViewType.Installation));
+        }
+
+        public bool IsLoading
+        {
+            get => this._isLoading;
+            private set => this.SetField(ref this._isLoading, value);
         }
 
         public ICommand Details { get; }
@@ -46,75 +54,84 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
 
         public async Task LoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
-            this.IsInstalled = true;
-            
-            if (installationEntry == null)
+            try
             {
-                this.FirstLine = Resources.Localization.PackageExpert_Installation_Status;
-            }
-            else if (installationEntry.InstallDate != default)
-            {
-                if (this.PreciseDate)
+                this.IsLoading = true;
+
+                this.IsInstalled = true;
+                
+                if (installationEntry == null)
                 {
-                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, installationEntry.InstallDate);
+                    this.FirstLine = Resources.Localization.PackageExpert_Installation_Status;
+                }
+                else if (installationEntry.InstallDate != default)
+                {
+                    if (this.PreciseDate)
+                    {
+                        this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, installationEntry.InstallDate);
+                    }
+                    else
+                    {
+                        var dateHumanized = installationEntry.InstallDate.ToString();
+                        this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, dateHumanized);
+                    }
                 }
                 else
                 {
-                    var dateHumanized = installationEntry.InstallDate.ToString();
-                    this.FirstLine = string.Format(Resources.Localization.PackageExpert_Installation_StatusDate, dateHumanized);
+                    this.FirstLine = Resources.Localization.PackageExpert_Installation_StatusDateUnknown;
                 }
-            }
-            else
-            {
-                this.FirstLine = Resources.Localization.PackageExpert_Installation_StatusDateUnknown;
-            }
 
-            if (installationEntry == null || installationEntry.InstallDate == null)
-            {
-                this.IsInstalled = false;
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_NotInstalled;
-            }
-            else if (installationEntry.AppInstallerUri != null)
-            {
-                this.SecondLine = Resources.Localization.PackageExpert_Installation_AppInstaller;
-                this.IsInstalled = true;
-            }
-            else
-            {
-                switch (installationEntry.SignatureKind)
+                if (installationEntry == null || installationEntry.InstallDate == null)
                 {
-                    case SignatureKind.Store:
-                        this.IsInstalled = true;
-                        this.SecondLine = Resources.Localization.PackageExpert_Installation_Store;
-                        break;
-                    case SignatureKind.Unsigned:
-                        this.IsInstalled = true;
-                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Dev;
-                        break;
-                    case SignatureKind.System:
-                        this.IsInstalled = true;
-                        this.IsInstalled = true;
-                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_System;
-                        break;
-                    case SignatureKind.Enterprise:
-                    case SignatureKind.Developer:
-                        this.IsInstalled = true;
-                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_SideLoading;
-                        break;
-                    case SignatureKind.Unknown:
-                        this.IsInstalled = false;
-                        this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Unknown;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    this.IsInstalled = false;
+                    this.SecondLine = Resources.Localization.PackageExpert_Installation_NotInstalled;
                 }
+                else if (installationEntry.AppInstallerUri != null)
+                {
+                    this.SecondLine = Resources.Localization.PackageExpert_Installation_AppInstaller;
+                    this.IsInstalled = true;
+                }
+                else
+                {
+                    switch (installationEntry.SignatureKind)
+                    {
+                        case SignatureKind.Store:
+                            this.IsInstalled = true;
+                            this.SecondLine = Resources.Localization.PackageExpert_Installation_Store;
+                            break;
+                        case SignatureKind.Unsigned:
+                            this.IsInstalled = true;
+                            this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Dev;
+                            break;
+                        case SignatureKind.System:
+                            this.IsInstalled = true;
+                            this.IsInstalled = true;
+                            this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_System;
+                            break;
+                        case SignatureKind.Enterprise:
+                        case SignatureKind.Developer:
+                            this.IsInstalled = true;
+                            this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_SideLoading;
+                            break;
+                        case SignatureKind.Unknown:
+                            this.IsInstalled = false;
+                            this.SecondLine = Resources.Localization.PackageExpert_Installation_InstallType_Unknown;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                
+                this.ThirdLine = this.AddOnsCount > 1 ? string.Format(Resources.Localization.PackageExpert_Installation_AddOnX, this.AddOnsCount) : Resources.Localization.PackageExpert_Installation_AddOn1;
+
+                this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);
+
+                this.OnPropertyChanged(null);
             }
-            
-            this.ThirdLine = this.AddOnsCount > 1 ? string.Format(Resources.Localization.PackageExpert_Installation_AddOnX, this.AddOnsCount) : Resources.Localization.PackageExpert_Installation_AddOn1;
-
-            this.AddOnsCount = await this.GetAddOnsCount(model, cancellationToken).ConfigureAwait(false);
-
-            this.OnPropertyChanged(null);
+            finally
+            {
+                this.IsLoading = false;
+            }
         }
 
         public string FirstLine { get; private set; }

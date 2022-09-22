@@ -50,32 +50,61 @@ namespace Otor.MsixHero.App.Controls
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var objectParent = (ProgressBar)d;
-
-            var diff = (int) e.NewValue - AnimatedProgressBar.GetNonAnimatedProgress(objectParent);
-            AnimatedProgressBar.SetNonAnimatedProgress(objectParent, (int)e.NewValue);
-
-            if (diff < 0)
+            if (d is ProgressBar progressBar)
             {
-                objectParent.BeginAnimation(RangeBase.ValueProperty, null);
-                objectParent.Value = (int)e.NewValue;
+                var diff = (int)e.NewValue - AnimatedProgressBar.GetNonAnimatedProgress(progressBar);
+                AnimatedProgressBar.SetNonAnimatedProgress(progressBar, (int)e.NewValue);
+
+                if (diff < 0)
+                {
+                    progressBar.BeginAnimation(RangeBase.ValueProperty, null);
+                    progressBar.Value = (int)e.NewValue;
+                }
+                else if (diff < 4)
+                {
+                    progressBar.BeginAnimation(RangeBase.ValueProperty, null);
+                    progressBar.Value = (int)e.NewValue;
+                }
+                else
+                {
+                    var story = new Storyboard();
+                    var anim = new DoubleAnimation { To = (int)e.NewValue, Duration = TimeSpan.FromMilliseconds(300), AccelerationRatio = 0.5, DecelerationRatio = 0.5 };
+
+                    Storyboard.SetTargetProperty(anim, new PropertyPath(RangeBase.ValueProperty));
+                    Storyboard.SetTarget(anim, progressBar);
+
+                    story.Children.Add(anim);
+                    story.Freeze();
+                    story.Begin();
+                }
             }
-            else if (Math.Abs(diff) < 4)
+            else if (d is CircularProgress circularProgress)
             {
-                objectParent.BeginAnimation(RangeBase.ValueProperty, null);
-                objectParent.Value = (int) e.NewValue;
-            }
-            else
-            {
-                var story = new Storyboard();
-                var anim = new DoubleAnimation { To = (int)e.NewValue, Duration = TimeSpan.FromMilliseconds(300), AccelerationRatio = 0.5, DecelerationRatio = 0.5 };
+                var diff = (int)e.NewValue - AnimatedProgressBar.GetNonAnimatedProgress(circularProgress);
+                AnimatedProgressBar.SetNonAnimatedProgress(circularProgress, (int)e.NewValue);
 
-                Storyboard.SetTargetProperty(anim, new PropertyPath(RangeBase.ValueProperty));
-                Storyboard.SetTarget(anim, objectParent);
+                if (diff < 0)
+                {
+                    circularProgress.BeginAnimation(RangeBase.ValueProperty, null);
+                    circularProgress.Value = (int)e.NewValue;
+                }
+                else if (diff < 4)
+                {
+                    circularProgress.BeginAnimation(RangeBase.ValueProperty, null);
+                    circularProgress.Value = (int)e.NewValue;
+                }
+                else
+                {
+                    var story = new Storyboard();
+                    var anim = new DoubleAnimation { To = (int)e.NewValue, Duration = TimeSpan.FromMilliseconds(300), AccelerationRatio = 0.5, DecelerationRatio = 0.5 };
 
-                story.Children.Add(anim);
-                story.Freeze();
-                story.Begin();
+                    Storyboard.SetTargetProperty(anim, new PropertyPath(CircularProgress.ValueProperty));
+                    Storyboard.SetTarget(anim, circularProgress);
+
+                    story.Children.Add(anim);
+                    story.Freeze();
+                    story.Begin();
+                }
             }
         }
     }

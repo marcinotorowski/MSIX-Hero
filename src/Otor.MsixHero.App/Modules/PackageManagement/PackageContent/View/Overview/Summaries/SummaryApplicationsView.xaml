@@ -10,8 +10,9 @@
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance summaries:SummaryApplicationsViewModel}">
-    
+
     <cards:CardAction
+        IsLoading="{Binding IsLoading}"
         Visibility="{Binding HasApplications, Converter={StaticResource BooleanToVisibilityConverter}}"
         Command="{Binding Details}">
         <cards:CardAction.Icon>

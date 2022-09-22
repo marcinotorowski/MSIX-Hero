@@ -11,6 +11,7 @@
              d:DataContext="{d:DesignInstance summaries:SummaryRegistryViewModel}">
 
     <cards:CardAction
+        IsLoading="{Binding IsLoading}"
         Command="{Binding Details}"
         Visibility="{Binding HasRegistry, Converter={StaticResource BooleanToVisibilityConverter}}">
         <cards:CardAction.Icon>
@@ -19,8 +20,9 @@
         <cards:CardAction.Content>
             <HeaderedContentControl 
                 Style="{StaticResource CardHeader}" 
-                Header="{localization:Loc PackageExpert_Tabs_Registry}" 
-                Content="{Binding SecondLine}" />
+                Header="{localization:Loc PackageExpert_Tabs_Registry}">
+                <TextBlock Text="{Binding SecondLine}" Foreground="{StaticResource CardHeaderSecondLineBrush}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="60"  />
+            </HeaderedContentControl>
         </cards:CardAction.Content>
     </cards:CardAction>
 </UserControl>
