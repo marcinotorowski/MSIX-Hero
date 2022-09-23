@@ -27,7 +27,6 @@
     <globalSetting name="CreateNewFileForm.newLanguageComboBox.SelectedIndex">-1</globalSetting>
     <globalSetting name="CreateNewFileForm.copyTextsCheckBox.Checked">False</globalSetting>
     <globalSetting name="CreateNewFileForm.automaticallyTranslateCheckBox.Checked">False</globalSetting>
-    <userSetting name="marci@DESKTOP-5162GQS.filesInitialDir">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources</userSetting>
     <description>
     </description>
   </configuration>

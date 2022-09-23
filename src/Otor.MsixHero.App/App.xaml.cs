@@ -64,6 +64,7 @@ using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Updates;
 using Otor.MsixHero.Appx.Volumes;
@@ -190,6 +191,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxFileViewer, AppxFileViewer>();
+            containerRegistry.RegisterSingleton<ISigningTestService, SigningTestService>();
             containerRegistry.RegisterSingleton<ITranslationProvider, FileScanTranslationProvider>();
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();

@@ -32,6 +32,7 @@ using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -51,6 +52,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
         private ICommand _resetCommand;
 
         public PackViewModel(
+            ISigningTestService signTestService,
             IUacElevation uacElevation,
             IAppxManifestCreator manifestCreator,
             IConfigurationService configurationService,
@@ -76,7 +78,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.RemoveDirectory = new ChangeableProperty<bool>();
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, uacElevation, signConfig, timeStampFeed)
+            this.SelectedCertificate = new CertificateSelectorViewModel(signTestService, interactionService, uacElevation, signConfig, timeStampFeed)
             {
                 IsValidated = false
             };

@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -46,15 +47,18 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
         private readonly IUacElevation _uacElevation;
         private readonly ITimeStampFeed _timeStampFeed;
         private ICommand _signOutDeviceGuard, _signInDeviceGuard;
+        private readonly ISigningTestService _signTestService;
         private bool _allowNoSelection;
 
         public CertificateSelectorViewModel(
+            ISigningTestService signTestService,
             IInteractionService interactionService,
             IUacElevation uacElevation,
             SigningConfiguration configuration,
             ITimeStampFeed timeStampFeed,
             bool allowNoSelection = false)
         {
+            this._signTestService = signTestService;
             this._allowNoSelection = allowNoSelection;
             this._interactionService = interactionService;
             this._uacElevation = uacElevation;
@@ -74,6 +78,8 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             {
                 this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>(ViewModel.TimeStampSelectionMode.Url);
             }
+
+            this.Test = new DelegateCommand(this.OnTest, this.CanTest);
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(
                 Resources.Localization.CertificateSelector_TimeStamp,
@@ -148,6 +154,58 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             this.SelectedPersonalCertificate.Validate();
         }
 
+        private async void OnTest()
+        {
+            Task<SignTestResult> task;
+
+            string timeStampServer = null;
+
+            // if random or none is selected, we should avoid testing the timestamp server.
+            if (this.TimeStampSelectionMode.CurrentValue == ViewModel.TimeStampSelectionMode.Url)
+            {
+                timeStampServer = this.TimeStamp.CurrentValue;
+            }
+
+            switch (this.Store.CurrentValue)
+            {
+                case CertificateSource.Personal:
+                    task = this._signTestService.VerifyInstalled(this.SelectedPersonalCertificate.CurrentValue?.Thumbprint, timeStampServer);
+                    break;
+                case CertificateSource.Pfx:
+                    task = this._signTestService.VerifyPfx(this.PfxPath.CurrentValue, this.Password.CurrentValue, timeStampServer);
+                    break;
+                case CertificateSource.DeviceGuard:
+                    task = this._signTestService.VerifyDeviceGuardSettings(this.DeviceGuard.CurrentValue, timeStampServer);
+                    break;
+                default:
+                    return;
+            }
+
+            this.Progress.MonitorProgress(task);
+
+            var result = await task.ConfigureAwait(false);
+
+            switch (result.Type)
+            {
+                case SignTestResultType.Ok:
+                    this._interactionService.ShowInfo(Resources.Localization.Signing_Test_OK);
+                    break;
+                case SignTestResultType.Warn:
+                    this._interactionService.ShowInfo(result.Message);
+                    break;
+                default:
+                    this._interactionService.ShowError(result.Message);
+                    break;
+            }
+        }
+
+        private bool CanTest()
+        {
+            return this.Store.CurrentValue != CertificateSource.Unknown;
+        }
+
+        public ICommand Test { get; }
+
         public string ValidatePfxPath(string value)
         {
             if (this.Store.CurrentValue != CertificateSource.Pfx)
@@ -167,6 +225,8 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
         public ValidatedChangeableProperty<DeviceGuardConfiguration> DeviceGuard { get; }
 
         public ChangeableProperty<CertificateSource> Store { get; }
+
+        public ProgressProperty IsTesting { get; } = new ProgressProperty();
 
         public bool AllowNoSelection
         {

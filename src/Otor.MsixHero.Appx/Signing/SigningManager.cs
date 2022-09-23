@@ -311,7 +311,7 @@ namespace Otor.MsixHero.Appx.Signing
                     await this.InstallCertificate(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
                     break;
                 default:
-                    throw new NotSupportedException("This file is not supported.");
+                    throw new NotSupportedException(Resources.Localization.Signing_Install_NotSupported);
             }
         }
 
@@ -329,11 +329,10 @@ namespace Otor.MsixHero.Appx.Signing
             }
             catch (COMException e)
             {
-                Console.WriteLine("COM Exception " + e.HResult);
                 if (e.HResult == -2146885623)
                 {
                     // This is to catch COMException 0x80092009 file not found which may be thrown for invalid or missing cert files.
-                    throw new Exception("Could not install certificate " + certificateFile + ". The file may be invalid, corrupted or missing. System error code: 0x" + e.HResult.ToString("X2"), e);
+                    throw new Exception(string.Format(Resources.Localization.Signing_Install_Failed_Format, certificateFile, "0x" + e.HResult.ToString("X2")), e);
                 }
 
                 throw;
@@ -376,19 +375,19 @@ namespace Otor.MsixHero.Appx.Signing
             var x509 = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (x509.Count < 1)
             {
-                throw new ArgumentException("Certificate could not be located in the store.");
+                throw new ArgumentException(Resources.Localization.Signing_Error_NotFoundInStore);
             }
 
             var isForCodeSigning = x509[0].Extensions.OfType<X509KeyUsageExtension>().Any(ke => ke.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature));
 
             if (!isForCodeSigning)
             {
-                throw new ArgumentException("Selected certificate is not for code-signing.");
+                throw new ArgumentException(Resources.Localization.Signing_Test_MissingKeyUsage);
             }
 
             if (!x509[0].HasPrivateKey)
             {
-                throw new ArgumentException("Selected certificate does not contain a private key.");
+                throw new ArgumentException(Resources.Localization.Signing_Test_NoPrivateKey);
             }
 
             var localCopy = await this.PreparePackageForSigning(
@@ -418,7 +417,7 @@ namespace Otor.MsixHero.Appx.Signing
                 progress?.Report(new ProgressData(25, Resources.Localization.Signing_Signing));
 
                 timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
-                await sdk.SignPackageWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
+                await sdk.SignWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
 
                 progress?.Report(new ProgressData(75, Resources.Localization.Signing_Signing));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
@@ -474,7 +473,7 @@ namespace Otor.MsixHero.Appx.Signing
                     progress?.Report(new ProgressData(25, Resources.Localization.Signing_DeviceGuard_Signing));
 
                     timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
-                    await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
+                    await sdk.SignWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
                     progress?.Report(new ProgressData(75, Resources.Localization.Signing_DeviceGuard_Signing));
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
@@ -517,7 +516,7 @@ namespace Otor.MsixHero.Appx.Signing
             var servers = await this._timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
             if (servers?.Servers.Any() != true)
             {
-                throw new ApplicationException("Could not get a random timestamp server.");
+                throw new ApplicationException(Resources.Localization.Signing_Error_RandomTimeStamp);
             }
 
             var rnd = new Random();
@@ -541,7 +540,7 @@ namespace Otor.MsixHero.Appx.Signing
 
             if (!File.Exists(pfxPath))
             {
-                throw new FileNotFoundException($"File {pfxPath} does not exit.");
+                throw new FileNotFoundException(string.Format(Resources.Localization.Signing_Error_NotFound_Format, pfxPath));
             }
 
             Logger.Debug().WriteLine("Analyzing given certificate…");
@@ -559,7 +558,7 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 else
                 {
-                    throw new NotSupportedException($"Signature algorithm {x509.SignatureAlgorithm.FriendlyName} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.Signing_Test_AlgorithmNotSupported_Format, x509.SignatureAlgorithm.FriendlyName));
                 }
 
                 var openTextPassword = new System.Net.NetworkCredential(string.Empty, password).Password;
@@ -569,7 +568,7 @@ namespace Otor.MsixHero.Appx.Signing
                 var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, Resources.Localization.Signing_Signing));
                 timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
-                await sdk.SignPackageWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
+                await sdk.SignWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(75, Resources.Localization.Signing_Signing));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
@@ -662,10 +661,10 @@ namespace Otor.MsixHero.Appx.Signing
                 {
                     if (e.InnerException != null)
                     {
-                        throw new UnauthorizedAccessException(e.Message + ". Did you start MSIX Hero as administrator?", e.InnerException);
+                        throw new UnauthorizedAccessException(e.Message.TrimEnd('.') + ". " + Resources.Localization.Signing_Install_AreYouAdmin, e.InnerException);
                     }
 
-                    throw new UnauthorizedAccessException(e.Message + ". Did you start MSIX Hero as administrator?");
+                    throw new UnauthorizedAccessException(e.Message.TrimEnd('.') + ". " + Resources.Localization.Signing_Install_AreYouAdmin);
                 }
 
                 throw;
@@ -731,7 +730,7 @@ namespace Otor.MsixHero.Appx.Signing
         {
             if (!File.Exists(package))
             {
-                throw new FileNotFoundException($"File {package} does not exit.");
+                throw new FileNotFoundException(string.Format(Resources.Localization.Signing_Error_NotFound_Format, package));
             }
 
             var localCopy = Path.GetTempFileName() + Path.GetExtension(package);
@@ -752,7 +751,7 @@ namespace Otor.MsixHero.Appx.Signing
                     var manifestFilePath = Path.Combine(tempDirectory, FileConstants.AppxManifestFile);
                     if (!File.Exists(manifestFilePath))
                     {
-                        throw new FileNotFoundException($"Package {package} contains no XML manifest.");
+                        throw new FileNotFoundException(string.Format(Resources.Localization.Signing_Error_NoManifest, package));
                     }
                     
                     string newXmlContent;
@@ -766,13 +765,13 @@ namespace Otor.MsixHero.Appx.Signing
                         var rootNode = xmlDocument.Element(windows10Namespace + "Package") ?? xmlDocument.Element(appxNamespace + "Package");
                         if (rootNode == null)
                         {
-                            throw new FormatException("Missing <Package /> root element.");
+                            throw new FormatException(string.Format(Resources.Localization.Signing_Error_MissingXml_Format, "<Package />"));
                         }
                         
                         var identityNode = rootNode.Element(windows10Namespace + "Identity") ?? rootNode.Element(appxNamespace + "Identity");
                         if (identityNode == null)
                         {
-                            throw new FormatException("Missing <Identity /> root element.");
+                            throw new FormatException(string.Format(Resources.Localization.Signing_Error_MissingXml_Format, "<Identity />"));
                         }
 
                         // ReSharper disable once PossibleNullReferenceException
@@ -793,14 +792,14 @@ namespace Otor.MsixHero.Appx.Signing
                             var version = identityNode.Attribute("Version");
                             if (version == null)
                             {
-                                throw new FormatException("The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
+                                throw new FormatException(Resources.Localization.Signing_Error_MissingVersionManifest);
                             }
                             else
                             {
                                 var content = version.Value;
                                 if (!Version.TryParse(content, out var parsedVersion))
                                 {
-                                    throw new FormatException($"Version {content} is not a valid version string. The manifest seems to be corrupted.");
+                                    throw new FormatException(string.Format(Resources.Localization.Signing_Error_InvalidVersion_Format, content));
                                 }
 
                                 switch (increaseVersion)
@@ -860,7 +859,7 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 catch (SdkException e)
                 {
-                    throw new SdkException("Could not update the package manifest. " + e.Message, e.ExitCode, e);
+                    throw new SdkException(Resources.Localization.Signing_Error_UpdateManifestFailed + " " + e.Message, e.ExitCode, e);
                 }
                 finally
                 {

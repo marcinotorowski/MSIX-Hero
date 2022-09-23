@@ -208,7 +208,7 @@
 		<value>Das ausgewählte Zertifikat entspricht nicht dem Filter {0}.</value>
 	</data>
 	<data name="Infrastructure_Sdk_Error_SigningError_Format" xml:space="preserve">
-		<value>Das Paket konnte nicht signiert werden (Code {0}).</value>
+		<value>SignTool.exe hat folgenden Error-Code zurückgegeben: {0}.</value>
 	</data>
 	<data name="Infrastructure_Sdk_Error_SigningError_NoPrivateKey" xml:space="preserve">
 		<value>Das ausgewählte Zertifikat hat keinen privaten Schlüssel.</value>

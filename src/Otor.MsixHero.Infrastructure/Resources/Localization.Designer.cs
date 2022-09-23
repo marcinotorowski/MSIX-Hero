@@ -331,7 +331,7 @@ namespace Otor.MsixHero.Infrastructure.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package could not be signed (code {0})..
+        ///   Looks up a localized string similar to SignTool.exe returned with exit code {0}..
         /// </summary>
         public static string Infrastructure_Sdk_Error_SigningError_Format {
             get {

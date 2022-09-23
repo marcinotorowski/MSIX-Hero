@@ -208,7 +208,7 @@
     <value>The selected certificate does not meet the {0} filter.</value>
   </data>
 	<data name="Infrastructure_Sdk_Error_SigningError_Format" xml:space="preserve">
-    <value>The package could not be signed (code {0}).</value>
+    <value>SignTool.exe returned with exit code {0}.</value>
   </data>
 	<data name="Infrastructure_Sdk_Error_SigningError_NoPrivateKey" xml:space="preserve">
     <value>The selected certificate does not have a private key.</value>

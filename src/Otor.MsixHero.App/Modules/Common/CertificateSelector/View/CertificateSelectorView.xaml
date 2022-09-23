@@ -313,6 +313,19 @@
                             DropDownOpened="ComboBoxOnDropDownOpened" 
                             Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay}"/>
                     </controls:ProgressOverlay>
+
+                    <Button 
+                        IsEnabled="{Binding IsTesting, Converter={StaticResource NegativeConverter}}"
+                        Visibility="{Binding Store.CurrentValue, ConverterParameter={x:Static configuration1:CertificateSource.Unknown}, Converter={StaticResource NegativeEnumToVisibilityConverter}}" 
+                        HorizontalAlignment="Left" 
+                        Margin="0 10 0 0" 
+                        Command="{Binding Test}">
+                        <controls:LabelWithIcon 
+                            IsCollapsible="False" 
+                            Icon16x16="{StaticResource SmallStart}" 
+                            Content="Validate signature configuration..." />
+                    </Button>
+
                 </StackPanel>
             </DockPanel>
         </controls:ProgressOverlay>

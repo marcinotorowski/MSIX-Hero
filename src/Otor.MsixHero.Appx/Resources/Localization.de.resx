@@ -465,6 +465,9 @@
   <data name="Signing_AlgNotSupported" xml:space="preserve">
     <value>Der Signaturalgorithmus {0} wird nicht unterstützt.</value>
   </data>
+  <data name="Signing_WrongPassword" xml:space="preserve">
+    <value>Das Passwort ist ungültig.</value>
+  </data>
   <data name="Signing_DeviceGuard_LoggingIn" xml:space="preserve">
     <value>Die Anmeldung läuft…</value>
   </data>
@@ -542,5 +545,62 @@
   </data>
   <data name="Packages_Error_FullNameInvalid_Version_Format" xml:space="preserve">
     <value>Der Wert '{0}' ist kein gültiger vollständiger Paketname. Die Zeichenkette '{1}' ist keine gültige Version.</value>
+  </data>
+  <data name="Signing_Error_InvalidVersion_Format" xml:space="preserve">
+    <value>Die Version '{0}' ist keine gültige Versionszeichenfolge. Das Manifest scheint beschädigt zu sein.</value>
+  </data>
+  <data name="Signing_Error_MissingVersionManifest" xml:space="preserve">
+    <value>Das Attribut 'Version' existiert nicht im Identitätselement des Pakets. Das Manifest scheint beschädigt zu sein.</value>
+  </data>
+  <data name="Signing_Error_MissingXml_Format" xml:space="preserve">
+    <value>Fehlendes XML-Element {0}.</value>
+  </data>
+  <data name="Signing_Error_NoManifest" xml:space="preserve">
+    <value>Das Paket '{0}' enthält kein XML-Manifest.</value>
+  </data>
+  <data name="Signing_Error_NotFoundInStore" xml:space="preserve">
+    <value>Das Zertifikat konnte nicht gefunden werden.</value>
+  </data>
+  <data name="Signing_Error_NotFound_Format" xml:space="preserve">
+    <value>Datei '{0}' existiert nicht.</value>
+  </data>
+  <data name="Signing_Error_RandomTimeStamp" xml:space="preserve">
+    <value>Es konnte kein Timestamp-Server gefunden werden.</value>
+  </data>
+  <data name="Signing_Error_UpdateManifestFailed" xml:space="preserve">
+    <value>Das Paketmanifest konnte nicht aktualisiert werden.</value>
+  </data>
+  <data name="Signing_Install_AreYouAdmin" xml:space="preserve">
+    <value>Haben Sie MSIX Hero als Administrator gestartet?</value>
+  </data>
+  <data name="Signing_Install_Failed_Format" xml:space="preserve">
+    <value>Das Zertifikat {0} konnte nicht installiert werden. Die Datei ist möglicherweise ungültig, beschädigt oder fehlt. System-Fehlercode: {1}</value>
+  </data>
+  <data name="Signing_Install_NotSupported" xml:space="preserve">
+    <value>Diese Datei ist nicht unterstützt.</value>
+  </data>
+  <data name="Signing_Test_AlgorithmNotSupported_Format" xml:space="preserve">
+    <value>Der Signaturalgorithmus {0} ist nicht unterstützt.</value>
+  </data>
+  <data name="Signing_Test_DeviceGuardConfigMissing" xml:space="preserve">
+    <value>Device Guard ist nicht konfiguriert. Melden Sie sich zuerst beim Device Guard-Dienst an.</value>
+  </data>
+  <data name="Signing_Test_InternalError" xml:space="preserve">
+    <value>Interner Fehler.</value>
+  </data>
+  <data name="Signing_Test_MissingKeyUsage" xml:space="preserve">
+    <value>Das ausgewählte Zertifikat ist nicht für die Code-Signierung geeignet.</value>
+  </data>
+  <data name="Signing_Test_NoPrivateKey" xml:space="preserve">
+    <value>Das ausgewählte Zertifikat enthält keinen privaten Schlüssel.</value>
+  </data>
+  <data name="Signing_Test_OK_NotTrustedDG" xml:space="preserve">
+    <value>Die Signierkonfiguration ist gültig, aber das Device Guard-Zertifikat ist auf diesem Rechner nicht vertrauenswürdig.</value>
+  </data>
+  <data name="Signing_Test_OK_NotTrusted_Format" xml:space="preserve">
+    <value>Die Konfiguration ist gültig, aber das Zertifikat '{0}' ist auf diesem Rechner nicht vertrauenswürdig.</value>
+  </data>
+  <data name="Signing_Test_WrongThumbPrint_Format" xml:space="preserve">
+    <value>Es konnte kein Zertifikat mit Thumbprint = '{0}' gefunden werden.</value>
   </data>
 </root>

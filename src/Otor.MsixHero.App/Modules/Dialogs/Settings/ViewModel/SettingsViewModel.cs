@@ -28,6 +28,7 @@ using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
+using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -49,6 +50,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         private string _entryPoint;
 
         public SettingsViewModel(
+            ISigningTestService signTestService,
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
@@ -58,7 +60,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         {
             this._eventAggregator = eventAggregator;
             this._configurationService = configurationService;
-            _uacElevation = uacElevation;
+            this._uacElevation = uacElevation;
 
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
 
@@ -100,6 +102,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             this.TabSigning.AddChildren
             (
                 this.CertificateSelector = new CertificateSelectorViewModel(
+                    signTestService,
                     interactionService, 
                     uacElevation, 
                     config.Signing,
@@ -146,7 +149,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.OnPropertyChanged(nameof(this.Title));
             };
         }
-
+        
         private void TypeOfPathChanged(object sender, ValueChangedEventArgs e)
         {
             ChangeableFileProperty changeable;

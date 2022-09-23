@@ -30,6 +30,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Elevation;
@@ -49,6 +50,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
         private ICommand _openSuccessLink, _reset;
 
         public PackageSigningViewModel(
+            ISigningTestService signTestService,
             IUacElevation uacElevation, 
             IInteractionService interactionService, 
             IConfigurationService configurationService,
@@ -61,6 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
             this.CertificateSelector = new CertificateSelectorViewModel(
+                signTestService,
                 interactionService, 
                 uacElevation, 
                 configurationService?.GetCurrentConfiguration()?.Signing,
@@ -83,7 +86,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 this.TabAdjustments, 
                 this.OverrideSubject);
         }
-
+        
         protected override void UpdateVerbData()
         {
             this.Verb.FilePath = this.Files;

@@ -41,6 +41,7 @@ using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Services.Dialogs;
+using Otor.MsixHero.Appx.Signing.Testing;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel
 {
@@ -51,16 +52,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private readonly IConfigurationService _configurationService;
         private readonly IInteractionService _interactionService;
         private readonly ITimeStampFeed _timeStampFeed;
+        private readonly ISigningTestService _signTestService;
         private ICommand _openSuccessLink;
         private ICommand _reset;
-        
+
         public ModificationPackageViewModel(
+            ISigningTestService signTestService,
             IModificationPackageBuilder contentBuilder,
             IUacElevation uacElevation,
             IConfigurationService configurationService,
             IInteractionService interactionService,
             ITimeStampFeed timeStampFeed) : base(Resources.Localization.Dialogs_ModPack_Title, interactionService)
         {
+            this._signTestService = signTestService;
             this._contentBuilder = contentBuilder;
             this._uacElevation = uacElevation;
             this._configurationService = configurationService;
@@ -414,6 +418,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private void InitializeTabCertificate()
         {
             this.TabCertificate = new CertificateSelectorViewModel(
+                this._signTestService,
                 this._interactionService, 
                 this._uacElevation, 
                 this._configurationService.GetCurrentConfiguration()?.Signing,

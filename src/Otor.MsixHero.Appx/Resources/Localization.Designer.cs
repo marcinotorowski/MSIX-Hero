@@ -1204,11 +1204,191 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version &apos;{0}&apos; is not a valid version string. The manifest seems to be corrupted..
+        /// </summary>
+        public static string Signing_Error_InvalidVersion_Format {
+            get {
+                return ResourceManager.GetString("Signing_Error_InvalidVersion_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The attribute &apos;Version&apos; does not exist in the package identity element. The manifest seems to be corrupted..
+        /// </summary>
+        public static string Signing_Error_MissingVersionManifest {
+            get {
+                return ResourceManager.GetString("Signing_Error_MissingVersionManifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing XML element {0}..
+        /// </summary>
+        public static string Signing_Error_MissingXml_Format {
+            get {
+                return ResourceManager.GetString("Signing_Error_MissingXml_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package &apos;{0}&apos; contains no XML manifest..
+        /// </summary>
+        public static string Signing_Error_NoManifest {
+            get {
+                return ResourceManager.GetString("Signing_Error_NoManifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; does not exist..
+        /// </summary>
+        public static string Signing_Error_NotFound_Format {
+            get {
+                return ResourceManager.GetString("Signing_Error_NotFound_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected certificate could not be located in the store..
+        /// </summary>
+        public static string Signing_Error_NotFoundInStore {
+            get {
+                return ResourceManager.GetString("Signing_Error_NotFoundInStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get a random timestamp server..
+        /// </summary>
+        public static string Signing_Error_RandomTimeStamp {
+            get {
+                return ResourceManager.GetString("Signing_Error_RandomTimeStamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not update the package manifest..
+        /// </summary>
+        public static string Signing_Error_UpdateManifestFailed {
+            get {
+                return ResourceManager.GetString("Signing_Error_UpdateManifestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did you start MSIX Hero as administrator?.
+        /// </summary>
+        public static string Signing_Install_AreYouAdmin {
+            get {
+                return ResourceManager.GetString("Signing_Install_AreYouAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not install certificate {0}. The file may be invalid, corrupted or missing. System error code: {1}.
+        /// </summary>
+        public static string Signing_Install_Failed_Format {
+            get {
+                return ResourceManager.GetString("Signing_Install_Failed_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not supported..
+        /// </summary>
+        public static string Signing_Install_NotSupported {
+            get {
+                return ResourceManager.GetString("Signing_Install_NotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Signing….
         /// </summary>
         public static string Signing_Signing {
             get {
                 return ResourceManager.GetString("Signing_Signing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature algorithm {0} is not supported..
+        /// </summary>
+        public static string Signing_Test_AlgorithmNotSupported_Format {
+            get {
+                return ResourceManager.GetString("Signing_Test_AlgorithmNotSupported_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Guard is not configured. Log in to Device Guard service first..
+        /// </summary>
+        public static string Signing_Test_DeviceGuardConfigMissing {
+            get {
+                return ResourceManager.GetString("Signing_Test_DeviceGuardConfigMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal error..
+        /// </summary>
+        public static string Signing_Test_InternalError {
+            get {
+                return ResourceManager.GetString("Signing_Test_InternalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected certificate is not for code-signing..
+        /// </summary>
+        public static string Signing_Test_MissingKeyUsage {
+            get {
+                return ResourceManager.GetString("Signing_Test_MissingKeyUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected certificate does not contain a private key..
+        /// </summary>
+        public static string Signing_Test_NoPrivateKey {
+            get {
+                return ResourceManager.GetString("Signing_Test_NoPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing succeeded, but the certificate &apos;{0}&apos; is not trusted on this machine..
+        /// </summary>
+        public static string Signing_Test_OK_NotTrusted_Format {
+            get {
+                return ResourceManager.GetString("Signing_Test_OK_NotTrusted_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing configuration is valid, but the Device Guard certificate is not trusted on this machine..
+        /// </summary>
+        public static string Signing_Test_OK_NotTrustedDG {
+            get {
+                return ResourceManager.GetString("Signing_Test_OK_NotTrustedDG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find a certificate with thumbprint = &apos;{0}&apos;..
+        /// </summary>
+        public static string Signing_Test_WrongThumbPrint_Format {
+            get {
+                return ResourceManager.GetString("Signing_Test_WrongThumbPrint_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect password..
+        /// </summary>
+        public static string Signing_WrongPassword {
+            get {
+                return ResourceManager.GetString("Signing_WrongPassword", resourceCulture);
             }
         }
         

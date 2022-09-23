@@ -208,7 +208,7 @@
     <value>Wybrany certyfifikat nie spełnia filtrue {0}.</value>
   </data>
 	<data name="Infrastructure_Sdk_Error_SigningError_Format" xml:space="preserve">
-    <value>Pakiet nie mógł zostać podpisany (kod {0}).</value>
+    <value>SignTool.exe zwrócił kod błędu {0}.</value>
   </data>
 	<data name="Infrastructure_Sdk_Error_SigningError_NoPrivateKey" xml:space="preserve">
     <value>Wybrany certyfikat nie ma zaszytego klucza prywatnego.</value>

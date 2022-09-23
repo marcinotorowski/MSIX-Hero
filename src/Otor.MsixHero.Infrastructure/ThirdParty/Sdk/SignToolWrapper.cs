@@ -31,7 +31,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     public class SignToolWrapper : ExeWrapper
     {
         private static readonly LogSource Logger = new();
-        public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder(256);
 
@@ -115,7 +115,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
         }
 
-        public async Task SignPackageWithPfx(IEnumerable<string> filePaths, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignWithPfx(IEnumerable<string> filePaths, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var remove = -1;
             var removeLength = 0;
@@ -184,7 +184,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
         }
 
-        public async Task SignPackageWithPersonal(IEnumerable<string> filePaths, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignWithPersonal(IEnumerable<string> filePaths, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder(256);
             
@@ -228,15 +228,28 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (ProcessWrapperException e)
             {
-                var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
-                if (line != null)
+                string errorLine = null;
+
+                var startIndex = e.StandardError.TakeWhile(l => !l.StartsWith("SignTool Error: ")).Count();
+                if (startIndex < e.StandardError.Count)
+                {
+                    errorLine = e.StandardError[startIndex].Remove(0, "SignTool Error: ".Length).Trim();
+
+                    var nextLines = e.StandardError.Skip(startIndex + 1).TakeWhile(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("SignTool Error: "));
+                    foreach (var nextLine in nextLines.Select(l => l.Trim()).Where(l => !string.IsNullOrWhiteSpace(l)))
+                    {
+                        errorLine += " " + nextLine;
+                    }
+                }
+
+                if (errorLine != null)
                 {
                     if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
                         throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + specialError, e.ExitCode);
                     }
 
-                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + line.Substring("SignTool Error: ".Length), e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + errorLine, e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)

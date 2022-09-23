@@ -78,7 +78,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
                 var sdk = new SignToolWrapper();
                 Logger.Debug().WriteLine($"Signing temporary file path {tempFilePath}");
-                await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
+                await sdk.SignWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
                 using var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath);
                 Logger.Info().WriteLine($"Certificate subject is {tempFilePath}");

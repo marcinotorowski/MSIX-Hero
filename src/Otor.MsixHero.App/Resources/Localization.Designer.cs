@@ -11594,6 +11594,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The configuration is valid and the certificate is trusted on this machine..
+        /// </summary>
+        public static string Signing_Test_OK {
+            get {
+                return ResourceManager.GetString("Signing_Test_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The action could not be executed..
         /// </summary>
         public static string System_Action_Error {
