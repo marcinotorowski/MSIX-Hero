@@ -103,8 +103,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                     return this.InvokeAsync(targetMethod, args);
                 }
 
-                if (targetMethod.ReturnType.IsGenericType &&
-                    targetMethod.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+                if (targetMethod.ReturnType.IsGenericType && targetMethod.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                 {
                     var obj = this.InvokeAsync(targetMethod, args);
 
@@ -112,14 +111,29 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                     var type = typeof(TaskCompletionSource<>).MakeGenericType(genericType);
 
                     var taskCompletionSource = Activator.CreateInstance(type);
-                    var taskProp = type.GetProperty(nameof(TaskCompletionSource<object>.Task),
-                        BindingFlags.Instance | BindingFlags.Public) ?? throw new MissingMethodException("Missing required property.");
-                    var setResultMethod = type.GetMethod(nameof(TaskCompletionSource<object>.SetResult),
-                        BindingFlags.Instance | BindingFlags.Public) ?? throw new MissingMethodException("Missing required method.");
-
-                    obj.ContinueWith(r => { setResultMethod.Invoke(taskCompletionSource, new[] { r.Result }); });
-
+                    
+                    obj.ContinueWith(r =>
+                    {
+                        if (obj.IsCompletedSuccessfully)
+                        {
+                            var setResultMethod = type.GetMethod(nameof(TaskCompletionSource<object>.SetResult), BindingFlags.Instance | BindingFlags.Public) ?? throw new MissingMethodException("Missing required method.");
+                            setResultMethod.Invoke(taskCompletionSource, new[] { r.Result });
+                        }
+                        else if (obj.IsFaulted && r.Exception != null)
+                        {
+                            var setExceptionMethod = type.GetMethod(nameof(TaskCompletionSource<object>.SetException), BindingFlags.Instance | BindingFlags.Public, new[] { typeof(Exception) }) ?? throw new MissingMethodException("Missing required method.");
+                            setExceptionMethod.Invoke(taskCompletionSource, new[] { (object)r.Exception.GetBaseException() });
+                        }
+                        else if (obj.IsCanceled)
+                        {
+                            var setCancelledMethod = type.GetMethod(nameof(TaskCompletionSource<object>.SetCanceled), BindingFlags.Instance | BindingFlags.Public, Array.Empty<Type>()) ?? throw new MissingMethodException("Missing required method.");
+                            setCancelledMethod.Invoke(taskCompletionSource, Array.Empty<object>());
+                        }
+                    });
+                    
+                    var taskProp = type.GetProperty(nameof(TaskCompletionSource<object>.Task), BindingFlags.Instance | BindingFlags.Public) ?? throw new MissingMethodException("Missing required property.");
                     var getMethod = taskProp.GetGetMethod() ?? throw new MissingMethodException("Missing required get method.");
+
                     return getMethod.Invoke(taskCompletionSource, Array.Empty<object>());
                 }
 
