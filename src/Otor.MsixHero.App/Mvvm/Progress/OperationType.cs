@@ -25,6 +25,7 @@ namespace Otor.MsixHero.App.Mvvm.Progress
         PackageLoading =-1,
         VolumeLoading = -2,
         EventsLoading = -3,
+        ContainerLoading = -4,
         Other = 1
     }
 }

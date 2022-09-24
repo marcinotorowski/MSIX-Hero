@@ -24,7 +24,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         Packages = 1,
         Volumes = 2,
         Events = 3,
-        System = 4
+        System = 4,
+        Containers = 5
     }
     
     public enum UxTierLevel

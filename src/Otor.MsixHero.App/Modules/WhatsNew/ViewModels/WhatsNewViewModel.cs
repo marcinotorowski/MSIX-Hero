@@ -99,6 +99,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
                     DefaultScreen.Packages => Resources.Localization.Dialogs_WhatsNew_SkipToPackages,
                     DefaultScreen.Volumes => Resources.Localization.Dialogs_WhatsNew_SkipToVolumes,
                     DefaultScreen.Events => Resources.Localization.Dialogs_WhatsNew_SkipToEventViewer,
+                    DefaultScreen.Containers => Resources.Localization.Dialogs_WhatsNew_SkipToContainers,
                     DefaultScreen.System => Resources.Localization.Dialogs_WhatsNew_SkipToStatus,
                     _ => throw new ArgumentOutOfRangeException()
                 };

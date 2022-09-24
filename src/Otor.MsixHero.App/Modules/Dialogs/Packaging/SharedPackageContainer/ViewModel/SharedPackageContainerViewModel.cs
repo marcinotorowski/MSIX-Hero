@@ -28,6 +28,7 @@ using System.Xml.Serialization;
 using GongSolutions.Wpf.DragDrop;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands.Containers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.App.Mvvm.Progress;
@@ -50,18 +51,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         private readonly IUacElevation _uacElevation;
         private readonly IInteractionService _interactionService;
         private readonly IAppxPackageQueryService _packageQueryService;
+        private readonly IAppxSharedPackageContainerService _containerService;
         private SharedPackageViewModel _selectedPackage;
+        private readonly IMsixHeroApplication _application;
 
         public SharedPackageContainerViewModel(
             IMsixHeroApplication application,
             IUacElevation uacElevation,
             IInteractionService interactionService,
             IAppxPackageQueryService packageQueryService,
+            IAppxSharedPackageContainerService containerService,
             IBusyManager busyManager) : base(Resources.Localization.Dialogs_SharedContainer_Title, interactionService)
         {
+            this._application = application;
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
             this._packageQueryService = packageQueryService;
+            this._containerService = containerService;
+
             this.AddChildren(
                 this.Name = new ValidatedChangeableProperty<string>(Resources.Localization.Dialogs_SharedContainer_ContainerName, true, ValidatorFactory.ValidateNotEmptyField()),
                 this.CreationMode = new ChangeableProperty<CreationMode>(),
@@ -179,7 +186,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                     return await this.SaveXml(cancellationToken, progress).ConfigureAwait(false);
                     
                 case ViewModel.CreationMode.Deploy:
-                    if (!this._uacElevation.AsCurrentUser<ISharedPackageContainerService>().IsSharedPackageContainerSupported())
+                    if (!this._uacElevation.AsCurrentUser<IAppxSharedPackageContainerService>().IsSharedPackageContainerSupported())
                     {
                         throw new NotSupportedException(Resources.Localization.Dialogs_SharedContainer_NotSupported);
                     }
@@ -199,9 +206,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
 
-            var getExisting = await this._uacElevation.AsCurrentUser<ISharedPackageContainerService>()
-                .GetByName(this.Name.CurrentValue, cancellationToken)
-                .ConfigureAwait(false);
+            var service = this._uacElevation.AsCurrentUser<IAppxSharedPackageContainerService>();
+
+            var getExisting = await service.GetByName(this.Name.CurrentValue, cancellationToken).ConfigureAwait(false);
 
             var containerBuilder = new SharedPackageContainerBuilder(this.Name.CurrentValue);
             this.Resolution.CurrentValue = ContainerConflictResolution.Default;
@@ -306,7 +313,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             
             try
             {
-                await this._uacElevation.AsAdministrator<ISharedPackageContainerService>().Add(container, true, this.Resolution.CurrentValue, cancellationToken).ConfigureAwait(false);
+                var request = new AddSharedContainerCommand(container)
+                {
+                    ConflictResolution = this.Resolution.CurrentValue,
+                    ForceApplicationShutdown = true
+                };
+
+                await this._application.CommandExecutor.Invoke<AddSharedContainerCommand, Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer>(this, request, cancellationToken, progress);
             }
             catch (AlreadyInAnotherContainerException e)
             {

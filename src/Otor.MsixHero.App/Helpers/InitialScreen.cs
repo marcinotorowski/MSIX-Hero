@@ -73,6 +73,8 @@ namespace Otor.MsixHero.App.Helpers
                     return new SetCurrentModeCommand(ApplicationMode.SystemStatus);
                 case DefaultScreen.Tools:
                     return new SetCurrentModeCommand(ApplicationMode.Tools);
+                case DefaultScreen.Containers:
+                    return new SetCurrentModeCommand(ApplicationMode.Containers);
                 default:
                     return new SetCurrentModeCommand(ApplicationMode.Packages);
             }

@@ -30,6 +30,7 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Modules.Containers;
 using Otor.MsixHero.App.Modules.Dialogs.About;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
@@ -166,7 +167,7 @@ namespace Otor.MsixHero.App
             uacClient.RegisterProxy<IAppxEventService>(this.Container);
             uacClient.RegisterProxy<IMsixHeroTranslationService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageManagerService>(this.Container);
-            uacClient.RegisterProxy<ISharedPackageContainerService>(this.Container);
+            uacClient.RegisterProxy<IAppxSharedPackageContainerService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageQueryService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageInstallationService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageRunService>(this.Container);
@@ -179,12 +180,12 @@ namespace Otor.MsixHero.App
 #if DEBUG
             if (NdDll.RtlGetVersion() < new Version(10, 0, 22000))
             {
-                containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerWin10MockService>();
+                containerRegistry.RegisterSingleton<IAppxSharedPackageContainerService, AppxSharedPackageContainerWin10MockService>();
             }
             else
             {
 
-                containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
+                containerRegistry.RegisterSingleton<IAppxSharedPackageContainerService, AppxAppxSharedPackageContainerService>();
             }
 #else 
             containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
@@ -247,6 +248,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), ModuleNames.Main, InitializationMode.WhenAvailable));
             moduleCatalog.AddModule(new ModuleInfo(typeof(PackageManagementModule), ModuleNames.PackageManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(ContainersModule), ModuleNames.Containers, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemStatusModule), ModuleNames.SystemStatus, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(ToolsModule), ModuleNames.Tools, InitializationMode.OnDemand));

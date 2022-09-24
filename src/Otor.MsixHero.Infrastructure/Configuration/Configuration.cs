@@ -25,6 +25,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         {
             this.Packages = new PackagesConfiguration();
             this.Events = new EventsConfiguration();
+            this.Containers = new ContainersConfiguration();
             this.Signing = new SigningConfiguration();
             this.Packer = new PackerConfiguration();
             this.AppInstaller = new AppInstallerConfiguration();
@@ -48,6 +49,9 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "events")]
         public EventsConfiguration Events { get; set; }
+
+        [DataMember(Name = "containers")]
+        public ContainersConfiguration Containers { get; set; }
 
         [DataMember(Name = "signing")]
         public SigningConfiguration Signing { get; set; }

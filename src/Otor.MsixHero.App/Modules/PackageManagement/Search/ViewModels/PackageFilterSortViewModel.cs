@@ -66,9 +66,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping);
 
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
-            this._application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
-            this._application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiFailedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiCancelledEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
 
             this._busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
@@ -354,19 +354,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(FilterTypeCaption));
         }
 
-        private void OnGetPackages(UiFailedPayload<GetPackagesCommand> _)
+        private void OnGetPackages(UiFailedPayload<GetInstalledPackagesCommand> _)
         {
             this._source = this._application.ApplicationState.Packages.Mode;
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> _)
+        private void OnGetPackages(UiExecutedPayload<GetInstalledPackagesCommand> _)
         {
             this._source = this._application.ApplicationState.Packages.Mode;
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> _)
+        private void OnGetPackages(UiCancelledPayload<GetInstalledPackagesCommand> _)
         {
             this._source = this._application.ApplicationState.Packages.Mode;
             this.OnPropertyChanged(nameof(Source));
@@ -381,10 +381,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             switch (mode)
             {
                 case PackageContext.AllUsers:
-                    await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
+                    await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
                     break;
                 case PackageContext.CurrentUser:
-                    await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+                    await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
                     break;
             }
         }

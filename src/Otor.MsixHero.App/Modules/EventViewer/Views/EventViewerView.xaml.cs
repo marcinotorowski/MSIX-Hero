@@ -30,13 +30,12 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Views
     public partial class EventViewerView : INavigationAware
     {
         private readonly IMsixHeroApplication application;
-        private readonly EventViewerCommandHandler commandHandler;
 
         public EventViewerView(IMsixHeroApplication application, IInteractionService interactionService, IBusyManager busyManager)
         {
             this.application = application;
             this.InitializeComponent();
-            this.commandHandler = new EventViewerCommandHandler(this, application, interactionService, busyManager);
+            var _ = new EventViewerCommandHandler(this, application, interactionService, busyManager);
         }
 
         private void RegionOnSizeChanged(object sender, SizeChangedEventArgs e)

@@ -1,0 +1,160 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Containers.List.Views.ContainersListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             mvvm1:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm1="http://prismlibrary.com/"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Containers.List.ViewModels"
+             xmlns:containers="clr-namespace:Otor.MsixHero.App.Modules.Containers"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModels:ContainersListViewModel}"
+             d:DesignHeight="440" d:DesignWidth="800" x:Name="Root">
+    <controls:ProgressOverlay 
+        IsShown="{Binding Progress.IsLoading}" 
+        Message="{Binding Progress.Message}" 
+        Progress="{Binding Progress.Progress}" 
+        CancelCommand="{Binding Progress.Cancel}" 
+        SupportsCancelling="{Binding Progress.SupportsCancelling}"
+        d:DataContext="{d:DesignInstance viewModels:ContainersListViewModel}">
+        <AdornerDecorator>
+            <DockPanel>
+                <Grid DockPanel.Dock="Top">
+                    <controls:ButtonRowPanel IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}">
+                        <Button 
+                            IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                            Command="Refresh" 
+                            Style="{StaticResource ActionButton}">
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallRefresh}"
+                                Content="{localization:Loc EventViewer_Refresh}"
+                                Style="{StaticResource ActionLabelWithIcon}" />
+                        </Button>
+
+                        <Button 
+                            IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                            Command="{x:Static commands:MsixHeroRoutedUICommands.AddContainer}" 
+                            Style="{StaticResource ActionButton}">
+                            <controls:LabelWithIcon 
+                                IsCollapsible="True"
+                                Icon16x16="{StaticResource SmallPlus}"
+                                Content="Add..."
+                                Style="{StaticResource ActionLabelWithIcon}" />
+                        </Button>
+
+                        <ToggleButton
+                            controls:ButtonRowPanel.AlignRight="True"
+                            x:Name="ButtonFiltering"
+                            Style="{StaticResource ActionPopupToggleButton}" Padding="8 0">
+                            <controls:LabelWithIcon
+                                Content="{localization:Loc Packages_Actions_ViewSettings}"
+                                Icon16x16="M 3 2 L 3 3.976563 C 3 4.46875 3.242188 4.929688 3.648438 5.210938 L 7 7.75 L 7 14 L 9 12 L 9 7.75 L 12.351563 5.210938 C 12.757813 4.929688 13 4.46875 13 3.976563 L 13 2 Z M 4 3 L 12 3 L 12 3.976563 C 12 4.140625 11.917969 4.292969 11.78125 4.386719 L 11.773438 4.390625 L 8.332031 7 L 7.667969 7 L 4.226563 4.390625 L 4.21875 4.386719 C 4.082031 4.292969 4 4.140625 4 3.976563 Z"
+                                Style="{StaticResource ActionLabelWithIcon}" />
+                        </ToggleButton>
+                    </controls:ButtonRowPanel>
+                    <Popup 
+                        StaysOpen="False"
+                        PlacementTarget="{Binding ElementName=ButtonFiltering}"
+                        Placement="Bottom"
+                        AllowsTransparency="True" IsOpen="{Binding ElementName=ButtonFiltering, Path=IsChecked}">
+
+                        <Border Padding="0 0 18 18">
+                            <Border MinWidth="180" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
+                                </Border.Effect>
+
+                                <ContentControl mvvm1:RegionManager.RegionName="{x:Static containers:ContainersRegionNames.PopupFilter}" />
+                            </Border>
+                        </Border>
+                    </Popup>
+                </Grid>
+
+                <ListBox 
+                    FocusVisualStyle="{x:Null}"
+                    IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                    x:Name="ListBox"
+                    ItemsSource="{Binding ContainersView}"
+                    SelectionMode="Single"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.GroupStyle>
+                        <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                    </ListBox.GroupStyle>
+                    <ListBox.InputBindings>
+                        <KeyBinding Modifiers="Control" Key="F" Command="Find" />
+                    </ListBox.InputBindings>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" Command="Copy">
+                                <MenuItem.Icon>
+                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" Command="{x:Static commands:MsixHeroRoutedUICommands.ResetContainer}">
+                                <MenuItem.Icon>
+                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRefreshDocument}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="10" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Setter Property="BorderThickness" Value="0 0 0 0" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                            <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
+                                                <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                            </Border>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                    <Setter Property="Background" Value="#E6F2FA" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                    <Setter Property="Background" Value="#CDE6F7" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:SharedPackageContainerViewModel}">
+                            <DockPanel>
+                                <Border
+                                    x:Name="Border"
+                                    Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Path x:Name="Path" Data="{StaticResource VectorGroupTree}" Fill="White" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </Border>
+
+                                <TextBlock 
+                                    Margin="10 0"
+                                    Text="{Binding Name, Mode=OneTime}" 
+                                    controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
+                                    VerticalAlignment="Center" 
+                                    TextAlignment="Left" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </AdornerDecorator>
+    </controls:ProgressOverlay>
+</UserControl>

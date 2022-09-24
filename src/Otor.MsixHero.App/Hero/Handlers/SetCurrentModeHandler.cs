@@ -60,6 +60,11 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.EventViewer);
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.EventViewerPaths.Search);
                     break;
+                case ApplicationMode.Containers:
+                    this.moduleManager.LoadModule(ModuleNames.Containers);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.Containers);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.ContainersPaths.Search);
+                    break;
             }
         }
     }

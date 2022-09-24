@@ -17,7 +17,7 @@ using Prism.Events;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class GetPackagesHandler : IRequestHandler<GetPackagesCommand, IList<PackageEntry>>, IObserver<ActivePackageFullNames>
+    public class GetPackagesHandler : IRequestHandler<GetInstalledPackagesCommand, IList<PackageEntry>>, IObserver<ActivePackageFullNames>
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IBusyManager busyManager;
@@ -40,7 +40,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             this.detector = detector;
         }
 
-        public async Task<IList<PackageEntry>> Handle(GetPackagesCommand request, CancellationToken cancellationToken)
+        public async Task<IList<PackageEntry>> Handle(GetInstalledPackagesCommand request, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin(OperationType.PackageLoading);
             try

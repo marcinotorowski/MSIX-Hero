@@ -77,7 +77,7 @@ public class InstalledPackages : NotifyPropertyChanged
 
         if (srcPackages?.Any() != true)
         {
-            srcPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.CurrentUser)).ConfigureAwait(false);
+            srcPackages = await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.CurrentUser)).ConfigureAwait(false);
         }
 
         var currentSelection = new HashSet<string>(this._parent.Packages.Select(p => p.FamilyName.CurrentValue), StringComparer.Ordinal);

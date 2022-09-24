@@ -62,7 +62,13 @@ namespace Otor.MsixHero.App.Hero.Commands
             ServiceManager = new RoutedUICommand { Text = "Open Service Manager"};
             Winget = new RoutedUICommand { Text = "Create winget manifest"};
             OpenFile = new RoutedUICommand { Text = "Open the selected file"};
+            ResetContainer = new RoutedUICommand { Text = "Reset container"};
+            AddContainer = new RoutedUICommand { Text = "Reset container"};
         }
+
+        public static RoutedUICommand ResetContainer { get; }
+
+        public static RoutedUICommand AddContainer { get; }
 
         public static RoutedUICommand SetVolumeAsDefault { get; }
         

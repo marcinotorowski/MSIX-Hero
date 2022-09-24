@@ -25,7 +25,7 @@ using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
-public class SharedPackageContainerWin10MockService : ISharedPackageContainerService
+public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageContainerService
 {
     private static IList<Entities.SharedPackageContainer> _all = new List<Entities.SharedPackageContainer>()
     {
@@ -43,7 +43,7 @@ public class SharedPackageContainerWin10MockService : ISharedPackageContainerSer
         }
     };
 
-    public Task<Entities.SharedPackageContainer> Add(Entities.SharedPackageContainer container, bool forceApplicationShutdown = false,
+    public async Task<Entities.SharedPackageContainer> Add(Entities.SharedPackageContainer container, bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
     {
@@ -52,7 +52,7 @@ public class SharedPackageContainerWin10MockService : ISharedPackageContainerSer
         var packageAlreadyPresent = _all.Where(c => c != findExisting).SelectMany(c => c.PackageFamilies).Select(c => c.FamilyName).Intersect(container.PackageFamilies.Select(c => c.FamilyName), StringComparer.OrdinalIgnoreCase).FirstOrDefault();
         if (packageAlreadyPresent != null)
         {
-            return Task.FromException<Entities.SharedPackageContainer>(new Exception("Package " + packageAlreadyPresent + " is already in another container"));
+            throw new Exception("Package " + packageAlreadyPresent + " is already in another container");
         }
 
         if (findExisting == null)
@@ -78,7 +78,8 @@ public class SharedPackageContainerWin10MockService : ISharedPackageContainerSer
             container = findExisting;
         }
 
-        return Task.FromResult(container);
+        await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+        return container;
     }
 
     public async Task<Entities.SharedPackageContainer> Add(FileInfo containerFile, bool forceApplicationShutdown = false,
@@ -96,9 +97,10 @@ public class SharedPackageContainerWin10MockService : ISharedPackageContainerSer
         return await this.Add((Entities.SharedPackageContainer)serializer.Deserialize(stream), forceApplicationShutdown, containerConflictResolution, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_all);
+        await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+        return _all;
     }
 
     public Task Remove(string containerName, bool forceApplicationShutdown = false, CancellationToken cancellationToken = default)
@@ -119,11 +121,16 @@ public class SharedPackageContainerWin10MockService : ISharedPackageContainerSer
 
     public Task Reset(string containerName, CancellationToken cancellationToken = default)
     {
-        return Task.CompletedTask;
+        return Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
     }
 
     public bool IsSharedPackageContainerSupported()
     {
         return true;
+    }
+
+    public bool IsAdminRequiredToManage()
+    {
+        return false;
     }
 }

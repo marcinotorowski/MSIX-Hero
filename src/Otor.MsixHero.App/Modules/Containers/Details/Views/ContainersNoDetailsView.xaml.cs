@@ -14,24 +14,13 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Collections.Generic;
-using MediatR;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Services;
-
-namespace Otor.MsixHero.App.Hero.Commands.Packages
+namespace Otor.MsixHero.App.Modules.Containers.Details.Views
 {
-    public class GetPackagesCommand : IRequest<IList<PackageEntry>>
+    public partial class ContainersNoDetailsView
     {
-        public PackageFindMode? FindMode { get; }
-
-        public GetPackagesCommand()
+        public ContainersNoDetailsView()
         {
-        }
-
-        public GetPackagesCommand(PackageFindMode findMode)
-        {
-            this.FindMode = findMode;
+            this.InitializeComponent();
         }
     }
 }

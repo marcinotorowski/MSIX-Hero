@@ -45,6 +45,8 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
         private static readonly Geometry TabEventViewer = Geometry.Parse("M 24 0 L 21.714844 4 L 6 4 L 6 9 L 5 9 L 5 11 L 8 11 L 8 10 L 8 9 L 8 6 L 20.572266 6 L 16 14 L 24 14 L 24 16 C 19.6 16 16 19.6 16 24 C 16 24.691044 16.098874 25.35927 16.265625 26 L 8 26 L 8 22 L 6 22 L 6 28 L 17.087891 28 C 18.477015 30.384094 21.05638 32 24 32 C 28.4 32 32 28.4 32 24 C 32 20.291044 29.438915 17.160607 26 16.265625 L 26 14 L 32 14 L 24 0 z M 23 5 L 25 5 L 25.03125 9 L 23 9 L 23 5 z M 23 10 L 25 10 L 25 12 L 23 12 L 23 10 z M 6 12 L 6 14 L 5 14 L 5 16 L 8 16 L 8 14 L 8 12 L 6 12 z M 6 17 L 6 19 L 5 19 L 5 21 L 8 21 L 8 19 L 8 17 L 6 17 z M 24 18 C 27.3 18 30 20.7 30 24 C 30 27.3 27.3 30 24 30 C 20.7 30 18 27.3 18 24 C 18 20.7 20.7 18 24 18 z M 21.699219 20.300781 L 20.300781 21.699219 L 22.599609 24 L 20.300781 26.300781 L 21.699219 27.699219 L 24 25.400391 L 26.300781 27.699219 L 27.699219 26.300781 L 25.400391 24 L 27.699219 21.699219 L 26.300781 20.300781 L 24 22.599609 L 21.699219 20.300781 z");
         
         private static readonly Geometry TabOverview = Geometry.Parse("M 5 5 L 5 11 L 11 11 L 11 5 Z M 13 5 L 13 11 L 19 11 L 19 5 Z M 21 5 L 21 11 L 27 11 L 27 5 Z M 7 7 L 9 7 L 9 9 L 7 9 Z M 15 7 L 17 7 L 17 9 L 15 9 Z M 23 7 L 25 7 L 25 9 L 23 9 Z M 5 13 L 5 19 L 11 19 L 11 13 Z M 13 13 L 13 19 L 19 19 L 19 13 Z M 21 13 L 21 19 L 27 19 L 27 13 Z M 7 15 L 9 15 L 9 17 L 7 17 Z M 15 15 L 17 15 L 17 17 L 15 17 Z M 23 15 L 25 15 L 25 17 L 23 17 Z M 5 21 L 5 27 L 11 27 L 11 21 Z M 13 21 L 13 27 L 19 27 L 19 21 Z M 21 21 L 21 27 L 27 27 L 27 21 Z M 7 23 L 9 23 L 9 25 L 7 25 Z M 15 23 L 17 23 L 17 25 L 15 25 Z M 23 23 L 25 23 L 25 25 L 23 25 Z");
+        
+        private static readonly Geometry TabContainer = Geometry.Parse("M 20 5 L 20 8.5 L 12 14.09375 L 12 12 L 2 12 L 2 20 L 12 20 L 12 17.90625 L 20 23.5 L 20 27 L 30 27 L 30 19 L 20 19 L 20 21.09375 L 12.71875 16 L 20 10.90625 L 20 13 L 30 13 L 30 5 Z M 22 7 L 28 7 L 28 11 L 22 11 Z M 4 14 L 10 14 L 10 18 L 4 18 Z M 22 21 L 28 21 L 28 25 L 22 25 Z");
 
         private SidebarItemViewModel selectedItem;
 
@@ -63,6 +65,11 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                     ApplicationMode.Packages,
                     NavigationPaths.PackageManagement,
                     TabPackages),
+
+                new SidebarItemViewModel(
+                    ApplicationMode.Containers,
+                    NavigationPaths.Containers,
+                    TabContainer),
 
                 new SidebarItemViewModel(
                     ApplicationMode.VolumeManager,

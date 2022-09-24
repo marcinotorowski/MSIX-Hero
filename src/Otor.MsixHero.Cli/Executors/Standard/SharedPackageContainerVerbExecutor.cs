@@ -32,12 +32,12 @@ namespace Otor.MsixHero.Cli.Executors.Standard;
 
 public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageContainerVerb>
 {
-    private readonly ISharedPackageContainerService _sharedPackageContainerService;
+    private readonly IAppxSharedPackageContainerService _appxSharedPackageContainerService;
     private static readonly LogSource Logger = new();
 
-    public SharedPackageContainerVerbExecutor(SharedPackageContainerVerb verb, ISharedPackageContainerService sharedPackageContainerService, IConsole console) : base(verb, console)
+    public SharedPackageContainerVerbExecutor(SharedPackageContainerVerb verb, IAppxSharedPackageContainerService appxSharedPackageContainerService, IConsole console) : base(verb, console)
     {
-        _sharedPackageContainerService = sharedPackageContainerService;
+        _appxSharedPackageContainerService = appxSharedPackageContainerService;
     }
 
     public override Task<int> Execute()
@@ -94,7 +94,7 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
         
     private async Task<int> ExecuteDeploy()
     {
-        if (!this._sharedPackageContainerService.IsSharedPackageContainerSupported())
+        if (!this._appxSharedPackageContainerService.IsSharedPackageContainerSupported())
         {
             await this.Console.WriteError(Resources.Localization.CLI_Executor_SharedContainer_NotSupported);
             return StandardExitCodes.ErrorNotSupported;
@@ -124,7 +124,7 @@ public class SharedPackageContainerVerbExecutor : VerbExecutor<SharedPackageCont
                 resolution = ContainerConflictResolution.Default;
             }
                 
-            var added = await this._sharedPackageContainerService.Add(builder.Build(), this.Verb.ForceApplicationShutdown, resolution, CancellationToken.None).ConfigureAwait(false);
+            var added = await this._appxSharedPackageContainerService.Add(builder.Build(), this.Verb.ForceApplicationShutdown, resolution, CancellationToken.None).ConfigureAwait(false);
 
             await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SharedContainer_DeployedAsFormat, this.Verb.Name)).ConfigureAwait(false);
             await this.Console.WriteSuccess($" -> : {Resources.Localization.CLI_Executor_SharedContainer_Id} {added.Id}").ConfigureAwait(false);

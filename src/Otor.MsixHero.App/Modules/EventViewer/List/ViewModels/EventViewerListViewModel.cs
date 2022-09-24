@@ -118,6 +118,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
                 }
             }
         }
+        
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
             if (e.Type != OperationType.EventsLoading)

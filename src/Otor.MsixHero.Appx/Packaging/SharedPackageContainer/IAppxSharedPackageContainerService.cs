@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer
 {
-    public interface ISharedPackageContainerService
+    public interface IAppxSharedPackageContainerService
     {
         Task<Entities.SharedPackageContainer> Add(
             Entities.SharedPackageContainer container, 
@@ -35,5 +35,7 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer
             CancellationToken cancellationToken = default);
 
         bool IsSharedPackageContainerSupported();
+
+        bool IsAdminRequiredToManage();
     }
 }

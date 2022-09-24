@@ -1,0 +1,212 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Containers.Details.Views.ContainersDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm1:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm1="http://prismlibrary.com/"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Containers.Details.ViewModels"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Containers.Details.ViewModels.Items"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:commands1="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+             mc:Ignorable="d" 
+             Background="#FCFCFC"
+             d:DesignWidth="800" x:Name="Root" 
+             d:DataContext="{d:DesignInstance viewModels:ContainersDetailsViewModel}">
+
+    <DockPanel>
+
+        <Border
+            DataContext="{Binding SelectedContainer}"
+            DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
+            <controls:ButtonRowPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                <Button 
+                    Command="Properties"
+                    Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        IsCollapsible="True"
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallOpen}"
+                        Content="Edit..." />
+                </Button>
+
+                <Button 
+                    Command="{x:Static commands:MsixHeroRoutedUICommands.ResetContainer}"
+                    Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        IsCollapsible="True"
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallForward}"
+                        Content="Reset" />
+                </Button>
+
+                <Button 
+                    Command="Delete"
+                    Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        IsCollapsible="True"
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallRemove}"
+                        Content="Remove" />
+                </Button>
+
+                <Button 
+                    Visibility="Collapsed"
+                    Command="Copy"
+                    Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        IsCollapsible="True"
+                        Style="{StaticResource ActionLabelWithIcon}"
+                        Icon16x16="{StaticResource SmallCdRom}"
+                        Content="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" />
+                </Button>
+
+            </controls:ButtonRowPanel>
+        </Border>
+
+        <background:AcrylicBackgroundControl
+            DataContext="{Binding SelectedContainer}"
+            DockPanel.Dock="Top"
+            TintOpacity="0.24"
+            Margin="0 0 0 -155"
+            VerticalAlignment="Top"
+            TintBrush="{StaticResource MsixHero.Brushes.Accent}"
+            TintText="{Binding Name}"
+            Height="150">
+            <background:AcrylicBackgroundControl.OpacityMask>
+                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                    <GradientStop Color="#ffffff" Offset="0" />
+                    <GradientStop Color="#ffffff" Offset="0.7" />
+                    <GradientStop Color="#00000000" Offset="1" />
+                </LinearGradientBrush>
+            </background:AcrylicBackgroundControl.OpacityMask>
+            <background:AcrylicBackgroundControl.TintContent>
+                <Path 
+                    Fill="Black"
+                    Data="{StaticResource VectorGroupTree}" 
+                    Style="{StaticResource LargeIcon}" />
+            </background:AcrylicBackgroundControl.TintContent>
+        </background:AcrylicBackgroundControl>
+
+
+        <Border
+            DataContext="{Binding SelectedContainer}"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True"
+            Margin="8" 
+            ClipToBounds="True" 
+            DockPanel.Dock="Top">
+            <DockPanel Margin="4 12 8 8" VerticalAlignment="Top">
+                <Border 
+                    Background="{StaticResource MsixHero.Brushes.Accent}"
+                    Width="48" 
+                    Height="48">
+                    <Border>
+                        <Path 
+                            Fill="White"
+                            Data="{StaticResource VectorGroupTree}" 
+                            Style="{StaticResource LargeIcon}" />
+                    </Border>
+                </Border>
+
+                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" FontSize="16" FontFamily="{StaticResource SourceSansPro}" TextWrapping="Wrap" />
+                    <TextBlock Text="Shared Package Container" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <controls:ProgressOverlay
+            Progress="{Binding Packages.Progress.Progress}"
+            Message="{Binding Packages.Progress.Message}"
+            IsShown="{Binding Packages.Progress.IsLoading}"
+            DockPanel.Dock="Top">
+            <ListBox
+                BorderThickness="0"
+                Padding="0"
+                Background="Transparent"
+                Margin="12 -4 12 8"
+                FocusVisualStyle="{x:Null}"
+                ItemsSource="{Binding Packages.CurrentValue}"
+                ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <commands1:RoutedCommandHandlers.Commands>
+                    <commands1:RoutedCommandHandler 
+                        RoutedCommand="Open" 
+                        Command="{Binding OpenPackage}" />
+                </commands1:RoutedCommandHandlers.Commands>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type items:FamilyNameViewModel}">
+                        <cards:Card Margin="0 0 0 -1" HorizontalContentAlignment="Stretch">
+                            <cards:Card.Icon>
+                                <Path Data="{StaticResource VectorPackage}" Style="{StaticResource LargeIcon}" />
+                            </cards:Card.Icon>
+
+                            <cards:Card.Content>
+                                <HeaderedContentControl
+                                    Content="This package is not installed on this computer"
+                                    Style="{StaticResource CardHeader}">
+                                    <HeaderedContentControl.Header>
+                                        <TextBlock Text="{Binding FamilyName, Mode=OneWay}" />
+                                    </HeaderedContentControl.Header>
+                                </HeaderedContentControl>
+                            </cards:Card.Content>
+                        </cards:Card>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type items:PackageContainerContentViewModel}">
+                        <cards:CardAction 
+                            Command="Open"
+                            CommandParameter="{Binding FamilyName}"
+                            Margin="0 0 0 -1" HorizontalContentAlignment="Stretch">
+                            <cards:CardAction.Icon>
+                                <Border Height="32" Width="32" SnapsToDevicePixels="True" UseLayoutRounding="True" Background="{StaticResource MsixHero.Brushes.Accent.Light1}">
+                                    <Image Width="32" Height="32" helpers:ImageExtension.SourceImagePath="{Binding Image}" />
+                                </Border>
+                            </cards:CardAction.Icon>
+
+                            <!--<cards:Card.ContentRight>
+                                <Button Style="{StaticResource CardButton}" Content="Open..." Command="Open" CommandParameter="{Binding FamilyName}" />
+                            </cards:Card.ContentRight>-->
+
+                            <cards:CardAction.Content>
+                                <DockPanel>
+                                    <HeaderedContentControl 
+                                        ToolTip="{Binding FamilyName}"
+                                        Content="{Binding DisplayPublisherName}"
+                                        Style="{StaticResource CardHeader}">
+                                        <HeaderedContentControl.Header>
+                                            <TextBlock>
+                                                <Run Text="{Binding DisplayName, Mode=OneWay}" />
+                                                <Run Text="{Binding Version, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </HeaderedContentControl.Header>
+                                    </HeaderedContentControl>
+                                </DockPanel>
+                            </cards:CardAction.Content>
+                        </cards:CardAction>
+                    </DataTemplate>
+                </ListBox.Resources>
+            </ListBox>
+        </controls:ProgressOverlay>
+    </DockPanel>
+</UserControl>

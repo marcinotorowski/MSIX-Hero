@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
             this._application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(_ => this._tools = null);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesCommand, ThreadOption.UIThread);
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCommand, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackagesCommand, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilter, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
@@ -143,7 +143,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             }
         }
 
-        private void OnGetPackagesCommand(UiExecutedPayload<GetPackagesCommand> obj)
+        private void OnGetPackagesCommand(UiExecutedPayload<GetInstalledPackagesCommand> obj)
         {
             try
             {

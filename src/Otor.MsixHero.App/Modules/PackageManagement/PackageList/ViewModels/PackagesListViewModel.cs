@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             this._interactionService = interactionService;
 
             // reloading packages
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<PackageEntry>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand, IList<PackageEntry>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
 
             // selecting packages
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesExecuted);
@@ -100,7 +100,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         .CommandExecutor
                         .WithBusyManager(this._busyManager, OperationType.PackageLoading)
                         .WithErrorHandling(this._interactionService, true)
-                        .Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(PackageFindMode.Auto));
+                        .Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.Auto));
                 }
 
                 this._firstRun = false;
@@ -214,7 +214,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
         }
         
-        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<PackageEntry>> eventPayload)
+        private void OnGetPackagesExecuted(UiExecutedPayload<GetInstalledPackagesCommand, IList<PackageEntry>> eventPayload)
         {
             this._packagesSync.EnterWriteLock();
 

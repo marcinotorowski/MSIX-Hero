@@ -1249,6 +1249,51 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Order by.
+        /// </summary>
+        public static string Containers_Filter_OrderBy {
+            get {
+                return ResourceManager.GetString("Containers_Filter_OrderBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Container name.
+        /// </summary>
+        public static string Containers_Filter_OrderBy_Name {
+            get {
+                return ResourceManager.GetString("Containers_Filter_OrderBy_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting shared package containers, please wait….
+        /// </summary>
+        public static string Containers_PleaseWait {
+            get {
+                return ResourceManager.GetString("Containers_PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding shared package container, please wait….
+        /// </summary>
+        public static string Containers_PleaseWait_Add {
+            get {
+                return ResourceManager.GetString("Containers_PleaseWait_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search in shared package containers….
+        /// </summary>
+        public static string Containers_Search_Prompt {
+            get {
+                return ResourceManager.GetString("Containers_Search_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analyze MSIX update impact….
         /// </summary>
         public static string Dashboard_AnalyzeImpact {
@@ -5092,6 +5137,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Containers.
+        /// </summary>
+        public static string Dialogs_Settings_InitialScreen_Containers {
+            get {
+                return ResourceManager.GetString("Dialogs_Settings_InitialScreen_Containers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event viewer.
         /// </summary>
         public static string Dialogs_Settings_InitialScreen_EventViewer {
@@ -6654,6 +6708,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_WhatsNew_ShowUpdateInfo {
             get {
                 return ResourceManager.GetString("Dialogs_WhatsNew_ShowUpdateInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss and go to the list of shared containers.
+        /// </summary>
+        public static string Dialogs_WhatsNew_SkipToContainers {
+            get {
+                return ResourceManager.GetString("Dialogs_WhatsNew_SkipToContainers", resourceCulture);
             }
         }
         
@@ -11536,6 +11599,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Sidebar_About {
             get {
                 return ResourceManager.GetString("Sidebar_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Containers.
+        /// </summary>
+        public static string Sidebar_Containers {
+            get {
+                return ResourceManager.GetString("Sidebar_Containers", resourceCulture);
             }
         }
         

@@ -186,6 +186,9 @@
                         <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.EventViewer}">
                             <Setter Property="ToolTip" Value="{localization:Loc Sidebar_EventViewer}" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Containers}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Containers}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.SystemStatus}">
                             <Setter Property="ToolTip" Value="{localization:Loc Sidebar_SystemStatus}" />
                         </DataTrigger>

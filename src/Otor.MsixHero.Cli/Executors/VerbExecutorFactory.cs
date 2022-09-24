@@ -69,14 +69,14 @@ namespace Otor.MsixHero.Cli.Executors
             {
                 p.WithParsed<SharedPackageContainerVerb>(verb =>
                 {
-                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerWin10MockService(), this.console);
+                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new AppxSharedPackageContainerWin10MockService(), this.console);
                 });
             }
             else
             {
                 p.WithParsed<SharedPackageContainerVerb>(verb =>
                 {
-                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerService(), this.console);
+                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new AppxAppxSharedPackageContainerService(), this.console);
                 });
             }
 #else

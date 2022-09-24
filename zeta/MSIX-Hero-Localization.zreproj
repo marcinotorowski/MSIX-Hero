@@ -27,6 +27,10 @@
     <globalSetting name="CreateNewFileForm.newLanguageComboBox.SelectedIndex">-1</globalSetting>
     <globalSetting name="CreateNewFileForm.copyTextsCheckBox.Checked">False</globalSetting>
     <globalSetting name="CreateNewFileForm.automaticallyTranslateCheckBox.Checked">False</globalSetting>
+    <globalSetting name="projectMruItems">&lt;?xml version='1.0' encoding='utf-8'?&gt;&lt;items&gt;&lt;item type="2" checksum="4671484105" /&gt;&lt;/items&gt;</globalSetting>
+    <userSetting name="marci@DESKTOP-5162GQS.filesInitialDir">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.Winget\Resources</userSetting>
+    <userSetting name="marci@DESKTOP-5162GQS.FindText">System_DeveloperOptions_SideLoading</userSetting>
+    <userSetting name="marci@DESKTOP-5162GQS.RecentFiles">C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.de.resx;C:\Users\marci\Documents\DEV\MSIXHero\src\Otor.MsixHero.App\Resources\Localization.pl.resx</userSetting>
     <description>
     </description>
   </configuration>

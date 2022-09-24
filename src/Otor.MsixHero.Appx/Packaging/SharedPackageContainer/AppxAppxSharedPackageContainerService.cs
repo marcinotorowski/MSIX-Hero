@@ -32,7 +32,7 @@ using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
-public class SharedPackageContainerService : ISharedPackageContainerService
+public class AppxAppxSharedPackageContainerService : IAppxSharedPackageContainerService
 {
     public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
@@ -262,6 +262,11 @@ public class SharedPackageContainerService : ISharedPackageContainerService
         var currentVersion = NdDll.RtlGetVersion();
 
         return currentVersion >= minimumSupportedVersion;
+    }
+
+    public bool IsAdminRequiredToManage()
+    {
+        return true;
     }
 
     private async Task<IDictionary<string, string>> GetRegisteredFamilyNames(CancellationToken cancellationToken)

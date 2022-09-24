@@ -22,6 +22,7 @@ namespace Otor.MsixHero.App.Modules
         public const string PackageManagement = "msix-hero-package-management-module";
         public const string VolumeManagement = "msix-hero-volume-management-module";
         public const string EventViewer = "msix-hero-event-viewer-module";
+        public const string Containers = "msix-hero-containers-module";
         public const string SystemStatus = "msix-hero-system-status-module";
         public const string Tools = "msix-hero-tools-tools-module";
         public const string WhatsNew = "msix-hero-tools-whatsnew-module";

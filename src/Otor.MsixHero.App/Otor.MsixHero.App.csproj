@@ -126,6 +126,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MsixHeroApp.resx</DependentUpon>
     </Compile>
+    <Compile Update="Modules\Containers\Details\Views\ContainersDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Containers\Details\Views\ContainersNoDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Containers\Search\Views\ContainersFilterSortView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Containers\Views\ContainersView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Dialogs\AppAttach\Editor\View\AppAttachView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -280,6 +292,29 @@
     </Page>
     <Page Update="Modules\Common\Volume\Theme.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Containers\Details\Views\ContainersDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Containers\Details\Views\ContainersNoDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Containers\List\Views\ContainersListView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Containers\Search\Views\ContainersFilterSortView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Containers\Search\Views\ContainersSearchView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Containers\Views\ContainersView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\AppAttach\Editor\View\AppAttachDialogContent.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

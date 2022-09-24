@@ -21,6 +21,7 @@ namespace Otor.MsixHero.App.Hero.State
         public MsixHeroState()
         {
             this.Packages = new PackagesState();
+            this.Containers = new ContainersState();
             this.Volumes = new VolumesState();
             this.Tools = new ToolsState();
             this.EventViewer = new EventViewerState();
@@ -29,6 +30,8 @@ namespace Otor.MsixHero.App.Hero.State
         public ApplicationMode CurrentMode { get; set; }
 
         public PackagesState Packages { get; set; }
+        
+        public ContainersState Containers { get; set; }
 
         public VolumesState Volumes { get; set; }
 

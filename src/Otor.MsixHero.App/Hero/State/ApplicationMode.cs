@@ -28,6 +28,8 @@ namespace Otor.MsixHero.App.Hero.State
 
         EventViewer,
 
+        Containers,
+
         WhatsNew
     }
 }

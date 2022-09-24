@@ -24,6 +24,7 @@ namespace Otor.MsixHero.App.Modules
         public const string PackageManagement = BaseNavigation + "package-management";
         public const string VolumeManagement = BaseNavigation + "volume-management";
         public const string EventViewer = BaseNavigation + "event-viewer";
+        public const string Containers = BaseNavigation + "containers";
         public const string SystemStatus = BaseNavigation + "system-status";
         public const string Tools = BaseNavigation + "dasboard";
         public const string WhatsNew = BaseNavigation + "whatsnew";
@@ -56,6 +57,15 @@ namespace Otor.MsixHero.App.Modules
             public const string Search = BaseEventViewerNavigation + "search";
             public const string Details = BaseEventViewerNavigation + "details";
             public const string NoDetails = BaseEventViewerNavigation + "no-details";
+        }
+
+        public static class ContainersPaths
+        {
+            private const string BaseContainersNavigation = BaseNavigation + "containers";
+
+            public const string Search = BaseContainersNavigation + "search";
+            public const string Details = BaseContainersNavigation + "details";
+            public const string NoDetails = BaseContainersNavigation + "no-details";
         }
 
         public static class ToolsPaths

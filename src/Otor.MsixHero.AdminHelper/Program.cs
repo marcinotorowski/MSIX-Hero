@@ -172,11 +172,11 @@ namespace Otor.MsixHero.AdminHelper
 #if DEBUG
                     if (NdDll.RtlGetVersion() < new Version(10, 0, 22000))
                     {
-                        server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerWin10MockService>();
+                        server.RegisterProxy<IAppxSharedPackageContainerService, AppxSharedPackageContainerWin10MockService>();
                     }
                     else
                     {
-                        server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();
+                        server.RegisterProxy<IAppxSharedPackageContainerService, AppxAppxSharedPackageContainerService>();
                     }
 #else 
                     server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();

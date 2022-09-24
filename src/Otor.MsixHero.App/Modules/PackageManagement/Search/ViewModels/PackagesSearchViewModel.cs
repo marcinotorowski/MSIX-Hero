@@ -49,9 +49,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand);
             this.isAllUsers = application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
 
-            eventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
-            eventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
-            eventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiFailedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiCancelledEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
         }
         
         public string SearchKey
@@ -74,19 +74,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             }
         }
         
-        private void OnGetPackages(UiFailedPayload<GetPackagesCommand> obj)
+        private void OnGetPackages(UiFailedPayload<GetInstalledPackagesCommand> obj)
         {
             this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
         }
 
-        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        private void OnGetPackages(UiExecutedPayload<GetInstalledPackagesCommand> obj)
         {
             this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
         }
 
-        private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> obj)
+        private void OnGetPackages(UiCancelledPayload<GetInstalledPackagesCommand> obj)
         {
             this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
@@ -98,7 +98,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 .WithBusyManager(this.busyManager, OperationType.PackageLoading)
                 .WithErrorHandling(this.interactionService, true);
 
-            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)
