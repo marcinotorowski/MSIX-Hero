@@ -46,15 +46,15 @@ namespace Otor.MsixHero.Appx.Updates
 
             if (!IsBundlePackage(msixBundlePath1))
             {
-                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotABundle_Format, Path.GetFileName(msixBundlePath1)));
+                return Task.FromException<UpdateImpactResults>(new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotABundle_Format, Path.GetFileName(msixBundlePath1))));
             }
 
             if (!IsBundlePackage(msixBundlePath2))
             {
-                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotABundle_Format, Path.GetFileName(msixBundlePath2)));
+                return Task.FromException<UpdateImpactResults>(new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotABundle_Format, Path.GetFileName(msixBundlePath2))));
             }
 
-            throw new NotSupportedException(Resources.Localization.Packages_UpdateImpact_Error_BundleNotSupported);
+            return Task.FromException<UpdateImpactResults>(new NotSupportedException(Resources.Localization.Packages_UpdateImpact_Error_BundleNotSupported));
         }
 
         private static bool IsBundlePackage(string path)

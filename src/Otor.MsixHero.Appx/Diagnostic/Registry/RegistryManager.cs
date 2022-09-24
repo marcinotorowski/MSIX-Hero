@@ -62,12 +62,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
                 StartInfo = proc,
                 EnableRaisingEvents = true
             };
-
-            if (p == null)
-            {
-                throw new InvalidOperationException("Could not start process for un-mounting");
-            }
-
+            
             var tcs = new TaskCompletionSource();
 
             p.Exited += (_, _) =>

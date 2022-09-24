@@ -47,7 +47,7 @@ namespace Otor.MsixHero.Infrastructure.Updates
             var assemblyVersion = FileVersionInfo.GetVersionInfo((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location).ProductVersion;
             if (!Version.TryParse(assemblyVersion, out var version))
             {
-                throw new FormatException(string.Format(Resources.Localization.Infrastructure_WrongVersion_Format, version));
+                return Task.FromException<UpdateCheckResult>(new FormatException(string.Format(Resources.Localization.Infrastructure_WrongVersion_Format, version)));
             }
 
             return this.CheckForNewVersion(version);
@@ -55,20 +55,20 @@ namespace Otor.MsixHero.Infrastructure.Updates
 
         private async Task<UpdateDefinition> GetUpdateDefinition()
         {
+#pragma warning disable SYSLIB0014
             var webRequest = WebRequest.CreateHttp("https://msixhero.net/update.json");
+#pragma warning restore SYSLIB0014
             using var webResponse = await webRequest.GetResponseAsync().ConfigureAwait(false);
-            using (var stream = webResponse.GetResponseStream())
+            await using var stream = webResponse.GetResponseStream();
+            if (stream == null)
             {
-                if (stream == null)
-                {
-                    throw new InvalidOperationException("Could not get information about the update.");
-                }
-
-                using var stringReader = new StreamReader(stream);
-                var json = await stringReader.ReadToEndAsync().ConfigureAwait(false);
-                var deserialized = JsonConvert.DeserializeObject<UpdateDefinition>(json);
-                return deserialized;
+                throw new InvalidOperationException("Could not get information about the update.");
             }
+
+            using var stringReader = new StreamReader(stream);
+            var json = await stringReader.ReadToEndAsync().ConfigureAwait(false);
+            var deserialized = JsonConvert.DeserializeObject<UpdateDefinition>(json);
+            return deserialized;
         }
     }
 }

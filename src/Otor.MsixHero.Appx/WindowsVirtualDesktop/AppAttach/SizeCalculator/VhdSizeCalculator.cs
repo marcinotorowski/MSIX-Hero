@@ -28,6 +28,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
         public Task<uint> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
             Logger.Debug().WriteLine($"Determining required size for VHD(X) drive {sourcePath} with extra margin {(int)(100 * extraMargin)}%…");
+        
             const long reserved = 16 * 1024 * 1024;
             const long minSize = 32 * 1024 * 1024;
 

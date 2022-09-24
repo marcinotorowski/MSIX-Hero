@@ -42,7 +42,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
                 case ServiceRecommendationType.WindowsDefender:
                     return DefenderSettings();
                 default:
-                    throw new NotSupportedException();
+                    return Task.FromException<bool>(new NotSupportedException());
             }
 
         }

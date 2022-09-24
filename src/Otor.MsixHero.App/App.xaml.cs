@@ -175,7 +175,21 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IUacElevation>(() => uacClient);
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxVolumeService, AppxVolumeService>();
+
+#if DEBUG
+            if (NdDll.RtlGetVersion() < new Version(10, 0, 22000))
+            {
+                containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerWin10MockService>();
+            }
+            else
+            {
+
+                containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
+            }
+#else 
             containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
+#endif
+
             containerRegistry.RegisterSingleton<IRegistryManager, RegistryManager>();
             containerRegistry.RegisterSingleton<IMsixHeroTranslationService, MsixHeroTranslationService>();
             containerRegistry.RegisterSingleton<ISigningManager, SigningManager>();
@@ -215,7 +229,7 @@ namespace Otor.MsixHero.App
 
             this.Container.GetContainer().RegisterMediatorHandlers(typeof(App).Assembly);
         }
-
+        
         protected override void OnExit(ExitEventArgs e)
         {
             this.Container.Resolve<IAppxFileViewer>().Dispose();

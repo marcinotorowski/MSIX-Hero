@@ -143,7 +143,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events
                     logName = @"%SystemRoot%\System32\Winevt\Logs\Microsoft-Windows-AppXDeploymentServer%4Restricted.evtx";
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return Task.FromException(new ArgumentOutOfRangeException());
             }
 
             logName = Environment.ExpandEnvironmentVariables(logName);

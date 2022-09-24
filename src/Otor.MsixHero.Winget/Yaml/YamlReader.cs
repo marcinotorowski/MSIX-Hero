@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Winget.Yaml
     /// </summary>
     public class YamlReader
     {
-        private readonly Lazy<IDeserializer> deserializer = new Lazy<IDeserializer>(GetDeserializer);
+        private readonly Lazy<IDeserializer> deserializer = new(GetDeserializer);
         
         /// <summary>
         /// Reads Winget definition from a stream and returns a task representing the asynchronous operation.
@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Winget.Yaml
         /// <returns>The asynchronous task that represents the operation.</returns>
         public Task<YamlManifest> ReadAsync(TextReader textReader, CancellationToken cancellationToken = default)
         {
-            return Task.Run(() => deserializer.Value.Deserialize<YamlManifest>(textReader), cancellationToken);
+            return Task.FromResult(deserializer.Value.Deserialize<YamlManifest>(textReader));
         }
 
         /// <summary>

@@ -168,7 +168,20 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IAppxPackageRunService, AppxPackageRunService>();
                     server.RegisterProxy<IMsixHeroTranslationService, MsixHeroTranslationService>();
                     server.RegisterProxy<IAppxPackageManagerService, AppxPackageManagerService>();
+                    
+#if DEBUG
+                    if (NdDll.RtlGetVersion() < new Version(10, 0, 22000))
+                    {
+                        server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerWin10MockService>();
+                    }
+                    else
+                    {
+                        server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();
+                    }
+#else 
                     server.RegisterProxy<ISharedPackageContainerService, SharedPackageContainerService>();
+#endif
+                    
                     server.RegisterProxy<IAppxPackageQueryService, AppxPackageQueryService>(appxPackageQuery);
                     server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();
                 }

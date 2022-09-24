@@ -50,10 +50,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             var isAppxBundle = fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
             if (isAppxBundle)
             {
-                throw new NotSupportedException(Resources.Localization.Packages_Error_BundleNotSupported);
+                return Task.FromException<AppxPackage>(new NotSupportedException(Resources.Localization.Packages_Error_BundleNotSupported));
             }
 
-            throw new NotSupportedException(Resources.Localization.Packages_Error_SrcNotSupported);
+            return Task.FromException<AppxPackage>(new NotSupportedException(Resources.Localization.Packages_Error_SrcNotSupported));
         }
 
         public async Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default)

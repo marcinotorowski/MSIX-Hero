@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using CommandLine;
 using CommandLine.Text;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
@@ -20,6 +21,7 @@ using Otor.MsixHero.Cli.Verbs.Edit.Bulk;
 using Otor.MsixHero.Cli.Verbs.Edit.Files;
 using Otor.MsixHero.Cli.Verbs.Edit.Manifest;
 using Otor.MsixHero.Cli.Verbs.Edit.Registry;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Cli.Executors
@@ -61,10 +63,28 @@ namespace Otor.MsixHero.Cli.Executors
                 verbExecutor = new PackVerbExecutor(verb, this.console);
             });
 
+
+#if DEBUG
+            if (NdDll.RtlGetVersion() < new Version(10, 0, 22000))
+            {
+                p.WithParsed<SharedPackageContainerVerb>(verb =>
+                {
+                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerWin10MockService(), this.console);
+                });
+            }
+            else
+            {
+                p.WithParsed<SharedPackageContainerVerb>(verb =>
+                {
+                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerService(), this.console);
+                });
+            }
+#else
             p.WithParsed<SharedPackageContainerVerb>(verb =>
             {
                 verbExecutor = new SharedPackageContainerVerbExecutor(verb, new SharedPackageContainerService(), this.console);
             });
+#endif
 
             p.WithParsed<UnpackVerb>(verb =>
             {

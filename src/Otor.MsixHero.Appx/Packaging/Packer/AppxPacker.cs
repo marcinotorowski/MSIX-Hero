@@ -209,7 +209,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
         {
             if (!File.Exists(packagePath))
             {
-                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath));
+                return Task.FromException(new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath)));
             }
 
             if (!Directory.Exists(directory) && directory != null)
