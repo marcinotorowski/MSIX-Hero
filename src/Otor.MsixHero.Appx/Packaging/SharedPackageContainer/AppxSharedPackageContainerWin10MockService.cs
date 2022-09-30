@@ -22,34 +22,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
 public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageContainerService
 {
-    private static IList<Entities.SharedPackageContainer> _all = new List<Entities.SharedPackageContainer>()
-    {
-        new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Name = "MSIX Hero Dummy Container",
-            PackageFamilies = new List<SharedPackageFamily>
-            {
-                new SharedPackageFamily
-                {
-                    FamilyName = "MSIXHero_zxq1da1qqbeze"
-                }
-            }
-        }
-    };
-
     public async Task<Entities.SharedPackageContainer> Add(Entities.SharedPackageContainer container, bool forceApplicationShutdown = false,
         ContainerConflictResolution containerConflictResolution = ContainerConflictResolution.Default,
         CancellationToken cancellationToken = default)
     {
-        var findExisting = _all.FirstOrDefault(c => string.Equals(c.Name, container.Name, StringComparison.OrdinalIgnoreCase));
+        var all = this.Read();
+
+        var findExisting = all.FirstOrDefault(c => string.Equals(c.Name, container.Name, StringComparison.OrdinalIgnoreCase));
         
-        var packageAlreadyPresent = _all.Where(c => c != findExisting).SelectMany(c => c.PackageFamilies).Select(c => c.FamilyName).Intersect(container.PackageFamilies.Select(c => c.FamilyName), StringComparer.OrdinalIgnoreCase).FirstOrDefault();
+        var packageAlreadyPresent = all.Where(c => c != findExisting).SelectMany(c => c.PackageFamilies).Select(c => c.FamilyName).Intersect(container.PackageFamilies.Select(c => c.FamilyName), StringComparer.OrdinalIgnoreCase).FirstOrDefault();
         if (packageAlreadyPresent != null)
         {
             throw new Exception("Package " + packageAlreadyPresent + " is already in another container");
@@ -58,12 +45,12 @@ public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageCont
         if (findExisting == null)
         {
             container.Id = Guid.NewGuid().ToString();
-            _all.Add(container);
+            all.Add(container);
         }
         else if (containerConflictResolution == ContainerConflictResolution.Replace)
         {
-            _all.Remove(findExisting);
-            _all.Add(container);
+            all.Remove(findExisting);
+            all.Add(container);
 
             container.Id = Guid.NewGuid().ToString();
         }
@@ -79,6 +66,8 @@ public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageCont
         }
 
         await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+        this.Save(all);
+
         return container;
     }
 
@@ -100,23 +89,26 @@ public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageCont
     public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-        return _all;
+        return this.Read();
     }
 
     public Task Remove(string containerName, bool forceApplicationShutdown = false, CancellationToken cancellationToken = default)
     {
-        var find = _all.FirstOrDefault(c => string.Equals(c.Name, containerName, StringComparison.OrdinalIgnoreCase));
+        var all = this.Read();
+        var find = all.FirstOrDefault(c => string.Equals(c.Name, containerName, StringComparison.OrdinalIgnoreCase));
         if (find != null)
         {
-            _all.Remove(find);
+            all.Remove(find);
         }
 
+        this.Save(all);
         return Task.CompletedTask;
     }
 
     public Task<Entities.SharedPackageContainer> GetByName(string containerName, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_all.FirstOrDefault(c => string.Equals(c.Name, containerName, StringComparison.OrdinalIgnoreCase)));
+        var all = this.Read();
+        return Task.FromResult(all.FirstOrDefault(c => string.Equals(c.Name, containerName, StringComparison.OrdinalIgnoreCase)));
     }
 
     public Task Reset(string containerName, CancellationToken cancellationToken = default)
@@ -132,5 +124,36 @@ public class AppxSharedPackageContainerWin10MockService : IAppxSharedPackageCont
     public bool IsAdminRequiredToManage()
     {
         return false;
+    }
+
+    private void Save(List<Entities.SharedPackageContainer> list)
+    {
+        var file = new FileInfo(Path.Combine(Path.GetTempPath(), "msix-hero-win10-spc.xml"));
+        if (file.Exists)
+        {
+            file.Delete();
+        }
+        else if (file.Directory?.Exists == false)
+        {
+            file.Directory.Create();
+        }
+
+        var serializer = new XmlSerializer(typeof(List<Entities.SharedPackageContainer>));
+        using var fs = File.OpenWrite(file.FullName);
+        serializer.Serialize(fs, list);
+    }
+
+    private List<Entities.SharedPackageContainer> Read()
+    {
+        var file = new FileInfo(Path.Combine(Path.GetTempPath(), "msix-hero-win10-spc.xml"));
+        if (!file.Exists)
+        {
+            return new List<Entities.SharedPackageContainer>();
+        }
+
+        var serializer = new XmlSerializer(typeof(List<Entities.SharedPackageContainer>));
+        using var fs = File.OpenRead(file.FullName);
+        // ReSharper disable once AccessToDisposedClosure
+        return ExceptionGuard.Guard(() => (List<Entities.SharedPackageContainer>)serializer.Deserialize(fs)) ?? new List<Entities.SharedPackageContainer>();
     }
 }

@@ -20,6 +20,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Events.Base;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Navigation;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
@@ -159,7 +160,9 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
         private void OnShowSharedPackageContainerDialog()
         {
             this._moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, new DialogParameters(), this.OnDialogClosed);
+            
+            var dialogRequest = new NavigationRequest();
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, dialogRequest.ToDialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowUpdateImpactDialog()

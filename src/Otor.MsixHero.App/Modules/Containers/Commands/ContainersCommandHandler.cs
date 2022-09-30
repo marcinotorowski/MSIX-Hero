@@ -24,13 +24,13 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Containers;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Navigation;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Containers.Commands
 {
@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             this.Refresh = new DelegateCommand(this.OnRefresh, this.CanRefresh);
             this.Add = new DelegateCommand(this.OnAdd, this.CanAdd);
             this.Copy = new DelegateCommand(this.OnCopy, this.CanCopy);
-            this.Edit = new DelegateCommand(this.OnEdit, this.CanEdit);
+            this.Edit = new DelegateCommand<object>(this.OnEdit, this.CanEdit);
             this.Delete = new DelegateCommand(this.OnDelete, this.CanDelete);
             this.Reset = new DelegateCommand(this.OnReset, this.CanReset);
         }
@@ -86,8 +86,13 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
 
         private async void OnAdd()
         {
+            var dialogRequest = new NavigationRequest
+            {
+                Type = NavigationRequest.EditingType.New
+            };
+
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, new DialogParameters(), _ => { });
+            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, dialogRequest.ToDialogParameters(), _ => { });
         }
 
         private async void OnDelete()
@@ -131,11 +136,16 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             }
         }
 
-        private async void OnEdit()
+        private async void OnEdit(object sharedPackageContainerName)
         {
-            // todo: parameters
+            var dialogRequest = new NavigationRequest
+            {
+                Type = NavigationRequest.EditingType.EditRunning,
+                ContainerName = sharedPackageContainerName as string
+            };
+
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, new DialogParameters(), _ => { });
+            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, dialogRequest.ToDialogParameters(), _ => { });
         }
 
         private bool CanRefresh()
@@ -157,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             return this._application.ApplicationState.Containers.SelectedContainer != null;
         }
 
-        private bool CanEdit()
+        private bool CanEdit(object sharedPackageContainerName)
         {
             return this._application.ApplicationState.Containers.SelectedContainer != null;
         }

@@ -17,17 +17,20 @@
 using System;
 using System.Collections.Generic;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 {
     public abstract class ChangeableAutomatedDialogViewModel : ChangeableDialogViewModel
     {
+        private bool _commandLineSupressed;
+
         protected ChangeableAutomatedDialogViewModel(string title, IInteractionService interactionService) : base(title, interactionService)
         {
         }
 
-        public string SilentCommandLine => this.GenerateSilentCommandLine();
+        public string SilentCommandLine => ExceptionGuard.Guard(this.GenerateSilentCommandLine);
 
         protected abstract string GenerateSilentCommandLine();
         
@@ -35,7 +38,21 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
         {
             this.RegisterForCommandLineGeneration(((IEnumerable<IChangeable>) toSubscribe));
         }
-        
+
+        protected void DoBulkChange(Action toExecute)
+        {
+            this._commandLineSupressed = true;
+            try
+            {
+                toExecute();
+            }
+            finally
+            {
+                this._commandLineSupressed = false;
+                this.OnPropertyChanged(nameof(this.SilentCommandLine));
+            }
+        }
+
         public void RegisterForCommandLineGeneration(IEnumerable<IChangeable> toSubscribe)
         {
             foreach (var item in toSubscribe)
@@ -46,6 +63,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 
         private void OnItemChanged(object sender, EventArgs e)
         {
+            if (this._commandLineSupressed)
+            {
+                return;
+            }
+
             this.OnPropertyChanged(nameof(this.SilentCommandLine));
         }
     }
@@ -53,14 +75,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
     public abstract class ChangeableAutomatedDialogViewModel<T> : ChangeableAutomatedDialogViewModel where T : BaseVerb
     {
         protected readonly T Verb = Activator.CreateInstance<T>();
-
-        protected ChangeableAutomatedDialogViewModel(string title, IInteractionService interactionService) : base(title,
-            interactionService)
+        
+        protected ChangeableAutomatedDialogViewModel(string title, IInteractionService interactionService) : base(title, interactionService)
         {
         }
 
         protected abstract void UpdateVerbData();
-
+        
         protected sealed override string GenerateSilentCommandLine()
         {
             this.UpdateVerbData();

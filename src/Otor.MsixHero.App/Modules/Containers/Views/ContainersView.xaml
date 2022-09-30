@@ -26,6 +26,9 @@
             RoutedCommand="{x:Static routerCommands:MsixHeroRoutedUICommands.ResetContainer}" 
             Command="{Binding CommandHandler.Reset}" />
         <commands:RoutedCommandHandler 
+            RoutedCommand="{x:Static routerCommands:MsixHeroRoutedUICommands.EditContainer}" 
+            Command="{Binding CommandHandler.Edit}" />
+        <commands:RoutedCommandHandler 
             RoutedCommand="Refresh" 
             Command="{Binding CommandHandler.Refresh}" />
         <commands:RoutedCommandHandler 

@@ -77,6 +77,10 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder
                     result.PackageFamilies.Add(new SharedPackageFamily { FamilyName = fn });
                 }
             }
+            else
+            {
+                result.PackageFamilies = new List<SharedPackageFamily>();
+            }
 
             result.Name = Name;
             return result;

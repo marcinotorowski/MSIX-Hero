@@ -29,10 +29,10 @@ using GongSolutions.Wpf.DragDrop;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Containers;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Navigation;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
@@ -90,41 +90,87 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (parameters.TryGetValue<string>("file", out var file))
+            this.DoBulkChange(() =>
             {
-                try
-                {
-                    if (
-                        string.Equals(".xml", Path.GetExtension(file), StringComparison.OrdinalIgnoreCase) &&
-                        !string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(file), StringComparison.OrdinalIgnoreCase))
-                    {
-                        var xml = new XmlSerializer(typeof(Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer));
-                        using var fs = File.OpenRead(file);
-                        var parsed = (Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer)xml.Deserialize(fs);
+                this.AllowXmlOutput = true;
+                this.AllowNameChange = true;
 
-                        foreach (var item in parsed?.PackageFamilies ?? Enumerable.Empty<Appx.Packaging.SharedPackageContainer.Entities.SharedPackageFamily>())
+                var navigationParams = new NavigationRequest(parameters);
+
+                switch (navigationParams.Type)
+                {
+                    case NavigationRequest.EditingType.New:
+
+                        if (navigationParams.Items != null)
                         {
-                            this.Packages.Add(SharedPackageViewModel.FromFamilyName(this.PackageQueryService, item.FamilyName));
+                            foreach (var pkg in navigationParams.Items)
+                            {
+                                if (File.Exists(pkg))
+                                {
+                                    var sharedPackage = new SharedPackageViewModel();
+                                    sharedPackage.SetFromFilePath(pkg, CancellationToken.None).GetAwaiter().GetResult();
+                                    this.Packages.Add(sharedPackage);
+                                    this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, sharedPackage.DisplayName ?? sharedPackage.FamilyName.CurrentValue.Split('_').First());
+                                }
+                                else
+                                {
+                                    var sharedPackage = new SharedPackageViewModel();
+                                    sharedPackage.SetFromFamilyName(this._packageQueryService, pkg, CancellationToken.None).GetAwaiter().GetResult();
+                                    this.Packages.Add(sharedPackage);
+                                }
+                            }
                         }
 
-                        this.Name.CurrentValue = parsed?.Name;
-                    }
-                    else
-                    {
-                        var sharedPackage = new SharedPackageViewModel();
-                        sharedPackage.SetFromFilePath(file, CancellationToken.None).GetAwaiter().GetResult();
-                        this.Packages.Add(sharedPackage);
-                        
-                        this.Name.CurrentValue = string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerForPkg, sharedPackage.DisplayName ?? sharedPackage.FamilyName.CurrentValue.Split('_').First());
-                    }
+                        break;
 
-                    this.Commit();
+                    case NavigationRequest.EditingType.EditRunning:
+                        var container = this._containerService.GetByName(navigationParams.ContainerName).GetAwaiter().GetResult();
+                        if (container == null)
+                        {
+                            this._interactionService.ShowError("Missing container '" + navigationParams.ContainerName + "'");
+                        }
+                        else
+                        {
+                            this.AllowXmlOutput = false;
+                            this.AllowNameChange = false;
+                            this.Name.CurrentValue = navigationParams.ContainerName;
+
+                            foreach (var pkg in container.PackageFamilies)
+                            {
+                                this.Packages.Add(new SharedPackageViewModel());
+                                this.Packages.Last().SetFromFamilyName(this._packageQueryService, pkg.FamilyName, default).GetAwaiter().GetResult();
+                            }
+
+                            this.CreationMode.CurrentValue = ViewModel.CreationMode.Deploy;
+                            this.Resolution.CurrentValue = navigationParams.ConflictResolution ?? ContainerConflictResolution.Replace;
+                        }
+
+                        break;
+
+                    case NavigationRequest.EditingType.OpenXml:
+
+                        if (navigationParams.Items?.Any() == true)
+                        {
+                            this.Output.CurrentValue = navigationParams.Items[0];
+
+                            var xml = new XmlSerializer(typeof(Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer));
+                            using var fs = File.OpenRead(navigationParams.Items[0]);
+                            var parsed = (Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer)xml.Deserialize(fs);
+
+                            foreach (var item in parsed?.PackageFamilies ?? Enumerable.Empty<Appx.Packaging.SharedPackageContainer.Entities.SharedPackageFamily>())
+                            {
+                                this.Packages.Add(SharedPackageViewModel.FromFamilyName(this.PackageQueryService, item.FamilyName));
+                            }
+
+                            this.Name.CurrentValue = parsed?.Name;
+                        }
+
+                        break;
+
+                    default:
+                        throw new NotSupportedException();
                 }
-                catch (Exception e)
-                {
-                    this._interactionService.ShowError(e.Message);
-                }
-            }
+            });
         }
 
         private void OnCustomValidation(object sender, ContainerValidationArgs e)
@@ -140,6 +186,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         public ICommand Remove { get; }
 
         public ICommand Open { get; }
+
+        public bool AllowXmlOutput { get; private set; }
+
+        public bool AllowNameChange { get; private set; }
 
         public ValidatedChangeableCollection<SharedPackageViewModel> Packages { get; }
 
@@ -211,9 +261,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             var getExisting = await service.GetByName(this.Name.CurrentValue, cancellationToken).ConfigureAwait(false);
 
             var containerBuilder = new SharedPackageContainerBuilder(this.Name.CurrentValue);
-            this.Resolution.CurrentValue = ContainerConflictResolution.Default;
-
-            if (getExisting != null)
+            
+            if (this.AllowNameChange && getExisting != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (getExisting.PackageFamilies?.Any() == true)
@@ -250,41 +299,53 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                         }
                     }
 
-                    var interactionResult = this._interactionService.ShowMessage(
-                        string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerExists, this.Name.CurrentValue, existingPackageFamilies.Count),
-                        new List<string>
-                        {
-                            Resources.Localization.Dialogs_SharedContainer_ContainerExists_Replace,
-                            Resources.Localization.Dialogs_SharedContainer_ContainerExists_Extend,
-                            Resources.Localization.Button_Cancel
-                        },
-                        Resources.Localization.Dialogs_SharedContainer_ContainerExists_Title,
-                        extendedInfo.ToString());
-
-                    cancellationToken.ThrowIfCancellationRequested();
-                    switch (interactionResult)
+                    if (this.AllowNameChange)
                     {
-                        case 0:
-                            this.Resolution.CurrentValue = ContainerConflictResolution.Replace;
-                            
-                            foreach (var familyName in this.Packages.Select(a => a.FamilyName.CurrentValue).Distinct())
+                        this.Resolution.CurrentValue = default;
+
+                        var interactionResult = this._interactionService.ShowMessage(
+                            string.Format(Resources.Localization.Dialogs_SharedContainer_ContainerExists, this.Name.CurrentValue, existingPackageFamilies.Count),
+                            new List<string>
                             {
-                                containerBuilder.AddFamilyName(familyName);
-                            }
+                                Resources.Localization.Dialogs_SharedContainer_ContainerExists_Replace,
+                                Resources.Localization.Dialogs_SharedContainer_ContainerExists_Extend,
+                                Resources.Localization.Button_Cancel
+                            },
+                            Resources.Localization.Dialogs_SharedContainer_ContainerExists_Title,
+                            extendedInfo.ToString());
 
-                            break;
+                        cancellationToken.ThrowIfCancellationRequested();
+                        switch (interactionResult)
+                        {
+                            case 0:
+                                this.Resolution.CurrentValue = ContainerConflictResolution.Replace;
 
-                        case 1:
-                            this.Resolution.CurrentValue = ContainerConflictResolution.Merge;
+                                foreach (var familyName in this.Packages.Select(a => a.FamilyName.CurrentValue).Distinct())
+                                {
+                                    containerBuilder.AddFamilyName(familyName);
+                                }
 
-                            foreach (var familyName in existingPackageFamilies.Concat(extraToBeAdded))
-                            {
-                                containerBuilder.AddFamilyName(familyName);
-                            }
-                            
-                            break;
-                        default:
-                            return false;
+                                break;
+
+                            case 1:
+                                this.Resolution.CurrentValue = ContainerConflictResolution.Merge;
+
+                                foreach (var familyName in existingPackageFamilies.Concat(extraToBeAdded))
+                                {
+                                    containerBuilder.AddFamilyName(familyName);
+                                }
+
+                                break;
+                            default:
+                                return false;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var familyName in this.Packages.Select(a => a.FamilyName.CurrentValue).Distinct())
+                        {
+                            containerBuilder.AddFamilyName(familyName);
+                        }
                     }
                 }
                 else
@@ -316,7 +377,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
                 var request = new AddSharedContainerCommand(container)
                 {
                     ConflictResolution = this.Resolution.CurrentValue,
-                    ForceApplicationShutdown = true
+                    ForceApplicationShutdown = true,
                 };
 
                 await this._application.CommandExecutor.Invoke<AddSharedContainerCommand, Appx.Packaging.SharedPackageContainer.Entities.SharedPackageContainer>(this, request, cancellationToken, progress);
@@ -400,6 +461,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
         protected override void UpdateVerbData()
         {
             this.Verb.Name = this.Name.CurrentValue;
+            this.Verb.Packages = new List<string>();
 
             switch (this.CreationMode.CurrentValue)
             {

@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -49,10 +50,22 @@ public class GetSharedPackageContainersHandler : IRequestHandler<GetSharedPackag
         {
             context.Progress = 10;
             context.Message = Resources.Localization.Containers_PleaseWait;
+
+            var selected = this._commandExecutor.ApplicationState.Containers.SelectedContainer?.Name;
+
             var all = await this._containerService.GetAll(cancellationToken).ConfigureAwait(false);
             this._commandExecutor.ApplicationState.Containers.AllContainers.Clear();
             this._commandExecutor.ApplicationState.Containers.AllContainers.AddRange(all);
             context.Progress = 100;
+
+            if (selected == null)
+            {
+                return all;
+            }
+
+            var newSelected = all.FirstOrDefault(a => a.Name == selected);
+            await this._commandExecutor.Invoke(this, new SelectSharedPackageContainerCommand(newSelected), cancellationToken).ConfigureAwait(false);
+
             return all;
         }
         finally

@@ -31,13 +31,15 @@
             <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
                 Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_ContainerName}" />
 
-            <TextBox DockPanel.Dock="Top" Margin="0 0 0 16" TabIndex="4"
+            <TextBox 
+                IsEnabled="{Binding AllowNameChange}"
+                DockPanel.Dock="Top" Margin="0 0 0 16" TabIndex="4"
                 Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
             <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
                 Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_PackagesInContainer}" />
 
-            <Border DockPanel.Dock="Bottom" Margin="0 16 0 0">
+            <Border DockPanel.Dock="Bottom" Margin="0 16 0 0" Visibility="{Binding AllowXmlOutput, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel>
                     <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
                         Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_SharedContainer_OperationType}" />

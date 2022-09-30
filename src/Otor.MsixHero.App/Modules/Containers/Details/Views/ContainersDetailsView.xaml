@@ -27,7 +27,8 @@
             <controls:ButtonRowPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 
                 <Button 
-                    Command="Properties"
+                    Command="{x:Static commands:MsixHeroRoutedUICommands.EditContainer}"
+                    CommandParameter="{Binding Name}"
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
                         IsCollapsible="True"
@@ -180,7 +181,7 @@
                             Margin="0 0 0 -1" HorizontalContentAlignment="Stretch">
                             <cards:CardAction.Icon>
                                 <Border Height="32" Width="32" SnapsToDevicePixels="True" UseLayoutRounding="True" Background="{StaticResource MsixHero.Brushes.Accent.Light1}">
-                                    <Image Width="32" Height="32" helpers:ImageExtension.SourceImagePath="{Binding Image}" />
+                                    <Image StretchDirection="DownOnly" Width="32" Height="32" helpers:ImageExtension.SourceImagePath="{Binding Image}" />
                                 </Border>
                             </cards:CardAction.Icon>
 

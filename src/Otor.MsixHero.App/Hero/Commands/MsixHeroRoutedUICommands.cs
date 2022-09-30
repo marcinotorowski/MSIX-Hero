@@ -63,10 +63,13 @@ namespace Otor.MsixHero.App.Hero.Commands
             Winget = new RoutedUICommand { Text = "Create winget manifest"};
             OpenFile = new RoutedUICommand { Text = "Open the selected file"};
             ResetContainer = new RoutedUICommand { Text = "Reset container"};
+            EditContainer = new RoutedUICommand { Text = "Edit container"};
             AddContainer = new RoutedUICommand { Text = "Reset container"};
         }
 
         public static RoutedUICommand ResetContainer { get; }
+
+        public static RoutedUICommand EditContainer { get; }
 
         public static RoutedUICommand AddContainer { get; }
 
