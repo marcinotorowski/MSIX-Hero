@@ -32,7 +32,7 @@ using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
-public class AppxAppxSharedPackageContainerService : IAppxSharedPackageContainerService
+public class AppxSharedPackageContainerService : IAppxSharedPackageContainerService
 {
     public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
