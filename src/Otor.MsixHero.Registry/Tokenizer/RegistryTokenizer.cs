@@ -86,7 +86,9 @@ namespace Otor.MsixHero.Registry.Tokenizer
         {
             if (fullPath.StartsWith('%'))
             {
-                this.AddToken(token, Environment.ExpandEnvironmentVariables(fullPath));
+                var expandedPath = Environment.ExpandEnvironmentVariables(fullPath);
+                if (!expandedPath.StartsWith('%'))
+                    this.AddToken(token, expandedPath);
             }
             else
             {
