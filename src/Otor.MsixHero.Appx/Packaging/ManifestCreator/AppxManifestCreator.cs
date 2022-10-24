@@ -380,16 +380,17 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             var package = GetOrCreateNode(template, "Package", defaultNamespace);
             
             var properties = GetOrCreateNode(package, "Properties", defaultNamespace);
-            GetOrCreateNode(properties, "DisplayName", defaultNamespace).Value = config.PackageDisplayName ?? config.PackageName ?? "DisplayName";
-            GetOrCreateNode(properties, "Description", defaultNamespace).Value = config.PackageDisplayName ?? config.PackageName ?? "Description";
-            GetOrCreateNode(properties, "PublisherDisplayName", defaultNamespace).Value = config.PublisherDisplayName ?? config.PublisherName ?? "Publisher";
+            GetOrCreateNode(properties, "DisplayName", defaultNamespace).Value = GetNotEmptyValueFromList(config.PackageDisplayName, config.PackageName, "DisplayName");
+            GetOrCreateNode(properties, "Description", defaultNamespace).Value = GetNotEmptyValueFromList(config.PackageDisplayName, config.PackageName, "Description");
+            GetOrCreateNode(properties, "PublisherDisplayName", defaultNamespace).Value = GetNotEmptyValueFromList(config.PublisherDisplayName, config.PublisherName, "Publisher");
             GetOrCreateNode(properties, "Logo", defaultNamespace).Value = "Assets\\Logo.png";
+
             var applicationsNode = GetOrCreateNode(package, "Applications", defaultNamespace);
 
             var usedNames = new HashSet<string>();
             foreach (var item in entryPoints)
             {
-                var applicationNode = this.CreateApplicationNodeFromExe(baseDirectory, item);
+                var applicationNode = CreateApplicationNodeFromExe(baseDirectory, item);
                 applicationsNode.Add(applicationNode);
 
                 var idCandidate = Regex.Replace(Path.GetFileNameWithoutExtension(item), "[^a-zA-z0-9_]+", string.Empty);
@@ -412,38 +413,53 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             await branding.Inject(template, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming).ConfigureAwait(false);
         }
 
-        private XElement CreateApplicationNodeFromExe(DirectoryInfo directoryInfo, string relativePath)
+        private static XElement CreateApplicationNodeFromExe(DirectoryInfo directoryInfo, string relativePath)
         {
-            XNamespace defaultNamespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
-            XNamespace nsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
-            var applicationNode = new XElement(defaultNamespace + "Application");
-            
-            applicationNode.SetAttributeValue("Id", Regex.Replace(Path.GetFileNameWithoutExtension(relativePath), "[^a-zA-z0-9_]+", string.Empty));
-            applicationNode.SetAttributeValue("EntryPoint", "Windows.FullTrustApplication");
-            applicationNode.SetAttributeValue("Executable", relativePath);
-
-            var visualElements = new XElement(nsUap + "VisualElements");
-
             var fullFilePath = Path.Combine(directoryInfo.FullName, relativePath);
             if (!File.Exists(fullFilePath))
             {
                 throw new FileNotFoundException($"File '{relativePath}' was not found in base directory {directoryInfo.FullName}.");
             }
 
-            var fileInfo = FileVersionInfo.GetVersionInfo(fullFilePath);
-            if (!string.IsNullOrEmpty(fileInfo.ProductName))
-            {
-                visualElements.SetAttributeValue("DisplayName", fileInfo.ProductName);
-            }
+            XNamespace defaultNamespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
+            XNamespace nsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
+            var applicationNode = new XElement(defaultNamespace + "Application");
+            
+            var visualElements = new XElement(nsUap + "VisualElements");
 
+            var fileInfo = FileVersionInfo.GetVersionInfo(fullFilePath);
+            var displayName = GetNotEmptyValueFromList(3, fileInfo.ProductName, fileInfo.InternalName, Path.GetFileNameWithoutExtension(fullFilePath), "Package display name");
+            var description = GetNotEmptyValueFromList(3, fileInfo.FileDescription, fileInfo.ProductName, Path.GetFileNameWithoutExtension(fullFilePath), "Package description");
+            var appId = GetNotEmptyValueFromList(3, Regex.Replace(Path.GetFileNameWithoutExtension(relativePath), "[^a-zA-z0-9_]+", string.Empty), "App1");
+            
+            applicationNode.SetAttributeValue("Id", appId);
+            applicationNode.SetAttributeValue("EntryPoint", "Windows.FullTrustApplication");
+            applicationNode.SetAttributeValue("Executable", relativePath);
+
+            visualElements.SetAttributeValue("DisplayName", displayName);
             visualElements.SetAttributeValue("Square150x150Logo", "Assets/Logo.png");
             visualElements.SetAttributeValue("Square44x44Logo", "Assets/Logo.png");
             visualElements.SetAttributeValue("BackgroundColor", "#333333");
-            visualElements.SetAttributeValue("Description", fileInfo.FileDescription ?? fileInfo.ProductName ?? Path.GetFileNameWithoutExtension(fullFilePath));
+            visualElements.SetAttributeValue("Description", description);
 
             applicationNode.Add(visualElements);
 
             return applicationNode;
+        }
+
+        private static string GetNotEmptyValueFromList(int minimumLength, params string[] values)
+        {
+            if (minimumLength <= 0)
+            {
+                return GetNotEmptyValueFromList(values);
+            }
+
+            return values.FirstOrDefault(v => !string.IsNullOrEmpty(v) && v.Length >= minimumLength);
+        }
+
+        private static string GetNotEmptyValueFromList(params string[] values)
+        {
+            return values.FirstOrDefault(v => !string.IsNullOrEmpty(v));
         }
 
         private static XElement GetOrCreateNode(XContainer xmlNode, string name, XNamespace nameSpace = null)
