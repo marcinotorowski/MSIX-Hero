@@ -22,11 +22,11 @@ namespace Otor.MsixHero.Registry.Tokenizer
 {
     public class RegistryTokenizer
     {
-        private readonly IDictionary<string, string> tokenPaths = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> _tokenPaths = new Dictionary<string, string>();
 
         public string Tokenize(string path)
         {
-            if (this.tokenPaths.Count == 0)
+            if (this._tokenPaths.Count == 0)
             {
                 this.Initialize();
             }
@@ -37,7 +37,7 @@ namespace Otor.MsixHero.Registry.Tokenizer
                 path = path.TrimEnd('\\');
             }
 
-            if (this.tokenPaths.TryGetValue(path, out var matched))
+            if (this._tokenPaths.TryGetValue(path, out var matched))
             {
                 if (shouldHaveBackslash)
                 {
@@ -48,12 +48,13 @@ namespace Otor.MsixHero.Registry.Tokenizer
             }
 
             string previousTokenMatch = null;
-            int restIndex = 0;
-            int indexOfBackSlash = 0;
+            var restIndex = 0;
+            var indexOfBackSlash = 0;
+
             while ((indexOfBackSlash = path.IndexOf('\\', indexOfBackSlash + 1)) != -1)
             {
                 var pathToMatch = path.Substring(0, indexOfBackSlash);
-                if (!this.tokenPaths.TryGetValue(pathToMatch, out matched))
+                if (!this._tokenPaths.TryGetValue(pathToMatch, out matched))
                 {
                     if (restIndex == 0)
                     {
@@ -84,21 +85,27 @@ namespace Otor.MsixHero.Registry.Tokenizer
 
         private void AddToken(string token, string fullPath)
         {
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            if (fullPath == null)
+            {
+                throw new ArgumentNullException(nameof(fullPath));
+            }
+
             if (fullPath.StartsWith('%'))
             {
-                var expandedPath = Environment.ExpandEnvironmentVariables(fullPath);
-                if (!expandedPath.StartsWith('%'))
-                    this.AddToken(token, expandedPath);
-            }
-            else
-            {
-                if (fullPath.EndsWith('\\'))
+                fullPath = Environment.ExpandEnvironmentVariables(fullPath);
+                if (fullPath.StartsWith('%'))
                 {
-                    fullPath = fullPath.TrimEnd('\\');
+                    // A workaround for endless loops. Do not proceed if resolved path still starts with %.
+                    return;
                 }
-
-                this.tokenPaths[fullPath] = token;
             }
+
+            this._tokenPaths[fullPath.TrimEnd('\\')] = token;
         }
 
         private void AddToken(string token, Environment.SpecialFolder fullPath)
