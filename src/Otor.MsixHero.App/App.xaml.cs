@@ -188,7 +188,7 @@ namespace Otor.MsixHero.App
                 containerRegistry.RegisterSingleton<IAppxSharedPackageContainerService, AppxAppxSharedPackageContainerService>();
             }
 #else 
-            containerRegistry.RegisterSingleton<ISharedPackageContainerService, SharedPackageContainerService>();
+            containerRegistry.RegisterSingleton<IAppxSharedPackageContainerService, AppxSharedPackageContainerService>();
 #endif
 
             containerRegistry.RegisterSingleton<IRegistryManager, RegistryManager>();
