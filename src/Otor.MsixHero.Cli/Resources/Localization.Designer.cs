@@ -1636,7 +1636,7 @@ namespace Otor.MsixHero.Cli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ustalanie nazwy wydawcy z certyfikatu Device Guard….
+        ///   Looks up a localized string similar to Determining publisher name from Device Guard certificate….
         /// </summary>
         public static string Signing_DeviceGuard_Reading {
             get {

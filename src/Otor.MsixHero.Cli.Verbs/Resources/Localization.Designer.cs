@@ -844,7 +844,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The output file. If not specified, the container will be installed. Installation of apps into Shared Package Container requires administrative permissions..
+        ///   Looks up a localized string similar to The output file. If not specified, the container will be installed. Installation of packages into Shared Package Container requires administrative permissions..
         /// </summary>
         public static string CLI_Verbs_SharedPackageContainer_Prop_Output {
             get {
@@ -853,7 +853,7 @@ namespace Otor.MsixHero.Cli.Verbs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Full paths, or family names, or full names or a combination of them that build the container..
+        ///   Looks up a localized string similar to Full paths to MSIX or manifest files, or family names, or full names or a combination of them that build the container..
         /// </summary>
         public static string CLI_Verbs_SharedPackageContainer_Prop_Packages {
             get {

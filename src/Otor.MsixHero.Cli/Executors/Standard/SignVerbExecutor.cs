@@ -61,24 +61,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             var config = await _configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
 
-            if (config.Signing?.Source == CertificateSource.Unknown)
-            {
-                // workaround for some migration issues
-                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
-                {
-                    config.Signing.Source = CertificateSource.Pfx;
-                }
-                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
-                {
-                    config.Signing.Source = CertificateSource.Personal;
-                }
-                else
-                {
-                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoConfig).ConfigureAwait(false);
-                    return 1;
-                }
-            }
-
+            // Signing with thumbprint
             if (this.Verb.ThumbPrint != null)
             {
                 return await this.SignStore(
@@ -87,6 +70,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with PFX
             if (this.Verb.PfxFilePath != null)
             {
                 return await this.SignPfx(
@@ -96,13 +80,14 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with Device Guard (interactive)
             if (this.Verb.DeviceGuardInteractive)
             {
                 return await this.SignDeviceGuardInteractive(
-                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
-                    !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
+                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with Device Guard
             if (this.Verb.DeviceGuardFile != null)
             {
                 var json = JObject.Parse(await File.ReadAllTextAsync(this.Verb.DeviceGuardFile).ConfigureAwait(false));
@@ -126,72 +111,10 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
-            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_UsingCurrent).ConfigureAwait(false);
-
-            switch (config.Signing?.Source)
-            {
-                case CertificateSource.Pfx:
-                    string password = null;
-
-                    if (!string.IsNullOrEmpty(config.Signing?.EncodedPassword))
-                    {
-                        var crypto = new Crypto();
-
-                        try
-                        {
-                            password = crypto.UnprotectUnsafe(config.Signing?.EncodedPassword);
-                        }
-                        catch
-                        {
-                            Logger.Warn().WriteLine("It seems that your are using the old-way of protecting password. MSIX Hero will try to use the legacy method now, but consider updating your settings so that the password will be safely encrypted.");
-                            await this.Console.WriteWarning("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
-
-                            try
-                            {
-                                // ReSharper disable StringLiteralTypo
-#pragma warning disable CS0618
-                                password = crypto.DecryptString(config.Signing?.EncodedPassword, @"$%!!ASddahs55839AA___ąółęńśSdcvv");
-#pragma warning restore CS0618
-                                // ReSharper restore StringLiteralTypo
-                            }
-                            catch (Exception)
-                            {
-                                Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed);
-                                await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed).ConfigureAwait(false);
-                                return StandardExitCodes.ErrorSettings;
-                            }
-                        }
-                    }
-                        
-                    return await this.SignPfx(
-                        config.Signing?.PfxPath?.Resolved, 
-                        password, 
-                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
-                        !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
-                case CertificateSource.Personal:
-                    return await this.SignStore(
-                        config.Signing.Thumbprint, 
-                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
-                        !this.Verb.NoPublisherUpdate);
-                case CertificateSource.DeviceGuard:
-                    if (config.Signing.DeviceGuard == null)
-                    {
-                        Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig);
-                        await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig).ConfigureAwait(false);
-                        return StandardExitCodes.ErrorSettings;
-                    }
-
-                    return await this.SignDeviceGuard(
-                        config.Signing.DeviceGuard.FromConfiguration(), 
-                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
-                        !this.Verb.NoPublisherUpdate);
-                default:
-                    Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig);
-                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig).ConfigureAwait(false);
-                    return StandardExitCodes.ErrorSettings;
-            }
+            // Fallback - try to get MSIX Hero default settings
+            return await this.SignDefault().ConfigureAwait(false);
         }
-
+        
         private static string GetOptionName(string propertyName)
         {
             var property = typeof(SignVerb).GetProperty(propertyName);
@@ -328,6 +251,86 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
 
             return StandardExitCodes.ErrorSuccess;
+        }
+        
+        private async Task<int> SignDefault()
+        {
+            var config = await this._configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+
+            if (config.Signing?.Source == CertificateSource.Unknown)
+            {
+                // workaround for some migration issues
+                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
+                {
+                    config.Signing.Source = CertificateSource.Pfx;
+                }
+                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
+                {
+                    config.Signing.Source = CertificateSource.Personal;
+                }
+                else
+                {
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoConfig).ConfigureAwait(false);
+                    return 1;
+                }
+            }
+
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_UsingCurrent).ConfigureAwait(false);
+
+            switch (config.Signing?.Source)
+            {
+                case CertificateSource.Pfx:
+                    string password = null;
+
+                    if (!string.IsNullOrEmpty(config.Signing?.EncodedPassword))
+                    {
+                        var crypto = new Crypto();
+
+                        try
+                        {
+                            password = crypto.UnprotectUnsafe(config.Signing?.EncodedPassword);
+                        }
+                        catch
+                        {
+                            Logger.Warn().WriteLine("It seems that your are using the old-way of protecting password. MSIX Hero will try to use the legacy method now, but consider updating your settings so that the password will be safely encrypted.");
+                            await this.Console.WriteWarning("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
+
+                            try
+                            {
+                                // ReSharper disable StringLiteralTypo
+#pragma warning disable CS0618
+                                password = crypto.DecryptString(config.Signing?.EncodedPassword, @"$%!!ASddahs55839AA___ąółęńśSdcvv");
+#pragma warning restore CS0618
+                                // ReSharper restore StringLiteralTypo
+                            }
+                            catch (Exception)
+                            {
+                                Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed);
+                                await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed).ConfigureAwait(false);
+                                return StandardExitCodes.ErrorSettings;
+                            }
+                        }
+                    }
+                    return await this.SignPfx(config.Signing?.PfxPath?.Resolved, password, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
+
+                case CertificateSource.Personal:
+                    return await this.SignStore(config.Signing.Thumbprint, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate);
+                
+                case CertificateSource.DeviceGuard:
+                    if (config.Signing.DeviceGuard == null)
+                    {
+                        Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig).ConfigureAwait(false);
+                        return StandardExitCodes.ErrorSettings;
+                    }
+
+                    return await this.SignDeviceGuard(config.Signing.DeviceGuard.FromConfiguration(), this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate);
+
+                default:
+                    Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig).ConfigureAwait(false);
+                    return StandardExitCodes.ErrorSettings;
+            }
         }
 
         private async Task<int> SignDeviceGuard(DeviceGuardConfig cfg, string timestamp, bool updatePublisherName)
