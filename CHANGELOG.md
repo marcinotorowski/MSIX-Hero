@@ -1,9 +1,10 @@
 # 3.0.0
-See http://msixhero.net/redirect/release-notes/3.0.0 for more details
 
 Feature highlights:
+
 * New UI with card-based layout
 * Multi-language support (English, German and Polish in this release)
+* Support for displaying file and Registry virtualization options
 * Ability to pin apps in the list view
 * Improved package overview sidebar
   * Reworked and extended PSF content viewer
@@ -15,12 +16,15 @@ Feature highlights:
 * Restyled Event viewer
 * Internal notifications using Windows style
 * Internal SDK redistributables upgraded to newest version
+* Improved performance of event logs and volumes pages
+* Added certificate/timestamp validation button
 * General improvements, stability and bug fixes
 
 # 2.3.0
 See http://msixhero.net/redirect/release-notes/2.3.0 for more details
 
 Feature highlights:
+
 * New command line verb ```edit``` for unattended MSIX editing. (#78)
   * Changing of package identity (```msixherocli.exe edit <path> setIdentity …```)
   * Setting properties (```msixherocli.exe edit <path> setProperties …```)
