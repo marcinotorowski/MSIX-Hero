@@ -2247,6 +2247,9 @@
   <data name="CertificateSelector_TimeStamp" xml:space="preserve">
     <value>URL serwera znacznika czasu</value>
   </data>
+  <data name="CertificateSelector_ValidationButton" xml:space="preserve">
+    <value>Sprawdź poprawność konfiguracji podpisu…</value>
+  </data>
   <data name="CertificateSelector_Validation_CertificateMissing" xml:space="preserve">
     <value>Certyfikat jest wymagany.</value>
   </data>

@@ -1249,6 +1249,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validate signature configuration….
+        /// </summary>
+        public static string CertificateSelector_ValidationButton {
+            get {
+                return ResourceManager.GetString("CertificateSelector_ValidationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order by.
         /// </summary>
         public static string Containers_Filter_OrderBy {

@@ -2256,6 +2256,9 @@
   <data name="CertificateSelector_TimeStamp" xml:space="preserve">
     <value>Time stamp URL</value>
   </data>
+  <data name="CertificateSelector_ValidationButton" xml:space="preserve">
+    <value>Validate signature configuration…</value>
+  </data>
   <data name="CertificateSelector_Validation_CertificateMissing" xml:space="preserve">
     <value>The certificate is required.</value>
   </data>

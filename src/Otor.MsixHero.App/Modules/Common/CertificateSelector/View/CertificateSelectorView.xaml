@@ -322,8 +322,8 @@
                         Command="{Binding Test}">
                         <controls:LabelWithIcon 
                             IsCollapsible="False" 
-                            Icon16x16="{StaticResource SmallStart}" 
-                            Content="Validate signature configuration..." />
+                            Icon16x16="{StaticResource SmallGear}" 
+                            Content="{localization:Loc CertificateSelector_ValidationButton}" />
                     </Button>
 
                 </StackPanel>
