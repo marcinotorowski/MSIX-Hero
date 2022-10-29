@@ -76,7 +76,7 @@ namespace Otor.MsixHero.Cli.Executors
             {
                 p.WithParsed<SharedPackageContainerVerb>(verb =>
                 {
-                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new AppxAppxSharedPackageContainerService(), this.console);
+                    verbExecutor = new SharedPackageContainerVerbExecutor(verb, new AppxSharedPackageContainerService(), this.console);
                 });
             }
 #else

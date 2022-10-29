@@ -176,7 +176,7 @@ namespace Otor.MsixHero.AdminHelper
                     }
                     else
                     {
-                        server.RegisterProxy<IAppxSharedPackageContainerService, AppxAppxSharedPackageContainerService>();
+                        server.RegisterProxy<IAppxSharedPackageContainerService, AppxSharedPackageContainerService>();
                     }
 #else 
                     server.RegisterProxy<IAppxSharedPackageContainerService, AppxSharedPackageContainerService>();
