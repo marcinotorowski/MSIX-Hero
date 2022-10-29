@@ -730,7 +730,7 @@
     <value>Porównanie rozmiaru</value>
   </data>
   <data name="Dialogs_WhatsNew_AfterUpdate" xml:space="preserve">
-    <value>Twoja wersja MSIX Hero została właśnie zaktualizowana. Obecna wersja to</value>
+    <value>MSIX Hero został zaktualizowany do wersji **{0}**.</value>
   </data>
   <data name="Dialogs_WhatsNew_AfterUpdate_ReadMore" xml:space="preserve">
     <value>Przeczytaj informacje o wydaniu na oficjalnej stronie, aby dowiedzieć się więcej o tej aktualizacji…</value>

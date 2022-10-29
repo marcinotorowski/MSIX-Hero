@@ -34,22 +34,23 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 {
     public class WhatsNewViewModel : NotifyPropertyChanged, INavigationAware
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IInteractionService interactionService;
-        private readonly IConfigurationService configurationService;
-        private bool showUpdateScreen;
-        private DefaultScreen currentScreen;
+        private readonly IMsixHeroApplication _application;
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
+        private bool _showUpdateScreen;
+        private DefaultScreen _currentScreen;
 
         public WhatsNewViewModel(
             IMsixHeroApplication application,
             IInteractionService interactionService,
             IConfigurationService configurationService)
         {
-            this.application = application;
-            this.interactionService = interactionService;
-            this.configurationService = configurationService;
+            this._application = application;
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
             this.Dismiss = new DelegateCommand(this.OnDismiss);
             this.OpenReleaseNotes = new DelegateCommand(this.OnOpenReleaseNotes);
+
             MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
 
@@ -57,14 +58,14 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
         {
             ExceptionGuard.Guard(() =>
             {
-                var psi = new ProcessStartInfo("https://msixhero.net/redirect/release-notes/" + this.CurrentVersion)
+                var psi = new ProcessStartInfo("https://msixhero.net/category/release/")
                 {
                     UseShellExecute = true
                 };
 
                 Process.Start(psi);
             },
-            this.interactionService);
+            this._interactionService);
         }
 
         private void InstanceOnCultureChanged(object sender, CultureInfo e)
@@ -74,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 
         private void OnDismiss()
         {
-            var initialScreenHelper = new InitialScreen(this.application, this.configurationService);
+            var initialScreenHelper = new InitialScreen(this._application, this._configurationService);
             initialScreenHelper.GoToDefaultScreenAsync();
         }
 
@@ -93,7 +94,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
         {
             get
             {
-                return this.currentScreen switch
+                return this._currentScreen switch
                 {
                     DefaultScreen.Tools => Resources.Localization.Dialogs_WhatsNew_SkipToTools,
                     DefaultScreen.Packages => Resources.Localization.Dialogs_WhatsNew_SkipToPackages,
@@ -113,16 +114,16 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 
         public bool ShowUpdateScreen
         {
-            get => this.showUpdateScreen;
-            set => this.SetField(ref this.showUpdateScreen, value);
+            get => this._showUpdateScreen;
+            set => this.SetField(ref this._showUpdateScreen, value);
         }
 
         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
-            var cfg = this.configurationService.GetCurrentConfiguration();
-            this.showUpdateScreen = cfg.Update?.HideNewVersionInfo != true;
+            var cfg = this._configurationService.GetCurrentConfiguration();
+            this._showUpdateScreen = cfg.Update?.HideNewVersionInfo != true;
 
-            this.currentScreen = cfg.UiConfiguration?.DefaultScreen ?? DefaultScreen.Packages;
+            this._currentScreen = cfg.UiConfiguration?.DefaultScreen ?? DefaultScreen.Packages;
 
             this.OnPropertyChanged(nameof(ShowUpdateScreen));
             this.OnPropertyChanged(nameof(Caption));
@@ -140,8 +141,8 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
                 return;
             }
 
-            var releaseNotesHelper = new ReleaseNotesHelper(this.configurationService);
-            releaseNotesHelper.SaveReleaseNotesConfig(this.showUpdateScreen);
+            var releaseNotesHelper = new ReleaseNotesHelper(this._configurationService);
+            releaseNotesHelper.SaveReleaseNotesConfig(this._showUpdateScreen);
         }
     }
 }

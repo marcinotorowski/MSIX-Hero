@@ -6631,7 +6631,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your version of MSIX Hero has just been updated. The current version is.
+        ///   Looks up a localized string similar to MSIX Hero has just been updated to version **{0}**..
         /// </summary>
         public static string Dialogs_WhatsNew_AfterUpdate {
             get {

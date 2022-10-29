@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.ViewModels"
              xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:WhatsNewViewModel}">
@@ -27,8 +28,12 @@
 
             <StackPanel VerticalAlignment="Center">
                 <TextBlock DockPanel.Dock="Top">
-                    <Run Text="{localization:Loc Dialogs_WhatsNew_AfterUpdate}" />
-                    <Run Text="{Binding CurrentVersion, Mode=OneWay, FallbackValue='1.0.0.0'}"></Run>
+                    <controls:SimpleTextMarkup.Markup>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_WhatsNew_AfterUpdate" />
+                            <Binding Path="CurrentVersion" Mode="OneWay" FallbackValue="1.0" />
+                        </MultiBinding>
+                    </controls:SimpleTextMarkup.Markup>
                 </TextBlock>
                 
                 <TextBlock DockPanel.Dock="Top">
