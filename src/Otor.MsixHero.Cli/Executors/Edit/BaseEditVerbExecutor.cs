@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                             {
                                 await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_SavingFile_Format, Path.GetFileName(this._package))).ConfigureAwait(false);
                                 // 3) Pack again
-                                await msixMgr.Pack(MakeAppxPackOptions.CreateFromDirectory(tempFolder, this._package, false)).ConfigureAwait(false);
+                                await msixMgr.Pack(MakeAppxPackOptions.CreateFromDirectory(tempFolder, this._package)).ConfigureAwait(false);
                                 await this.OnFinished().ConfigureAwait(false);
                             }
 
