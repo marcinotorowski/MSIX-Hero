@@ -23,39 +23,40 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands.Containers;
+using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Modules.Containers.Details.ViewModels.Items;
 using Otor.MsixHero.App.Modules.Containers.List.ViewModels;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
 {
     public class ContainersDetailsViewModel : NotifyPropertyChanged, INavigationAware
     {
-        private readonly IAppxSharedPackageContainerService _service;
         private readonly IAppxPackageQueryService _appQueryService;
         private readonly PrismServices _prismServices;
         private readonly IInteractionService _interactionService;
         private SharedPackageContainerViewModel _selectedContainer;
 
         public ContainersDetailsViewModel(
-            IAppxSharedPackageContainerService service, 
             IAppxPackageQueryService appQueryService,
             PrismServices prismServices,
+            IEventAggregator eventAggregator,
             IInteractionService interactionService)
         {
-            this._service = service;
             this._appQueryService = appQueryService;
             this._prismServices = prismServices;
-            _interactionService = interactionService;
+            this._interactionService = interactionService;
 
             this.OpenPackage = new DelegateCommand<object>(this.OnOpen, this.CanOpen);
+            eventAggregator.GetEvent<UiExecutedEvent<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>>().Subscribe(this.OnGetSharedPackageContainers, ThreadOption.UIThread);
         }
 
         private void OnOpen(object commandParameter)
@@ -74,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
             }
             catch (Exception e)
             {
-                this._interactionService.ShowError("Could not open the package." + " " + e.GetBaseException().Message);
+                this._interactionService.ShowError(Resources.Localization.Containers_Error_PackageOpen + " " + e.GetBaseException().Message);
             }
         }
 
@@ -118,6 +119,16 @@ namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
 
                 var _ = this.Packages.Load(this.GetPackages(value.Model));
             }
+        }
+
+        private void OnGetSharedPackageContainers(UiExecutedPayload<GetSharedPackageContainersCommand, IList<SharedPackageContainer>> obj)
+        {
+            if (this.SelectedContainer == null || obj.Result.All(r => r.Name != this.SelectedContainer.Name))
+            {
+                return;
+            }
+
+            this.SelectedContainer = new SharedPackageContainerViewModel(obj.Result.FirstOrDefault(r => r.Name == this.SelectedContainer.Name));
         }
 
         private async Task<ObservableCollection<ContainerContentViewModel>> GetPackages(SharedPackageContainer valueModel)
@@ -170,11 +181,11 @@ namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
             }
         }
 
-        private async Task <ContainerContentViewModel> GetContainerContentFromFamilyName(string familyName, IProgress<ProgressData> progress)
+        private async Task<ContainerContentViewModel> GetContainerContentFromFamilyName(string familyName, IProgress<ProgressData> progress)
         {
             try
             {
-                progress.Report(new ProgressData(0, "Getting packages..."));
+                progress.Report(new ProgressData(0, Resources.Localization.Containers_GettingApps));
 
                 var packageEntry = await this._appQueryService.GetInstalledPackageByFamilyName(familyName).ConfigureAwait(false);
                 if (packageEntry == null)
@@ -186,7 +197,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
             }
             finally
             {
-                progress.Report(new ProgressData(100, "Getting packages..."));
+                progress.Report(new ProgressData(100, Resources.Localization.Containers_GettingApps));
             }
         }
 

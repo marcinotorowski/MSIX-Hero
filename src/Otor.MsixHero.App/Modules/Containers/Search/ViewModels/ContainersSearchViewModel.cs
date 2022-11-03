@@ -24,26 +24,26 @@ namespace Otor.MsixHero.App.Modules.Containers.Search.ViewModels
 {
     public class ContainersSearchViewModel : NotifyPropertyChanged
     {
-        private readonly IMsixHeroApplication application;
+        private readonly IMsixHeroApplication _application;
 
         public ContainersSearchViewModel(IMsixHeroApplication application, IEventAggregator eventAggregator)
         {
-            this.application = application;
+            this._application = application;
             eventAggregator.GetEvent<UiExecutedEvent<SetSharedPackageContainersFilterCommand>>().Subscribe(this.OnSetContainerFilterCommand);
         }
 
         public string SearchKey
         {
-            get => this.application.ApplicationState.Containers.SearchKey;
+            get => this._application.ApplicationState.Containers.SearchKey;
 
             set
             {
-                if (this.application.ApplicationState.Containers.SearchKey == value)
+                if (this._application.ApplicationState.Containers.SearchKey == value)
                 {
                     return;
                 }
                 
-                this.application.CommandExecutor.Invoke(this, new SetSharedPackageContainersFilterCommand(value));
+                this._application.CommandExecutor.Invoke(this, new SetSharedPackageContainersFilterCommand(value));
             }
         }
 

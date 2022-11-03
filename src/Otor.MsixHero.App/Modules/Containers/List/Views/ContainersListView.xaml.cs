@@ -30,17 +30,17 @@ namespace Otor.MsixHero.App.Modules.Containers.List.Views
     /// </summary>
     public partial class ContainersListView
     {
-        private readonly IMsixHeroApplication application;
+        private readonly IMsixHeroApplication _application;
         
         public ContainersListView(IMsixHeroApplication application)
         {
-            this.application = application;
+            this._application = application;
             this.InitializeComponent();
 
-            this.application.EventAggregator.GetEvent<UiFailedEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetFailed, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutingEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetExecuting);
-            this.application.EventAggregator.GetEvent<UiCancelledEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetCancelled, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetExecuted, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiFailedEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetFailed, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutingEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetExecuting);
+            this._application.EventAggregator.GetEvent<UiCancelledEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetCancelled, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetSharedPackageContainersCommand>>().Subscribe(this.OnGetExecuted, ThreadOption.UIThread);
 
             this.InitializeComponent();
             this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
@@ -63,14 +63,14 @@ namespace Otor.MsixHero.App.Modules.Containers.List.Views
 
         private void OnGetExecuted(UiExecutedPayload<GetSharedPackageContainersCommand> obj)
         {
-            this.ListBox.SelectedItem = this.ListBox.Items.OfType<SharedPackageContainerViewModel>().FirstOrDefault(item => this.application.ApplicationState.Containers.SelectedContainer == item.Model);
+            this.ListBox.SelectedItem = this.ListBox.Items.OfType<SharedPackageContainerViewModel>().FirstOrDefault(item => this._application.ApplicationState.Containers.SelectedContainer == item.Model);
 
             this.ListBox.SelectionChanged += this.OnSelectionChanged;
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.application.CommandExecutor.Invoke(this, new SelectSharedPackageContainerCommand((this.ListBox.SelectedItem as SharedPackageContainerViewModel)?.Model));
+            this._application.CommandExecutor.Invoke(this, new SelectSharedPackageContainerCommand((this.ListBox.SelectedItem as SharedPackageContainerViewModel)?.Model));
         }
         
         private void ListBoxOnKeyDown(object sender, KeyEventArgs e)
@@ -87,7 +87,7 @@ namespace Otor.MsixHero.App.Modules.Containers.List.Views
             {
                 this.ListBox.SelectionChanged += this.OnSelectionChanged;
 
-                this.application.CommandExecutor.Invoke(this, new SelectSharedPackageContainerCommand((this.ListBox.SelectedItem as SharedPackageContainerViewModel)?.Model));
+                this._application.CommandExecutor.Invoke(this, new SelectSharedPackageContainerCommand((this.ListBox.SelectedItem as SharedPackageContainerViewModel)?.Model));
             }
         }
     }

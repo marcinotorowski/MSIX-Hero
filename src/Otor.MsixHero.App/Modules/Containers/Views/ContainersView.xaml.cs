@@ -16,10 +16,7 @@
 
 using System.Windows;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.App.Modules.Containers.Commands;
 using Otor.MsixHero.App.Modules.Main.Events;
-using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Infrastructure.Services;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.Containers.Views
@@ -29,22 +26,22 @@ namespace Otor.MsixHero.App.Modules.Containers.Views
     /// </summary>
     public partial class ContainersView : INavigationAware
     {
-        private readonly IMsixHeroApplication application;
+        private readonly IMsixHeroApplication _application;
 
-        public ContainersView(IMsixHeroApplication application, IInteractionService interactionService, IBusyManager busyManager)
+        public ContainersView(IMsixHeroApplication application)
         {
-            this.application = application;
+            this._application = application;
             this.InitializeComponent();
         }
         
         private void RegionOnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

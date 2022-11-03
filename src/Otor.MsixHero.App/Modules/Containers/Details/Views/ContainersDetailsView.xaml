@@ -34,7 +34,7 @@
                         IsCollapsible="True"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallOpen}"
-                        Content="Edit..." />
+                        Content="{localization:Loc Containers_ContextMenu_Edit}" />
                 </Button>
 
                 <Button 
@@ -44,7 +44,7 @@
                         IsCollapsible="True"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallForward}"
-                        Content="Reset" />
+                        Content="{localization:Loc Containers_ContextMenu_Reset}" />
                 </Button>
 
                 <Button 
@@ -54,7 +54,7 @@
                         IsCollapsible="True"
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallRemove}"
-                        Content="Remove" />
+                        Content="{localization:Loc Containers_ContextMenu_Remove}" />
                 </Button>
 
                 <Button 
@@ -118,7 +118,7 @@
 
                 <StackPanel Margin="10 0 0 0" VerticalAlignment="Center">
                     <TextBlock Text="{Binding Name}" FontSize="16" FontFamily="{StaticResource SourceSansPro}" TextWrapping="Wrap" />
-                    <TextBlock Text="Shared Package Container" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
+                    <TextBlock Text="{localization:Loc Containers_SharedPackageContainer}" Foreground="#aa000000" Margin="0 2 0 0" TextWrapping="Wrap" />
                 </StackPanel>
             </DockPanel>
         </Border>

@@ -42,7 +42,7 @@
                             <controls:LabelWithIcon 
                                 IsCollapsible="True"
                                 Icon16x16="{StaticResource SmallPlus}"
-                                Content="Add..."
+                                Content="{localization:Loc Containers_Add}"
                                 Style="{StaticResource ActionLabelWithIcon}" />
                         </Button>
 
@@ -94,7 +94,7 @@
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" Command="{x:Static commands:MsixHeroRoutedUICommands.ResetContainer}">
+                            <MenuItem Header="{localization:Loc Containers_ContextMenu_Reset}" Command="{x:Static commands:MsixHeroRoutedUICommands.ResetContainer}">
                                 <MenuItem.Icon>
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRefreshDocument}" />
                                 </MenuItem.Icon>

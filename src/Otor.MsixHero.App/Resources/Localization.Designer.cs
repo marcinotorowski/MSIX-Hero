@@ -1258,6 +1258,51 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add….
+        /// </summary>
+        public static string Containers_Add {
+            get {
+                return ResourceManager.GetString("Containers_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit….
+        /// </summary>
+        public static string Containers_ContextMenu_Edit {
+            get {
+                return ResourceManager.GetString("Containers_ContextMenu_Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Containers_ContextMenu_Remove {
+            get {
+                return ResourceManager.GetString("Containers_ContextMenu_Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string Containers_ContextMenu_Reset {
+            get {
+                return ResourceManager.GetString("Containers_ContextMenu_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open the package..
+        /// </summary>
+        public static string Containers_Error_PackageOpen {
+            get {
+                return ResourceManager.GetString("Containers_Error_PackageOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order by.
         /// </summary>
         public static string Containers_Filter_OrderBy {
@@ -1272,6 +1317,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Containers_Filter_OrderBy_Name {
             get {
                 return ResourceManager.GetString("Containers_Filter_OrderBy_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting packages in this container….
+        /// </summary>
+        public static string Containers_GettingApps {
+            get {
+                return ResourceManager.GetString("Containers_GettingApps", resourceCulture);
             }
         }
         
@@ -1299,6 +1353,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Containers_Search_Prompt {
             get {
                 return ResourceManager.GetString("Containers_Search_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared Package Container.
+        /// </summary>
+        public static string Containers_SharedPackageContainer {
+            get {
+                return ResourceManager.GetString("Containers_SharedPackageContainer", resourceCulture);
             }
         }
         

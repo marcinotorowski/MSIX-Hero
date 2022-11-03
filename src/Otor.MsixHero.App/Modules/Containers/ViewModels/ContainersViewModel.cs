@@ -29,8 +29,8 @@ namespace Otor.MsixHero.App.Modules.Containers.ViewModels
 {
     public class ContainersViewModel : NotifyPropertyChanged
     {
-        private readonly IMsixHeroApplication application;
-        private readonly PrismServices prismServices;
+        private readonly IMsixHeroApplication _application;
+        private readonly PrismServices _prismServices;
 
         public ContainersViewModel(
             IUacElevation uac,
@@ -39,9 +39,9 @@ namespace Otor.MsixHero.App.Modules.Containers.ViewModels
             IBusyManager busyManager,
             PrismServices prismServices)
         {
-            this.application = application;
-            this.prismServices = prismServices;
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SelectSharedPackageContainerCommand>>().Subscribe(this.OnSelect);
+            this._application = application;
+            this._prismServices = prismServices;
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectSharedPackageContainerCommand>>().Subscribe(this.OnSelect);
             this.CommandHandler = new ContainersCommandHandler(uac, application, interactionService, busyManager, prismServices);
         }
         public ContainersCommandHandler CommandHandler { get; }
@@ -52,12 +52,12 @@ namespace Otor.MsixHero.App.Modules.Containers.ViewModels
 
             if (command.Request.SelectedContainer == null)
             {
-                prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.NoDetails, UriKind.Relative), parameters);
+                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.NoDetails, UriKind.Relative), parameters);
             }
             else
             {
-                parameters.Add("selection", this.application.ApplicationState.Containers.SelectedContainer);
-                prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.Details, UriKind.Relative), parameters);
+                parameters.Add("selection", this._application.ApplicationState.Containers.SelectedContainer);
+                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.Details, UriKind.Relative), parameters);
             }
         }
     }

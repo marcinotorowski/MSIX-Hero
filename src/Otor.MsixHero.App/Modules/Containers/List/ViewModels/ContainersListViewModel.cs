@@ -38,37 +38,37 @@ namespace Otor.MsixHero.App.Modules.Containers.List.ViewModels
 {
     public class ContainersListViewModel : NotifyPropertyChanged, IActiveAware
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IBusyManager busyManager;
-        private readonly IInteractionService interactionService;
-        private bool firstRun = true;
-        private bool isActive;
+        private readonly IMsixHeroApplication _application;
+        private readonly IBusyManager _busyManager;
+        private readonly IInteractionService _interactionService;
+        private bool _firstRun = true;
+        private bool _isActive;
 
         public ContainersListViewModel(
             IMsixHeroApplication application,
             IBusyManager busyManager,
             IInteractionService interactionService)
         {
-            this.application = application;
-            this.busyManager = busyManager;
-            this.interactionService = interactionService;
+            this._application = application;
+            this._busyManager = busyManager;
+            this._interactionService = interactionService;
             this.Containers = new ObservableCollection<SharedPackageContainerViewModel>();
             this.ContainersView = CollectionViewSource.GetDefaultView(this.Containers);
             this.ContainersView.Filter += Filter;
             this.Sort(nameof(SharedPackageContainerViewModel.Name), false);
 
-            this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
+            this._busyManager.StatusChanged += BusyManagerOnStatusChanged;
             this.Progress = new ProgressProperty();
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>>().Subscribe(this.OnGet, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetSharedPackageContainersSortingCommand>>().Subscribe(this.OnSetSorting, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetSharedPackageContainersFilterCommand>>().Subscribe(this.OnSetFilterCommand, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>>().Subscribe(this.OnGet, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetSharedPackageContainersSortingCommand>>().Subscribe(this.OnSetSorting, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetSharedPackageContainersFilterCommand>>().Subscribe(this.OnSetFilterCommand, ThreadOption.UIThread);
             this.SetSortingAndGrouping();
         }
 
         private void SetSortingAndGrouping()
         {
-            var currentSort = this.application.ApplicationState.Containers.SortMode;
-            var currentSortDescending = this.application.ApplicationState.Containers.SortDescending;
+            var currentSort = this._application.ApplicationState.Containers.SortMode;
+            var currentSortDescending = this._application.ApplicationState.Containers.SortDescending;
 
             using (this.ContainersView.DeferRefresh())
             {
@@ -139,8 +139,8 @@ namespace Otor.MsixHero.App.Modules.Containers.List.ViewModels
         
         public string SearchKey
         {
-            get => this.application.ApplicationState.Containers.SearchKey;
-            set => this.application.CommandExecutor.Invoke(this, new SetSharedPackageContainersFilterCommand(value));
+            get => this._application.ApplicationState.Containers.SearchKey;
+            set => this._application.CommandExecutor.Invoke(this, new SetSharedPackageContainersFilterCommand(value));
         }
         
         public ObservableCollection<SharedPackageContainerViewModel> Containers { get; }
@@ -157,7 +157,7 @@ namespace Otor.MsixHero.App.Modules.Containers.List.ViewModels
         {
             var filtered = (SharedPackageContainerViewModel)obj;
             
-            var searchKey = this.application.ApplicationState.Containers.SearchKey;
+            var searchKey = this._application.ApplicationState.Containers.SearchKey;
             if (!string.IsNullOrEmpty(searchKey))
             {
                 return filtered.Name.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) != -1;
@@ -168,19 +168,19 @@ namespace Otor.MsixHero.App.Modules.Containers.List.ViewModels
 
         public bool IsActive
         {
-            get => this.isActive;
+            get => this._isActive;
             set
             {
-                if (this.isActive == value)
+                if (this._isActive == value)
                 {
                     return;
                 }
 
-                this.isActive = value;
+                this._isActive = value;
 
                 this.IsActiveChanged?.Invoke(this, EventArgs.Empty);
 
-                if (value && this.firstRun)
+                if (value && this._firstRun)
                 {
 #pragma warning disable 4014
                     this.SetInitialData();
@@ -193,11 +193,11 @@ namespace Otor.MsixHero.App.Modules.Containers.List.ViewModels
 
         private async Task SetInitialData()
         {
-            this.firstRun = false;
+            this._firstRun = false;
             using var cts = new CancellationTokenSource();
-            using var task = this.application.CommandExecutor
-                .WithBusyManager(this.busyManager, OperationType.ContainerLoading)
-                .WithErrorHandling(this.interactionService, true)
+            using var task = this._application.CommandExecutor
+                .WithBusyManager(this._busyManager, OperationType.ContainerLoading)
+                .WithErrorHandling(this._interactionService, true)
                 .Invoke<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>(this, new GetSharedPackageContainersCommand(), cts.Token);
 
             this.Progress.MonitorProgress(task, cts);
