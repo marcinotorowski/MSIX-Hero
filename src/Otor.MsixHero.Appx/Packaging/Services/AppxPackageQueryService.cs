@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
@@ -34,13 +33,12 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
 namespace Otor.MsixHero.Appx.Packaging.Services;
 
 public class AppxPackageQueryService : IAppxPackageQueryService
 {
-    public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
-
     private static readonly LogSource Logger = new();
     private readonly IConfigurationService _configurationService;
 
@@ -66,7 +64,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         var result = await Task.Run(
             () =>
             {
-                var list = PackageManager.Value.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
+                var list = PackageManagerSingleton.Instance.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
                 return list;
             },
             cancellationToken).ConfigureAwait(false);
@@ -87,11 +85,11 @@ public class AppxPackageQueryService : IAppxPackageQueryService
             mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
         }
 
-        var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageFullName) : PackageManager.Value.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
+        var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageFullName) : PackageManagerSingleton.Instance.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
         if (find == null)
         {
             var packageIdentity = PackageIdentity.FromFullName(packageFullName);
-            find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManager.Value.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
+            find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManagerSingleton.Instance.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
 
             if (find == null)
             {
@@ -106,7 +104,10 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         foreach (var dep in dependencies.Where(p => p.IsOptional))
         {
             var converted = await dep.ToPackageEntry(false, cancellationToken).ConfigureAwait(false);
-            list.Add(converted);
+            if (converted != null)
+            {
+                list.Add(converted);
+            }
         }
 
         return list;
@@ -149,10 +150,10 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         switch (mode)
         {
             case PackageFindMode.CurrentUser:
-                found = await Task.Run(() => PackageManager.Value.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                found = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
                 break;
             case PackageFindMode.AllUsers:
-                found = await Task.Run(() => PackageManager.Value.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                found = await Task.Run(() => PackageManagerSingleton.Instance.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
                 break;
             default:
                 throw new InvalidOperationException();
@@ -167,55 +168,27 @@ public class AppxPackageQueryService : IAppxPackageQueryService
     }
 
     private async Task<List<PackageEntry>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
-    {
-        var list = new List<PackageEntry>();
-        var provisioned = new HashSet<string>();
-
-        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+    {   
         if (mode == PackageFindMode.Auto)
         {
+            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
             mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
         }
 
         progress?.Report(new ProgressData(0, Resources.Localization.Packages_GettingApps));
 
-        if (isAdmin)
-        {
-            Logger.Info().WriteLine("Getting provisioned packages…");
-            var tempFile = Path.GetTempFileName();
-            try
+        var provisioning = Task.Run(
+            () =>
             {
-                var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";
-                var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
+                if (!UserHelper.IsAdministrator())
                 {
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
+                    return null;
+                }
 
-                Logger.Debug().WriteLine("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
-                var p = Process.Start(proc);
-                if (p == null)
-                {
-                    Logger.Error().WriteLine("Could not get the list of provisioned apps.");
-                }
-                else
-                {
-                    await p.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-                    foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
-                    {
-                        provisioned.Add(line.Replace("~", string.Empty));
-                    }
-                }
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                {
-                    File.Delete(tempFile);
-                }
-            }
-        }
-
+                return new HashSet<string>(PackageManagerSingleton.Instance.FindProvisionedPackages().Select(p => p.Id.FullName.Replace("~", string.Empty)));
+            },
+            cancellationToken);
+        
         progress?.Report(new ProgressData(5, Resources.Localization.Packages_GettingApps));
 
         IList<Package> allPackages;
@@ -226,10 +199,10 @@ public class AppxPackageQueryService : IAppxPackageQueryService
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
-                    allPackages = await Task.Run(() => PackageManager.Value.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
+                    allPackages = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
                 case PackageFindMode.AllUsers:
-                    allPackages = await Task.Run(() => PackageManager.Value.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
+                    allPackages = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -237,14 +210,15 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         }
         else
         {
+            allPackages = new List<Package>();
             Logger.Info().WriteLine("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
+
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
                 {
-                    var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
+                    var pkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageName);
 
-                    allPackages = new List<Package>();
                     if (pkg != null)
                     {
                         allPackages.Add(pkg);
@@ -255,9 +229,8 @@ public class AppxPackageQueryService : IAppxPackageQueryService
 
                 case PackageFindMode.AllUsers:
                 {
-                    var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
-
-                    allPackages = new List<Package>();
+                    var pkg = PackageManagerSingleton.Instance.FindPackage(packageName);
+                        
                     if (pkg != null)
                     {
                         allPackages.Add(pkg);
@@ -276,26 +249,28 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         var total = 10.0;
         var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
         
-        var tasks = new HashSet<Task<PackageEntry>>();
         var config = await this._configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
 
-        int maxThreads;
-        if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
+        int maxSimultaneousTasks;
+        if (config.Advanced?.DisableTasksForGetPackages == false || config.Advanced?.MaxTasksForGetPackages < 2)
         {
-            maxThreads = 1;
+            maxSimultaneousTasks = 1;
         }
-        else if (config.Advanced?.MaxThreadsForGetPackages == null)
+        else if (config.Advanced?.MaxTasksForGetPackages == null)
         {
-            maxThreads = Environment.ProcessorCount;
+            maxSimultaneousTasks = 20;
         }
         else
         {
-            maxThreads = Math.Min(config.Advanced?.MaxThreadsForGetPackages ?? 1, Environment.ProcessorCount);
+            maxSimultaneousTasks = Math.Max(config.Advanced.MaxTasksForGetPackages.Value, 1);
         }
+
+        var tasks = new HashSet<Task<PackageEntry>>(maxSimultaneousTasks);
 
         var sw = new Stopwatch();
         sw.Start();
 
+        var list = new List<PackageEntry>(allPackages.Count);
         foreach (var item in allPackages)
         {
             total += single;
@@ -303,20 +278,14 @@ public class AppxPackageQueryService : IAppxPackageQueryService
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (tasks.Count >= maxThreads)
+            if (tasks.Count >= maxSimultaneousTasks)
             {
                 var awaited = await Task.WhenAny(tasks).ConfigureAwait(false);
                 tasks.Remove(awaited);
-
-                var converted = await awaited.ConfigureAwait(false);
-                if (converted != null)
+                
+                if (awaited.Result != null)
                 {
-                    if (provisioned.Contains(converted.PackageFullName))
-                    {
-                        converted.IsProvisioned = true;
-                    }
-
-                    list.Add(converted);
+                    list.Add(awaited.Result);
                 }
             }
 
@@ -324,23 +293,18 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         }
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
-        foreach (var item in tasks)
+        list.AddRange(tasks.Where(t => t.Result != null).Select(t => t.Result));
+        
+        var provisionIds = await provisioning.ConfigureAwait(false);
+        if (provisionIds != null)
         {
-            var converted = await item.ConfigureAwait(false);
-
-            if (converted != null)
+            foreach (var item in list.Where(p => provisionIds.Contains(p.PackageFullName)))
             {
-                if (provisioned.Contains(converted.PackageFullName))
-                {
-                    converted.IsProvisioned = true;
-                }
-
-                list.Add(converted);
+                item.IsProvisioned = true;
             }
         }
 
         sw.Stop();
-
         Logger.Info().WriteLine("Returning {0} packages (the operation took {1})…", list.Count, sw.Elapsed);
         return list;
     }

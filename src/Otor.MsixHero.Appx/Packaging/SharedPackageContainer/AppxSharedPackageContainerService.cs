@@ -15,49 +15,37 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
 public class AppxSharedPackageContainerService : IAppxSharedPackageContainerService
 {
-    public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
+    private Lazy<SharedPackageContainerManager> _manager = new(SharedPackageContainerManager.GetDefault);
+
+    public Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
-        var list = new List<Entities.SharedPackageContainer>();
+        var containers = this._manager.Value.FindContainers(new FindSharedPackageContainerOptions());
 
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Get-AppSharedPackageContainer");
-
-        PSDataCollection<PSObject> results;
-        try
-        {
-            results = await powerShell.InvokeAsync().ConfigureAwait(false);
-        }
-        catch (CommandNotFoundException e)
-        {
-            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
-        }
-
-        foreach (var result in results)
+        IList<Entities.SharedPackageContainer> list = new List<Entities.SharedPackageContainer>();
+        foreach (var result in containers)
         {
 
-            list.Add(PsObjectToSharedContainer(result));
+            list.Add(SourceToSharedContainer(result));
         }
 
-        return list;
+        return Task.FromResult(list);
     }
 
     public async Task<Entities.SharedPackageContainer> Add(
@@ -123,128 +111,123 @@ public class AppxSharedPackageContainerService : IAppxSharedPackageContainerServ
             throw new FileNotFoundException(Resources.Localization.Packages_Error_FileNotFound, containerFile.FullName);
         }
 
-        string containerName;
-
-        await using (var openStream = File.OpenRead(containerFile.FullName))
+        await using var openStream = File.OpenRead(containerFile.FullName);
+        var file = (Entities.SharedPackageContainer)new XmlSerializer(typeof(Entities.SharedPackageContainer)).Deserialize(openStream);
+        if (file == null)
         {
-            var file = (Entities.SharedPackageContainer)new XmlSerializer(typeof(Entities.SharedPackageContainer)).Deserialize(openStream);
-            if (file == null)
-            {
-                throw new InvalidOperationException("Empty file.");
-            }
-
-            containerName = file.Name;
-            var getAll = await this.GetRegisteredFamilyNames(cancellationToken).ConfigureAwait(false);
-
-            var findFirst = file.PackageFamilies?.FirstOrDefault(pf => getAll.TryGetValue(pf.FamilyName, out var container) && container != file.Name);
-            if (findFirst != null)
-            {
-                throw new AlreadyInAnotherContainerException(getAll[findFirst.FamilyName], findFirst.FamilyName);
-            }
+            throw new InvalidOperationException("Empty file.");
         }
 
-        using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+        var getAll = await this.GetRegisteredFamilyNames(cancellationToken).ConfigureAwait(false);
+
+        var findFirst = file.PackageFamilies?.FirstOrDefault(pf => getAll.TryGetValue(pf.FamilyName, out var container) && container != file.Name);
+        if (findFirst != null)
         {
-            using var command = powerShell.AddCommand("Add-AppSharedPackageContainer");
-
-            command.AddParameter("Path", containerFile.FullName);
-
-            switch (containerConflictResolution)
-            {
-                case ContainerConflictResolution.Merge:
-                    command.AddParameter("Merge");
-                    break;
-                case ContainerConflictResolution.Replace:
-                    command.AddParameter("Force");
-                    break;
-            }
-
-            if (forceApplicationShutdown)
-            {
-                command.AddParameter("ForceApplicationShutdown");
-            }
-
-            try
-            {
-                await powerShell.InvokeAsync().ConfigureAwait(false);
-            }
-            catch (CommandNotFoundException e)
-            {
-                throw new NotSupportedException("", e);
-            }
+            throw new AlreadyInAnotherContainerException(getAll[findFirst.FamilyName], findFirst.FamilyName);
         }
 
-        return await this.GetByName(containerName, cancellationToken).ConfigureAwait(false);
+        var options = new CreateSharedPackageContainerOptions
+        {
+            ForceAppShutdown = forceApplicationShutdown
+        };
+
+        switch (containerConflictResolution)
+        {
+            case ContainerConflictResolution.Merge:
+                options.CreateCollisionOption = SharedPackageContainerCreationCollisionOptions.MergeWithExisting;
+                break;
+            case ContainerConflictResolution.Replace:
+                options.CreateCollisionOption = SharedPackageContainerCreationCollisionOptions.ReplaceExisting;
+                break;
+            default:
+                options.CreateCollisionOption = SharedPackageContainerCreationCollisionOptions.FailIfExists;
+                break;
+        }
+
+        foreach (var item in file.PackageFamilies?.Select(x => x.FamilyName) ?? Enumerable.Empty<string>())
+        {
+            options.Members.Add(new SharedPackageContainerMember(item));
+        }
+
+        var result = this._manager.Value.CreateContainer(file.Name, options);
+        switch (result.Status)
+        {
+            case SharedPackageContainerOperationStatus.Success:
+                return await this.GetByName(file.Name, cancellationToken).ConfigureAwait(false);
+
+            case SharedPackageContainerOperationStatus.BlockedByPolicy:
+                throw result.ExtendedError; // todo: wrap in some exception?
+
+            case SharedPackageContainerOperationStatus.AlreadyExists:
+                throw result.ExtendedError; // todo: wrap in some exception?
+
+            case SharedPackageContainerOperationStatus.PackageFamilyExistsInAnotherContainer:
+                throw result.ExtendedError; // todo: wrap in some exception?
+                    
+            default:
+                throw result.ExtendedError;
+        }
     }
 
     public async Task Remove(string containerName, bool forceApplicationShutdown = false, CancellationToken cancellationToken = default)
     {
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Remove-AppSharedPackageContainer");
-        command.AddParameter("Name", containerName);
-
-        if (forceApplicationShutdown)
+        var container = await this.GetByName(containerName, cancellationToken).ConfigureAwait(false);
+        if (container == null)
         {
-            command.AddParameter("ForceApplicationShutdown");
+            return;
         }
 
-        // Note: Command let has also a property -AllUsers, but it is not implemented and always throws.
+        var options = new DeleteSharedPackageContainerOptions
+        {
+            ForceAppShutdown = forceApplicationShutdown
+        };
 
-        try
+        var result = this._manager.Value.DeleteContainer(container.Id, options);
+        
+        switch (result.Status)
         {
-            await powerShell.InvokeAsync().ConfigureAwait(false);
-        }
-        catch (CommandNotFoundException e)
-        {
-            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
+            case SharedPackageContainerOperationStatus.Success:
+            case SharedPackageContainerOperationStatus.NotFound:
+                return;
+            default:
+                throw result.ExtendedError;
         }
     }
 
-    public async Task<Entities.SharedPackageContainer> GetByName(string containerName, CancellationToken cancellationToken = default)
+    public Task<Entities.SharedPackageContainer> GetByName(string containerName, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(containerName))
         {
             throw new ArgumentNullException(nameof(containerName));
         }
 
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Get-AppSharedPackageContainer");
-
-        command.AddParameter("Name", containerName);
-
-        PSDataCollection<PSObject> results;
-        try
+        var container = this._manager.Value.FindContainers(new FindSharedPackageContainerOptions
         {
-            results = await powerShell.InvokeAsync().ConfigureAwait(false);
-        }
-        catch (CommandNotFoundException e)
-        {
-            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
-        }
-
-        var result = results.FirstOrDefault();
-        if (result == null)
-        {
-            return null;
-        }
-
-        return PsObjectToSharedContainer(result);
+            Name = containerName
+        }).FirstOrDefault();
+        
+        return Task.FromResult(SourceToSharedContainer(container));
     }
 
-    public async Task Reset(string containerName, CancellationToken cancellationToken = default)
+    public Task Reset(string containerName, CancellationToken cancellationToken = default)
     {
-        using var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-        using var command = powerShell.AddCommand("Reset-AppSharedPackageContainer");
-        command.AddParameter("Name", containerName);
-        command.AddParameter("Force");
+        var container = this._manager.Value.FindContainers(new FindSharedPackageContainerOptions
+        {
+            Name = containerName
+        }).FirstOrDefault();
 
-        try
+        if (container == null)
         {
-            await powerShell.InvokeAsync().ConfigureAwait(false);
+            throw new InvalidOperationException();
         }
-        catch (CommandNotFoundException e)
+
+        var result = container.ResetData();
+        switch (result.Status)
         {
-            throw new NotSupportedException(Resources.Localization.Packages_Error_SharedContainerNotSupported, e);
+            case SharedPackageContainerOperationStatus.Success:
+                return Task.CompletedTask;
+            default:
+                return Task.FromException(result.ExtendedError);
         }
     }
 
@@ -286,10 +269,15 @@ public class AppxSharedPackageContainerService : IAppxSharedPackageContainerServ
         return familyNameToContainerMapping;
     }
 
-    private static Entities.SharedPackageContainer PsObjectToSharedContainer(PSObject result)
+    private static Entities.SharedPackageContainer SourceToSharedContainer(Windows.Management.Deployment.SharedPackageContainer result)
     {
-        var name = (string)result.Properties["Name"]?.Value;
-        var id = (string)result.Properties["Id"]?.Value;
+        if (result == null)
+        {
+            return null;
+        }
+
+        var name = result.Name;
+        var id = result.Id;
 
         var obj = new Entities.SharedPackageContainer
         {
@@ -298,12 +286,9 @@ public class AppxSharedPackageContainerService : IAppxSharedPackageContainerServ
             PackageFamilies = new List<SharedPackageFamily>()
         };
 
-        if (result.Properties["PackageFamilyNames"].Value.GetType().GetProperty("BaseObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public)?.GetValue(result.Properties["PackageFamilyNames"].Value) is ArrayList packageList)
+        foreach (var pkg in result.GetMembers().Select(m => m.PackageFamilyName))
         {
-            foreach (var pkg in packageList.OfType<string>())
-            {
-                obj.PackageFamilies.Add(new SharedPackageFamily() { FamilyName = pkg });
-            }
+            obj.PackageFamilies.Add(new SharedPackageFamily { FamilyName = pkg });
         }
 
         return obj;

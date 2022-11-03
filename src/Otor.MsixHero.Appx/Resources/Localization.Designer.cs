@@ -1510,11 +1510,47 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismounting {0}….
+        /// </summary>
+        public static string Volumes_Dismounting_Format {
+            get {
+                return ResourceManager.GetString("Volumes_Dismounting_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mounting {0}….
+        /// </summary>
+        public static string Volumes_Mounting_Format {
+            get {
+                return ResourceManager.GetString("Volumes_Mounting_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moving to another volume….
         /// </summary>
         public static string Volumes_Moving {
             get {
                 return ResourceManager.GetString("Volumes_Moving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing {0}….
+        /// </summary>
+        public static string Volumes_Removing_Format {
+            get {
+                return ResourceManager.GetString("Volumes_Removing_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The volume could not be removed, because it contains at least one app. Remove all apps from this volume to remove it..
+        /// </summary>
+        public static string Volumes_RemovingError_NotEmpty {
+            get {
+                return ResourceManager.GetString("Volumes_RemovingError_NotEmpty", resourceCulture);
             }
         }
     }

@@ -155,7 +155,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
             var appxReader = new AppxManifestReader();
 
             var t1 = appxReader.Read(reader, cancellationToken);
-            var t2 = PackageEntryFactory.FromFilePath(path, cancellationToken: cancellationToken);
+            var t2 = PackageEntryExtensions.FromFilePath(path, cancellationToken: cancellationToken);
 
             await Task.WhenAll(t1, t2).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();

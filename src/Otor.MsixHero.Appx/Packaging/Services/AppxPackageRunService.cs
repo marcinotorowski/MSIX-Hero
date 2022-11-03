@@ -80,7 +80,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             {
                 throw new ArgumentNullException(nameof(toolPath));
             }
-
+            
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
             cmd.AddParameter("Command", toolPath);

@@ -22,9 +22,9 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     public class AdvancedConfiguration : BaseJsonSetting
     {
         [DataMember(Name = "disableMultiThreadingForGetPackages")]
-        public bool DisableMultiThreadingForGetPackages { get; set; }
+        public bool DisableTasksForGetPackages { get; set; }
 
         [DataMember(Name = "maxThreadsForGetPackages")]
-        public int? MaxThreadsForGetPackages { get; set; }
+        public int? MaxTasksForGetPackages { get; set; }
     }
 }

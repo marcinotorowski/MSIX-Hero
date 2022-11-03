@@ -29,10 +29,12 @@ using Microsoft.Win32.SafeHandles;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Interop;
+using Windows.Media.Ocr;
 
 namespace Otor.MsixHero.Appx.Volumes
 {
@@ -141,31 +143,50 @@ namespace Otor.MsixHero.Appx.Volumes
 
         public async Task Delete(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Remove-AppxVolume");
-            command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync(progress).ConfigureAwait(false);
+            var findVolume = PackageManagerSingleton.Instance.FindPackageVolume(volume.Name);
+            if (findVolume == null)
+            {
+                return;
+            }
+
+            try
+            {
+                await AsyncOperationHelper.ConvertToTask(PackageManagerSingleton.Instance.RemovePackageVolumeAsync(findVolume), string.Format(Resources.Localization.Volumes_Removing_Format, volume.DiskLabel), cancellationToken, progress).ConfigureAwait(false);
+            }
+            catch (COMException e)
+            {
+                switch ((uint)e.HResult)
+                {
+                    case 0x80073D0C: // ERROR_INSTALL_VOLUME_NOT_EMPTY
+                        throw new MsixHeroException(Resources.Localization.Volumes_RemovingError_NotEmpty, e);
+                }
+            }
         }
 
         public async Task Mount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Mount-AppxVolume");
-            command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync(progress).ConfigureAwait(false);
+            var findVolume = PackageManagerSingleton.Instance.FindPackageVolume(volume.Name);
+            if (findVolume == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            await AsyncOperationHelper.ConvertToTask(PackageManagerSingleton.Instance.SetPackageVolumeOnlineAsync(findVolume), string.Format(Resources.Localization.Volumes_Mounting_Format, volume.DiskLabel), cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task Dismount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Dismount-AppxVolume");
-            command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync(progress).ConfigureAwait(false);
+            var findVolume = PackageManagerSingleton.Instance.FindPackageVolume(volume.Name);
+            if (findVolume == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            await AsyncOperationHelper.ConvertToTask(PackageManagerSingleton.Instance.SetPackageVolumeOfflineAsync(findVolume), string.Format(Resources.Localization.Volumes_Mounting_Format, volume.DiskLabel), cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task MovePackageToVolume(AppxVolume volume, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-
             if (volume == null)
             {
                 throw new ArgumentNullException(nameof(volume));
@@ -252,13 +273,24 @@ namespace Otor.MsixHero.Appx.Volumes
             await this.Dismount(volume, cancellationToken, p2).ConfigureAwait(false);
         }
 
-        public async Task SetDefault(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task SetDefault(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var command = session.AddCommand("Set-AppxDefaultVolume");
-            command.AddParameter("Volume", volume.Name);
-            Logger.Info().WriteLine("Setting volume {0} as default…", volume.Name);
-            await session.InvokeAsync(progress).ConfigureAwait(false);
+            var findVolume = PackageManagerSingleton.Instance.FindPackageVolume(volume.Name);
+            if (findVolume == null)
+            {
+                return Task.FromException(new InvalidOperationException());
+            }
+
+            try
+            {
+                PackageManagerSingleton.Instance.SetDefaultPackageVolume(findVolume);
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
+
+            return Task.CompletedTask;
         }
 
         public async Task SetDefault(string drivePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

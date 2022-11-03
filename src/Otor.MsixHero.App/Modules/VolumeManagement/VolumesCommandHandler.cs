@@ -25,6 +25,7 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Elevation;
@@ -118,6 +119,10 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
                 await this._application.CommandExecutor
                     .WithBusyManager(this._busyManager, OperationType.VolumeLoading)
                     .Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand()).ConfigureAwait(false);
+            }
+            catch (MsixHeroException exception)
+            {
+                this._interactionService.ShowError(exception.Message, exception);
             }
             catch (Exception exception)
             {

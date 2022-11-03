@@ -79,7 +79,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
         protected override async Task DoLoadPackage(AppxPackage model, PackageEntry installationEntry, string filePath, CancellationToken cancellationToken)
         {
             var t1 = this.Summary.LoadPackage(model, installationEntry, filePath, cancellationToken);
-            var t2 = PackageEntryFactory.FromFilePath(filePath, cancellationToken: cancellationToken);
+            var t2 = PackageEntryExtensions.FromFilePath(filePath, cancellationToken: cancellationToken);
             await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
             var installPackage = await t2.ConfigureAwait(false);

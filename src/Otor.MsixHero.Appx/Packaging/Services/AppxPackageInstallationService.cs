@@ -299,7 +299,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             {
                 if (e.ErrorCode == -2146762487)
                 {
-                    throw new InvalidOperationException("", e);
+                    throw new InvalidOperationException("", e); // todo: revisit this!
                 }
 
                 throw;

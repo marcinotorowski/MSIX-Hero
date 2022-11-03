@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -32,10 +33,41 @@ using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
-public static class PackageEntryFactory
+public static class PackageEntryExtensions
 {
     private static readonly LogSource Logger = new();
 
+    public static async Task<IList<PackageEntry>> FromFilePaths(
+        IEnumerable<string> filePaths,
+        PackageFindMode packageContextMode = PackageFindMode.Auto,
+        bool checkIfRunning = false,
+        CancellationToken cancellationToken = default)
+    {
+        var packages = new List<PackageEntry>();
+
+        foreach (var package in filePaths)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var pkg = await FromFilePath(package, packageContextMode, false, cancellationToken).ConfigureAwait(false);
+            packages.Add(pkg);
+        }
+
+        if (checkIfRunning)
+        {
+            var runningDetector = new RunningAppsDetector();
+            var running = runningDetector.GetCurrentlyRunningPackageFamilyNames();
+            if (running.Any())
+            {
+                foreach (var pkg in packages)
+                {
+                    pkg.IsRunning = running.Contains(pkg.PackageFamilyName);
+                }
+            }
+        }
+
+        return packages;
+    }
+    
     public static async Task<PackageEntry> FromReader(
         IAppxFileReader appxPackageReader,
         PackageFindMode packageContextMode = PackageFindMode.Auto,
@@ -152,10 +184,7 @@ public static class PackageEntryFactory
         {
             var detector = new RunningAppsDetector();
             var getRunning = detector.GetCurrentlyRunningPackageFamilyNames();
-            if (getRunning.Contains(entry.PackageFamilyName))
-            {
-                entry.IsRunning = true;
-            }
+            entry.IsRunning = getRunning.Contains(entry.PackageFamilyName);
         }
 
         return entry;
@@ -170,7 +199,7 @@ public static class PackageEntryFactory
         using var appxPackageReader = FileReaderFactory.CreateFileReader(fullFilePath);
         return await FromReader(appxPackageReader, packageContextMode, checkIfRunning, cancellationToken).ConfigureAwait(false);
     }
-
+    
     public static async Task<PackageEntry> ToPackageEntry(this Package originalPackageEntry, bool checkIfRunning = false, CancellationToken cancellationToken = default)
     {
         Logger.Debug().WriteLine("Getting details about package {0}…", originalPackageEntry.Id.Name);
@@ -180,11 +209,11 @@ public static class PackageEntryFactory
         {
             installLocation = originalPackageEntry.InstalledLocation?.Path;
         }
-        catch (Exception e)
+        catch (FileNotFoundException e)
         {
-            Logger.Warn().WriteLine("Installed location for package {0} is invalid. This may be expected for some installed packages.", originalPackageEntry.Id.Name);
+            Logger.Warn().WriteLine("Installed location for package {0} is invalid. Package will be ignored.", originalPackageEntry.Id.Name);
             Logger.Verbose().WriteLine(e);
-            installLocation = null;
+            return null;
         }
 
         if (installLocation != null)
@@ -223,15 +252,12 @@ public static class PackageEntryFactory
 
         var pkg = new PackageEntry
         {
-            DisplayName = details.DisplayName,
             Name = originalPackageEntry.Id.Name,
             ImagePath = installLocation == null || details.LogoRelativePath == null ? null : Path.Combine(installLocation, details.LogoRelativePath),
             PackageFullName = originalPackageEntry.Id.FullName,
             InstallDirPath = installLocation,
             ManifestPath = installLocation == null ? null : Path.Combine(installLocation, FileConstants.AppxManifestFile),
             PackageFamilyName = originalPackageEntry.Id.FamilyName,
-            Description = details.Description,
-            DisplayPublisherName = details.DisplayPublisherName,
             Publisher = originalPackageEntry.Id.Publisher,
             ResourceId = originalPackageEntry.Id.ResourceId,
             Architecture = Enum.Parse<AppxPackageArchitecture>(originalPackageEntry.Id.Architecture.ToString(), true),
@@ -244,6 +270,28 @@ public static class PackageEntryFactory
             InstallDate = installDate,
             AppInstallerUri = originalPackageEntry.GetAppInstallerInfo()?.Uri
         };
+
+        try
+        {
+            pkg.DisplayName = string.IsNullOrEmpty(originalPackageEntry.DisplayName) ? details.DisplayName : originalPackageEntry.DisplayName;
+            pkg.DisplayPublisherName = string.IsNullOrEmpty(originalPackageEntry.PublisherDisplayName) ? details.DisplayPublisherName : originalPackageEntry.PublisherDisplayName;
+            pkg.Description = string.IsNullOrEmpty(originalPackageEntry.Description) ? details.Description : originalPackageEntry.Description;
+        }
+        catch (COMException e)
+        {
+            if (e.HResult != -2147009780) // = 0x80073B0C
+            {
+                Logger.Warn().WriteLine(e, "Could not read details for package " + pkg.PackageFullName);
+                return null;
+            }
+
+            // Workaround for exception
+            // The ResourceMap or NamedResource has an item that does not have default or neutral 
+            // resource. (Exception from HRESULT: 0x80073B0C)
+            pkg.DisplayName = details.DisplayName;
+            pkg.DisplayPublisherName = details.DisplayPublisherName;
+            pkg.Description = details.Description;
+        }
 
         if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                                         pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??

@@ -161,8 +161,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             }
             else if (objectToLoad is AppxPackage appxPackage)
             {
-                // may require revisiting
-                var entry = await PackageEntryFactory.FromFilePath(appxPackage.PackagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var entry = await PackageEntryExtensions.FromFilePath(appxPackage.PackagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
                 await this.LoadPackage(appxPackage, entry, appxPackage.PackagePath).ConfigureAwait(false);
             }
             else if (objectToLoad is PackageEntry installedPackage)
@@ -170,7 +169,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                 using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, installedPackage.PackageFullName);
                 await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
             }
-            else
+            else if (objectToLoad != null)
             {
                 throw new NotSupportedException("Object of type " + objectToLoad.GetType() + " is not supported.");
             }
@@ -187,7 +186,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var manifestReader = new AppxManifestReader();
 
             var t1 = manifestReader.Read(fileReader, cancellationToken);
-            var t2 = PackageEntryFactory.FromReader(fileReader, cancellationToken: cancellationToken);
+            var t2 = PackageEntryExtensions.FromReader(fileReader, cancellationToken: cancellationToken);
 
             await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
