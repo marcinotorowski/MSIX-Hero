@@ -121,6 +121,6 @@ public class MakeAppxPackOptions : MakeAppxOptions
             throw new ArgumentNullException(nameof(targetPackagePath));
         }
 
-        return CreateFromDirectory(new DirectoryInfo(sourceDirectory), new FileInfo(targetPackagePath), validate, compress);
+        return CreateFromDirectory(new DirectoryInfo(sourceDirectory), new FileInfo(targetPackagePath), compress, validate);
     }
 }
