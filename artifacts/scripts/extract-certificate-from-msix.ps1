@@ -26,7 +26,7 @@ try
 {
 	$fileName = Split-Path $SourceMsixFile -Leaf;
 	Write-Progress -Activity "Extracting certificate from $fileName…" -Id "1" -Status "Extracting certificate…" -PercentComplete 5;
-	$cert = (Get-AuthenticodeSignature -FilePath $SourceMsixFile).SignerCertificate;
+	$cert = (Get-AuthenticodeSignature -LiteralPath $SourceMsixFile).SignerCertificate;
 	Write-Progress -Activity "Extracting certificate from $fileName…" -Id "1" -Status "Exporting to a temp file…" -PercentComplete 75;
     Export-Certificate -Cert $cert -FilePath $tempExtract -Force | Out-Null;
 	
