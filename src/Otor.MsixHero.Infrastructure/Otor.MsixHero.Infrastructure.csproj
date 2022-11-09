@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Copyright>Copyright (C) 2022 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
