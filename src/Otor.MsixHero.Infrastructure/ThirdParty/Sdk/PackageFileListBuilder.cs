@@ -8,17 +8,17 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class PackageFileListBuilder
     {
-        private readonly IDictionary<string, string> sourceFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private readonly IList<SourceDirectory> sourceDirectories = new List<SourceDirectory>();
+        private readonly IDictionary<string, string> _sourceFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IList<SourceDirectory> _sourceDirectories = new List<SourceDirectory>();
 
-        public void AddFile(string sourceFile, string targetRelativeDirectory)
+        public void AddFile(string sourceFile, string targetRelativeFilePath)
         {
-            this.sourceFiles[targetRelativeDirectory] = sourceFile.Replace("/", "\\");
+            this._sourceFiles[targetRelativeFilePath] = sourceFile.Replace("/", "\\");
         }
 
         public void AddDirectory(string sourceDirectory, string wildcard, bool recursive, string targetRelativeDirectory)
         {
-            this.sourceDirectories.Add(new SourceDirectory(sourceDirectory, targetRelativeDirectory, wildcard, recursive));
+            this._sourceDirectories.Add(new SourceDirectory(sourceDirectory, targetRelativeDirectory, wildcard, recursive));
         }
 
         public void AddDirectory(string sourceDirectory, string wildcard, string targetRelativeDirectory)
@@ -38,7 +38,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public void AddManifest(string sourceManifestFilePath)
         {
-            this.sourceFiles["AppxManifest.xml"] = sourceManifestFilePath;
+            this._sourceFiles["AppxManifest.xml"] = sourceManifestFilePath;
         }
 
         /// <summary>
@@ -48,12 +48,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         public string GetManifestSourcePath()
         {
             // ReSharper disable once StringLiteralTypo
-            if (sourceFiles.TryGetValue("appxmanifest.xml", out var manifestPath))
+            if (this._sourceFiles.TryGetValue("appxmanifest.xml", out var manifestPath))
             {
                 return manifestPath;
             }
 
-            foreach (var item in this.sourceDirectories.Where(sd => string.IsNullOrEmpty(sd.TargetRelativePath)))
+            foreach (var item in this._sourceDirectories.Where(sd => string.IsNullOrEmpty(sd.TargetRelativePath)))
             {
                 // ReSharper disable once StringLiteralTypo
                 var findManifestFiles = Directory.EnumerateFiles(item.SourcePath, "appxmanifest.xml", SearchOption.TopDirectoryOnly).FirstOrDefault();
@@ -75,7 +75,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var targetRelativeFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             var filesEnumeratedFromSourceDirectories = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var directory in this.sourceDirectories)
+            foreach (var directory in this._sourceDirectories)
             {
                 foreach (var foundFile in Directory.EnumerateFiles(directory.SourcePath, directory.Wildcard, directory.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
                 {
@@ -90,7 +90,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         targetRelativePath = Path.Combine(directory.TargetRelativePath, targetRelativePath);
                     }
 
-                    if (this.sourceFiles.ContainsKey(targetRelativePath))
+                    if (this._sourceFiles.ContainsKey(targetRelativePath))
                     {
                         continue;
                     }
@@ -99,7 +99,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
             }
 
-            foreach (var item in filesEnumeratedFromSourceDirectories.Concat(this.sourceFiles))
+            foreach (var item in filesEnumeratedFromSourceDirectories.Concat(this._sourceFiles))
             {
                 var source = item.Value;
                 var target = item.Key;

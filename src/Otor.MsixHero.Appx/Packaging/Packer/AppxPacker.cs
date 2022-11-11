@@ -136,13 +136,13 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     foreach (var item in extraFiles)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        
+
                         if (string.Equals(Path.GetFileName(item.Key), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                         {
                             tempManifestFilePath = item.Value;
                             listBuilder.AddFile(item.Value, item.Key);
                         }
-                        else
+                        else if (!IsFootPrintFile(item.Key))
                         {
                             listBuilder.AddFile(item.Value, item.Key);
                         }
@@ -218,6 +218,28 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             }
 
             return new MakeAppxWrapper().Unpack(MakeAppxUnpackOptions.Create(packagePath, directory), progress, cancellationToken);
+        }
+
+        private static bool IsFootPrintFile(string relativeFilePath)
+        {
+            // https://github.com/microsoft/msix-packaging/blob/c8af99506ffd0c1513fad39cdadfac281723c3e3/sample/inc/Helpers.hpp#L200
+            switch (relativeFilePath.ToLowerInvariant())
+            {
+                // ReSharper disable once StringLiteralTypo
+                case "appxmanifest.xml":
+                // ReSharper disable once StringLiteralTypo
+                case "appxsignature.p7x":
+                // ReSharper disable once StringLiteralTypo
+                case "appxblockmap.xml":
+                case "[content_types].xml":
+                    return true;
+                default:
+                    return
+                        // ReSharper disable once StringLiteralTypo
+                        relativeFilePath.LastIndexOf("appxmetadata", 0, StringComparison.Ordinal) != -1 ||
+                        relativeFilePath.LastIndexOf("microsoft.system.package.metadata", 0, StringComparison.Ordinal) != -1;
+            }
+
         }
     }
 }

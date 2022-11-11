@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,6 +36,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public Task Unpack(MakeAppxUnpackOptions options, IProgress<ProgressData> progress = default, CancellationToken cancellationToken = default)
         {
+            if (!File.Exists(options.Source.FullName))
+            {
+                throw new FileNotFoundException(string.Format(Resources.Localization.Infrastructure_Error_CouldNotOpenFile_Format, options.Source.FullName), options.Source.FullName);
+            }
+
             var wrapper = new PackUnPackProgressWrapper(progress);
             var arguments = new StringBuilder("unpack", 256);
             arguments.Append(" /d ");
@@ -57,6 +63,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             {
                 arguments.Append(" /nv");
             }
+
+            ExceptionGuard.Guard(() =>
+            {
+                using var zipFile = ZipFile.OpenRead(options.Source.FullName);
+                wrapper.SetFilesCount(zipFile.Entries.Count);
+            });
 
             return this.RunMakeAppx(arguments.ToString(), wrapper.Callback, cancellationToken);
         }
@@ -223,6 +235,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             public PackUnPackProgressWrapper(IProgress<ProgressData> progressReporter)
             {
                 this._progressReporter = progressReporter;
+            }
+
+            public void SetFilesCount(int expectedFilesCount)
+            {
+                this._fileCounter = expectedFilesCount;
             }
 
             public Action<string> Callback => this.OnProgress;
