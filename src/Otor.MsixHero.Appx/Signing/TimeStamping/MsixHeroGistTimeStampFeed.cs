@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Appx.Signing.TimeStamping
         {
             Logger.Info().WriteLine($"Querying the list of available time stamp servers from {Url}…");
             using var httpClient = new HttpClient();
-            using var response = await httpClient.GetAsync(Url, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+            using var response = await httpClient.GetAsync(Url, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             var content = response.EnsureSuccessStatusCode();
 

@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -39,28 +39,37 @@ namespace Otor.MsixHero.Winget.Yaml
 {
     public class YamlUtils
     {
-        public async Task<string> CalculateHashAsync(FileInfo fileInfo, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task<string> CalculateHashAsync(FileInfo fileInfo, IProgress<ProgressData> progress = null, CancellationToken cancellationToken = default)
         {
             if (!fileInfo.Exists)
             {
                 throw new FileNotFoundException("File does not exist.", fileInfo.FullName);
             }
 
-            using var stream = File.OpenRead(fileInfo.FullName);
+            await using var stream = File.OpenRead(fileInfo.FullName);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             return await CalculateHashAsync(stream, fileInfo.Length, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<string> CalculateSignatureHashAsync(Uri url, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task<string> CalculateSignatureHashAsync(Uri url, IProgress<ProgressData> progress = null, CancellationToken cancellationToken = default)
         {
             using var wrappedProgress = new WrappedProgress(progress);
             var progressForDownload = wrappedProgress.GetChildProgress(85);
             var progressForHashing = wrappedProgress.GetChildProgress(15);
 
-            var webRequest = (HttpWebRequest) WebRequest.Create(url);
-            using var response = webRequest.GetResponse();
+            using var httpClient = new HttpClient();
+            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            if (responseStream == null)
+            {
+                throw new InvalidOperationException(Resources.Localization.Winget_Error_DownloadFailed);
+            }
+
             var tempFileName = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileConstants.MsixExtension);
 
             try
@@ -69,16 +78,10 @@ namespace Otor.MsixHero.Winget.Yaml
                 using (var fs = File.OpenWrite(tempFileName))
                 {
                     var buffer = new byte[4096];
-
-                    await using var responseStream = response.GetResponseStream();
-                    if (responseStream == null)
-                    {
-                        throw new InvalidOperationException(Resources.Localization.Winget_Error_DownloadFailed);
-                    }
-
+                    
                     int read;
 
-                    var totalSize = response.ContentLength;
+                    var totalSize = response.Content.Headers.ContentLength;
                     var processed = 0L;
                     var lastFlush = 0L;
                     const long bufferFlushing = 1024 * 1024 * 10; // 10 MB
@@ -153,30 +156,32 @@ namespace Otor.MsixHero.Winget.Yaml
             var signatureInfo = new FileInfo(Path.Combine(directory.FullName, "AppxSignature.p7x"));
             if (signatureInfo.Exists)
             {
-                return await CalculateHashAsync(signatureInfo, cancellationToken, progress).ConfigureAwait(false);
+                return await CalculateHashAsync(signatureInfo, progress, cancellationToken).ConfigureAwait(false);
             }
 
             throw new ArgumentException(Resources.Localization.Winget_Error_NotMsixAppx, nameof(fileInfo));
         }
 
-        public async Task<string> CalculateHashAsync(Uri file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task<string> CalculateHashAsync(Uri file, IProgress<ProgressData> progress = null, CancellationToken cancellationToken = default)
         {
-            var httpReq = (HttpWebRequest)WebRequest.Create(file);
-            var response = await httpReq.GetResponseAsync().ConfigureAwait(false);
+            using var client = new HttpClient();
+            using var response = await client.GetAsync(file, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             if (response == null)
             {
                 throw new InvalidOperationException(string.Format(Resources.Localization.Winget_Error_DownloadFailed_Format, file));
             }
 
+            response.EnsureSuccessStatusCode();
+
             cancellationToken.ThrowIfCancellationRequested();
-            await using var responseStream = response.GetResponseStream();
+            await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             if (responseStream == null)
             {
                 throw new InvalidOperationException(string.Format(Resources.Localization.Winget_Error_DownloadFailed_Format, file));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            return await CalculateHashAsync(responseStream, response.ContentLength, cancellationToken, progress).ConfigureAwait(false);
+            return await CalculateHashAsync(responseStream, response.Content.Headers.ContentLength, cancellationToken, progress).ConfigureAwait(false);
         }
 
         private static async Task<string> CalculateHashAsync(Stream source, long? responseLength, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -236,7 +241,7 @@ namespace Otor.MsixHero.Winget.Yaml
             }
 
             yaml.PackageIdentifier = (yaml.Publisher + "." + yaml.PackageName).Replace(" ", string.Empty);
-            yaml.Installers[0].InstallerSha256 = await this.CalculateHashAsync(new FileInfo(filePath), cancellationToken).ConfigureAwait(false);
+            yaml.Installers[0].InstallerSha256 = await this.CalculateHashAsync(new FileInfo(filePath), cancellationToken: cancellationToken).ConfigureAwait(false);
             
             if (yaml.Copyright != null && yaml.Copyright.IndexOf("Copy", StringComparison.OrdinalIgnoreCase) == -1 && yaml.Copyright.IndexOf("(C)", StringComparison.OrdinalIgnoreCase) == -1 && yaml.Copyright.IndexOf("http", StringComparison.OrdinalIgnoreCase) == -1)
             {
@@ -279,7 +284,7 @@ namespace Otor.MsixHero.Winget.Yaml
             {
                 try
                 {
-                    var culture = CultureInfo.GetCultureInfo(lcid);
+                    var culture = CultureInfo.GetCultureInfo(lcidCode);
                     yamlDefinition.PackageLocale = culture.Name.ToLowerInvariant();
                     yamlDefinition.Installers[0].InstallerLocale = culture.Name.ToLowerInvariant();
                 }

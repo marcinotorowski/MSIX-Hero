@@ -277,24 +277,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             var progress = new Progress();
             try
             {
-                using (var cts = new CancellationTokenSource())
+                using var cts = new CancellationTokenSource();
+                var task = this.YamlUtils.CalculateHashAsync(new Uri(this.Url.CurrentValue), progress, cts.Token);
+                this.HashingProgress.MonitorProgress(task, cts, progress);
+                var newHash = await task.ConfigureAwait(true);
+
+                // this is to make sure that the hash is uppercase or lowercase depending on the source. We prefer lowercase
+                if (true == this.Sha256.CurrentValue?.All(c => char.IsUpper(c) || char.IsDigit(c)))
                 {
-                    var task = this.YamlUtils.CalculateHashAsync(new Uri(this.Url.CurrentValue), cts.Token, progress);
-                    this.HashingProgress.MonitorProgress(task, cts, progress);
-                    var newHash = await task.ConfigureAwait(true);
-
-                    // this is to make sure that the hash is uppercase or lowercase depending on the source. We prefer lowercase
-                    if (true == this.Sha256.CurrentValue?.All(c => char.IsUpper(c) || char.IsDigit(c)))
-                    {
-                        newHash = newHash.ToUpperInvariant();
-                    }
-                    else
-                    {
-                        newHash = newHash.ToLowerInvariant();
-                    }
-
-                    this.Sha256.CurrentValue = newHash;
+                    newHash = newHash.ToUpperInvariant();
                 }
+                else
+                {
+                    newHash = newHash.ToLowerInvariant();
+                }
+
+                this.Sha256.CurrentValue = newHash;
             }
             catch (Exception e)
             {
@@ -310,18 +308,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             }
 
             var progress = new Progress();
-            using (var cts = new CancellationTokenSource())
+            using var cts = new CancellationTokenSource();
+            try
             {
-                try
-                {
-                    var task2 = this.YamlUtils.CalculateHashAsync(new FileInfo(path), cts.Token, progress);
-                    this.HashingProgress.MonitorProgress(task2, cts, progress);
-                    this.Sha256.CurrentValue = await task2.ConfigureAwait(true);
-                }
-                catch (Exception e)
-                {
-                    this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_HashingFailed + " " + e.Message, e);
-                }
+                var task2 = this.YamlUtils.CalculateHashAsync(new FileInfo(path), progress, cts.Token);
+                this.HashingProgress.MonitorProgress(task2, cts, progress);
+                this.Sha256.CurrentValue = await task2.ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_HashingFailed + " " + e.Message, e);
             }
         }
 

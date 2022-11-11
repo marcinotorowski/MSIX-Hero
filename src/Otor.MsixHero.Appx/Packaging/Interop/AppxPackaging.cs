@@ -19,7 +19,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using Windows.Security.Cryptography.Core;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 // ReSharper disable InconsistentNaming
@@ -68,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
 
         public static string GetPublisherHash(string publisherId)
         {
-            using var sha = HashAlgorithm.Create(HashAlgorithmNames.Sha256);
+            using var sha = SHA256.Create();
             // ReSharper disable once PossibleNullReferenceException
             var encoded = sha.ComputeHash(Encoding.Unicode.GetBytes(publisherId));
             var binaryString = string.Concat(encoded.Take(8).Select(c => Convert.ToString(c, 2).PadLeft(8, '0'))) + '0'; // representing 65-bits = 13 * 5

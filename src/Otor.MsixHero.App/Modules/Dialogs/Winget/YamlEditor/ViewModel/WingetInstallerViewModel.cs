@@ -17,10 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -33,14 +31,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 {
     public class WingetInstallerViewModel : ChangeableContainer
     {
-        private readonly YamlUtils yamlUtils;
-        private readonly IInteractionService interactionService;
-        private ICommand generateSha256, openSha256;
+        private readonly YamlUtils _yamlUtils;
+        private readonly IInteractionService _interactionService;
+        private ICommand _generateSha256, _openSha256;
 
         public WingetInstallerViewModel(YamlUtils yamlUtils, IInteractionService interactionService)
         {
-            this.yamlUtils = yamlUtils;
-            this.interactionService = interactionService;
+            this._yamlUtils = yamlUtils;
+            this._interactionService = interactionService;
             this.AddChildren(
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
                 this.PlatformUwp = new ChangeableProperty<bool>(this.Model?.Platform?.Contains(YamlPlatform.WindowsUniversal) == true),
@@ -187,7 +185,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             get
             {
-                return this.generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
+                return this._generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
             }
         }
 
@@ -197,7 +195,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             get
             {
-                return this.openSha256 ??= new DelegateCommand<string>(this.OpenHash);
+                return this._openSha256 ??= new DelegateCommand<string>(this.OpenHash);
             }
         }
 
@@ -205,11 +203,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (string.IsNullOrEmpty(this.Url))
             {
-                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_MissingUrl);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_MissingUrl);
                 return;
             }
 
-            if (this.interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_Installer_DownloadHint_Format, this.Url), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+            if (this._interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_Installer_DownloadHint_Format, this.Url), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
             {
                 return;
             }
@@ -217,37 +215,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             var progress = new Progress();
             try
             {
-                if (this.IsMsix)
+                if (!this.IsMsix)
                 {
-                    using (var cts = new CancellationTokenSource())
-                    {
-                        var task = this.yamlUtils.CalculateSignatureHashAsync(new Uri(this.Url), cts.Token, progress);
-                        this.HashingProgressSignature.MonitorProgress(task, cts, progress);
-                        var newHash = await task.ConfigureAwait(false);
-
-                        // this is to make sure that the hash is uppercase or lowercase depending on the source. We prefer lowercase
-                        if (true == this.SignatureSha256.CurrentValue?.All(c => char.IsUpper(c) || char.IsDigit(c)))
-                        {
-                            newHash = newHash.ToUpperInvariant();
-                        }
-                        else
-                        {
-                            newHash = newHash.ToLowerInvariant();
-                        }
-
-                        this.SignatureSha256.CurrentValue = newHash;
-                    }
+                    return;
                 }
+
+                using var cts = new CancellationTokenSource();
+                var task = this._yamlUtils.CalculateSignatureHashAsync(new Uri(this.Url), progress, cts.Token);
+                this.HashingProgressSignature.MonitorProgress(task, cts, progress);
+                var newHash = await task.ConfigureAwait(false);
+                this.SignatureSha256.CurrentValue = newHash;
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, e);
+                this._interactionService.ShowError(e.Message, e);
             }
         }
 
         private async void OpenHash(string parameter)
         {
-            if (!this.interactionService.SelectFile(out var path))
+            if (!this._interactionService.SelectFile(out var path))
             {
                 return;
             }
@@ -259,14 +246,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 {
                     if (this.IsMsix)
                     {
-                        var task = this.yamlUtils.CalculateSignatureHashAsync(new FileInfo(path), cts.Token, progress);
+                        var task = this._yamlUtils.CalculateSignatureHashAsync(new FileInfo(path), cts.Token, progress);
                         this.HashingProgressSignature.MonitorProgress(task, cts, progress);
                         this.SignatureSha256.CurrentValue = await task.ConfigureAwait(true);
                     }
                 }
                 catch (Exception e)
                 {
-                    this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_Hash + " " + e.Message, e);
+                    this._interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_Hash + " " + e.Message, e);
                 }
             }
         }

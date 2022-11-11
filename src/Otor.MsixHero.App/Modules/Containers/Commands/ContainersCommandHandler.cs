@@ -84,7 +84,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             await executor.Invoke<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>(this, new GetSharedPackageContainersCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
-        private async void OnAdd()
+        private void OnAdd()
         {
             var dialogRequest = new NavigationRequest
             {
@@ -136,7 +136,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             }
         }
 
-        private async void OnEdit(object sharedPackageContainerName)
+        private void OnEdit(object sharedPackageContainerName)
         {
             var dialogRequest = new NavigationRequest
             {
@@ -202,7 +202,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
                         continue;
                     }
 
-                    copiedText.AppendFormat(System.Environment.NewLine + " * " + fn);
+                    copiedText.AppendFormat(Environment.NewLine + " * " + fn);
                 }
             }
             

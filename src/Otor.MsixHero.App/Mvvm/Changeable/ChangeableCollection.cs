@@ -25,11 +25,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 {
     public class ChangeableCollection<T> : ObservableCollection<T>, IChangeableValue
     {
-        private bool isTouched, isDirty;
+        private bool _isTouched, _isDirty;
 
-        private bool monitorChildren = true;
+        private bool _monitorChildren = true;
 
-        private List<T> originalItems = new List<T>();
+        private List<T> _originalItems = new();
         
         public ChangeableCollection()
         {
@@ -41,13 +41,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             this.AssertType();
             try
             {
-                this.monitorChildren = false;
+                this._monitorChildren = false;
                 this.AddRange(collection);
-                this.originalItems = this.ToList();
+                this._originalItems = this.ToList();
             }
             finally
             {
-                this.monitorChildren = true;
+                this._monitorChildren = true;
             }
         }
 
@@ -61,11 +61,21 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         
         public event EventHandler<ValueChangingEventArgs> ValueChanging;
 
+        protected void RaiseValueChanged(ValueChangedEventArgs args)
+        {
+            this.ValueChanged?.Invoke(this, args);
+        }
+
+        protected void RaiseValueChanging(ValueChangingEventArgs args)
+        {
+            this.ValueChanging?.Invoke(this, args);
+        }
+
         protected override void ClearItems()
         {
             base.ClearItems();
             this.IsTouched = true;
-            this.IsDirty = !this.originalItems.SequenceEqual(this);
+            this.IsDirty = !this._originalItems.SequenceEqual(this);
             this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -92,7 +102,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
             }
 
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
@@ -102,11 +112,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             if (item is IChangeable changeableItem)
             {
                 var isNewDirty = changeableItem.IsDirty;
-                this.IsDirty = isNewDirty || !this.originalItems.SequenceEqual(this);
+                this.IsDirty = isNewDirty || !this._originalItems.SequenceEqual(this);
             }
             else
             {
-                this.IsDirty = !this.originalItems.SequenceEqual(this);
+                this.IsDirty = !this._originalItems.SequenceEqual(this);
             }
         }
 
@@ -123,13 +133,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             base.MoveItem(oldIndex, newIndex);
             this.Changed?.Invoke(this, EventArgs.Empty);
 
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
 
             this.IsTouched = true;
-            this.IsDirty = !this.originalItems.SequenceEqual(this);
+            this.IsDirty = !this._originalItems.SequenceEqual(this);
         }
 
         protected override void RemoveItem(int index)
@@ -148,7 +158,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 oldChangeable.IsTouchedChanged -= this.OnIsTouchedChanged;
             }
 
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
@@ -157,11 +167,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
             if (item is IChangeable)
             {
-                this.IsDirty = !this.originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(x => x.IsDirty);
+                this.IsDirty = !this._originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(x => x.IsDirty);
             }
             else
             {
-                this.IsDirty = !this.originalItems.SequenceEqual(this);
+                this.IsDirty = !this._originalItems.SequenceEqual(this);
             }
         }
 
@@ -191,7 +201,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 newChangeable.IsTouchedChanged += this.OnIsTouchedChanged;
             }
 
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
@@ -204,18 +214,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 var newIsDirty = changeableItem.IsDirty;
                 if (oldIsDirty != newIsDirty)
                 {
-                    this.IsDirty = newIsDirty || !this.originalItems.SequenceEqual(this);
+                    this.IsDirty = newIsDirty || !this._originalItems.SequenceEqual(this);
                 }
             }
             else
             {
-                this.IsDirty = !this.originalItems.SequenceEqual(this);
+                this.IsDirty = !this._originalItems.SequenceEqual(this);
             }
         }
 
         private void OnItemValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
@@ -230,7 +240,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
                 else
                 {
-                    this.IsDirty = !this.originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
+                    this.IsDirty = !this._originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
                 }
             }
 
@@ -239,7 +249,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         private void OnChanged(object sender, EventArgs e)
         {
-            if (!this.monitorChildren)
+            if (!this._monitorChildren)
             {
                 return;
             }
@@ -254,7 +264,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
                 else
                 {
-                    this.IsDirty = !this.originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
+                    this.IsDirty = !this._originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
                 }
             }
 
@@ -263,10 +273,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsDirty
         {
-            get => this.isDirty;
+            get => this._isDirty;
             private set
             {
-                if (!this.SetField(ref this.isDirty, value))
+                if (!this.SetField(ref this._isDirty, value))
                 {
                     return;
                 }
@@ -281,10 +291,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsTouched
         {
-            get => this.isTouched;
+            get => this._isTouched;
             private set
             {
-                if (!this.SetField(ref this.isTouched, value))
+                if (!this.SetField(ref this._isTouched, value))
                 {
                     return;
                 }
@@ -301,7 +311,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             try
             {
-                this.monitorChildren = false;
+                this._monitorChildren = false;
 
                 foreach (var item in this.OfType<IChangeable>())
                 {
@@ -310,10 +320,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
             finally
             {
-                this.monitorChildren = true;
+                this._monitorChildren = true;
                 this.IsDirty = false;
                 this.IsTouched = false;
-                this.originalItems = this.ToList();
+                this._originalItems = this.ToList();
             }
         }
 
@@ -321,14 +331,14 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             try
             {
-                this.monitorChildren = false;
+                this._monitorChildren = false;
 
                 this.ClearItems();
-                if (this.originalItems?.Any() == true)
+                if (this._originalItems?.Any() == true)
                 {
-                    this.AddRange(this.originalItems);
+                    this.AddRange(this._originalItems);
 
-                    foreach (var item in this.originalItems.OfType<IChangeable>())
+                    foreach (var item in this._originalItems.OfType<IChangeable>())
                     {
                         item.Reset();
                     }
@@ -336,7 +346,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
             finally
             {
-                this.monitorChildren = true;
+                this._monitorChildren = true;
             }
 
             this.IsDirty = false;
