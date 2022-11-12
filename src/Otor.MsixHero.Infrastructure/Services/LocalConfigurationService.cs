@@ -17,79 +17,96 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder;
 using Dapplo.Log;
+using Newtonsoft.Json.Linq;
+using Otor.MsixHero.Infrastructure.Configuration.Migrations;
 
 namespace Otor.MsixHero.Infrastructure.Services
 {
     public class LocalConfigurationService : IConfigurationService, IDisposable
     {
         private static readonly LogSource Logger = new();
-        private readonly AutoResetEvent lockObject = new AutoResetEvent(true);
 
-        private Configuration.Configuration currentConfiguration;
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+        {
+            Converters = new List<JsonConverter>
+            {
+                new ResolvablePathConverter()
+            },
+            DefaultValueHandling = DefaultValueHandling.Include,
+            DateParseHandling = DateParseHandling.DateTime,
+            TypeNameHandling = TypeNameHandling.None,
+            Formatting = Formatting.Indented,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+        private readonly AutoResetEvent _lockObject = new AutoResetEvent(true);
+
+        private Configuration.Configuration _currentConfiguration;
 
         void IDisposable.Dispose()
         {
-            this.lockObject.Dispose();
+            this._lockObject.Dispose();
         }
 
         public async Task<Configuration.Configuration> GetCurrentConfigurationAsync(bool preferCached =  true, CancellationToken token = default)
         {
-            if (this.currentConfiguration != null && preferCached)
+            if (this._currentConfiguration != null && preferCached)
             {
-                return this.currentConfiguration;
+                return this._currentConfiguration;
             }
 
-            var waited = this.lockObject.WaitOne();
+            var waited = this._lockObject.WaitOne();
 
             try
             {
-                if (this.currentConfiguration != null && preferCached)
+                if (this._currentConfiguration != null && preferCached)
                 {
-                    return this.currentConfiguration;
+                    return this._currentConfiguration;
                 }
 
                 var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
 
                 if (!File.Exists(file))
                 {
-                    var cfg = FixConfiguration(new Configuration.Configuration());
-                    cfg.Update = new UpdateConfiguration
+                    this._currentConfiguration = new Configuration.Configuration();
+                }
+                else
+                {
+                    try
                     {
-                        HideNewVersionInfo = false,
-                        // ReSharper disable once PossibleNullReferenceException
-                        LastShownVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3)
-                    };
+                        await using var fileStream = File.OpenRead(file);
+                        using var textReader = new StreamReader(fileStream);
+                        using var jsonReader = new JsonTextReader(textReader);
+                        var json = await JObject.LoadAsync(jsonReader, token).ConfigureAwait(false);
 
-                    return cfg;
+                        var jsonSerializer = new JsonSerializer();
+                        jsonSerializer.Converters.Add(new ResolvablePathConverter());
+
+                        this._currentConfiguration = json.ToObject<Configuration.Configuration>(jsonSerializer);
+                    }
+                    catch (Exception e)
+                    {
+                        this._currentConfiguration = new Configuration.Configuration();
+                        Logger.Warn().WriteLine(e, Resources.Localization.Infrastructure_Settings_Error_UseDefault);
+                    }
+
+                    var migrations = new Migration(this._currentConfiguration);
+                    migrations.Migrate();
                 }
 
-                var fileContent = await File.ReadAllTextAsync(file, token).ConfigureAwait(false);
-
-                try
-                {
-                    this.currentConfiguration = FixConfiguration(JsonConvert.DeserializeObject<Configuration.Configuration>(fileContent, new ResolvablePathConverter()));
-                }
-                catch (Exception e)
-                {
-                    this.currentConfiguration = FixConfiguration(new Configuration.Configuration());
-                    Logger.Warn().WriteLine(e, Resources.Localization.Infrastructure_Settings_Error_UseDefault);
-                }
-
-                return this.currentConfiguration;
+                return this._currentConfiguration;
             }
             finally
             {
                 if (waited)
                 {
-                    this.lockObject.Set();
+                    this._lockObject.Set();
                 }
             }
         }
@@ -113,23 +130,12 @@ namespace Otor.MsixHero.Infrastructure.Services
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var waited = this.lockObject.WaitOne();
+            var waited = this._lockObject.WaitOne();
             try
             {
                 var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
 
-                var jsonString = JsonConvert.SerializeObject(configuration, new JsonSerializerSettings
-                {
-                    Converters = new List<JsonConverter>
-                    {
-                        new ResolvablePathConverter()
-                    },
-                    DefaultValueHandling = DefaultValueHandling.Include,
-                    DateParseHandling = DateParseHandling.DateTime,
-                    TypeNameHandling = TypeNameHandling.None,
-                    Formatting = Formatting.Indented,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+                var jsonString = JsonConvert.SerializeObject(configuration, SerializerSettings);
 
                 var dirInfo = new FileInfo(file).Directory;
                 if (dirInfo != null && !dirInfo.Exists)
@@ -138,13 +144,13 @@ namespace Otor.MsixHero.Infrastructure.Services
                 }
 
                 await File.WriteAllTextAsync(file, jsonString, cancellationToken).ConfigureAwait(false);
-                this.currentConfiguration = configuration;
+                this._currentConfiguration = configuration;
             }
             finally
             {
                 if (waited)
                 {
-                    this.lockObject.Set();
+                    this._lockObject.Set();
                 }
             }
         }
@@ -159,130 +165,6 @@ namespace Otor.MsixHero.Infrastructure.Services
             {
                 throw e.GetBaseException();
             }
-        }
-
-        private static Configuration.Configuration GetDefault()
-        {
-            var result = new Configuration.Configuration();
-            result.Packages.Sidebar.Visible = true;
-
-            result.AppAttach = new AppAttachConfiguration
-            {
-                ExtractCertificate = true,
-                GenerateScripts = true,
-                JunctionPoint = "C:\\temp\\msix-app-attach",
-                UseMsixMgrForVhdCreation = true
-            };
-
-            result.Packages.StarredApps = new List<string>
-            {
-                "48548MarcinOtorowski.MSIXHero_0.0.0.0_Neutral__0ctrt0jrcjnrt"
-            };
-
-            result.Packages.Tools = new List<ToolListConfiguration>
-            {
-                new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true },
-                new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" },
-                new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" },
-                new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" }
-            };
-
-            return result;
-        }
-
-        private static Configuration.Configuration FixConfiguration(Configuration.Configuration result)
-        {
-            var defaults = GetDefault();
-
-            if (result == null)
-            {
-                result = new Configuration.Configuration();
-            }
-
-            if (result.AppAttach == null)
-            {
-                result.AppAttach = defaults.AppAttach;
-            }
-            else if (result.AppAttach.JunctionPoint == null)
-            {
-                result.AppAttach = defaults.AppAttach;
-            }
-
-            if (result.Signing == null)
-            {
-                result.Signing = defaults.Signing;
-            }
-
-            if (result.UiConfiguration == null)
-            {
-                result.UiConfiguration = defaults.UiConfiguration;
-            }
-
-            if (result.Signing.DefaultOutFolder == null)
-            {
-                result.Signing.DefaultOutFolder = defaults.Signing.DefaultOutFolder;
-            }
-
-            if (result.Packer == null)
-            {
-                result.Packer = defaults.Packer;
-            }
-
-            if (result.Events == null)
-            {
-                result.Events = defaults.Events;
-            }
-
-            if (result.Events.Filter == null)
-            {
-                result.Events.Filter = defaults.Events.Filter;
-            }
-
-            if (result.Events.Sorting == null)
-            {
-                result.Events.Sorting = defaults.Events.Sorting;
-            }
-
-            if (result.Packages == null)
-            {
-                result.Packages = defaults.Packages;
-            }
-
-            if (result.Packages.Tools == null)
-            {
-                result.Packages.Tools = defaults.Packages.Tools;
-            }
-
-            if (result.Packages.StarredApps == null)
-            {
-                result.Packages.StarredApps = defaults.Packages.StarredApps;
-            }
-
-            if (result.Packages.Sidebar == null)
-            {
-                result.Packages.Sidebar = defaults.Packages.Sidebar;
-            }
-
-            if (result.Packages.Filter == null)
-            {
-                result.Packages.Filter = defaults.Packages.Filter;
-            }
-
-            if (result.Packages.Sorting == null)
-            {
-                result.Packages.Sorting = defaults.Packages.Sorting;
-            }
-
-            if (result.Packages.Group == null)
-            {
-                result.Packages.Group = defaults.Packages.Group;
-            }
-            if (result.AppInstaller == null)
-            {
-                result.AppInstaller = defaults.AppInstaller;
-            }
-
-            return result;
         }
     }
 }

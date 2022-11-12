@@ -417,11 +417,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
         private void InitializeTabCertificate()
         {
+            var cfg = this._configurationService.GetCurrentConfiguration();
+
             this.TabCertificate = new CertificateSelectorViewModel(
                 this._signTestService,
                 this._interactionService, 
-                this._uacElevation, 
-                this._configurationService.GetCurrentConfiguration()?.Signing,
+                this._uacElevation,
+                cfg.Signing,
                 this._timeStampFeed);
         }
     }

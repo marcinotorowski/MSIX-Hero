@@ -15,7 +15,9 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Otor.MsixHero.Infrastructure.Configuration
@@ -25,34 +27,25 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     {
         public SigningConfiguration()
         {
-            this.Source = CertificateSource.Unknown;
             this.DefaultOutFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify), "Certificates");
-            this.TimeStampServer = "http://timestamp.globalsign.com/scripts/timstamp.dll";
-            this.DeviceGuard = new DeviceGuardConfiguration();
         }
 
         [DataMember(Name = "defaultOutputFolder")]
         public ResolvableFolder.ResolvablePath DefaultOutFolder { get; set; }
 
-        [DataMember(Name="timeStampServer")]
-        public string TimeStampServer { get; set; }
-
-        [DataMember(Name = "source")]
-        public CertificateSource Source { get; set; }
-
-        [DataMember(Name = "thumbprint")]
-        public string Thumbprint { get; set; }
-
         [DataMember(Name = "showAllCertificates")]
         public bool ShowAllCertificates { get; set; }
 
-        [DataMember(Name = "pfx")]
-        public ResolvableFolder.ResolvablePath PfxPath { get; set; }
+        public List<SigningProfile> Profiles { get; set; }
 
-        [DataMember(Name = "encodedPassword")]
-        public string EncodedPassword { get; set; }
+        public SigningProfile GetSelectedProfile()
+        {
+            if (this.Profiles == null)
+            {
+                return null;
+            }
 
-        [DataMember(Name = "deviceGuard")]
-        public DeviceGuardConfiguration DeviceGuard { get; set; }
+            return this.Profiles.FirstOrDefault(p => p.IsDefault) ?? this.Profiles.FirstOrDefault();
+        }
     }
 }

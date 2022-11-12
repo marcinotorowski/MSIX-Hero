@@ -608,8 +608,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
             this.OnPropertyChanged(nameof(AdminRightsRequired));
             this.OnPropertyChanged(nameof(OkPrompt));
         }
-
-
+        
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             var sourceItem = dropInfo.Data as SharedPackageViewModel;
@@ -737,7 +736,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Vie
 
             this.SelectedPackage = sourceItem;
         }
-
     }
 
     public enum CreationMode

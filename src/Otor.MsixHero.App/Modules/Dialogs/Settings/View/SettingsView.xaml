@@ -10,18 +10,19 @@
              xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View"
-             xmlns:viewModel1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel"
-             xmlns:tools="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools"
-             xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:settingsViewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel"
+             xmlns:msixHeroControls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
-             xmlns:commands1="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
+             xmlns:mvvmCommands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+             xmlns:settingsCommands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.View"
+             xmlns:tabSigningView="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Signing"
+             xmlns:tools="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
              d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance viewModel1:SettingsViewModel}">
+             d:DataContext="{d:DesignInstance settingsViewModel:SettingsViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -34,9 +35,8 @@
     </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <system:Boolean x:Key="False">False</system:Boolean>
+            <system:Boolean x:Key="True">True</system:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -128,7 +128,7 @@
 
                 <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
             </DockPanel>
-            
+
         </Border>
 
         <Border Background="#FBFBFB">
@@ -222,11 +222,9 @@
                 </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Signing}">
                     <b:Interaction.Behaviors>
-                        <validation:ValidationBehavior ValidatedChangeable="{Binding TabSigning}" />
+                        <validation:ValidationBehavior ValidatedChangeable="{Binding TabDigitalSignature}" />
                     </b:Interaction.Behaviors>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <view1:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 0 0 0" />
-                    </ScrollViewer>
+                    <tabSigningView:SigningSettingsTab DataContext="{Binding TabDigitalSignature}" />
                 </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Editors}">
                     <b:Interaction.Behaviors>
@@ -370,258 +368,7 @@
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding Tools}" />
                     </b:Interaction.Behaviors>
-                    <Grid DataContext="{Binding Tools}" DataContextChanged="ToolsDataContextChanged">
-                        <commands1:RoutedCommandHandlers.Commands>
-                            <commands1:RoutedCommandHandler RoutedCommand="New" Command="{Binding NewCommand}" />
-                            <commands1:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding DeleteCommand}" />
-                            <commands1:RoutedCommandHandler RoutedCommand="{x:Static commands:SettingsCommands.OpenIcon}" Command="{Binding ReplaceIconCommand}" />
-                            <commands1:RoutedCommandHandler RoutedCommand="{x:Static commands:SettingsCommands.DeleteIcon}" Command="{Binding DeleteIconCommand}" />
-                        </commands1:RoutedCommandHandlers.Commands>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" MinWidth="240" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="5*" MinWidth="200" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Border
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Background="{StaticResource MsixHero.Brushes.Light7}"
-                            SnapsToDevicePixels="True" UseLayoutRounding="True">
-                            <controls1:ButtonRowPanel>
-                                <Button Command="New" Style="{StaticResource ActionButton}">
-                                    <controls1:LabelWithIcon 
-                                        IsCollapsible="True"
-                                        Icon16x16="{StaticResource SmallPlus}"
-                                        Content="{localization:Loc Dialogs_Settings_Commands_New}"
-                                        Style="{StaticResource ActionLabelWithIcon}" />
-                                </Button>
-                                <Button Command="Delete" Style="{StaticResource ActionButton}">
-                                    <controls1:LabelWithIcon 
-                                        IsCollapsible="True"
-                                        Icon16x16="{StaticResource SmallRemove}"
-                                        Content="{localization:Loc Dialogs_Settings_Commands_Remove}"
-                                        Style="{StaticResource ActionLabelWithIcon}" />
-                                </Button>
-                            </controls1:ButtonRowPanel>
-                        </Border>
-
-
-                        <Border
-                            Background="White" 
-                            SnapsToDevicePixels="True" 
-                            UseLayoutRounding="True"
-                            BorderBrush="{StaticResource CardBorderBrush}"
-                            BorderThickness="{StaticResource CardBorderThickness}"
-                            Grid.Row="1" 
-                            Grid.Column="0" >
-
-                            <DockPanel Margin="0 6 0 0">
-                                <DockPanel DockPanel.Dock="Bottom">
-                                    <controls1:LabelWithIcon 
-                                        Margin="7.5"
-                                        Icon16x16="{StaticResource SmallHelp}">
-                                        <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Reorder_Hint}" TextWrapping="Wrap" />
-                                    </controls1:LabelWithIcon>
-                                </DockPanel>
-                                <ListBox
-                                    BorderThickness="0"
-                                    DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
-                                    ItemsSource="{Binding Items}" BorderBrush="#ccc" 
-                                    SnapsToDevicePixels="True" UseLayoutRounding="True"
-                                    dd:DragDrop.IsDragSource="True"
-                                    dd:DragDrop.IsDropTarget="True"
-                                    dd:DragDrop.DropHandler="{Binding}">
-                                    <ListBox.Resources>
-                                        <system:Boolean x:Key="False">False</system:Boolean>
-                                        <system:Boolean x:Key="True">True</system:Boolean>
-                                    </ListBox.Resources>
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type tools:ToolViewModel}">
-                                            <DockPanel>
-                                                <Image x:Name="PART_Image" Width="24" Height="24" 
-                                                   Stretch="UniformToFill" 
-                                                   SnapsToDevicePixels="True" 
-                                                   UseLayoutRounding="True" 
-                                                   VerticalAlignment="Center" 
-                                                   Margin="0 0 6 0">
-                                                    <Image.Source>
-                                                        <Binding Path="Image" />
-                                                    </Image.Source>
-                                                </Image>
-
-                                                <Viewbox 
-                                                    Visibility="Collapsed" 
-                                                    Width="24" 
-                                                    Height="24" 
-                                                    x:Name="PART_ImageFallback"
-                                                    SnapsToDevicePixels="True" 
-                                                    UseLayoutRounding="True" 
-                                                    VerticalAlignment="Center" 
-                                                    Margin="0 0 6 0">
-                                                    <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
-                                                </Viewbox>
-
-                                                <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
-                                                    ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
-                                                    ToolTipService.ShowDuration="10000" 
-                                                    Margin="6 -4 0 -4" Width="24" Height="24" 
-                                                    Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
-
-                                                    <Border
-                                                        VerticalAlignment="Center"
-                                                        Margin="0 0 0 0"
-                                                        CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
-                                                        <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
-                                                    </Border>
-                                                </Border>
-
-                                                <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
-                                            </DockPanel>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=PART_Image, Path=Source}" Value="{x:Null}">
-                                                    <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
-                                                    <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
-                                                        <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
-                                                        <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <MultiDataTrigger.Setters>
-                                                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                    </MultiDataTrigger.Setters>
-                                                </MultiDataTrigger>
-
-                                                <!--<DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
-                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
-                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>-->
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                    <ListBox.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_Remove}" Command="Delete">
-                                                <MenuItem.Icon>
-                                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <Separator />
-                                            <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_New}" Command="New">
-                                                <MenuItem.Icon>
-                                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorAdd}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                        </ContextMenu>
-                                    </ListBox.ContextMenu>
-                                </ListBox>
-                            </DockPanel>
-                        </Border>
-
-                        <GridSplitter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                  ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
-                        <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" 
-                                  HorizontalScrollBarVisibility="Disabled" 
-                                  DataContext="{Binding Selected}">
-                            <ScrollViewer.Style>
-                                <Style TargetType="ScrollViewer">
-                                    <Style.Triggers>
-                                        <Trigger Property="DataContext" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ScrollViewer.Style>
-                            <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}">
-                                <TextBlock controls1:RequiredAdorner.IsRequired="True" Text="{localization:Loc Dialogs_Settings_Commands_DisplayName}" 
-                                       Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                                <TextBox x:Name="ToolDisplayName" Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-
-                                <TextBlock controls1:RequiredAdorner.IsRequired="True"  Text="{localization:Loc Dialogs_Settings_Commands_Command}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                                <DockPanel>
-                                    <Button DockPanel.Dock="Right" Content="…" Command="{Binding Path.Browse}" Margin="4 0 0 0" />
-                                    <TextBox Text="{Binding Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-                                </DockPanel>
-
-                                <CheckBox Content="{localization:Loc Dialogs_Settings_Commands_RunAsAdmin}" IsChecked="{Binding AsAdmin.CurrentValue}" Margin="0 4 0 0" />
-
-                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Arguments}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                                <TextBox TextWrapping="Wrap" Height="80" Text="{Binding Arguments.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-
-                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Icon}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                                <StackPanel Orientation="Horizontal">
-                                    <Button 
-                                    Height="64"
-                                    Width="64"
-                                    Cursor="Hand"
-                                    Command="{x:Static commands:SettingsCommands.OpenIcon}"
-                                    HorizontalAlignment="Left">
-                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Image 
-                                            Width="32" 
-                                            Height="32" 
-                                            Stretch="UniformToFill" 
-                                            Source="{Binding Image}"
-                                            SnapsToDevicePixels="True" 
-                                            UseLayoutRounding="True">
-                                                <Image.Style>
-                                                    <Style TargetType="Image">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                        <Style.Triggers>
-                                                            <Trigger Property="Source" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Image.Style>
-                                            </Image>
-
-                                            <Viewbox
-                                            Width="32" 
-                                            Height="32" 
-                                            Tag="{Binding Image}"
-                                            SnapsToDevicePixels="True" 
-                                            UseLayoutRounding="True">
-                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
-                                                <Viewbox.Style>
-                                                    <Style TargetType="Viewbox">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <Trigger Property="Tag" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Viewbox.Style>
-                                            </Viewbox>
-                                        </StackPanel>
-                                    </Button>
-                                    <TextBlock Visibility="{Binding HasIcon, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Margin="6 0 0 0">
-                                    <Hyperlink Command="{x:Static commands:SettingsCommands.DeleteIcon}">
-                                        <Run Text="{localization:Loc Dialogs_Settings_Commands_DefaultIcon}" />
-                                    </Hyperlink>
-                                    </TextBlock>
-                                </StackPanel>
-
-                                <TextBlock Visibility="Collapsed" Text="{localization:Loc Dialogs_Settings_Commands_Icon}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                                <DockPanel Visibility="Collapsed" >
-                                    <Button DockPanel.Dock="Right" Content="…" Command="{Binding Icon.Browse}" Margin="4 0 0 0" />
-                                    <TextBox IsReadOnly="True" Text="{Binding Icon.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-                                </DockPanel>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </Grid>
+                    <commands:CommandsSettingsView DataContext="{Binding TabCommands}" />
                 </TabItem>
                 <TabItem Header="App attach">
                     <b:Interaction.Behaviors>
@@ -642,7 +389,7 @@
                             <TextBlock Text="{localization:Loc Dialogs_AppAttach_GenScripts_Header}" TextWrapping="Wrap" />
                         </CheckBox>
 
-                        <controls1:LearnMore 
+                        <msixHeroControls:LearnMore 
                             Margin="22 6 0 0"
                             Link="msix-app-attach/prepare-ps" Topic="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}" />
 

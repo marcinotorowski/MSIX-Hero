@@ -23,22 +23,22 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Helpers.Tiers;
-using Otor.MsixHero.App.Hero.Events;
-using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 using Prism.Services.Dialogs;
+using Expression = System.Linq.Expressions.Expression;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 {
@@ -47,6 +47,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         private readonly IEventAggregator _eventAggregator;
         private readonly IConfigurationService _configurationService;
         private readonly IUacElevation _uacElevation;
+        private readonly IList<ISettingsTabViewModel> _settingsTabs;
         private string _entryPoint;
 
         public SettingsViewModel(
@@ -98,17 +99,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
                 this.PowerShellEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Ps1_Path, interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
             );
+            
+            this.TabDigitalSignature = new SigningSettingsTabViewModel(signTestService, config, interactionService, uacElevation, timeStampFeed);
+            this.TabCommands = new CommandsSettingsTabViewModel(interactionService, eventAggregator, config);
 
-            this.TabSigning.AddChildren
-            (
-                this.CertificateSelector = new CertificateSelectorViewModel(
-                    signTestService,
-                    interactionService, 
-                    uacElevation, 
-                    config.Signing,
-                    timeStampFeed,
-                    true)
-            );
+            this._settingsTabs = new List<ISettingsTabViewModel>
+            {
+                this.TabDigitalSignature,
+                this.TabCommands
+            };
 
             var uiLevel = (int) (config.UiConfiguration?.UxTier ?? UxTierLevel.Auto);
             if (uiLevel < -1 || uiLevel > 2)
@@ -123,6 +122,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
 
             this.AllSettings.AddChildren(
+                this.TabDigitalSignature,
                 this.TabSigning,
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
                 this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
@@ -132,9 +132,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
                 this.TabEditors,
                 this.TabAppAttach,
-                this.Tools = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
             );
+
+            this.AllSettings.AddChildren(this.TabDigitalSignature, this.TabCommands);
+            this.AllSettings.Commit();
+            this.AllSettings.IsValidated = false;
 
             this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
 
@@ -149,7 +152,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.OnPropertyChanged(nameof(this.Title));
             };
         }
-        
+
+        public SigningSettingsTabViewModel TabDigitalSignature { get; }
+
+        public CommandsSettingsTabViewModel TabCommands { get; }
+
         private void TypeOfPathChanged(object sender, ValueChangedEventArgs e)
         {
             ChangeableFileProperty changeable;
@@ -241,13 +248,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableContainer TabEditors { get; } = new ChangeableContainer();
 
         public ChangeableContainer TabSigning { get; } = new ChangeableContainer();
-        
+
         public ChangeableContainer TabAppAttach { get; } = new ChangeableContainer();
-
-        public ToolsConfigurationViewModel Tools { get; }
-
-        public CertificateSelectorViewModel CertificateSelector { get; }
-
+        
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
@@ -310,11 +313,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public bool CanCloseDialog()
         {
-            return true;
+            return this._settingsTabs.All(t => t.CanCloseDialog());
         }
 
         public void OnDialogClosed()
         {
+            foreach (var settingsTab in this._settingsTabs)
+            {
+                settingsTab.OnDialogClosed();
+            }
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
@@ -325,11 +332,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
 
             this.EntryPoint = tab;
+
+            foreach (var settingsTab in this._settingsTabs)
+            {
+                settingsTab.OnDialogOpened(parameters);
+            }
         }
 
         public bool CanSave()
         {
-            return this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid);
+            if (this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid))
+            {
+                return true;
+                // later:
+                return this._settingsTabs.Any(t => t.CanSave());
+            }
+
+            return false;
         }
         private static MemberInfo GetMemberInfo(Expression expression)
         {
@@ -437,72 +456,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this._uacElevation.AsHighestAvailable<IMsixHeroTranslationService>().ChangeCulture(newCulture);
                 MsixHeroTranslation.Instance.ChangeCulture(newCulture);
             }
-            
-            if (this.CertificateSelector.IsTouched)
+
+            foreach (var tab in this._settingsTabs)
             {
-                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Pfx)
+                if (!await tab.UpdateConfiguration(newConfiguration).ConfigureAwait(false))
                 {
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.PfxPath.IsTouched)
-                    {
-                        newConfiguration.Signing.PfxPath.Resolved = this.CertificateSelector.PfxPath.CurrentValue;
-                    }
-
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Password.IsTouched)
-                    {
-                        var encoder = new Crypto();
-                        newConfiguration.Signing.EncodedPassword = encoder.Protect(this.CertificateSelector.Password.CurrentValue);
-                    }
+                    return false;
                 }
-                else
-                {
-                    newConfiguration.Signing.EncodedPassword = null;
-                    newConfiguration.Signing.PfxPath = null;
-                }
-
-                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Personal)
-                {
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.SelectedPersonalCertificate.IsTouched)
-                    {
-                        newConfiguration.Signing.Thumbprint = this.CertificateSelector.SelectedPersonalCertificate.CurrentValue?.Model?.Thumbprint;
-                    }
-                }
-                else
-                {
-                    newConfiguration.Signing.Thumbprint = null;
-                }
-
-                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
-                {
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuard.IsTouched)
-                    {
-                        newConfiguration.Signing.DeviceGuard = this.CertificateSelector.DeviceGuard.CurrentValue;
-                    }
-                }
-                else
-                {
-                    newConfiguration.Signing.DeviceGuard = null;
-                }
-
-                UpdateConfiguration(newConfiguration.Signing, e => e.Source, this.CertificateSelector.Store);
-
-
-                string timeStampUrl;
-                switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
-                {
-                    case TimeStampSelectionMode.None:
-                        timeStampUrl = null;
-                        break;
-                    case TimeStampSelectionMode.Auto:
-                        timeStampUrl = "auto";
-                        break;
-                    case TimeStampSelectionMode.Url:
-                        timeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                newConfiguration.Signing.TimeStampServer = timeStampUrl;
             }
 
             if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
@@ -550,21 +510,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 newConfiguration.Editing.PowerShellEditor.Resolved = null;
             }
             
-            var toolsTouched = this.Tools.IsTouched;
             this.AllSettings.Commit();
-
-            if (toolsTouched)
-            {
-                newConfiguration.Packages.Tools = new List<ToolListConfiguration>(this.Tools.Items.Select(t => (ToolListConfiguration)t));
-            }
-
             await this._configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
-
-            if (toolsTouched)
-            {
-                this._eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
-            }
-            
             return true;
         }
 

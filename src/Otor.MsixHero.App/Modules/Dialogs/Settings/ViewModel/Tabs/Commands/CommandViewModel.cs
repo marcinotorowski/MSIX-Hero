@@ -20,13 +20,13 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 {
-    public class ToolViewModel : ChangeableContainer
+    public class CommandViewModel : ChangeableContainer
     {
         private readonly ToolListConfiguration _model;
 
-        public ToolViewModel(IInteractionService interactionService, ToolListConfiguration model)
+        public CommandViewModel(IInteractionService interactionService, ToolListConfiguration model)
         {
             this._model = model;
             
@@ -56,7 +56,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         public ImageSource Image => WindowsIcons.GetIconFor(string.IsNullOrEmpty(this.Icon.CurrentValue) ? this.Path.CurrentValue : this.Icon.CurrentValue);
 
-        public static implicit operator ToolListConfiguration(ToolViewModel viewModel)
+        public static implicit operator ToolListConfiguration(CommandViewModel viewModel)
         {
             return viewModel._model;
         }

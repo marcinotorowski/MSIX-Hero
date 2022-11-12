@@ -16,73 +16,110 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
+using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using DragDropEffects = System.Windows.DragDropEffects;
+using Prism.Events;
+using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 {
-    public class ToolsConfigurationViewModel : ChangeableContainer, IDropTarget
+    public class CommandsSettingsTabViewModel : ChangeableContainer, ISettingsTabViewModel, IDropTarget
     {
-        private readonly IInteractionService interactionService;
-        private readonly Configuration configuration;
-        private ToolViewModel selected;
-        private ICommand newCommand, deleteCommand, replaceIconCommand, deleteIconCommand;
+        private readonly IInteractionService _interactionService;
+        private readonly IEventAggregator _eventAggregator;
+        private CommandViewModel _selected;
+        private ICommand _newCommand, _deleteCommand, _replaceIconCommand, _deleteIconCommand;
+        private bool _toolsChanged;
 
-        public ToolsConfigurationViewModel(IInteractionService interactionService, Configuration configuration)
+        public CommandsSettingsTabViewModel(
+            IInteractionService interactionService,
+            IEventAggregator eventAggregator,
+            Configuration configuration)
         {
-            this.interactionService = interactionService;
-            this.configuration = configuration;
+            this._eventAggregator = eventAggregator;
+            this._interactionService = interactionService;
 
             var items = configuration?.Packages?.Tools;
             if (items == null)
             {
-                this.Items = new ValidatedChangeableCollection<ToolViewModel>();
+                this.Items = new ValidatedChangeableCollection<CommandViewModel>();
             }
             else
             {
-                this.Items = new ValidatedChangeableCollection<ToolViewModel>(this.ValidateItems, items.Select(item => new ToolViewModel(this.interactionService, item)));
+                this.Items = new ValidatedChangeableCollection<CommandViewModel>(this.ValidateItems, items.Select(item => new CommandViewModel(this._interactionService, item)));
             }
 
             this.AddChild(this.Items);
             this.Selected = this.Items.FirstOrDefault();
         }
 
-        public ChangeableCollection<ToolViewModel> Items { get; }
-
-        public ToolViewModel Selected
+        public bool CanCloseDialog()
         {
-            get => this.selected;
-            set => this.SetField(ref this.selected, value);
+            return true;
         }
 
-        public ICommand NewCommand => this.newCommand ??= new DelegateCommand(this.NewExecute, this.CanNewExecute);
-
-        public ICommand DeleteCommand => this.deleteCommand ??= new DelegateCommand(this.DeleteExecute, this.CanDeleteExecute);
-
-        public ICommand ReplaceIconCommand => this.replaceIconCommand ??= new DelegateCommand(this.ReplaceIconExecute, this.CanReplaceIconExecute);
-        
-        public ICommand DeleteIconCommand => this.deleteIconCommand ??= new DelegateCommand(this.DeleteIconExecute, this.CanDeleteIconExecute);
-
-        public override void Commit()
+        public void OnDialogOpened(IDialogParameters parameters)
         {
-            base.Commit();
-            
-            this.configuration.Packages.Tools.Clear();
+        }
+
+        public void OnDialogClosed()
+        {
+            if (this._toolsChanged)
+            {
+                this._eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Items.Select(t => (ToolListConfiguration)t).ToArray());
+            }
+        }
+
+        public bool CanSave()
+        {
+            return this.Items.IsTouched && (!this.Items.IsValidated || this.Items.IsValid);
+        }
+
+        public ValidatedChangeableCollection<CommandViewModel> Items { get; }
+
+        public CommandViewModel Selected
+        {
+            get => this._selected;
+            set => this.SetField(ref this._selected, value);
+        }
+
+        public ICommand NewCommand => this._newCommand ??= new DelegateCommand(this.NewExecute, this.CanNewExecute);
+
+        public ICommand DeleteCommand => this._deleteCommand ??= new DelegateCommand(this.DeleteExecute, this.CanDeleteExecute);
+
+        public ICommand ReplaceIconCommand => this._replaceIconCommand ??= new DelegateCommand(this.ReplaceIconExecute, this.CanReplaceIconExecute);
+        
+        public ICommand DeleteIconCommand => this._deleteIconCommand ??= new DelegateCommand(this.DeleteIconExecute, this.CanDeleteIconExecute);
+
+        public Task<bool> UpdateConfiguration(Configuration newConfiguration)
+        {
+            if (!this.IsTouched)
+            {
+                return Task.FromResult(false);
+            }
+
+            this._toolsChanged = true;
+            newConfiguration.Packages.Tools.Clear();
+
             foreach (var item in this.Items)
             {
-                this.configuration.Packages.Tools.Add(item);
+                newConfiguration.Packages.Tools.Add(item);
             }
+
+            return Task.FromResult(true);
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            var sourceItem = dropInfo.Data as ToolViewModel;
-            var targetItem = dropInfo.TargetItem as ToolViewModel;
+            var sourceItem = dropInfo.Data as CommandViewModel;
+            var targetItem = dropInfo.TargetItem as CommandViewModel;
 
             if (sourceItem == null || targetItem == null || sourceItem == targetItem)
             {
@@ -135,8 +172,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void DropBefore(IDropInfo dropInfo)
         {
-            var sourceItem = dropInfo.Data as ToolViewModel;
-            var targetItem = dropInfo.TargetItem as ToolViewModel;
+            var sourceItem = dropInfo.Data as CommandViewModel;
+            var targetItem = dropInfo.TargetItem as CommandViewModel;
 
             if (sourceItem == null || targetItem == null)
             {
@@ -170,7 +207,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
             this.Selected = sourceItem;
         }
 
-        private string ValidateItems(IEnumerable<ToolViewModel> collection)
+        private string ValidateItems(IEnumerable<CommandViewModel> collection)
         {
             var invalid = collection.FirstOrDefault(item => !item.IsValid);
             return invalid == null ? null : invalid.ValidationMessage;
@@ -178,8 +215,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void DropAfter(IDropInfo dropInfo)
         {
-            var sourceItem = dropInfo.Data as ToolViewModel;
-            var targetItem = dropInfo.TargetItem as ToolViewModel;
+            var sourceItem = dropInfo.Data as CommandViewModel;
+            var targetItem = dropInfo.TargetItem as CommandViewModel;
 
             if (sourceItem == null || targetItem == null)
             {
@@ -249,7 +286,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void NewExecute()
         {
-            var newItem = new ToolViewModel(this.interactionService, new ToolListConfiguration { Name = Resources.Localization.Dialogs_Settings_Tools_NewTool_Name });
+            var newItem = new CommandViewModel(this._interactionService, new ToolListConfiguration { Name = Resources.Localization.Dialogs_Settings_Tools_NewTool_Name });
             this.Items.Add(newItem);
             this.Selected = newItem;
         }
@@ -261,7 +298,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void ReplaceIconExecute()
         {
-            var result = this.interactionService.SelectFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_Settings_Tools_Filter_Ico + "|*.ico|" + Resources.Localization.Dialogs_Settings_Tools_Filter_Exe + "|*.exe;*.dll"), out var selectedIcon);
+            var result = this._interactionService.SelectFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_Settings_Tools_Filter_Ico + "|*.ico|" + Resources.Localization.Dialogs_Settings_Tools_Filter_Exe + "|*.exe;*.dll"), out var selectedIcon);
             if (result)
             {
                 this.Selected.Icon.CurrentValue = selectedIcon;

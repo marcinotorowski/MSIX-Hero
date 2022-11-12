@@ -21,6 +21,14 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     [DataContract]
     public class AppAttachConfiguration : BaseJsonSetting
     {
+        public AppAttachConfiguration()
+        {
+            this.ExtractCertificate = true;
+            this.GenerateScripts = true;
+            this.JunctionPoint = "C:\\temp\\msix-app-attach";
+            this.UseMsixMgrForVhdCreation = true;
+        }
+
         [DataMember(Name = "useMsixMgrForVhdCreation")]
         public bool UseMsixMgrForVhdCreation { get; set; }
 

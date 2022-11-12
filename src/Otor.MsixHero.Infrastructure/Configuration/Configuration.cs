@@ -32,6 +32,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
             this.AppAttach = new AppAttachConfiguration();
             this.Editing = new EditingConfiguration();
             this.UiConfiguration = new UiConfiguration();
+            this.Advanced = new AdvancedConfiguration();
         }
         
         // ReSharper disable once StringLiteralTypo
@@ -70,5 +71,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "verboseLog")]
         public bool VerboseLogging { get; set; }
+
+        [DataMember(Name = "revision")]
+        public int Revision { get; set; }
     }
 }

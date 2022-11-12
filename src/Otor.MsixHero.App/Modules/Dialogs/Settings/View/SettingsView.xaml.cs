@@ -15,7 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -28,7 +27,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using Dapplo.Log;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -54,7 +52,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             this._packageRunService = packageRunService;
             this.InitializeComponent();
             this.DataContextChanged += this.OnDataContextChanged;
-
+            
             if (this.DataContext is SettingsViewModel dataContext)
             {
                 this.SetEntryPoint(dataContext.EntryPoint);
@@ -137,26 +135,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
         }
-
-        private void ToolsDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue is ToolsConfigurationViewModel dataContext)
-            {
-                dataContext.Items.CollectionChanged += this.ToolsCollectionChanged;
-            }
-        }
-
-        private void ToolsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                this.ToolDisplayName.Focus();
-                FocusManager.SetFocusedElement(this, this.ToolDisplayName);
-                Keyboard.Focus(this.ToolDisplayName);
-                this.ToolDisplayName.SelectAll();
-            }
-        }
-
+        
         private async void OpenLogsClicked(object sender, RoutedEventArgs e)
         {
             try

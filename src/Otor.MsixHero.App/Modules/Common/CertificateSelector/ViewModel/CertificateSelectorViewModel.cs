@@ -54,7 +54,18 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             ISigningTestService signTestService,
             IInteractionService interactionService,
             IUacElevation uacElevation,
-            SigningConfiguration configuration,
+            SigningConfiguration signConfiguration,
+            ITimeStampFeed timeStampFeed,
+            bool allowNoSelection = false) : this(signTestService, interactionService, uacElevation, signConfiguration, signConfiguration.GetSelectedProfile(), timeStampFeed, allowNoSelection)
+        {
+        }
+
+        public CertificateSelectorViewModel(
+            ISigningTestService signTestService,
+            IInteractionService interactionService,
+            IUacElevation uacElevation,
+            SigningConfiguration signConfiguration,
+            SigningProfile signProfile,
             ITimeStampFeed timeStampFeed,
             bool allowNoSelection = false)
         {
@@ -63,14 +74,14 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             this._interactionService = interactionService;
             this._uacElevation = uacElevation;
             this._timeStampFeed = timeStampFeed;
-            var signConfig = configuration ?? new SigningConfiguration();
 
-
-            if (string.IsNullOrEmpty(signConfig.TimeStampServer))
+            var profile = signProfile ?? new SigningProfile();
+            
+            if (string.IsNullOrEmpty(profile.TimeStampServer))
             {
                 this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>();
             }
-            else if (string.Equals("auto", signConfig.TimeStampServer, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("auto", profile.TimeStampServer, StringComparison.OrdinalIgnoreCase))
             {
                 this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>(ViewModel.TimeStampSelectionMode.Auto);
             }
@@ -83,7 +94,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(
                 Resources.Localization.CertificateSelector_TimeStamp,
-                signConfig.TimeStampServer == "auto" ? null : signConfig.TimeStampServer,
+                profile.TimeStampServer == "auto" ? null : profile.TimeStampServer,
                 this.ValidateTimestamp);
 
             this.TimeStampSelectionMode.Changed += (_, _) =>
@@ -91,7 +102,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
                 this.TimeStamp.Validate();
             };
 
-            var newStore = signConfig.Source;
+            var newStore = profile.Source;
             if (newStore == CertificateSource.Unknown && !allowNoSelection)
             {
                 newStore = CertificateSource.Personal;
@@ -99,7 +110,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
 
             this.Store = new ChangeableProperty<CertificateSource>(newStore);
             this.Store.ValueChanged += this.StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty(Resources.Localization.CertificateSelector_PfxPath, interactionService, signConfig.PfxPath?.Resolved, this.ValidatePfxPath)
+            this.PfxPath = new ChangeableFileProperty(Resources.Localization.CertificateSelector_PfxPath, interactionService, profile.PfxPath?.Resolved, this.ValidatePfxPath)
             {
                 Filter = new DialogFilterBuilder().WithCertificates(DialogFilterBuilderPackagesExtensions.CertificateTypes.Pfx).WithAll().Build()
             };
@@ -108,7 +119,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
 
             if (this.Store.CurrentValue == CertificateSource.Pfx)
             {
-                var initialPassword = signConfig.EncodedPassword;
+                var initialPassword = profile.EncodedPassword;
 
                 if (!string.IsNullOrEmpty(initialPassword))
                 {
@@ -126,9 +137,9 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             
             this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
 
-            if (configuration?.DeviceGuard?.EncodedAccessToken != null)
+            if (signProfile?.DeviceGuard?.EncodedAccessToken != null)
             {
-                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>(Resources.Localization.CertificateSelector_DeviceGuard, configuration.DeviceGuard, false, this.ValidateDeviceGuard);
+                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>(Resources.Localization.CertificateSelector_DeviceGuard, signProfile.DeviceGuard, false, this.ValidateDeviceGuard);
             }
             else
             {
@@ -136,8 +147,8 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
             }
 
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(Resources.Localization.CertificateSelector_SelectedCertificate, false, this.ValidateSelectedCertificate);
-            this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
-            this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
+            this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(profile.Thumbprint, !signConfiguration.ShowAllCertificates));
+            this.ShowAllCertificates = new ChangeableProperty<bool>(signConfiguration.ShowAllCertificates);
             this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.TimeStampSelectionMode, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
             
             this.ShowAllCertificates.ValueChanged += async (_, args) =>
@@ -225,7 +236,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
         public ValidatedChangeableProperty<DeviceGuardConfiguration> DeviceGuard { get; }
 
         public ChangeableProperty<CertificateSource> Store { get; }
-
+        
         public ProgressProperty IsTesting { get; } = new ProgressProperty();
 
         public bool AllowNoSelection

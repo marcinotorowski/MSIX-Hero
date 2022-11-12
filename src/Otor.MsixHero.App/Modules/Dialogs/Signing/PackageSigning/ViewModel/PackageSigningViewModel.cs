@@ -102,10 +102,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
             if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
             {
-                if (signConfig?.Source == CertificateSource.DeviceGuard && 
-                    signConfig.DeviceGuard.Subject == this.CertificateSelector.DeviceGuard.CurrentValue.Subject &&
-                    signConfig.DeviceGuard.EncodedAccessToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedAccessToken &&
-                    signConfig.DeviceGuard.EncodedRefreshToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedRefreshToken)
+                var selectedProfile = signConfig?.GetSelectedProfile();
+
+                if (selectedProfile?.Source == CertificateSource.DeviceGuard &&
+                    selectedProfile.DeviceGuard.Subject == this.CertificateSelector.DeviceGuard.CurrentValue.Subject &&
+                    selectedProfile.DeviceGuard.EncodedAccessToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedAccessToken &&
+                    selectedProfile.DeviceGuard.EncodedRefreshToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedRefreshToken)
                 {
                     // do nothing, we have defaults so ideally just no additional command line
                     this.Verb.DeviceGuardInteractive = false;

@@ -66,7 +66,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             {
                 return await this.SignStore(
                     this.Verb.ThumbPrint, 
-                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer,
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
@@ -76,15 +76,14 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 return await this.SignPfx(
                     this.Verb.PfxFilePath, 
                     this.Verb.PfxPassword, 
-                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer,
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             // Signing with Device Guard (interactive)
             if (this.Verb.DeviceGuardInteractive)
             {
-                return await this.SignDeviceGuardInteractive(
-                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
+                return await this.SignDeviceGuardInteractive(this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             // Signing with Device Guard
@@ -107,7 +106,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
                 return await this.SignDeviceGuard(
                     cfg, 
-                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer,
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
@@ -257,16 +256,16 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var config = await this._configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
 
-            if (config.Signing?.Source == CertificateSource.Unknown)
+            if (config.Signing?.GetSelectedProfile()?.Source == CertificateSource.Unknown)
             {
                 // workaround for some migration issues
-                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
+                if (!string.IsNullOrEmpty(config.Signing?.GetSelectedProfile()?.PfxPath))
                 {
-                    config.Signing.Source = CertificateSource.Pfx;
+                    config.Signing.GetSelectedProfile().Source = CertificateSource.Pfx;
                 }
-                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
+                else if (!string.IsNullOrEmpty(config.Signing?.GetSelectedProfile()?.Thumbprint))
                 {
-                    config.Signing.Source = CertificateSource.Personal;
+                    config.Signing.GetSelectedProfile().Source = CertificateSource.Personal;
                 }
                 else
                 {
@@ -277,18 +276,18 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_UsingCurrent).ConfigureAwait(false);
 
-            switch (config.Signing?.Source)
+            switch (config.Signing?.GetSelectedProfile()?.Source)
             {
                 case CertificateSource.Pfx:
                     string password = null;
 
-                    if (!string.IsNullOrEmpty(config.Signing?.EncodedPassword))
+                    if (!string.IsNullOrEmpty(config.Signing?.GetSelectedProfile()?.EncodedPassword))
                     {
                         var crypto = new Crypto();
 
                         try
                         {
-                            password = crypto.UnprotectUnsafe(config.Signing?.EncodedPassword);
+                            password = crypto.UnprotectUnsafe(config.Signing?.GetSelectedProfile()?.EncodedPassword);
                         }
                         catch
                         {
@@ -299,7 +298,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                             {
                                 // ReSharper disable StringLiteralTypo
 #pragma warning disable CS0618
-                                password = crypto.DecryptString(config.Signing?.EncodedPassword, @"$%!!ASddahs55839AA___ąółęńśSdcvv");
+                                password = crypto.DecryptString(config.Signing?.GetSelectedProfile()?.EncodedPassword, @"$%!!ASddahs55839AA___ąółęńśSdcvv");
 #pragma warning restore CS0618
                                 // ReSharper restore StringLiteralTypo
                             }
@@ -311,20 +310,20 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                             }
                         }
                     }
-                    return await this.SignPfx(config.Signing?.PfxPath?.Resolved, password, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
+                    return await this.SignPfx(config.Signing?.GetSelectedProfile()?.PfxPath?.Resolved, password, this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer, !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
 
                 case CertificateSource.Personal:
-                    return await this.SignStore(config.Signing.Thumbprint, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate);
+                    return await this.SignStore(config.Signing?.GetSelectedProfile().Thumbprint, this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer, !this.Verb.NoPublisherUpdate);
                 
                 case CertificateSource.DeviceGuard:
-                    if (config.Signing.DeviceGuard == null)
+                    if (config.Signing?.GetSelectedProfile()?.DeviceGuard == null)
                     {
                         Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig);
                         await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig).ConfigureAwait(false);
                         return StandardExitCodes.ErrorSettings;
                     }
 
-                    return await this.SignDeviceGuard(config.Signing.DeviceGuard.FromConfiguration(), this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer, !this.Verb.NoPublisherUpdate);
+                    return await this.SignDeviceGuard(config.Signing.GetSelectedProfile().DeviceGuard.FromConfiguration(), this.Verb.TimeStampUrl ?? config.Signing?.GetSelectedProfile()?.TimeStampServer, !this.Verb.NoPublisherUpdate);
 
                 default:
                     Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig);

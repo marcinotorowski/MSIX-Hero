@@ -381,6 +381,9 @@
     <Page Update="Modules\Dialogs\Settings\View\SettingsView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Modules\Dialogs\Settings\View\Tabs\Commands\CommandsSettingsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Modules\Dialogs\Signing\CertificateExport\View\CertificateExportView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

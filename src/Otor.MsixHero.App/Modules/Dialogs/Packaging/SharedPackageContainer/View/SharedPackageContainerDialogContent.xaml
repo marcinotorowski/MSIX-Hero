@@ -61,7 +61,8 @@
             </Border>
 
             <Border Background="{StaticResource CardBackgroundBrush}"
-                BorderThickness="{StaticResource CardBorderThickness}" BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="{StaticResource CardBorderThickness}" 
+                BorderBrush="{StaticResource CardBorderBrush}"
                 DockPanel.Dock="Bottom">
                 <DockPanel>
                     <controls:ButtonRowPanel DockPanel.Dock="Top">
@@ -248,8 +249,11 @@
                         </controls:LabelWithIcon>
                     </DockPanel>
 
-                    <ListBox x:Name="ListBox" dd:DragDrop.IsDragSource="True"
-                        MouseDoubleClick="ListBox_OnMouseDoubleClick" KeyDown="ListBox_OnKeyDown"
+                    <ListBox 
+                        x:Name="ListBox"
+                        dd:DragDrop.IsDragSource="True"
+                        MouseDoubleClick="ListBox_OnMouseDoubleClick" 
+                        KeyDown="ListBox_OnKeyDown"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         dd:DragDrop.IsDropTarget="True" 
