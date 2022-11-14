@@ -1,0 +1,144 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Editors.View.EditorSettingsTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_ManifestFiles}" />
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_ManifestFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+
+            <StackPanel>
+                <RadioButton 
+                    GroupName="rt1"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                <RadioButton 
+                    GroupName="rt2"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                <RadioButton 
+                    GroupName="rt3"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+            </StackPanel>
+
+            <DockPanel Margin="22 0 0 8" Visibility="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                <Button DockPanel.Dock="Right" Content="…" Command="{Binding ManifestEditorPath.Browse}" Margin="4 0 0 0" />
+                <TextBox IsEnabled="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding ManifestEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+            </DockPanel>
+
+            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles}" Margin="0 16 0 6" />
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+
+            <StackPanel>
+                <RadioButton 
+                    GroupName="rt4"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                <RadioButton 
+                    GroupName="rt5"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                <RadioButton 
+                    GroupName="rt6"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+            </StackPanel>
+
+            <DockPanel Margin="22 0 0 8" Visibility="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                <Button DockPanel.Dock="Right" Content="…" Command="{Binding AppinstallerEditorPath.Browse}" Margin="4 0 0 0" />
+                <TextBox IsEnabled="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding AppinstallerEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+            </DockPanel>
+
+            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_CompressedPackages}" Margin="0 16 0 6" />
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_CompressedPackages_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+
+            <StackPanel>
+                <RadioButton 
+                    GroupName="rt7"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                <RadioButton 
+                    GroupName="rt8"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                <RadioButton 
+                    GroupName="rt9"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+            </StackPanel>
+
+            <DockPanel Margin="22 0 0 8" Visibility="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                <Button DockPanel.Dock="Right" Content="…" Command="{Binding MsixEditorPath.Browse}" Margin="4 0 0 0" />
+                <TextBox IsEnabled="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding MsixEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+            </DockPanel>
+
+            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_Psf}" Margin="0 16 0 6" />
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_Psf_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+
+            <StackPanel>
+                <RadioButton 
+                    GroupName="rt10"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                <RadioButton 
+                    GroupName="rt11"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                <RadioButton 
+                    GroupName="rt12"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+            </StackPanel>
+
+            <DockPanel Margin="22 0 0 8" Visibility="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                <Button DockPanel.Dock="Right" Content="…" Command="{Binding PsfEditorPath.Browse}" Margin="4 0 0 0" />
+                <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+            </DockPanel>
+
+            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_PowerShell}" Margin="0 16 0 6" />
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_PowerShell_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+
+            <StackPanel>
+                <RadioButton 
+                    GroupName="rt13"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                <RadioButton 
+                    GroupName="rt14"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Ask}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
+                <RadioButton 
+                    GroupName="rt15"
+                    Margin="0 0 0 8"
+                    IsChecked="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" 
+                    Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+            </StackPanel>
+
+            <DockPanel Margin="22 0 0 8" Visibility="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                <Button DockPanel.Dock="Right" Content="…" Command="{Binding PowerShellEditorPath.Browse}" Margin="4 0 0 0" />
+                <TextBox IsEnabled="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PowerShellEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

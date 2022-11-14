@@ -23,7 +23,7 @@
                     CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
                     <TextBlock IsHitTestVisible="False" Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
                     <Border.RenderTransform>
-                        <TranslateTransform X="20" />
+                        <TranslateTransform X="14" Y="-7" />
                     </Border.RenderTransform>
                 </Border>
             </Border>

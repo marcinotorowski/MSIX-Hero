@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.View.OtherSettingsTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:OtherSettingsTabViewModel}">
+    <StackPanel>
+        <Label Content="{localization:Loc Dialogs_Settings_Other_Certificates}" Style="{StaticResource FormLabel}" />
+
+        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Certificates_DefaultFolder}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+        <DockPanel Margin="0 0 0 16">
+            <Button DockPanel.Dock="Right" Content="…" Command="{Binding CertificateOutputPath.Browse}" Margin="4 0 0 0" />
+            <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+        </DockPanel>
+
+        <Label Content="{localization:Loc Dialogs_Settings_Other_Packing}" Style="{StaticResource FormLabel}" />
+        <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 16">
+            <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Packing_Sign}" TextWrapping="Wrap" />
+        </CheckBox>
+
+        <Label Content="{localization:Loc Dialogs_Settings_Other_AppInstaller}" Style="{StaticResource FormLabel}" />
+        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Url}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+        <TextBox Text="{Binding DefaultRemoteLocationPackages.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
+
+        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Url_AppInstaller}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+        <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
+
+        <Label Content="{localization:Loc Dialogs_Settings_Other_Logs}" Style="{StaticResource FormLabel}" />
+        <CheckBox 
+                            Content="{localization:Loc Dialogs_Settings_Other_Logs_Verbose}"
+                            IsChecked="{Binding VerboseLogging.CurrentValue}" 
+                            Margin="0 0 0 6" />
+
+        <StackPanel Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center">
+                                <Hyperlink Click="OpenLogsClicked">
+                                    <Run Text="{localization:Loc Dialogs_Settings_Other_Logs_Open}" />
+                                </Hyperlink>
+            </TextBlock>
+            <TextBlock Visibility="Collapsed" Foreground="#888" x:Name="LogsLoading" Text="{localization:Loc Loading_PleaseWait}" Margin="6 0 0 0" VerticalAlignment="Center" />
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

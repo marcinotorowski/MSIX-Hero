@@ -53,7 +53,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel
                 this.ValidateItems, 
                 items.Select(item => new CommandViewModel(_interactionService, item)));
 
-            this.AddChild(Items);
+            this.AddChild(this.Items);
             this.Selected = Items.FirstOrDefault();
         }
 
@@ -79,10 +79,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel
             }
         }
 
-        public bool CanSave()
-        {
-            return Items.IsTouched && (!Items.IsValidated || Items.IsValid);
-        }
+        public bool CanSave() => !this.IsTouched || !this.IsValidated || this.IsValid;
 
         public ValidatedChangeableCollection<CommandViewModel> Items { get; }
 

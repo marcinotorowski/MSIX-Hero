@@ -63,11 +63,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel
         {
         }
 
-        public bool CanSave()
-        {
-            return true;
-        }
-        
+        public bool CanSave() => !this.IsTouched || !this.IsValidated || this.IsValid;
+
         public Task<bool> OnSaving(Configuration newConfiguration)
         {
             if (this.AppAttachExtractCertificate.IsTouched)

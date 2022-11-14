@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Interface.ViewModel
 {
     public class LanguageViewModel
     {
         public LanguageViewModel(string displayName, string languageCode)
         {
-            this.DisplayName = displayName;
-            this.LanguageCode = languageCode;
+            DisplayName = displayName;
+            LanguageCode = languageCode;
         }
 
         public string DisplayName { get; init; }

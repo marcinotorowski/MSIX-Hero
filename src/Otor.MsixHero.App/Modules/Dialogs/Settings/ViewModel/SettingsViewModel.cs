@@ -16,110 +16,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Helpers.Tiers;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
-using Otor.MsixHero.Elevation;
-using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Localization;
-using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Services.Dialogs;
-using Expression = System.Linq.Expressions.Expression;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 {
     public class SettingsViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IConfigurationService _configurationService;
-        private readonly IUacElevation _uacElevation;
         private readonly IList<ISettingsComponent> _settingsTabs;
         private string _entryPoint;
 
-        public SettingsViewModel(
-            IConfigurationService configurationService,
-            IInteractionService interactionService,
-            ITranslationProvider translationProvider,
-            IUacElevation uacElevation)
+        public SettingsViewModel(IConfigurationService configurationService)
         {
             this._configurationService = configurationService;
-            this._uacElevation = uacElevation;
-
-            var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
-
-            this.AllLanguages.Add(LanguageViewModel.FromAuto());
-            foreach (var translation in translationProvider.GetAvailableTranslations())
-            {
-                this.AllLanguages.Add(LanguageViewModel.FromCultureInfo(translation));
-            }
-            
-            this.TabOther.AddChildren
-            (
-                this.CertificateOutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Settings_Certificate_Output, interactionService, config.Signing?.DefaultOutFolder?.Resolved),
-                this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
-                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_AppInstaller_RemoteMsix, config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_AppInstaller_RemoteUrl, config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri)
-            );
-
-            this.TabEditors.AddChildren
-            (
-                this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.ManifestEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Manifest_Path, interactionService, config.Editing.ManifestEditor.Resolved, this.ValidateManifestEditorPath),
-                this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.MsixEditorType),
-                this.MsixEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Msix_Path, interactionService, config.Editing.MsixEditor.Resolved, this.ValidateMsixEditorPath),
-                this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
-                this.AppinstallerEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_AppInstaller_Path, interactionService, config.Editing.AppInstallerEditor.Resolved, this.ValidateAppInstallerEditorPath),
-                this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
-                this.PsfEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Psf_Path, interactionService, config.Editing.PsfEditor.Resolved, this.ValidatePsfEditorPath),
-                this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
-                this.PowerShellEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Ps1_Path, interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
-            );
-
             this._settingsTabs = new List<ISettingsComponent>();
-
-            var uiLevel = (int) (config.UiConfiguration?.UxTier ?? UxTierLevel.Auto);
-            if (uiLevel < -1 || uiLevel > 2)
-            {
-                uiLevel = -1;
-            }
-
-            var language = config.UiConfiguration?.Language;
-            if (string.IsNullOrEmpty(language))
-            {
-                language = null;
-            }
-
-            this.AllSettings.AddChildren(
-                this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
-                this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration?.DefaultScreen ?? Infrastructure.Configuration.DefaultScreen.Packages),
-                this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
-                this.UxLevel = new ChangeableProperty<int>(uiLevel),
-                this.Language = new ChangeableProperty<string>(language),
-                this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
-                this.TabEditors,
-                this.TabOther
-            );
             
-            this.AllSettings.Commit();
-            this.AllSettings.IsValidated = false;
-
-            this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
-
-            this.AppinstallerEditorType.ValueChanged += this.TypeOfPathChanged;
-            this.ManifestEditorType.ValueChanged += this.TypeOfPathChanged;
-            this.PsfEditorType.ValueChanged += this.TypeOfPathChanged;
-            this.MsixEditorType.ValueChanged += this.TypeOfPathChanged;
-            this.PowerShellEditorType.ValueChanged += this.TypeOfPathChanged;
-
             MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
             {
                 this.OnPropertyChanged(nameof(this.Title));
@@ -137,141 +56,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         }
 
         public SettingsContext Context { get; }
+
+        public ChangeableContainer AllSettings { get; } = new();
         
-        private void TypeOfPathChanged(object sender, ValueChangedEventArgs e)
-        {
-            ChangeableFileProperty changeable;
-
-            if (sender == this.AppinstallerEditorType)
-            {
-                changeable = this.AppinstallerEditorPath;
-            }
-            else if (sender == this.MsixEditorType)
-            {
-                changeable = this.MsixEditorPath;
-            }
-            else if (sender == this.PsfEditorType)
-            {
-                changeable = this.PsfEditorPath;
-            }
-            else if (sender == this.PowerShellEditorType)
-            {
-                changeable = this.PowerShellEditorPath;
-            }
-            else if (sender == this.ManifestEditorType)
-            {
-                changeable = this.ManifestEditorPath;
-            }
-            else
-            {
-                return;
-            }
-
-            if ((EditorType)e.NewValue == EditorType.Custom)
-            {
-                changeable.Browse.Execute(null);
-                // changeable.CurrentValue = "<custom-path>";
-            }
-        }
-
-        public string ValidatePowerShellEditorPath(string value)
-        {
-            if (this.PowerShellEditorType.CurrentValue != EditorType.Custom)
-            {
-                return null;
-            }
-
-            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
-        }
-
-        public string ValidateManifestEditorPath(string value)
-        {
-            if (this.ManifestEditorType.CurrentValue != EditorType.Custom)
-            {
-                return null;
-            }
-
-            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
-        }
-
-        public string ValidateAppInstallerEditorPath(string value)
-        {
-            if (this.AppinstallerEditorType.CurrentValue != EditorType.Custom)
-            {
-                return null;
-            }
-
-            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
-        }
-
-        public string ValidateMsixEditorPath(string value)
-        {
-            if (this.MsixEditorType.CurrentValue != EditorType.Custom)
-            {
-                return null;
-            }
-
-            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
-        }
-
-        public string ValidatePsfEditorPath(string value)
-        {
-            if (this.PsfEditorType.CurrentValue != EditorType.Custom)
-            {
-                return null;
-            }
-
-            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
-        }
-
-        public ChangeableContainer TabOther { get; } = new ChangeableContainer();
-
-        public ChangeableContainer TabEditors { get; } = new ChangeableContainer();
-        
-        public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
-
-        public ChangeableFolderProperty CertificateOutputPath { get; }
-        
-        public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
-
-        public ValidatedChangeableProperty<string> DefaultRemoteLocationAppInstaller { get; }
-
-        public ChangeableProperty<EditorType> ManifestEditorType { get; }
-
-        public ChangeableFileProperty ManifestEditorPath { get; }
-
-        public ChangeableProperty<bool> VerboseLogging { get; }
-
-        public ChangeableProperty<EditorType> MsixEditorType { get; }
-
-        public ChangeableFileProperty MsixEditorPath { get; }
-
-        public ChangeableProperty<EditorType> AppinstallerEditorType { get; }
-
-        public ChangeableFileProperty AppinstallerEditorPath { get; }
-
-        public ChangeableProperty<EditorType> PsfEditorType { get; }
-
-        public ChangeableFileProperty PsfEditorPath { get; }
-
-        public ChangeableProperty<EditorType> PowerShellEditorType { get; }
-
-        public ChangeableFileProperty PowerShellEditorPath { get; }
-
-        public ChangeableProperty<bool> PackerSignByDefault { get; }
-
-        public ChangeableProperty<bool> ConfirmDeletion { get; }
-
-        public ChangeableProperty<bool> ShowReleaseNotes { get; }
-        
-        public ChangeableProperty<int> UxLevel { get; }
-
-        public ChangeableProperty<string> Language { get; }
-
-        public ObservableCollection<LanguageViewModel> AllLanguages { get; } = new ObservableCollection<LanguageViewModel>();
-
-        public ChangeableProperty<DefaultScreen> DefaultScreen { get; }
-
         public string EntryPoint
         {
             get => this._entryPoint;
@@ -322,41 +109,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             return false;
         }
-        private static MemberInfo GetMemberInfo(Expression expression)
-        {
-            var lambda = (LambdaExpression)expression;
-
-            MemberExpression memberExpression;
-            if (lambda.Body is UnaryExpression unaryExpression)
-            {
-                memberExpression = (MemberExpression)unaryExpression.Operand;
-            }
-            else
-            {
-                memberExpression = (MemberExpression)lambda.Body;
-            }
-
-            return memberExpression.Member;
-        }
-        
-        private static void UpdateConfiguration<TObject, TValue>(TObject configObject, Expression<Func<TObject, TValue>> property, ChangeableProperty<TValue> value)
-        {
-            if (!value.IsTouched)
-            {
-                return;
-            }
-            
-            var memberExpression = GetMemberInfo(property);
-            var propertyName = memberExpression.Name;
-
-            var propertyInfo = typeof(TObject).GetProperty(propertyName);
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("Invalid property path.");
-            }
-            
-            propertyInfo.SetValue(configObject, value.CurrentValue);
-        }
         
         public async Task<bool> Save()
         {
@@ -380,110 +132,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 }
             }
             
-            UpdateConfiguration(newConfiguration.Signing, cfg => cfg.DefaultOutFolder, this.CertificateOutputPath);
-            UpdateConfiguration(newConfiguration.Packer, cfg => cfg.SignByDefault, this.PackerSignByDefault);
-            UpdateConfiguration(newConfiguration.UiConfiguration, e => e.DefaultScreen, this.DefaultScreen);
-            UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
-            UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
-
-            UpdateConfiguration(newConfiguration.Editing, e => e.ManifestEditorType, this.ManifestEditorType);
-            UpdateConfiguration(newConfiguration.Editing, e => e.AppInstallerEditorType, this.AppinstallerEditorType);
-            UpdateConfiguration(newConfiguration.Editing, e => e.MsixEditorType, this.MsixEditorType);
-            UpdateConfiguration(newConfiguration.Editing, e => e.PsfEditorType, this.PsfEditorType);
-            UpdateConfiguration(newConfiguration.Editing, e => e.PowerShellEditorType, this.PowerShellEditorType);
-            
-            UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationAppInstaller, this.DefaultRemoteLocationAppInstaller);
-            UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationPackages, this.DefaultRemoteLocationPackages);
-
-            if (this.VerboseLogging.IsTouched)
-            {
-                newConfiguration.VerboseLogging = this.VerboseLogging.CurrentValue;
-                LogManager.Initialize(newConfiguration.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info);
-            }
-
-            if (this.UxLevel.IsTouched)
-            {
-                newConfiguration.UiConfiguration.UxTier = (UxTierLevel) this.UxLevel.CurrentValue;
-                if (newConfiguration.UiConfiguration.UxTier == UxTierLevel.Auto)
-                {
-                    TierController.SetSystemTier();
-                }
-                else
-                {
-                    TierController.SetCurrentTier(this.UxLevel.CurrentValue);
-                }
-            }
-
-            if (this.Language.IsTouched)
-            {
-                newConfiguration.UiConfiguration.Language = this.Language.CurrentValue;
-
-                CultureInfo newCulture;
-                if (string.IsNullOrEmpty(this.Language.CurrentValue))
-                {
-                    newCulture = CultureInfo.InstalledUICulture;
-                }
-                else
-                {
-                    newCulture = ExceptionGuard.Guard(() => CultureInfo.GetCultureInfo(this.Language.CurrentValue));
-                }
-
-                // this is to ensure that in case of a running elevated proxy that is gets signaled we have now a new culture to consider.
-                this._uacElevation.AsHighestAvailable<IMsixHeroTranslationService>().ChangeCulture(newCulture);
-                MsixHeroTranslation.Instance.ChangeCulture(newCulture);
-            }
-
             foreach (var tab in this._settingsTabs)
             {
                 if (!await tab.OnSaving(newConfiguration).ConfigureAwait(false))
                 {
                     return false;
                 }
-            }
-
-            if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.ManifestEditor, e => e.Resolved, this.ManifestEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.ManifestEditor.Resolved = null;
-            }
-
-            if (this.AppinstallerEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.AppInstallerEditor, e => e.Resolved, this.AppinstallerEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.AppInstallerEditor.Resolved = null;
-            }
-
-            if (this.MsixEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.MsixEditor, e => e.Resolved, this.MsixEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.MsixEditor.Resolved = null;
-            }
-
-            if (this.PsfEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.PsfEditor, e => e.Resolved, this.PsfEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.PsfEditor.Resolved = null;
-            }
-
-            if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.PowerShellEditor, e => e.Resolved, this.PowerShellEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.PowerShellEditor.Resolved = null;
             }
             
             this.AllSettings.Commit();
@@ -495,20 +149,5 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 #pragma warning disable CS0067
         public event Action<IDialogResult> RequestClose;
 #pragma warning restore CS0067
-
-        private string ValidateUri(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
-            {
-                return string.Format(Resources.Localization.Dialogs_Settings_Editors_Validation_WrongUrl, value);
-            }
-
-            return null;
-        }
     }
 }

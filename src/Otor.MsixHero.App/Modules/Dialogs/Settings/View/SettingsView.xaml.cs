@@ -16,28 +16,21 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using Dapplo.Log;
 using Microsoft.Xaml.Behaviors;
 using Otor.MsixHero.App.Helpers.Validation;
-using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Interface.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
@@ -47,16 +40,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
     /// </summary>
     public partial class SettingsView
     {
-        private static readonly LogSource Logger = new();
         private readonly IInteractionService _interactionService;
-        private readonly IAppxPackageRunService _packageRunService;
 
         public SettingsView(
-            IInteractionService interactionService,
-            IAppxPackageRunService packageRunService)
+            IInteractionService interactionService)
         {
             this._interactionService = interactionService;
-            this._packageRunService = packageRunService;
             this.InitializeComponent();
             this.DataContextChanged += this.OnDataContextChanged;
             
@@ -70,29 +59,62 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
 
         private void ChangeableRegistered(object sender, ISettingsComponent e)
         {
-            if (e is AppAttachSettingsTabViewModel appAttach)
+            switch (e)
             {
-                var bc = Interaction.GetBehaviors(this.TabAppAttach);
-                bc.Add(new ValidationBehavior
+                case AppAttachSettingsTabViewModel appAttach:
                 {
-                    ValidatedChangeable = appAttach
-                });
-            }
-            else if (e is SigningSettingsTabViewModel signing)
-            {
-                var bc = Interaction.GetBehaviors(this.TabSigning);
-                bc.Add(new ValidationBehavior
+                    var bc = Interaction.GetBehaviors(this.TabAppAttach);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = appAttach
+                    });
+
+                    break;
+                }
+
+                case SigningSettingsTabViewModel signing:
                 {
-                    ValidatedChangeable = signing
-                });
-            }
-            else if (e is CommandsSettingsTabViewModel commands)
-            {
-                var bc = Interaction.GetBehaviors(this.TabCommands);
-                bc.Add(new ValidationBehavior
+                    var bc = Interaction.GetBehaviors(this.TabSigning);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = signing
+                    });
+
+                    break;
+                }
+
+                case CommandsSettingsTabViewModel commands:
                 {
-                    ValidatedChangeable = commands
-                });
+                    var bc = Interaction.GetBehaviors(this.TabCommands);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = commands
+                    });
+
+                    break;
+                }
+
+                case OtherSettingsTabViewModel other:
+                {
+                    var bc = Interaction.GetBehaviors(this.TabCommands);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = other
+                    });
+
+                    break;
+                }
+
+                case InterfaceSettingsTabViewModel inter:
+                {
+                    var bc = Interaction.GetBehaviors(this.TabInterface);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = inter
+                    });
+
+                    break;
+                }
             }
         }
 
@@ -175,53 +197,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             var dataContext = ((SettingsViewModel)this.DataContext);
             e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
-        }
-        
-        private async void OpenLogsClicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ((Hyperlink)sender).IsEnabled = false;
-                this.LogsLoading.Visibility = Visibility.Visible;
-
-                await Task.Delay(30).ConfigureAwait(true);
-
-                var logFile = LogManager.LogFile;
-                if (logFile == null)
-                {
-                    return;
-                }
-
-                var familyName = PackageIdentity.FromCurrentProcess()?.GetFamilyName();
-                if (string.IsNullOrEmpty(familyName))
-                {
-                    Logger.Info().WriteLine($"Opening log file {logFile} in notepad.exe...");
-
-                    ExceptionGuard.Guard(() =>
-                    {
-                        var psi = new ProcessStartInfo
-                        {
-                            UseShellExecute = true,
-                            FileName = "notepad.exe",
-                            Arguments = "\"" + logFile + "\""
-                        };
-
-                        Process.Start(psi);
-                    });
-                }
-                else
-                {
-                    var notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe");
-                    Logger.Info().WriteLine($"Opening log file {logFile} in '{notepadPath}' (inside MSIX container)...");
-                    await this._packageRunService.RunToolInContext(familyName, "MSIXHero", notepadPath, logFile).ConfigureAwait(true);
-
-                }
-            }
-            finally
-            {
-                this.LogsLoading.Visibility = Visibility.Collapsed;
-                ((Hyperlink)sender).IsEnabled = true;
-            }
         }
     }
 }

@@ -555,6 +555,11 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\Dialogs\Settings\Tabs\Advanced\ViewModel\" />
+    <Folder Include="Modules\Dialogs\Settings\Tabs\Advanced\View\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
   </Target>

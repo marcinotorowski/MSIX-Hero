@@ -18,6 +18,12 @@ using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.View;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.View;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Editors.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Editors.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Interface.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Interface.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.View;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.View;
@@ -43,10 +49,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings
             regionManager.RegisterViewWithRegion("TabSigning", typeof(SigningSettingsTabView));
             regionManager.RegisterViewWithRegion("TabCommands", typeof(CommandsSettingsTabView));
             regionManager.RegisterViewWithRegion("TabAppAttach", typeof(AppAttachSettingsTabView));
+            regionManager.RegisterViewWithRegion("TabOther", typeof(OtherSettingsTabView));
+            regionManager.RegisterViewWithRegion("TabInterface", typeof(InterfaceSettingsTabView));
+            regionManager.RegisterViewWithRegion("TabEditor", typeof(EditorSettingsTabView));
 
             ViewModelLocationProvider.Register<SigningSettingsTabView, SigningSettingsTabViewModel>();
             ViewModelLocationProvider.Register<CommandsSettingsTabView, CommandsSettingsTabViewModel>();
             ViewModelLocationProvider.Register<AppAttachSettingsTabView, AppAttachSettingsTabViewModel>();
+            ViewModelLocationProvider.Register<OtherSettingsTabView, OtherSettingsTabViewModel>();
+            ViewModelLocationProvider.Register<InterfaceSettingsTabView, InterfaceSettingsTabViewModel>();
+            ViewModelLocationProvider.Register<EditorSettingsTabView, EditorSettingsTabViewModel>();
         }
     }
 }
