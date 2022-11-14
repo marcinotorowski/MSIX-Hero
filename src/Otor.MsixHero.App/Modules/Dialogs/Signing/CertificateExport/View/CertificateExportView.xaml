@@ -9,6 +9,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.View"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:CertificateExportViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -30,6 +31,7 @@
     </UserControl.Resources>
 
     <dialog:ChangeableDialog
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Icon="{StaticResource VectorExport}"
         SilentCommandLine="{Binding SilentCommandLine}"
         SupportsCommandLineBuilding="True"

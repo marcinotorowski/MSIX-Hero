@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.View"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignWidth="400"
              d:DesignHeight="333"
@@ -32,6 +33,7 @@
         </Style>
     </mvvm:Dialog.WindowStyle>
     <dialog:ChangeableDialog
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Dialog="{Binding}"
         OkButtonLabel="{localization:Loc Dialogs_Pack_OkButton}"
         Icon="{StaticResource VectorPack}">

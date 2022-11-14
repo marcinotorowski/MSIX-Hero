@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
-                    xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl">
+                    xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
+                    xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Colors.xaml" />
@@ -348,7 +349,7 @@
                             </Grid>
 
                             <Border Background="Transparent">
-                                <Border x:Name="PART_Root">
+                                <Border x:Name="PART_Root" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(validation:ValidatedTabItem.ValidationMessage)}"> 
                                     <Grid>
                                         <ContentPresenter 
                                             Margin="8 13 8 11"
@@ -362,7 +363,7 @@
                                         <Border 
                                             Margin="0 2 0 0"
                                             CornerRadius="14" Width="14" Height="14" Background="IndianRed" 
-                                            VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed" x:Name="ValidationBadge">
+                                            VerticalAlignment="Center" HorizontalAlignment="Right" x:Name="ValidationBadge">
                                             <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
                                             <Border.RenderTransform>
                                                 <TranslateTransform X="10" />
@@ -377,20 +378,17 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="ContentSite" Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
                         </Trigger>
-                        <Trigger Property="validation:ValidatedTabItem.IsValid" Value="False">
-                            <!--    <Setter Property="Background" TargetName="PART_Root">
-                                <Setter.Value>
-                                    <RadialGradientBrush Center="0.5 1" GradientOrigin="0.5 1" RadiusX="0.7" RadiusY="0.75" MappingMode="RelativeToBoundingBox">
-                                        <RadialGradientBrush.GradientStops>
-                                            <GradientStop Color="Transparent" Offset="1.0" />
-                                            <GradientStop Color="#33ff0000" Offset="0.0" />
-                                        </RadialGradientBrush.GradientStops>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>-->
-                            <Setter TargetName="ValidationBadge" Property="Visibility" Value="Visible" />
-                            <Setter Property="ToolTip" TargetName="PART_Root" Value="{Binding RelativeSource={RelativeSource Self}, Path=(validation:ValidatedTabItem.ValidationMessage)}" />
+
+                        <Trigger Property="validation:ValidatedTabItem.IsValid" Value="True">
+                            <Setter TargetName="ValidationBadge" Property="Visibility" Value="Collapsed" />
+                            <Setter Property="ToolTip" TargetName="PART_Root" Value="{x:Null}" />
                         </Trigger>
+
+                        <Trigger Property="mvvm:DiscreteValidationObject.DiscreteValidationTemplate" Value="True">
+                            <Setter TargetName="ValidationBadge" Property="Visibility" Value="Collapsed" />
+                            <Setter Property="ToolTip" TargetName="PART_Root" Value="{x:Null}" />
+                        </Trigger>
+
                         <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>

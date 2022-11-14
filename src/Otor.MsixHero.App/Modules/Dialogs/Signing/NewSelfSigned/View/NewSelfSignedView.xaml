@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="400"
              d:DesignWidth="400"
@@ -33,6 +34,7 @@
     </UserControl.Resources>
 
     <dialog:ChangeableDialog
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Dialog="{Binding}"
         SupportsCommandLineBuilding="True"
         SilentCommandLine="{Binding SilentCommandLine}"

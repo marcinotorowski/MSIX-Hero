@@ -65,7 +65,7 @@ namespace Otor.MsixHero.App.Helpers.Validation
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == null || e.PropertyName == nameof(IDataErrorInfo.Error) || e.PropertyName == nameof(IValidatedChangeable.DisplayValidationErrors))
+            if (e.PropertyName == null || e.PropertyName == nameof(IDataErrorInfo.Error))
             {
                 this.SetValues((IValidatedChangeable)sender);
             }
@@ -86,7 +86,7 @@ namespace Otor.MsixHero.App.Helpers.Validation
                     return;
                 }
 
-                if (src.IsValidated && src.DisplayValidationErrors)
+                if (src.IsValidated)
                 {
                     ValidatedTabItem.SetIsValid(this.AssociatedObject, string.IsNullOrEmpty(src.ValidationMessage));
                     ValidatedTabItem.SetValidationMessage(this.AssociatedObject, src.ValidationMessage);

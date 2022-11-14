@@ -175,7 +175,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
-            this.DisplayValidationErrors = true;
+            this.ShowErrors = true;
             
             cancellationToken.ThrowIfCancellationRequested();
             var result = await this._uacElevation.AsHighestAvailable<ISigningManager>().GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);

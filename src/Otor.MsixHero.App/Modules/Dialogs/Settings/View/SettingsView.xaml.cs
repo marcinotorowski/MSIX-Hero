@@ -27,6 +27,7 @@ using Otor.MsixHero.App.Helpers.Validation;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Editors.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Interface.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Other.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
@@ -96,7 +97,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
 
                 case OtherSettingsTabViewModel other:
                 {
-                    var bc = Interaction.GetBehaviors(this.TabCommands);
+                    var bc = Interaction.GetBehaviors(this.TabOther);
                     bc.Add(new ValidationBehavior
                     {
                         ValidatedChangeable = other
@@ -111,6 +112,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
                     bc.Add(new ValidationBehavior
                     {
                         ValidatedChangeable = inter
+                    });
+
+                    break;
+                }
+
+                case EditorSettingsTabViewModel editor:
+                {
+                    var bc = Interaction.GetBehaviors(this.TabEditor);
+                    bc.Add(new ValidationBehavior
+                    {
+                        ValidatedChangeable = editor
                     });
 
                     break;

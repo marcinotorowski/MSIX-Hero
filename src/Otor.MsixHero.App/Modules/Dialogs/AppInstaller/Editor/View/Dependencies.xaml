@@ -9,6 +9,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance tabs:AppInstallerPackagesViewModel}">
     <UserControl.Resources>
@@ -67,7 +68,6 @@
                     Background="Transparent" 
                     VerticalAlignment="Center" 
                     DockPanel.Dock="Right" 
-                    Visibility="Collapsed" 
                     x:Name="PART_Error">
                     <Border
                         VerticalAlignment="Center"
@@ -107,16 +107,12 @@
                 </StackPanel>
             </DockPanel>
             <DataTemplate.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
-                        <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
-                        <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
+                <Trigger Property="mvvm:DiscreteValidationObject.DiscreteValidationTemplate" Value="True">
+                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                </Trigger>
+                <DataTrigger Binding="{Binding IsValid}" Value="{StaticResource True}">
+                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding Type}" Value="{x:Static tabs:AppInstallerBasePackageViewModelType.Bundle}">
                     <Setter Property="Background" TargetName="Border" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
                     <Setter Property="Data" TargetName="Path" Value="{StaticResource SmallCubes}" />

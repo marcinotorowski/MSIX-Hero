@@ -107,21 +107,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         public string Error => this.ValidationMessage;
 
         public string this[string columnName] => null;
-
-        public virtual bool DisplayValidationErrors
-        {
-            get => this.displayValidationErrors;
-            set
-            {
-                this.SetField(ref this.displayValidationErrors, value);
-
-                foreach (var item in this._children.OfType<IValidatedChangeable>())
-                {
-                    item.DisplayValidationErrors = value;
-                }
-            }
-        }
-
+        
         public bool IsDirty
         {
             get => this._isDirty;
@@ -328,7 +314,6 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 // ReSharper disable once InvertIf
                 if (item is IValidatedChangeable validatedItem)
                 {
-                    validatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
                     var wasValidated = this._isValidated;
                     this._isValidated = true;
 

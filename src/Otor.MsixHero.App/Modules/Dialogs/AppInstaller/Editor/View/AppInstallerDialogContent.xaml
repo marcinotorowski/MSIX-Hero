@@ -13,9 +13,11 @@
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Common.PackageSelector.View"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
-    <TabControl SelectionChanged="Selector_OnSelectionChanged">
+    <TabControl 
+        SelectionChanged="Selector_OnSelectionChanged">
         <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Package}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabPackage}" />

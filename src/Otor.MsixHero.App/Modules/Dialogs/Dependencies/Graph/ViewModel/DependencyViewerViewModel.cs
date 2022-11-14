@@ -58,7 +58,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
 
             this.AddChildren(this.Path);
             this.Analyze = new DelegateCommand(this.AnalyzeExecuted);
-            this.IsValidated = false;
 
             this.Export = new DelegateCommand<string>(this.OnExport);
             this.Print = new DelegateCommand(this.OnPrint);
@@ -122,7 +121,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
         
         private async void AnalyzeExecuted()
         {
-            this.IsValidated = true;
+            this.ShowErrors = true;
+            this.OnPropertyChanged(nameof(ShowErrors));
 
             if (!this.IsValid)
             {

@@ -11,6 +11,7 @@
              xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel"
+             xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SigningSettingsTabViewModel}">
     <UserControl.Resources>
@@ -111,6 +112,20 @@
                                 <DockPanel 
                                     IsHitTestVisible="{Binding IsEditing, Converter={StaticResource NegativeConverter}}">
 
+                                    <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
+                                            ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
+                                            ToolTipService.ShowDuration="10000" 
+                                            Margin="6 -4 0 -4" Width="24" Height="24" 
+                                            Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" x:Name="PART_Error">
+
+                                        <Border
+                                            VerticalAlignment="Center"
+                                            Margin="0 0 0 0"
+                                            CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                                            <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                                        </Border>
+                                    </Border>
+                                    
                                     <Border 
                                         x:Name="Logo" 
                                         Background="{StaticResource MsixHero.Brushes.Accent}"
@@ -170,6 +185,17 @@
 
                             </Grid>
                             <DataTemplate.Triggers>
+
+                                <Trigger Property="mvvm:DiscreteValidationObject.DiscreteValidationTemplate" Value="True">
+                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding IsValid}" Value="{StaticResource True}">
+                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsEditing}" Value="{StaticResource True}">
+                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+
                                 <DataTrigger Binding="{Binding IsEditing}" Value="{StaticResource True}">
                                     <Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=textBox}" />
                                 </DataTrigger>

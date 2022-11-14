@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              d:DesignWidth="455"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageSigningViewModel}">
@@ -38,6 +39,7 @@
     </UserControl.CommandBindings>
 
     <dialog:ChangeableDialog
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Dialog="{Binding}"
         OkButtonLabel="{localization:Loc Dialogs_PackageSigning_OkLabel}"
         SupportsCommandLineBuilding="True"

@@ -63,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             
             this.AddChildren(this.Path1, this.Path2);
             this.Compare = new DelegateCommand(this.CompareExecuted);
-            this.IsValidated = false;
+
             this.Export = new DelegateCommand(this.OnExport, this.CanExport);
             this.New = new DelegateCommand(this.OnNew);
             
@@ -139,9 +139,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             this.Path2.Prompt = Resources.Localization.Dialogs_UpdateImpact_File2_HelpText;
         }
 
-        private async Task ComparePackages(bool ignorePackageVersionError = false) 
-        { 
-            this.IsValidated = true;
+        private async Task ComparePackages(bool ignorePackageVersionError = false)
+        {
+            this.ShowErrors = true;
+            this.OnPropertyChanged(nameof(ShowErrors));
 
             if (!this.IsValid)
             {

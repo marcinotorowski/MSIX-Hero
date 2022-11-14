@@ -47,11 +47,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             this.Context = new SettingsContext();
             this.Context.ChangeableRegistered += (_, changeable) =>
             {
-                changeable.IsValidated = false;
                 this.AllSettings.AddChild(changeable);
                 this._settingsTabs.Add(changeable);
-
-                this.AllSettings.IsValidated = false;
             };
         }
 
@@ -97,7 +94,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public bool CanSave()
         {
-            if (this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid))
+            if (!this.AllSettings.IsTouched)
+            {
+                return false;
+            }
+
+            if (!this.ShowErrors || this.AllSettings.IsValid)
             {
                 return true;
             }
@@ -109,13 +111,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             return false;
         }
-        
+
+        public bool ShowErrors { get; private set; }
+
         public async Task<bool> Save()
         {
-            if (!this.AllSettings.IsValidated)
-            {
-                this.AllSettings.IsValidated = true;
-            }
+            this.ShowErrors = true;
+            this.OnPropertyChanged(nameof(ShowErrors));
 
             if (!this.AllSettings.IsValid)
             {

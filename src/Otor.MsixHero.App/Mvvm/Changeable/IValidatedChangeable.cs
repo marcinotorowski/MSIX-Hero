@@ -25,10 +25,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         bool IsValidated { get; set; }
 
         bool IsValid { get; }
-
-        bool DisplayValidationErrors { get; set; }
-
-
+        
         event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
     }
 }

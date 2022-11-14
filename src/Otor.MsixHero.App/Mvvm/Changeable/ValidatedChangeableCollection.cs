@@ -26,7 +26,6 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         private string validationMessage;
         private bool isValidated = true;
         private IReadOnlyCollection<Func<IEnumerable<T>, string>> validators;
-        private bool displayValidationErrors = true;
         private bool suppressValidation;
 
         public ValidatedChangeableCollection(Func<IEnumerable<T>, string> validator = null)
@@ -83,7 +82,6 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             {
                 validatedItem.ValidationStatusChanged -= this.ItemOnValidationStatusChanged;
                 validatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
-                validatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
             }
 
             this.Validate();
@@ -132,7 +130,6 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             if (item is IValidatedChangeable newValidatedItem)
             {
                 newValidatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
-                newValidatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
             }
             
             this.Validate();
@@ -174,21 +171,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         }
 
         public bool IsValid => string.IsNullOrEmpty(this.validationMessage);
-
-        public bool DisplayValidationErrors
-        {
-            get => this.displayValidationErrors;
-            set
-            {
-                this.SetField(ref this.displayValidationErrors, value);
-
-                foreach (var item in this.OfType<IValidatedChangeable>())
-                {
-                    item.DisplayValidationErrors = value;
-                }
-            }
-        }
-
+        
         public IReadOnlyCollection<Func<IEnumerable<T>, string>> Validators
         {
             get => this.validators;
@@ -237,7 +220,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 
                 if (string.IsNullOrEmpty(this.ValidationMessage))
                 {
-                    foreach (var item in this.Items.OfType<IValidatedChangeable>())
+                    foreach (var item in this.Items.OfType<IValidatedChangeable>().Where(x => x.IsValidated))
                     {
                         this.ValidationMessage = item.ValidationMessage;
                         if (!string.IsNullOrEmpty(this.ValidationMessage))

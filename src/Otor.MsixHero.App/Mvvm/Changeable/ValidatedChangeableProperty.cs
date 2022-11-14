@@ -27,16 +27,16 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
     {
         // ReSharper disable once InconsistentNaming
         private string validationMessage;
-        private bool isValidated;
-        private IReadOnlyCollection<Func<T, string>> validators;
-        private bool displayValidationErrors = true;
-        private readonly Func<string> displayName;
+        private bool _isValidated;
+        private IReadOnlyCollection<Func<T, string>> _validators;
+        private bool _displayValidationErrors = true;
+        private readonly Func<string> _displayName;
 
         public ValidatedChangeableProperty(string displayName, T initialValue = default) : base(initialValue)
         {
-            this.displayName = () => displayName;
-            this.isValidated = true;
-            this.validators = Array.Empty<Func<T, string>>();
+            this._displayName = () => displayName;
+            this._isValidated = true;
+            this._validators = Array.Empty<Func<T, string>>();
             this.Validate();
             MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
@@ -51,9 +51,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public ValidatedChangeableProperty(string displayName, T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
         {
-            this.displayName = () => displayName;
-            this.isValidated = isValidated;
-            this.validators = validators;
+            this._displayName = () => displayName;
+            this._isValidated = isValidated;
+            this._validators = validators;
             this.Validate();
             MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
@@ -64,9 +64,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public ValidatedChangeableProperty(Func<string> displayName, T initialValue = default) : base(initialValue)
         {
-            this.displayName = displayName;
-            this.isValidated = true;
-            this.validators = Array.Empty<Func<T, string>>();
+            this._displayName = displayName;
+            this._isValidated = true;
+            this._validators = Array.Empty<Func<T, string>>();
             this.Validate();
             MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
@@ -81,9 +81,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public ValidatedChangeableProperty(Func<string> displayName, T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
         {
-            this.displayName = displayName;
-            this.isValidated = isValidated;
-            this.validators = validators;
+            this._displayName = displayName;
+            this._isValidated = isValidated;
+            this._validators = validators;
             this.Validate();
             MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
@@ -92,14 +92,14 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
         }
 
-        public string DisplayName => this.displayName();
+        public string DisplayName => this._displayName();
 
         public bool DisplayValidationErrors
         {
-            get => this.displayValidationErrors;
+            get => this._displayValidationErrors;
             set
             {
-                if (!this.SetField(ref this.displayValidationErrors, value))
+                if (!this.SetField(ref this._displayValidationErrors, value))
                 {
                     return;
                 }
@@ -132,10 +132,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsValidated
         {
-            get => this.isValidated;
+            get => this._isValidated;
             set
             {
-                if (!this.SetField(ref this.isValidated, value))
+                if (!this.SetField(ref this._isValidated, value))
                 {
                     return;
                 }
@@ -148,32 +148,21 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public IReadOnlyCollection<Func<T, string>> Validators
         {
-            get => this.validators;
+            get => this._validators;
             set
             {
-                this.validators = value;
+                this._validators = value;
                 this.Validate();
             }
         }
 
-        public string Error
-        {
-            get
-            {
-                if (!this.DisplayValidationErrors)
-                {
-                    return null;
-                }
-
-                return this.ValidationMessage;
-            }
-        }
+        public string Error => this.ValidationMessage;
 
         public string this[string columnName]
         {
             get
             {
-                if (!this.displayValidationErrors)
+                if (!this._displayValidationErrors)
                 {
                     return null;
                 }

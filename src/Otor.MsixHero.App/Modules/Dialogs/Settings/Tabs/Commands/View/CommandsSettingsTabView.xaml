@@ -12,6 +12,7 @@
              xmlns:settingsCommands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
              d:DesignWidth="800"
@@ -125,7 +126,7 @@
                                     ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
                                     ToolTipService.ShowDuration="10000" 
                                     Margin="6 -4 0 -4" Width="24" Height="24" 
-                                    Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
+                                    Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" x:Name="PART_Error">
 
                                     <Border
                                         VerticalAlignment="Center"
@@ -143,23 +144,13 @@
                                     <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
                                 </DataTrigger>
 
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
-                                        <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
-                                        <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
+                                <Trigger Property="mvvm1:DiscreteValidationObject.DiscreteValidationTemplate" Value="True">
+                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding IsValid}" Value="{StaticResource True}">
+                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
 
-                                <!--<DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
-                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
-                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>-->
                             </DataTemplate.Triggers>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

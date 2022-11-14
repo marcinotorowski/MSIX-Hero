@@ -115,25 +115,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel
             {
                 return Task.FromResult(true);
             }
-
-            if (!Profiles.IsValidated)
-            {
-                Profiles.IsValidated = true;
-            }
-
+            
             if (!Profiles.IsValid)
             {
                 return Task.FromResult(false);
             }
 
-            if (Profiles.IsTouched)
+            newConfiguration.Signing.Profiles = new List<SigningProfile>();
+            foreach (var item in Profiles)
             {
-                newConfiguration.Signing.Profiles = new List<SigningProfile>();
-                foreach (var item in Profiles)
-                {
-                    var newProfile = item.ToSigningProfile();
-                    newConfiguration.Signing.Profiles.Add(newProfile);
-                }
+                var newProfile = item.ToSigningProfile();
+                newConfiguration.Signing.Profiles.Add(newProfile);
             }
 
             return Task.FromResult(true);

@@ -9,6 +9,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="300"
@@ -31,6 +32,7 @@
         </Style>
     </mvvm:Dialog.WindowStyle>
     <dialog:ChangeableDialog 
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         SupportsCommandLineBuilding="True"
         SilentCommandLine="{Binding SilentCommandLine}"
         Dialog="{Binding}"

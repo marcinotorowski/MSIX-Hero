@@ -13,6 +13,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Modules.Common.Volume"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              d:DataContext="{d:DesignInstance viewModel:NewVolumeViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,6 +34,7 @@
         </Style>
     </mvvm:Dialog.WindowStyle>
     <dialog:ChangeableDialog
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Dialog="{Binding}"
         OkButtonLabel="{localization:Loc Dialogs_NewVolume_OkButton}"
         ShowShield="True"

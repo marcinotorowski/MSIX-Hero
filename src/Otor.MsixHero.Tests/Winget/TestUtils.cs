@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using NUnit.Framework;
 using Otor.MsixHero.Winget.Helpers;
 using Otor.MsixHero.Winget.Yaml;
@@ -48,30 +49,10 @@ namespace Otor.MsixHero.Tests.Winget
             var nonExistingFile = "J:\\test\\file.msix";
 
             var util = new YamlUtils();
-            Assert.Throws<FileNotFoundException>(() =>
-            {
-                try
-                {
-                    util.CalculateHashAsync(new FileInfo(nonExistingFile)).Wait();
-                }
-                catch (AggregateException e)
-                {
-                    throw e.GetBaseException();
-                }
-            });
+            Assert.Throws<FileNotFoundException>(() => util.CalculateHashAsync(new FileInfo(nonExistingFile)).GetAwaiter().GetResult());
 
-            nonExistingFile = "https://msixhero2.net/notexisting.fuk";
-            Assert.Throws<WebException>(() =>
-            {
-                try
-                {
-                    util.CalculateHashAsync(new Uri(nonExistingFile)).Wait();
-                }
-                catch (AggregateException e)
-                {
-                    throw e.GetBaseException();
-                }
-            });
+            nonExistingFile = "https://msixhero2.net/notexisting.link";
+            Assert.Throws<HttpRequestException>(() => util.CalculateHashAsync(new Uri(nonExistingFile)).GetAwaiter().GetResult());
         }
     }
 }

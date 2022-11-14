@@ -4,14 +4,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
-             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View"
-             xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -30,7 +27,7 @@
         <CommandBinding Command="Close" Executed="CloseExecuted" />
     </UserControl.CommandBindings>
 
-    <DockPanel>
+    <DockPanel mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}">
         <Border Visibility="Collapsed" Background="Transparent" TextBlock.Foreground="Black" DockPanel.Dock="Top">
             <DockPanel>
                 <Border 
@@ -100,8 +97,28 @@
             </StackPanel>
         </Border>
 
-        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+        <Border 
             Background="{StaticResource MsixHero.Brushes.Validation}" Padding="8" DockPanel.Dock="Bottom">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Resources>
+                        <system:Boolean x:Key="False">False</system:Boolean>
+                        <system:Boolean x:Key="True">True</system:Boolean>
+                    </Style.Resources>
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding AllSettings.IsValid}" Value="{StaticResource False}" />
+                                <Condition Binding="{Binding ShowErrors}" Value="{StaticResource True}" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <DockPanel>
                 <Border
                     DockPanel.Dock="Left"
@@ -117,7 +134,7 @@
         </Border>
 
         <Border Background="#FBFBFB">
-            <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
+            <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent">
                 <TabItem Header="{localization:Loc Dialogs_Settings_Interface}" x:Name="TabInterface">
                     <ContentControl mvvm:RegionManager.RegionName="TabInterface" mvvm:RegionManager.RegionContext="{Binding Context}" />
                 </TabItem>

@@ -28,57 +28,43 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 {
     public abstract class ChangeableDialogViewModel : ChangeableContainer, IDataErrorInfo, IDialogAware
     {
-        private readonly IInteractionService interactionService;
-        private string title;
-        private bool showApplyButton;
-        private ICommand okCommand;
-        private DelegateCommand<object> closeCommand;
+        private readonly IInteractionService _interactionService;
+        private string _title;
+        private bool _showApplyButton;
+        private ICommand _okCommand;
+        private DelegateCommand<object> _closeCommand;
+        private bool _showErrors;
 
         protected ChangeableDialogViewModel(string title, IInteractionService interactionService) : base(true)
         {
             this.displayValidationErrors = false;
-            this.showApplyButton = true;
+            this._showApplyButton = true;
             this.Title = title.IndexOf("msix hero", StringComparison.OrdinalIgnoreCase) == -1 ? $"{title} - MSIX Hero" : title;
-            this.interactionService = interactionService;
+            this._interactionService = interactionService;
         }
 
         public string Title
         {
-            get => title;
-            set => this.SetField(ref this.title, value);
+            get => _title;
+            set => this.SetField(ref this._title, value);
         }
 
         public bool ShowApplyButton
         {
-            get => showApplyButton;
-            set => this.SetField(ref this.showApplyButton, value);
+            get => _showApplyButton;
+            set => this.SetField(ref this._showApplyButton, value);
+        }
+
+        public bool ShowErrors
+        {
+            get => _showErrors;
+            protected set => this.SetField(ref this._showErrors, value);
         }
 
         public DialogState State { get; } = new DialogState();
 
-        public new string Error
-        {
-            get
-            {
-                if (!this.DisplayValidationErrors)
-                {
-                    return null;
-                }
-
-                return this.ValidationMessage;
-            }
-        }
-
-        public override bool DisplayValidationErrors
-        {
-            get => base.DisplayValidationErrors;
-            set
-            {
-                base.DisplayValidationErrors = value;
-                this.OnPropertyChanged(nameof(Error));
-            }
-        }
-
+        public new string Error => this.ValidationMessage;
+        
         public bool HasError => this.Error != null;
         
         public override string ValidationMessage
@@ -92,9 +78,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
             }
         }
 
-        public ICommand OkCommand => this.okCommand ??= new DelegateCommand<object>(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp));
+        public ICommand OkCommand => this._okCommand ??= new DelegateCommand<object>(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp));
 
-        public DelegateCommand<object> CloseCommand => this.closeCommand ??= new DelegateCommand<object>(param => this.CloseExecute(param is ButtonResult result ? result : default(ButtonResult?)), param => this.CanCloseExecute(param is ButtonResult result ? result : default(ButtonResult?)));
+        public DelegateCommand<object> CloseCommand => this._closeCommand ??= new DelegateCommand<object>(param => this.CloseExecute(param is ButtonResult result ? result : default(ButtonResult?)), param => this.CanCloseExecute(param is ButtonResult result ? result : default(ButtonResult?)));
         
         string IDataErrorInfo.this[string columnName] => null;
 
@@ -120,17 +106,14 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
                 return false;
             }
 
-            return this.IsValid || !this.DisplayValidationErrors;
+            return !this.IsTouched || !this.IsValidated || !this.ShowErrors || this.IsValid;
         }
 
         public event Action<IDialogResult> RequestClose;
 
         private void OkExecute(bool closeWindow)
         {
-            if (!this.DisplayValidationErrors)
-            {
-                this.DisplayValidationErrors = true;
-            }
+            this.ShowErrors = true;
 
             this.OnPropertyChanged(nameof(Error));
             this.OnPropertyChanged(nameof(HasError));
@@ -161,7 +144,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
                     if (t.IsFaulted && t.Exception != null)
                     {
                         var exception = t.Exception.GetBaseException();
-                        var result = this.interactionService.ShowError(exception.Message, exception);
+                        var result = this._interactionService.ShowError(exception.Message, exception);
                         if (result == InteractionResult.Retry)
                         {
                             this.OkExecute(closeWindow);

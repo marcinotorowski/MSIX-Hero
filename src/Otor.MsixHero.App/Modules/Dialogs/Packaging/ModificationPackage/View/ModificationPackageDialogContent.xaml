@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.View"
+             xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <TabControl>

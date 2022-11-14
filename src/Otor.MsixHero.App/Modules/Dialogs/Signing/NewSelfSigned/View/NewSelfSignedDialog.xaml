@@ -7,10 +7,12 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
 
-    <ScrollViewer Margin="0 16 0 0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer
+        Margin="0 16 0 0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <AdornerDecorator>
             <StackPanel>
                 <TextBlock 

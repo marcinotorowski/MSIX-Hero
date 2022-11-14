@@ -12,6 +12,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:WingetViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -33,6 +34,7 @@
     </UserControl.Resources>
 
     <dialog:ChangeableDialog 
+        mvvm1:DiscreteValidationObject.DiscreteValidationTemplate="{Binding ShowErrors, Converter={StaticResource NegativeConverter}}"
         Dialog="{Binding}"
         OkButtonLabel="{localization:Loc Dialogs_Winget_OkButton}"
         Icon="{StaticResource VectorConsole}">
