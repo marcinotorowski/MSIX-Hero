@@ -1,24 +1,58 @@
-﻿using System.Windows;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Collections.Specialized;
-using System.Linq;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
+using Prism.Common;
+using Prism.Regions;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Signing
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.View
 {
-    public partial class SigningSettingsTab
+    public partial class SigningSettingsTabView
     {
-        public SigningSettingsTab()
+        private readonly ObservableObject<object> _context;
+
+        public SigningSettingsTabView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.DataContextChanged += this.OnDataContextChanged;
             this.PreviewMouseDown += this.OnPreviewMouseDown;
 
             if (this.DataContext is SigningSettingsTabViewModel dataContext)
             {
+                dataContext.Profiles.CollectionChanged -= this.ProfilesOnCollectionChanged;
                 dataContext.Profiles.CollectionChanged += this.ProfilesOnCollectionChanged;
+            }
+            else
+            {
+                this.DataContextChanged += OnDataContextChanged;
+            }
+
+            this._context = RegionContext.GetObservableContext(this);
+            this._context.PropertyChanged += ContextOnPropertyChanged;
+        }
+
+        private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var context = (SettingsContext)this._context.Value;
+
+            if (this.DataContext is SigningSettingsTabViewModel dataContext)
+            {
+                context.Register(dataContext);
+            }
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.DataContext is SigningSettingsTabViewModel dataContext)
+            {
+                dataContext.Profiles.CollectionChanged -= this.ProfilesOnCollectionChanged;
+                dataContext.Profiles.CollectionChanged += this.ProfilesOnCollectionChanged;
+                this.DataContextChanged -= this.OnDataContextChanged;
             }
         }
 
@@ -123,15 +157,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Signing
 
             editing.IsEditing = true;
         }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue is SigningSettingsTabViewModel dataContext)
-            {
-                dataContext.Profiles.CollectionChanged += this.ProfilesOnCollectionChanged;
-            }
-        }
-
+        
         private void ProfilesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems?.Count != 1)

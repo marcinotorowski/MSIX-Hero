@@ -20,7 +20,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel
 {
     public class CommandViewModel : ChangeableContainer
     {
@@ -28,33 +28,33 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
         public CommandViewModel(IInteractionService interactionService, ToolListConfiguration model)
         {
-            this._model = model;
-            
-            this.AddChildren(
-                this.Path = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandPath, interactionService, model.Path, ValidatePath),
-                this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_Tools_CommandName, model.Name, ValidateName),
-                this.Icon = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandIcon, interactionService, model.Icon),
-                this.Arguments = new ChangeableProperty<string>(model.Arguments),
-                this.AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
+            _model = model;
+
+            AddChildren(
+                Path = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandPath, interactionService, model.Path, ValidatePath),
+                Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_Tools_CommandName, model.Name, ValidateName),
+                Icon = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandIcon, interactionService, model.Icon),
+                Arguments = new ChangeableProperty<string>(model.Arguments),
+                AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
             );
 
-            this.Path.ValueChanged += (_, _) => { this.OnPropertyChanged(nameof(Image)); };
-            this.Icon.ValueChanged += this.IconOnValueChanged;
+            Path.ValueChanged += (_, _) => { OnPropertyChanged(nameof(Image)); };
+            Icon.ValueChanged += IconOnValueChanged;
         }
 
         public ChangeableFileProperty Path { get; }
 
         public ValidatedChangeableProperty<string> Name { get; }
-        
+
         public ChangeableProperty<string> Arguments { get; }
 
         public ChangeableFileProperty Icon { get; }
 
         public ChangeableProperty<bool> AsAdmin { get; }
 
-        public bool HasIcon => !string.IsNullOrEmpty(this.Icon.CurrentValue);
+        public bool HasIcon => !string.IsNullOrEmpty(Icon.CurrentValue);
 
-        public ImageSource Image => WindowsIcons.GetIconFor(string.IsNullOrEmpty(this.Icon.CurrentValue) ? this.Path.CurrentValue : this.Icon.CurrentValue);
+        public ImageSource Image => WindowsIcons.GetIconFor(string.IsNullOrEmpty(Icon.CurrentValue) ? Path.CurrentValue : Icon.CurrentValue);
 
         public static implicit operator ToolListConfiguration(CommandViewModel viewModel)
         {
@@ -63,29 +63,29 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
         public override void Commit()
         {
-            if (this.Path.IsTouched)
+            if (Path.IsTouched)
             {
-                this._model.Path = this.Path.CurrentValue;
+                _model.Path = Path.CurrentValue;
             }
 
-            if (this.Name.IsTouched)
+            if (Name.IsTouched)
             {
-                this._model.Name = this.Name.CurrentValue;
+                _model.Name = Name.CurrentValue;
             }
 
-            if (this.Icon.IsTouched)
+            if (Icon.IsTouched)
             {
-                this._model.Icon = this.Icon.CurrentValue;
+                _model.Icon = Icon.CurrentValue;
             }
 
-            if (this.AsAdmin.IsTouched)
+            if (AsAdmin.IsTouched)
             {
-                this._model.AsAdmin = this.AsAdmin.CurrentValue;
+                _model.AsAdmin = AsAdmin.CurrentValue;
             }
 
-            if (this.Arguments.IsTouched)
+            if (Arguments.IsTouched)
             {
-                this._model.Arguments = this.Arguments.CurrentValue;
+                _model.Arguments = Arguments.CurrentValue;
             }
 
             base.Commit();
@@ -107,14 +107,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
             {
                 return null;
             }
-            
+
             return Resources.Localization.Dialogs_Settings_Tools_Validation_EmptyName;
         }
 
         private void IconOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            this.OnPropertyChanged(nameof(HasIcon));
-            this.OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(HasIcon));
+            OnPropertyChanged(nameof(Image));
         }
     }
 }

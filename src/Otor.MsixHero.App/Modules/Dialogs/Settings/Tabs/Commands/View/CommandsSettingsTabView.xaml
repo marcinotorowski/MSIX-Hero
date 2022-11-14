@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Commands.CommandsSettingsView"
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.View.CommandsSettingsTabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,11 +11,11 @@
              xmlns:mvvmCommands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:settingsCommands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             xmlns:tools="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
              d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance tools:CommandsSettingsTabViewModel}">
+             d:DataContext="{d:DesignInstance viewModel:CommandsSettingsTabViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <system:Boolean x:Key="False">False</system:Boolean>
@@ -93,7 +93,7 @@
                     dd:DragDrop.IsDropTarget="True"
                     dd:DragDrop.DropHandler="{Binding}">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type tools:CommandViewModel}">
+                        <DataTemplate DataType="{x:Type viewModel:CommandViewModel}">
                             <DockPanel>
                                 <Image 
                                     x:Name="PART_Image" 
@@ -196,7 +196,7 @@
                     </Style.Triggers>
                 </Style>
             </ScrollViewer.Style>
-            <StackPanel d:DataContext="{d:DesignInstance tools:CommandViewModel}">
+            <StackPanel d:DataContext="{d:DesignInstance viewModel:CommandViewModel}">
                 <TextBlock msixHeroControls:RequiredAdorner.IsRequired="True" Text="{localization:Loc Dialogs_Settings_Commands_DisplayName}" 
                                        Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                 <TextBox x:Name="ToolDisplayName" Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />

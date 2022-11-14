@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Text.xaml" />
+        <ResourceDictionary Source="Validation.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type TextBox}" x:Key="{x:Type TextBox}">

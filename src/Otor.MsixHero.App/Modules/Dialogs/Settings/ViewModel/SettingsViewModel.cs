@@ -23,20 +23,16 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Helpers.Tiers;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
-using Otor.MsixHero.Appx.Signing.Testing;
-using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
-using Prism.Events;
 using Prism.Services.Dialogs;
 using Expression = System.Linq.Expressions.Expression;
 
@@ -44,22 +40,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 {
     public class SettingsViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly IEventAggregator _eventAggregator;
         private readonly IConfigurationService _configurationService;
         private readonly IUacElevation _uacElevation;
-        private readonly IList<ISettingsTabViewModel> _settingsTabs;
+        private readonly IList<ISettingsComponent> _settingsTabs;
         private string _entryPoint;
 
         public SettingsViewModel(
-            ISigningTestService signTestService,
-            IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
             ITranslationProvider translationProvider,
-            IUacElevation uacElevation,
-            ITimeStampFeed timeStampFeed)
+            IUacElevation uacElevation)
         {
-            this._eventAggregator = eventAggregator;
             this._configurationService = configurationService;
             this._uacElevation = uacElevation;
 
@@ -70,14 +61,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             {
                 this.AllLanguages.Add(LanguageViewModel.FromCultureInfo(translation));
             }
-
-            this.TabAppAttach.AddChildren(
-                this.AppAttachGenerateScripts = new ChangeableProperty<bool>(config.AppAttach?.GenerateScripts == true),
-                this.AppAttachExtractCertificate = new ChangeableProperty<bool>(config.AppAttach?.ExtractCertificate == true),
-                this.AppAttachJunctionPoint = new ChangeableProperty<string>(config.AppAttach?.JunctionPoint ?? "c:\\temp\\msix-app-attach"),
-                this.AppAttachUseMsixMgr = new ChangeableProperty<bool>(config.AppAttach?.UseMsixMgrForVhdCreation ?? true)
-            );
-
+            
             this.TabOther.AddChildren
             (
                 this.CertificateOutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Settings_Certificate_Output, interactionService, config.Signing?.DefaultOutFolder?.Resolved),
@@ -99,15 +83,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
                 this.PowerShellEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Ps1_Path, interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
             );
-            
-            this.TabDigitalSignature = new SigningSettingsTabViewModel(signTestService, config, interactionService, uacElevation, timeStampFeed);
-            this.TabCommands = new CommandsSettingsTabViewModel(interactionService, eventAggregator, config);
 
-            this._settingsTabs = new List<ISettingsTabViewModel>
-            {
-                this.TabDigitalSignature,
-                this.TabCommands
-            };
+            this._settingsTabs = new List<ISettingsComponent>();
 
             var uiLevel = (int) (config.UiConfiguration?.UxTier ?? UxTierLevel.Auto);
             if (uiLevel < -1 || uiLevel > 2)
@@ -122,20 +99,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
 
             this.AllSettings.AddChildren(
-                this.TabDigitalSignature,
-                this.TabSigning,
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
-                this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
+                this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration?.DefaultScreen ?? Infrastructure.Configuration.DefaultScreen.Packages),
                 this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
                 this.UxLevel = new ChangeableProperty<int>(uiLevel),
                 this.Language = new ChangeableProperty<string>(language),
                 this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
                 this.TabEditors,
-                this.TabAppAttach,
                 this.TabOther
             );
-
-            this.AllSettings.AddChildren(this.TabDigitalSignature, this.TabCommands);
+            
             this.AllSettings.Commit();
             this.AllSettings.IsValidated = false;
 
@@ -151,12 +124,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             {
                 this.OnPropertyChanged(nameof(this.Title));
             };
+
+            this.Context = new SettingsContext();
+            this.Context.ChangeableRegistered += (_, changeable) =>
+            {
+                changeable.IsValidated = false;
+                this.AllSettings.AddChild(changeable);
+                this._settingsTabs.Add(changeable);
+
+                this.AllSettings.IsValidated = false;
+            };
         }
 
-        public SigningSettingsTabViewModel TabDigitalSignature { get; }
-
-        public CommandsSettingsTabViewModel TabCommands { get; }
-
+        public SettingsContext Context { get; }
+        
         private void TypeOfPathChanged(object sender, ValueChangedEventArgs e)
         {
             ChangeableFileProperty changeable;
@@ -246,23 +227,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableContainer TabOther { get; } = new ChangeableContainer();
 
         public ChangeableContainer TabEditors { get; } = new ChangeableContainer();
-
-        public ChangeableContainer TabSigning { get; } = new ChangeableContainer();
-
-        public ChangeableContainer TabAppAttach { get; } = new ChangeableContainer();
         
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
         
-        public ChangeableProperty<string> AppAttachJunctionPoint { get; }
-
-        public ChangeableProperty<bool> AppAttachGenerateScripts { get; }
-
-        public ChangeableProperty<bool> AppAttachExtractCertificate { get; }
-
-        public ChangeableProperty<bool> AppAttachUseMsixMgr { get; }
-
         public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
 
         public ValidatedChangeableProperty<string> DefaultRemoteLocationAppInstaller { get; }
@@ -344,8 +313,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             if (this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid))
             {
                 return true;
-                // later:
-                return this._settingsTabs.Any(t => t.CanSave());
+            }
+
+            if (this._settingsTabs.Any(tab => !tab.CanSave()))
+            {
+                return false;
             }
 
             return false;
@@ -399,15 +371,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
 
             var newConfiguration = await this._configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
+
+            foreach (var tab in this._settingsTabs)
+            {
+                if (!await tab.OnSaving(newConfiguration))
+                {
+                    return false;
+                }
+            }
             
             UpdateConfiguration(newConfiguration.Signing, cfg => cfg.DefaultOutFolder, this.CertificateOutputPath);
             UpdateConfiguration(newConfiguration.Packer, cfg => cfg.SignByDefault, this.PackerSignByDefault);
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.DefaultScreen, this.DefaultScreen);
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
-            UpdateConfiguration(newConfiguration.AppAttach, e => e.GenerateScripts, this.AppAttachGenerateScripts);
-            UpdateConfiguration(newConfiguration.AppAttach, e => e.ExtractCertificate, this.AppAttachExtractCertificate);
-            UpdateConfiguration(newConfiguration.AppAttach, e => e.UseMsixMgrForVhdCreation, this.AppAttachUseMsixMgr);
-            UpdateConfiguration(newConfiguration.AppAttach, e => e.JunctionPoint, this.AppAttachJunctionPoint);
             UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
 
             UpdateConfiguration(newConfiguration.Editing, e => e.ManifestEditorType, this.ManifestEditorType);
@@ -459,7 +435,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             foreach (var tab in this._settingsTabs)
             {
-                if (!await tab.UpdateConfiguration(newConfiguration).ConfigureAwait(false))
+                if (!await tab.OnSaving(newConfiguration).ConfigureAwait(false))
                 {
                     return false;
                 }

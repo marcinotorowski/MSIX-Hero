@@ -26,6 +26,13 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Dapplo.Log;
+using Microsoft.Xaml.Behaviors;
+using Otor.MsixHero.App.Helpers.Validation;
+using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
@@ -57,6 +64,35 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             {
                 this.SetEntryPoint(dataContext.EntryPoint);
                 dataContext.PropertyChanged += this.DataContextOnPropertyChanged;
+                dataContext.Context.ChangeableRegistered += this.ChangeableRegistered;
+            }
+        }
+
+        private void ChangeableRegistered(object sender, ISettingsComponent e)
+        {
+            if (e is AppAttachSettingsTabViewModel appAttach)
+            {
+                var bc = Interaction.GetBehaviors(this.TabAppAttach);
+                bc.Add(new ValidationBehavior
+                {
+                    ValidatedChangeable = appAttach
+                });
+            }
+            else if (e is SigningSettingsTabViewModel signing)
+            {
+                var bc = Interaction.GetBehaviors(this.TabSigning);
+                bc.Add(new ValidationBehavior
+                {
+                    ValidatedChangeable = signing
+                });
+            }
+            else if (e is CommandsSettingsTabViewModel commands)
+            {
+                var bc = Interaction.GetBehaviors(this.TabCommands);
+                bc.Add(new ValidationBehavior
+                {
+                    ValidatedChangeable = commands
+                });
             }
         }
 
@@ -82,7 +118,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
             if (e.NewValue is SettingsViewModel dataContext)
             {
                 this.SetEntryPoint(dataContext.EntryPoint);
+
+                dataContext.PropertyChanged -= this.DataContextOnPropertyChanged;
+                dataContext.Context.ChangeableRegistered -= this.ChangeableRegistered;
+
                 dataContext.PropertyChanged += this.DataContextOnPropertyChanged;
+                dataContext.Context.ChangeableRegistered += this.ChangeableRegistered;
             }
         }
 

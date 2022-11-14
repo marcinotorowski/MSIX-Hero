@@ -311,7 +311,7 @@
                             IsEditable="True"
                             ItemsSource="{Binding TimeStampServers.CurrentValue}"
                             DropDownOpened="ComboBoxOnDropDownOpened" 
-                            Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay}"/>
+                            Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnNotifyDataErrors=True, ValidatesOnDataErrors=True}"/>
                     </controls:ProgressOverlay>
 
                     <Button 

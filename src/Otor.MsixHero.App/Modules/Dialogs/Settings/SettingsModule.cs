@@ -14,11 +14,18 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.AppAttach.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.View;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.View;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
+using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings
 {
@@ -31,6 +38,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            var regionManager = containerProvider.Resolve<IRegionManager>();
+
+            regionManager.RegisterViewWithRegion("TabSigning", typeof(SigningSettingsTabView));
+            regionManager.RegisterViewWithRegion("TabCommands", typeof(CommandsSettingsTabView));
+            regionManager.RegisterViewWithRegion("TabAppAttach", typeof(AppAttachSettingsTabView));
+
+            ViewModelLocationProvider.Register<SigningSettingsTabView, SigningSettingsTabViewModel>();
+            ViewModelLocationProvider.Register<CommandsSettingsTabView, CommandsSettingsTabViewModel>();
+            ViewModelLocationProvider.Register<AppAttachSettingsTabView, AppAttachSettingsTabViewModel>();
         }
     }
 }

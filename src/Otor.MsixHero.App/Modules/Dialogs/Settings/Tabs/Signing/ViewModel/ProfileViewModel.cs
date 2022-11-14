@@ -8,7 +8,7 @@ using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Services;
 using System;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel
 {
     public class SignProfileViewModel : CertificateSelectorViewModel
     {
@@ -23,10 +23,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
             SigningProfile profile,
             ITimeStampFeed timeStampFeed) : base(signTestService, interactionService, uacElevation, signConfiguration, profile, timeStampFeed)
         {
-            this._profile = profile;
-            this.DisplayName = new ValidatedChangeableProperty<string>("Profile name", profile.Name, ValidatorFactory.ValidateNotEmptyField("Display name"));
-            this.IsDefault = new ChangeableProperty<bool>(profile.IsDefault);
-            this.AddChildren(DisplayName, IsDefault);
+            _profile = profile;
+            DisplayName = new ValidatedChangeableProperty<string>("Profile name", profile.Name, ValidatorFactory.ValidateNotEmptyField("Display name"));
+            IsDefault = new ChangeableProperty<bool>(profile.IsDefault);
+            AddChildren(DisplayName, IsDefault);
         }
 
         public ValidatedChangeableProperty<string> DisplayName { get; }

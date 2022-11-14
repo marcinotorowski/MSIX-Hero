@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
 using Otor.MsixHero.App.Hero.Events;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
@@ -28,9 +29,9 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel
 {
-    public class CommandsSettingsTabViewModel : ChangeableContainer, ISettingsTabViewModel, IDropTarget
+    public class CommandsSettingsTabViewModel : ChangeableContainer, ISettingsComponent, IDropTarget
     {
         private readonly IInteractionService _interactionService;
         private readonly IEventAggregator _eventAggregator;
@@ -41,23 +42,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
         public CommandsSettingsTabViewModel(
             IInteractionService interactionService,
             IEventAggregator eventAggregator,
-            Configuration configuration)
+            IConfigurationService configurationService)
         {
             this._eventAggregator = eventAggregator;
             this._interactionService = interactionService;
 
-            var items = configuration?.Packages?.Tools;
-            if (items == null)
-            {
-                this.Items = new ValidatedChangeableCollection<CommandViewModel>();
-            }
-            else
-            {
-                this.Items = new ValidatedChangeableCollection<CommandViewModel>(this.ValidateItems, items.Select(item => new CommandViewModel(this._interactionService, item)));
-            }
+            var items = configurationService.GetCurrentConfiguration().Packages?.Tools ?? Enumerable.Empty<ToolListConfiguration>();
 
-            this.AddChild(this.Items);
-            this.Selected = this.Items.FirstOrDefault();
+            this.Items = new ValidatedChangeableCollection<CommandViewModel>(
+                this.ValidateItems, 
+                items.Select(item => new CommandViewModel(_interactionService, item)));
+
+            this.AddChild(Items);
+            this.Selected = Items.FirstOrDefault();
+        }
+
+        public void Register(ISettingsContext context)
+        {
+            context.Register(this);
         }
 
         public bool CanCloseDialog()
@@ -71,44 +73,44 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
         public void OnDialogClosed()
         {
-            if (this._toolsChanged)
+            if (_toolsChanged)
             {
-                this._eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Items.Select(t => (ToolListConfiguration)t).ToArray());
+                _eventAggregator.GetEvent<ToolsChangedEvent>().Publish(Items.Select(t => (ToolListConfiguration)t).ToArray());
             }
         }
 
         public bool CanSave()
         {
-            return this.Items.IsTouched && (!this.Items.IsValidated || this.Items.IsValid);
+            return Items.IsTouched && (!Items.IsValidated || Items.IsValid);
         }
 
         public ValidatedChangeableCollection<CommandViewModel> Items { get; }
 
         public CommandViewModel Selected
         {
-            get => this._selected;
-            set => this.SetField(ref this._selected, value);
+            get => _selected;
+            set => SetField(ref _selected, value);
         }
 
-        public ICommand NewCommand => this._newCommand ??= new DelegateCommand(this.NewExecute, this.CanNewExecute);
+        public ICommand NewCommand => _newCommand ??= new DelegateCommand(NewExecute, CanNewExecute);
 
-        public ICommand DeleteCommand => this._deleteCommand ??= new DelegateCommand(this.DeleteExecute, this.CanDeleteExecute);
+        public ICommand DeleteCommand => _deleteCommand ??= new DelegateCommand(DeleteExecute, CanDeleteExecute);
 
-        public ICommand ReplaceIconCommand => this._replaceIconCommand ??= new DelegateCommand(this.ReplaceIconExecute, this.CanReplaceIconExecute);
-        
-        public ICommand DeleteIconCommand => this._deleteIconCommand ??= new DelegateCommand(this.DeleteIconExecute, this.CanDeleteIconExecute);
+        public ICommand ReplaceIconCommand => _replaceIconCommand ??= new DelegateCommand(ReplaceIconExecute, CanReplaceIconExecute);
 
-        public Task<bool> UpdateConfiguration(Configuration newConfiguration)
+        public ICommand DeleteIconCommand => _deleteIconCommand ??= new DelegateCommand(DeleteIconExecute, CanDeleteIconExecute);
+
+        public Task<bool> OnSaving(Configuration newConfiguration)
         {
-            if (!this.IsTouched)
+            if (!IsTouched)
             {
                 return Task.FromResult(false);
             }
 
-            this._toolsChanged = true;
+            _toolsChanged = true;
             newConfiguration.Packages.Tools.Clear();
 
-            foreach (var item in this.Items)
+            foreach (var item in Items)
             {
                 newConfiguration.Packages.Tools.Add(item);
             }
@@ -127,9 +129,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
                 return;
             }
 
-            var indexOfSource = this.Items.IndexOf(sourceItem);
-            var indexOfTarget = this.Items.IndexOf(targetItem);
-            
+            var indexOfSource = Items.IndexOf(sourceItem);
+            var indexOfTarget = Items.IndexOf(targetItem);
+
             switch (dropInfo.InsertPosition)
             {
                 case RelativeInsertPosition.BeforeTargetItem:
@@ -162,10 +164,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
             switch (dropInfo.InsertPosition)
             {
                 case RelativeInsertPosition.BeforeTargetItem:
-                    this.DropBefore(dropInfo);
+                    DropBefore(dropInfo);
                     break;
                 case RelativeInsertPosition.AfterTargetItem:
-                    this.DropAfter(dropInfo);
+                    DropAfter(dropInfo);
                     break;
             }
         }
@@ -185,8 +187,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
                 return;
             }
 
-            var indexOfTarget = this.Items.IndexOf(targetItem);
-            var indexOfSource = this.Items.IndexOf(sourceItem);
+            var indexOfTarget = Items.IndexOf(targetItem);
+            var indexOfSource = Items.IndexOf(sourceItem);
 
             if (indexOfSource + 1 == indexOfTarget)
             {
@@ -195,16 +197,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
             if (indexOfTarget > indexOfSource)
             {
-                this.Items.Insert(indexOfTarget, sourceItem);
-                this.Items.RemoveAt(indexOfSource);
+                Items.Insert(indexOfTarget, sourceItem);
+                Items.RemoveAt(indexOfSource);
             }
             else
             {
-                this.Items.RemoveAt(indexOfSource);
-                this.Items.Insert(indexOfTarget, sourceItem);
+                Items.RemoveAt(indexOfSource);
+                Items.Insert(indexOfTarget, sourceItem);
             }
 
-            this.Selected = sourceItem;
+            Selected = sourceItem;
         }
 
         private string ValidateItems(IEnumerable<CommandViewModel> collection)
@@ -228,8 +230,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
                 return;
             }
 
-            var indexOfTarget = this.Items.IndexOf(targetItem) + 1;
-            var indexOfSource = this.Items.IndexOf(sourceItem);
+            var indexOfTarget = Items.IndexOf(targetItem) + 1;
+            var indexOfSource = Items.IndexOf(sourceItem);
 
             if (indexOfSource == indexOfTarget)
             {
@@ -238,57 +240,57 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
             if (indexOfTarget > indexOfSource)
             {
-                this.Items.Insert(indexOfTarget, sourceItem);
-                this.Items.RemoveAt(indexOfSource);
+                Items.Insert(indexOfTarget, sourceItem);
+                Items.RemoveAt(indexOfSource);
             }
             else
             {
-                this.Items.RemoveAt(indexOfSource);
-                this.Items.Insert(indexOfTarget, sourceItem);
+                Items.RemoveAt(indexOfSource);
+                Items.Insert(indexOfTarget, sourceItem);
             }
 
-            this.Selected = sourceItem;
+            Selected = sourceItem;
         }
 
         private void DeleteExecute()
         {
-            if (this.Selected == null)
+            if (Selected == null)
             {
                 return;
             }
 
-            var indexOf = this.Items.IndexOf(this.Selected);
+            var indexOf = Items.IndexOf(Selected);
             if (indexOf == -1)
             {
                 return;
             }
 
-            this.Items.RemoveAt(indexOf);
-            if (indexOf >= this.Items.Count)
+            Items.RemoveAt(indexOf);
+            if (indexOf >= Items.Count)
             {
                 indexOf--;
             }
 
             if (indexOf >= 0)
             {
-                this.Selected = this.Items[indexOf];
+                Selected = Items[indexOf];
             }
             else
             {
-                this.Selected = null;
+                Selected = null;
             }
         }
 
         private bool CanDeleteExecute()
         {
-            return this.Selected != null;
+            return Selected != null;
         }
 
         private void NewExecute()
         {
-            var newItem = new CommandViewModel(this._interactionService, new ToolListConfiguration { Name = Resources.Localization.Dialogs_Settings_Tools_NewTool_Name });
-            this.Items.Add(newItem);
-            this.Selected = newItem;
+            var newItem = new CommandViewModel(_interactionService, new ToolListConfiguration { Name = Resources.Localization.Dialogs_Settings_Tools_NewTool_Name });
+            Items.Add(newItem);
+            Selected = newItem;
         }
 
         private bool CanNewExecute()
@@ -298,27 +300,27 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands
 
         private void ReplaceIconExecute()
         {
-            var result = this._interactionService.SelectFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_Settings_Tools_Filter_Ico + "|*.ico|" + Resources.Localization.Dialogs_Settings_Tools_Filter_Exe + "|*.exe;*.dll"), out var selectedIcon);
+            var result = _interactionService.SelectFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_Settings_Tools_Filter_Ico + "|*.ico|" + Resources.Localization.Dialogs_Settings_Tools_Filter_Exe + "|*.exe;*.dll"), out var selectedIcon);
             if (result)
             {
-                this.Selected.Icon.CurrentValue = selectedIcon;
+                Selected.Icon.CurrentValue = selectedIcon;
             }
         }
 
         private bool CanReplaceIconExecute()
         {
-            return this.Selected != null;
+            return Selected != null;
         }
 
 
         private void DeleteIconExecute()
         {
-            this.Selected.Icon.CurrentValue = null;
+            Selected.Icon.CurrentValue = null;
         }
 
         private bool CanDeleteIconExecute()
         {
-            return !string.IsNullOrEmpty(this.Selected?.Icon.CurrentValue);
+            return !string.IsNullOrEmpty(Selected?.Icon.CurrentValue);
         }
     }
 }

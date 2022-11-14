@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="ValidationControlTemplate">
+        <Grid>
+            <AdornedElementPlaceholder x:Name="PART_Adorned"  Grid.Column="0" />
+            <Border Grid.Column="0" BorderBrush="#33D27162" BorderThickness="2" CornerRadius="0" Focusable="False" IsHitTestVisible="False" />
+            <Border 
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Width="30"
+                Background="Transparent"
+                ToolTipService.InitialShowDelay="0"
+                ToolTipService.ShowDuration="20000"
+                ToolTipService.PlacementTarget="{Binding ElementName=PART_Adorned, Path=AdornedElement}"
+                ToolTipService.VerticalOffset="2"
+                ToolTip="{Binding ElementName=PART_Adorned, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+
+                <Border
+                    IsHitTestVisible="False"
+                    VerticalAlignment="Center"
+                    Margin="0 0 8 0"
+                    CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                    <TextBlock IsHitTestVisible="False" Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                    <Border.RenderTransform>
+                        <TranslateTransform X="20" />
+                    </Border.RenderTransform>
+                </Border>
+            </Border>
+        </Grid>
+    </ControlTemplate>
+</ResourceDictionary>

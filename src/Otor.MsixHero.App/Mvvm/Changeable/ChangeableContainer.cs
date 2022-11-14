@@ -25,15 +25,15 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
     {
         // ReSharper disable once InconsistentNaming
         protected bool displayValidationErrors = true;
-        private readonly HashSet<IChangeable> children = new HashSet<IChangeable>();
-        private readonly HashSet<IChangeable> touchedChildren = new HashSet<IChangeable>();
-        private readonly HashSet<IValidatedChangeable> invalidChildren = new HashSet<IValidatedChangeable>();
-        private readonly HashSet<IChangeable> dirtyChildren = new HashSet<IChangeable>();
-        private bool isDirty;
-        private bool isTouched;
-        private bool suppressListening;
-        private bool isValidated;
-        private string validationMessage;
+        private readonly HashSet<IChangeable> _children = new HashSet<IChangeable>();
+        private readonly HashSet<IChangeable> _touchedChildren = new HashSet<IChangeable>();
+        private readonly HashSet<IValidatedChangeable> _invalidChildren = new HashSet<IValidatedChangeable>();
+        private readonly HashSet<IChangeable> _dirtyChildren = new HashSet<IChangeable>();
+        public bool _isDirty;
+        private bool _isTouched;
+        private bool _suppressListening;
+        private bool _isValidated;
+        private string _validationMessage;
 
         public ChangeableContainer() : this(true)
         {
@@ -45,11 +45,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public ChangeableContainer(bool isValidated, params IChangeable[] initialChildren)
         {
-            this.isValidated = isValidated;
+            this._isValidated = isValidated;
        
             foreach (var item in initialChildren)
             {
-                if (!this.children.Add(item))
+                if (!this._children.Add(item))
                 {
                     continue;
                 }
@@ -71,33 +71,33 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
                 if (item.IsTouched)
                 {
-                    this.touchedChildren.Add(item);
+                    this._touchedChildren.Add(item);
                 }
 
                 if (item.IsDirty)
                 {
-                    this.dirtyChildren.Add(item);
+                    this._dirtyChildren.Add(item);
                 }
 
                 if (item is IValidatedChangeable validatedItem)
                 {
-                    this.isValidated = true;
+                    this._isValidated = true;
 
                     if (!validatedItem.IsValid)
                     {
-                        this.invalidChildren.Add(validatedItem);
+                        this._invalidChildren.Add(validatedItem);
                     }
                 }
             }
 
-            this.isDirty = this.dirtyChildren.Any();
-            this.isTouched = this.touchedChildren.Any();
+            this._isDirty = this._dirtyChildren.Any();
+            this._isTouched = this._touchedChildren.Any();
 
-            if (this.isValidated)
+            if (this._isValidated)
             {
-                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                var validationArgs = new ContainerValidationArgs(this._invalidChildren.Any() ? this._invalidChildren.First().ValidationMessage : null);
                 this.CustomValidation?.Invoke(this, validationArgs);
-                this.validationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
+                this._validationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
                 this.OnPropertyChanged(nameof(IsValid));
             }
         }
@@ -115,7 +115,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             {
                 this.SetField(ref this.displayValidationErrors, value);
 
-                foreach (var item in this.children.OfType<IValidatedChangeable>())
+                foreach (var item in this._children.OfType<IValidatedChangeable>())
                 {
                     item.DisplayValidationErrors = value;
                 }
@@ -124,10 +124,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsDirty
         {
-            get => this.isDirty;
+            get => this._isDirty;
             private set
             {
-                if (!this.SetField(ref this.isDirty, value))
+                if (!this.SetField(ref this._isDirty, value))
                 {
                     return;
                 }
@@ -138,10 +138,10 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsTouched
         {
-            get => this.isTouched;
+            get => this._isTouched;
             private set
             {
-                if (!this.SetField(ref this.isTouched, value))
+                if (!this.SetField(ref this._isTouched, value))
                 {
                     return;
                 }
@@ -150,11 +150,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
         }
 
-        public IReadOnlyCollection<IChangeable> TouchedChildren => this.touchedChildren;
+        public IReadOnlyCollection<IChangeable> TouchedChildren => this._touchedChildren;
 
-        public IReadOnlyCollection<IChangeable> DirtyChildren => this.dirtyChildren;
+        public IReadOnlyCollection<IChangeable> DirtyChildren => this._dirtyChildren;
 
-        public IReadOnlyCollection<IValidatedChangeable> InvalidChildren => this.invalidChildren;
+        public IReadOnlyCollection<IValidatedChangeable> InvalidChildren => this._invalidChildren;
         
         public event EventHandler<ValueChangedEventArgs<bool>> IsDirtyChanged;
 
@@ -164,14 +164,14 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public IReadOnlyCollection<IChangeable> GetChildren()
         {
-            return this.children;
+            return this._children;
         }
 
         public virtual void Commit()
         {
             try
             {
-                this.suppressListening = true;
+                this._suppressListening = true;
 
                 foreach (var item in this.TouchedChildren)
                 {
@@ -181,9 +181,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.IsTouched = false;
                 this.IsDirty = false;
                 
-                if (this.isValidated)
+                if (this._isValidated)
                 {
-                    var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                    var validationArgs = new ContainerValidationArgs(this._invalidChildren.Any() ? this._invalidChildren.First().ValidationMessage : null);
                     this.CustomValidation?.Invoke(this, validationArgs);
                     this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
                 }
@@ -194,7 +194,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
             finally
             {
-                this.suppressListening = false;
+                this._suppressListening = false;
             }
         }
 
@@ -202,7 +202,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             try
             {
-                this.suppressListening = true;
+                this._suppressListening = true;
 
                 var isAnyTouched = false;
 
@@ -215,9 +215,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.IsTouched = isAnyTouched;
                 this.IsDirty = false;
 
-                if (this.isValidated)
+                if (this._isValidated)
                 {
-                    var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                    var validationArgs = new ContainerValidationArgs(this._invalidChildren.Any() ? this._invalidChildren.First().ValidationMessage : null);
                     this.CustomValidation?.Invoke(this, validationArgs);
                     this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
                 }
@@ -228,7 +228,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
             finally
             {
-                this.suppressListening = false;
+                this._suppressListening = false;
             }
         }
 
@@ -251,7 +251,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             foreach (var item in childrenToRemove)
             {
-                if (!this.children.Remove(item))
+                if (!this._children.Remove(item))
                 {
                     continue;
                 }
@@ -269,15 +269,15 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     changeableValue.ValidationStatusChanged -= this.OnSubItemValidationStatusChanged;
                 }
 
-                this.touchedChildren.Remove(item);
-                this.dirtyChildren.Remove(item);
+                this._touchedChildren.Remove(item);
+                this._dirtyChildren.Remove(item);
 
                 // ReSharper disable once InvertIf
                 if (item is IValidatedChangeable validatedItem)
                 {
-                    if (this.invalidChildren.Remove(validatedItem))
+                    if (this._invalidChildren.Remove(validatedItem))
                     {
-                        var otherInvalid = this.invalidChildren.FirstOrDefault();
+                        var otherInvalid = this._invalidChildren.FirstOrDefault();
                         if (otherInvalid == null)
                         {
                             this.ValidationMessage = null;
@@ -290,15 +290,15 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
             }
 
-            this.IsDirty = this.dirtyChildren.Any();
-            this.IsTouched = this.touchedChildren.Any();
+            this.IsDirty = this._dirtyChildren.Any();
+            this.IsTouched = this._touchedChildren.Any();
         }
 
         public void AddChildren(params IChangeable[] childrenToAdd)
         {
             foreach (var item in childrenToAdd)
             {
-                if (!this.children.Add(item))
+                if (!this._children.Add(item))
                 {
                     continue;
                 }
@@ -317,24 +317,24 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
                 if (item.IsTouched)
                 {
-                    this.touchedChildren.Add(item);
+                    this._touchedChildren.Add(item);
                 }
 
                 if (item.IsDirty)
                 {
-                    this.dirtyChildren.Add(item);
+                    this._dirtyChildren.Add(item);
                 }
 
                 // ReSharper disable once InvertIf
                 if (item is IValidatedChangeable validatedItem)
                 {
                     validatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
-                    var wasValidated = this.isValidated;
-                    this.isValidated = true;
+                    var wasValidated = this._isValidated;
+                    this._isValidated = true;
 
                     if (!validatedItem.IsValid)
                     {
-                        this.invalidChildren.Add(validatedItem);
+                        this._invalidChildren.Add(validatedItem);
 
                         if (this.ValidationMessage == null)
                         {
@@ -342,20 +342,20 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         }
                     }
 
-                    if (wasValidated != this.isValidated)
+                    if (wasValidated != this._isValidated)
                     {
                         this.OnPropertyChanged(nameof(IsValidated));
                     }
                 }
             }
 
-            this.IsDirty |= this.dirtyChildren.Any();
-            this.IsTouched |= this.touchedChildren.Any();
+            this.IsDirty |= this._dirtyChildren.Any();
+            this.IsTouched |= this._touchedChildren.Any();
         }
 
         public void Dispose()
         {
-            foreach (var item in this.children)
+            foreach (var item in this._children)
             {
                 item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
                 item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
@@ -366,29 +366,29 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
             }
 
-            this.children.Clear();
-            this.dirtyChildren.Clear();
-            this.invalidChildren.Clear();
-            this.touchedChildren.Clear();
+            this._children.Clear();
+            this._dirtyChildren.Clear();
+            this._invalidChildren.Clear();
+            this._touchedChildren.Clear();
 
             this.IsDirty = false;
             this.IsTouched = false;
 
             this.ValidationMessage = null;
-            this.isValidated = false;
-            this.OnPropertyChanged(nameof(isValidated));
+            this._isValidated = false;
+            this.OnPropertyChanged(nameof(_isValidated));
         }
 
         public virtual string ValidationMessage
         {
-            get => this.validationMessage;
+            get => this._validationMessage;
             protected set
             {
                 var validationArgs = new ContainerValidationArgs(value);
                 this.CustomValidation?.Invoke(this, validationArgs);
 
                 value = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
-                if (!this.SetField(ref this.validationMessage, value))
+                if (!this.SetField(ref this._validationMessage, value))
                 {
                     return;
                 }
@@ -403,17 +403,17 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool IsValidated
         {
-            get => this.isValidated;
+            get => this._isValidated;
             set
             {
-                if (!this.SetField(ref this.isValidated, value))
+                if (!this.SetField(ref this._isValidated, value))
                 {
                     return;
                 }
 
-                this.invalidChildren.Clear();
+                this._invalidChildren.Clear();
 
-                foreach (var item in this.children.OfType<IValidatedChangeable>())
+                foreach (var item in this._children.OfType<IValidatedChangeable>())
                 {
                     if (item.IsValidated == value)
                     {
@@ -425,12 +425,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
                 if (value)
                 {
-                    foreach (var item in this.children.OfType<IValidatedChangeable>().Where(item => !item.IsValid))
+                    foreach (var item in this._children.OfType<IValidatedChangeable>().Where(item => !item.IsValid))
                     {
-                        this.invalidChildren.Add(item);
+                        this._invalidChildren.Add(item);
                     }
 
-                    this.ValidationMessage = this.invalidChildren.FirstOrDefault()?.ValidationMessage;
+                    this.ValidationMessage = this._invalidChildren.FirstOrDefault()?.ValidationMessage;
                 }
                 else
                 {
@@ -445,28 +445,28 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         private void OnSubItemValidationStatusChanged(object sender, ValueChangedEventArgs<string> e)
         {
-            if (this.suppressListening)
+            if (this._suppressListening)
             {
                 return;
             }
             
             if (string.IsNullOrEmpty(e.NewValue))
             {
-                this.invalidChildren.Remove((IValidatedChangeable)sender);
+                this._invalidChildren.Remove((IValidatedChangeable)sender);
             }
             else
             {
-                this.invalidChildren.Add((IValidatedChangeable)sender);
+                this._invalidChildren.Add((IValidatedChangeable)sender);
             }
 
-            this.ValidationMessage = this.invalidChildren.FirstOrDefault()?.ValidationMessage;
+            this.ValidationMessage = this._invalidChildren.FirstOrDefault()?.ValidationMessage;
         }
 
         private void OnSubItemValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (this.isValidated)
+            if (this._isValidated)
             {
-                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                var validationArgs = new ContainerValidationArgs(this._invalidChildren.Any() ? this._invalidChildren.First().ValidationMessage : null);
                 this.CustomValidation?.Invoke(this, validationArgs);
                 this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
@@ -476,9 +476,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         private void OnSubItemChanged(object sender, EventArgs e)
         {
-            if (this.isValidated)
+            if (this._isValidated)
             {
-                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                var validationArgs = new ContainerValidationArgs(this._invalidChildren.Any() ? this._invalidChildren.First().ValidationMessage : null);
                 this.CustomValidation?.Invoke(this, validationArgs);
                 this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
@@ -488,7 +488,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         private void OnSubItemDirtyChanged(object sender, ValueChangedEventArgs<bool> e)
         {
-            if (this.suppressListening)
+            if (this._suppressListening)
             {
                 return;
             }
@@ -496,18 +496,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             if (e.NewValue)
             {
                 this.IsDirty = true;
-                this.dirtyChildren.Add((IChangeable)sender);
+                this._dirtyChildren.Add((IChangeable)sender);
             }
             else
             {
-                this.dirtyChildren.Remove((IChangeable)sender);
-                this.IsDirty = this.dirtyChildren.Any(d => d.IsDirty);
+                this._dirtyChildren.Remove((IChangeable)sender);
+                this.IsDirty = this._dirtyChildren.Any(d => d.IsDirty);
             }
         }
 
         private void OnSubItemTouchedChanged(object sender, ValueChangedEventArgs<bool> e)
         {
-            if (this.suppressListening)
+            if (this._suppressListening)
             {
                 return;
             }
@@ -515,12 +515,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             if (e.NewValue)
             {
                 this.IsTouched = true;
-                this.touchedChildren.Add((IChangeable)sender);
+                this._touchedChildren.Add((IChangeable)sender);
             }
             else
             {
-                this.touchedChildren.Remove((IChangeable)sender);
-                this.IsTouched = this.touchedChildren.Any(d => d.IsTouched);
+                this._touchedChildren.Remove((IChangeable)sender);
+                this.IsTouched = this._touchedChildren.Any(d => d.IsTouched);
             }
         }
     }

@@ -15,30 +15,38 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
-using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.ViewModel;
+using Prism.Common;
+using Prism.Regions;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Commands
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Commands.View
 {
-    /// <summary>
-    /// Interaction logic for SettingsView.xaml
-    /// </summary>
-    public partial class CommandsSettingsView
+    public partial class CommandsSettingsTabView
     {
-        public CommandsSettingsView()
+        private readonly ObservableObject<object> _context;
+
+        public CommandsSettingsTabView()
         {
             this.InitializeComponent();
+
+            this._context = RegionContext.GetObservableContext(this);
+            this._context.PropertyChanged += ContextOnPropertyChanged;
         }
 
-        private void CanSave(object sender, CanExecuteRoutedEventArgs e)
+        private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var dataContext = ((SettingsViewModel)this.DataContext);
-            e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
-            e.ContinueRouting = !e.CanExecute;
-        }
+            var context = (SettingsContext)this._context.Value;
 
+            if (this.DataContext is ISettingsComponent dataContext)
+            {
+                context.Register(dataContext);
+            }
+        }
+        
         private void CommandsDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is CommandsSettingsTabViewModel dataContext)

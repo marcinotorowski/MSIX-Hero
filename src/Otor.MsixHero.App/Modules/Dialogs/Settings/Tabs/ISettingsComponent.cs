@@ -15,13 +15,17 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Threading.Tasks;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
+using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs;
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs;
 
-public interface ISettingsTabViewModel
+public interface ISettingsComponent : IValidatedChangeable
 {
+    void Register(ISettingsContext context);
+
     bool CanCloseDialog();
 
     void OnDialogOpened(IDialogParameters parameters);
@@ -30,5 +34,5 @@ public interface ISettingsTabViewModel
 
     bool CanSave();
 
-    Task<bool> UpdateConfiguration(Configuration newConfiguration);
+    Task<bool> OnSaving(Configuration newConfiguration);
 }

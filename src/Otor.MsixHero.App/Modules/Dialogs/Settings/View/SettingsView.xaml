@@ -2,27 +2,18 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View"
-             xmlns:settingsViewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel"
-             xmlns:msixHeroControls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
-             xmlns:mvvmCommands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
-             xmlns:settingsCommands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             xmlns:tabSigningView="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Signing"
-             xmlns:tools="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Commands"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Commands"
-             mc:Ignorable="d" 
-             d:DesignHeight="650" 
-             d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance settingsViewModel:SettingsViewModel}">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -33,12 +24,6 @@
             <Setter Property="MinHeight" Value="350" />
         </Style>
     </mvvm:Dialog.WindowStyle>
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <system:Boolean x:Key="False">False</system:Boolean>
-            <system:Boolean x:Key="True">True</system:Boolean>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
     <UserControl.CommandBindings>
         <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
@@ -220,11 +205,8 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="{localization:Loc Dialogs_Settings_Signing}">
-                    <b:Interaction.Behaviors>
-                        <validation:ValidationBehavior ValidatedChangeable="{Binding TabDigitalSignature}" />
-                    </b:Interaction.Behaviors>
-                    <tabSigningView:SigningSettingsTab DataContext="{Binding TabDigitalSignature}" />
+                <TabItem Header="{localization:Loc Dialogs_Settings_Signing}" x:Name="TabSigning">
+                    <ContentControl mvvm:RegionManager.RegionName="TabSigning" mvvm:RegionManager.RegionContext="{Binding Context}" />
                 </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Editors}">
                     <b:Interaction.Behaviors>
@@ -364,71 +346,11 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="{localization:Loc Dialogs_Settings_Commands}">
-                    <b:Interaction.Behaviors>
-                        <validation:ValidationBehavior ValidatedChangeable="{Binding Tools}" />
-                    </b:Interaction.Behaviors>
-                    <commands:CommandsSettingsView DataContext="{Binding TabCommands}" />
+                <TabItem Header="{localization:Loc Dialogs_Settings_Commands}" x:Name="TabCommands">
+                    <ContentControl mvvm:RegionManager.RegionName="TabCommands" mvvm:RegionManager.RegionContext="{Binding Context}" />
                 </TabItem>
-                <TabItem Header="App attach">
-                    <b:Interaction.Behaviors>
-                        <validation:ValidationBehavior ValidatedChangeable="{Binding TabAppAttach}" />
-                    </b:Interaction.Behaviors>
-                    <StackPanel>
-                        <CheckBox Margin="0 0 0 0" IsChecked="{Binding AppAttachExtractCertificate.CurrentValue}">
-                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_ExtractCert_Header}" TextWrapping="Wrap" />
-                        </CheckBox>
-
-                        <TextBlock Foreground="{StaticResource MsixHero.Brushes.Light2}" Margin="22 6 0 0" TextWrapping="Wrap">
-                            <Run Text="{localization:Loc Dialogs_AppAttach_ExtractCert_HelpText}" />
-                        </TextBlock>
-
-                        <CheckBox 
-                            IsEnabled="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeConverter}}"
-                            Margin="0 16 0 0" IsChecked="{Binding AppAttachGenerateScripts.CurrentValue}">
-                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_GenScripts_Header}" TextWrapping="Wrap" />
-                        </CheckBox>
-
-                        <msixHeroControls:LearnMore 
-                            Margin="22 6 0 0"
-                            Link="msix-app-attach/prepare-ps" Topic="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}" />
-
-                        <Label 
-                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Style="{StaticResource FormLabelThin}" 
-                            Content="{localization:Loc Dialog_Tab_Advanced}" 
-                            Margin="0 16 0 6" />
-
-                        <TextBlock
-                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Style="{StaticResource LabelTextBlock}" 
-                            Text="{localization:Loc Dialogs_AppAttach_JunctionPoint}"  />
-                        <TextBox 
-                            Margin="0 0 0 16"
-                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Text="{Binding AppAttachJunctionPoint.CurrentValue}" />
-
-                        <TextBlock
-                            Visibility="{Binding AppAttachGenerateScripts.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Style="{StaticResource LabelTextBlock}" 
-                            Text="{localization:Loc Dialogs_Settings_AppAttach_Strategy}" />
-
-                        <ComboBox 
-                            Margin="0 0 0 16"
-                            SelectedValuePath="Tag"
-                            SelectedValue="{Binding AppAttachUseMsixMgr.CurrentValue, Mode=TwoWay}">
-                            <ComboBoxItem Content="{localization:Loc Dialogs_Settings_AppAttach_DefaultStrategy}">
-                                <ComboBoxItem.Tag>
-                                    <system:Boolean>True</system:Boolean>
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                            <ComboBoxItem Content="{localization:Loc Dialogs_Settings_AppAttach_LegacyStrategy}">
-                                <ComboBoxItem.Tag>
-                                    <system:Boolean>False</system:Boolean>
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
+                <TabItem Header="App attach" x:Name="TabAppAttach">
+                    <ContentControl mvvm:RegionManager.RegionName="TabAppAttach" mvvm:RegionManager.RegionContext="{Binding Context}" />
                 </TabItem>
                 <TabItem Header="{localization:Loc Dialogs_Settings_Other}">
                     <b:Interaction.Behaviors>

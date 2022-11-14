@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.Context;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
@@ -29,9 +30,9 @@ using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
+namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel
 {
-    public class SigningSettingsTabViewModel : ChangeableContainer, ISettingsTabViewModel, IDropTarget
+    public class SigningSettingsTabViewModel : ChangeableContainer, ISettingsComponent, IDropTarget
     {
         private readonly ISigningTestService _signTestService;
         private readonly Configuration _configuration;
@@ -42,35 +43,60 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
 
         public SigningSettingsTabViewModel(
             ISigningTestService signTestService,
-            Configuration configuration,
+            IConfigurationService configurationService,
             IInteractionService interactionService,
             IUacElevation uacElevation,
             ITimeStampFeed timeStampFeed)
         {
             this._signTestService = signTestService;
-            this._configuration = configuration;
+            this._configuration = configurationService.GetCurrentConfiguration();
             this._interactionService = interactionService;
             this._uacElevation = uacElevation;
             this._timeStampFeed = timeStampFeed;
-            this.Profiles = new ValidatedChangeableCollection<SignProfileViewModel>(this.CollectionValidator,
-                configuration.Signing?.Profiles?.Select(
-                    p => new SignProfileViewModel(signTestService,
-                        interactionService,
-                        uacElevation,
-                        configuration.Signing,
+            
+            this.AddProfile = new DelegateCommand(OnAddProfile);
+            this.RemoveSelectedProfile = new DelegateCommand(OnRemoveSelectedProfile, CanRemoveSelectedProfile);
+            
+            this.Profiles = new ValidatedChangeableCollection<SignProfileViewModel>(
+                this.CollectionValidator,
+                this._configuration.Signing?.Profiles?.Select(
+                    p => new SignProfileViewModel(this._signTestService,
+                        this._interactionService,
+                        this._uacElevation,
+                        this._configuration.Signing,
                         p,
-                        timeStampFeed)) ?? Enumerable.Empty<SignProfileViewModel>());
-            
-            this.SelectedProfile = 
-                this.Profiles.FirstOrDefault(p => p.IsDefault.CurrentValue) 
-                ?? this.Profiles.FirstOrDefault();
-            
-            this.AddChild(this.Profiles);
+                        this._timeStampFeed)) ?? Enumerable.Empty<SignProfileViewModel>());
 
-            this.AddProfile = new DelegateCommand(this.OnAddProfile);
-            this.RemoveSelectedProfile = new DelegateCommand(this.OnRemoveSelectedProfile, this.CanRemoveSelectedProfile);
+            this.SelectedProfile =
+                this.Profiles.FirstOrDefault(p => p.IsDefault.CurrentValue)
+                ?? this.Profiles.FirstOrDefault();
+
+            this.AddChild(Profiles);
         }
-        
+
+        public void Register(ISettingsContext context)
+        {  
+            context.Register(this);
+        }
+
+        public bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+        }
+
+        public void OnDialogClosed()
+        {
+        }
+
+        public bool CanSave()
+        {
+            return !this.Profiles.IsTouched || !this.Profiles.IsValidated || this.Profiles.IsValid;
+        }
+
         public ICommand AddProfile { get; }
 
         public ICommand RemoveSelectedProfile { get; }
@@ -79,55 +105,37 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
 
         public SignProfileViewModel SelectedProfile
         {
-            get => this._selectedProfile;
-            set => this.SetField(ref this._selectedProfile, value);
+            get => _selectedProfile;
+            set => SetField(ref _selectedProfile, value);
         }
         
-        public bool CanCloseDialog()
+        public Task<bool> OnSaving(Configuration newConfiguration)
         {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        {
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-
-        public bool CanSave()
-        {
-            return this.Profiles.IsTouched && (!this.Profiles.IsValidated || this.Profiles.IsValid);
-        }
-
-        public Task<bool> UpdateConfiguration(Configuration newConfiguration)
-        {
-            if (!this.Profiles.IsTouched)
+            if (!Profiles.IsTouched)
             {
                 return Task.FromResult(true);
             }
 
-            if (!this.Profiles.IsValidated)
+            if (!Profiles.IsValidated)
             {
-                this.Profiles.IsValidated = true;
+                Profiles.IsValidated = true;
             }
 
-            if (!this.Profiles.IsValid)
+            if (!Profiles.IsValid)
             {
                 return Task.FromResult(false);
             }
-            
-            if (this.Profiles.IsTouched)
+
+            if (Profiles.IsTouched)
             {
                 newConfiguration.Signing.Profiles = new List<SigningProfile>();
-                foreach (var item in this.Profiles)
+                foreach (var item in Profiles)
                 {
                     var newProfile = item.ToSigningProfile();
                     newConfiguration.Signing.Profiles.Add(newProfile);
                 }
             }
-            
+
             return Task.FromResult(true);
         }
 
@@ -142,8 +150,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
                 return;
             }
 
-            var indexOfSource = this.Profiles.IndexOf(sourceItem);
-            var indexOfTarget = this.Profiles.IndexOf(targetItem);
+            var indexOfSource = Profiles.IndexOf(sourceItem);
+            var indexOfTarget = Profiles.IndexOf(targetItem);
 
             switch (dropInfo.InsertPosition)
             {
@@ -177,10 +185,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
             switch (dropInfo.InsertPosition)
             {
                 case RelativeInsertPosition.BeforeTargetItem:
-                    this.DropBefore(dropInfo);
+                    DropBefore(dropInfo);
                     break;
                 case RelativeInsertPosition.AfterTargetItem:
-                    this.DropAfter(dropInfo);
+                    DropAfter(dropInfo);
                     break;
             }
         }
@@ -200,8 +208,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
                 return;
             }
 
-            var indexOfTarget = this.Profiles.IndexOf(targetItem);
-            var indexOfSource = this.Profiles.IndexOf(sourceItem);
+            var indexOfTarget = Profiles.IndexOf(targetItem);
+            var indexOfSource = Profiles.IndexOf(sourceItem);
 
             if (indexOfSource + 1 == indexOfTarget)
             {
@@ -210,16 +218,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
 
             if (indexOfTarget > indexOfSource)
             {
-                this.Profiles.Insert(indexOfTarget, sourceItem);
-                this.Profiles.RemoveAt(indexOfSource);
+                Profiles.Insert(indexOfTarget, sourceItem);
+                Profiles.RemoveAt(indexOfSource);
             }
             else
             {
-                this.Profiles.RemoveAt(indexOfSource);
-                this.Profiles.Insert(indexOfTarget, sourceItem);
+                Profiles.RemoveAt(indexOfSource);
+                Profiles.Insert(indexOfTarget, sourceItem);
             }
 
-            this.SelectedProfile = sourceItem;
+            SelectedProfile = sourceItem;
         }
 
         private void DropAfter(IDropInfo dropInfo)
@@ -237,8 +245,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
                 return;
             }
 
-            var indexOfTarget = this.Profiles.IndexOf(targetItem) + 1;
-            var indexOfSource = this.Profiles.IndexOf(sourceItem);
+            var indexOfTarget = Profiles.IndexOf(targetItem) + 1;
+            var indexOfSource = Profiles.IndexOf(sourceItem);
 
             if (indexOfSource == indexOfTarget)
             {
@@ -247,18 +255,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
 
             if (indexOfTarget > indexOfSource)
             {
-                this.Profiles.Insert(indexOfTarget, sourceItem);
-                this.Profiles.RemoveAt(indexOfSource);
+                Profiles.Insert(indexOfTarget, sourceItem);
+                Profiles.RemoveAt(indexOfSource);
             }
             else
             {
-                this.Profiles.RemoveAt(indexOfSource);
-                this.Profiles.Insert(indexOfTarget, sourceItem);
+                Profiles.RemoveAt(indexOfSource);
+                Profiles.Insert(indexOfTarget, sourceItem);
             }
 
-            this.SelectedProfile = sourceItem;
+            SelectedProfile = sourceItem;
         }
-        
+
         private string CollectionValidator(IEnumerable<SignProfileViewModel> arg)
         {
             var previousNames = new HashSet<string>();
@@ -288,7 +296,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
             };
 
             var index = 0;
-            while (this.Profiles.Any(p => string.Equals(p.DisplayName.CurrentValue, newModel.Name)))
+            while (Profiles.Any(p => string.Equals(p.DisplayName.CurrentValue, newModel.Name)))
             {
                 if (index > 0)
                 {
@@ -298,23 +306,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing
                 index++;
             }
 
-            this.Profiles.Add(new SignProfileViewModel(this._signTestService, this._interactionService, this._uacElevation, this._configuration.Signing, newModel, this._timeStampFeed));
-            this.SelectedProfile = this.Profiles.Last();
+            Profiles.Add(new SignProfileViewModel(_signTestService, _interactionService, _uacElevation, _configuration.Signing, newModel, _timeStampFeed));
+            SelectedProfile = Profiles.Last();
         }
 
         private void OnRemoveSelectedProfile()
         {
-            if (this.SelectedProfile == null)
+            if (SelectedProfile == null)
             {
                 return;
             }
 
-            this.Profiles.Remove(this.SelectedProfile);
+            Profiles.Remove(SelectedProfile);
         }
 
         private bool CanRemoveSelectedProfile()
         {
-            return this.SelectedProfile != null;
+            return SelectedProfile != null;
         }
     }
 }

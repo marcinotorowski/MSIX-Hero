@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.View.Tabs.Signing.SigningSettingsTab"
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.View.SigningSettingsTabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,12 +7,12 @@
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Common.CertificateSelector.View"
-             xmlns:signing="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tabs.Signing"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Tabs.Signing.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance signing:SigningSettingsTabViewModel}">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SigningSettingsTabViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <system:Boolean x:Key="True">True</system:Boolean>
@@ -106,7 +106,7 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type signing:SignProfileViewModel}">
+                        <DataTemplate DataType="{x:Type viewModel:SignProfileViewModel}">
                             <Grid>
                                 <DockPanel 
                                     IsHitTestVisible="{Binding IsEditing, Converter={StaticResource NegativeConverter}}">
@@ -192,6 +192,7 @@
                                 ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <!--<Border regions:RegionManager.RegionName="CertSelector" regions:RegionManager.RegionContext="{Binding SelectedProfile}" />-->
                 <view:CertificateSelectorView DataContext="{Binding SelectedProfile}" Margin="0 0 0 0" />
             </ScrollViewer>
         </Grid>
