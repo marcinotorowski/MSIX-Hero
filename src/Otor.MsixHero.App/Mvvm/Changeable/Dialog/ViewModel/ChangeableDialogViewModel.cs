@@ -78,9 +78,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
             }
         }
 
-        public ICommand OkCommand => this._okCommand ??= new DelegateCommand<object>(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp));
+        public ICommand OkCommand => this._okCommand ??= new DelegateCommand<object>(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp)).ObservesProperty(() => this.State.Progress.IsLoading);
 
-        public DelegateCommand<object> CloseCommand => this._closeCommand ??= new DelegateCommand<object>(param => this.CloseExecute(param is ButtonResult result ? result : default(ButtonResult?)), param => this.CanCloseExecute(param is ButtonResult result ? result : default(ButtonResult?)));
+        public DelegateCommand<object> CloseCommand => this._closeCommand ??= new DelegateCommand<object>(param => this.CloseExecute(param is ButtonResult result ? result : default(ButtonResult?)), param => this.CanCloseExecute(param is ButtonResult result ? result : default(ButtonResult?))).ObservesProperty(() => this.State.Progress.IsLoading);
         
         string IDataErrorInfo.this[string columnName] => null;
 
@@ -133,9 +133,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
                 {
                     cancellationTokenSource.Dispose();
                     this.State.IsSaved = false;
-
-                    CommandManager.InvalidateRequerySuggested();
-
+                    
                     if (t.IsCanceled)
                     {
                         return;

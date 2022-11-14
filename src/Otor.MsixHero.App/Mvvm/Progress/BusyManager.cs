@@ -47,16 +47,12 @@ namespace Otor.MsixHero.App.Mvvm.Progress
         public void End(IBusyContext context)
         {
             Logger.Verbose().WriteLine("Ending a context…");
+
             lock (lockObject)
             {
                 contexts.Remove(context);
                 this.RefreshStatus(context.Type);
                 Logger.Verbose().WriteLine("Context ended…");
-            }
-
-            if (Application.Current?.Dispatcher != null)
-            {
-                Application.Current.Dispatcher.BeginInvoke(CommandManager.InvalidateRequerySuggested, DispatcherPriority.ApplicationIdle);
             }
         }
 

@@ -71,7 +71,7 @@ namespace Otor.MsixHero.App.Mvvm
             set => this.SetField(ref this._supportsCancelling, value);
         }
 
-        public ICommand Cancel => this._cancel ??= new DelegateCommand(this.ExecuteCancel, this.CanExecuteCancel);
+        public ICommand Cancel => this._cancel ??= new DelegateCommand(this.ExecuteCancel, this.CanExecuteCancel).ObservesProperty(() => this.IsLoading);
 
         public void MonitorProgress(Task task, CancellationTokenSource cancellationTokenSource = default, IProgress<ProgressData> progressReporter = default, string initialMessage = default)
         {
@@ -79,8 +79,7 @@ namespace Otor.MsixHero.App.Mvvm
             this._isCancelling = false;
             this._currentCancellationTokenSource = cancellationTokenSource;
             this.SupportsCancelling = cancellationTokenSource != default;
-
-            CommandManager.InvalidateRequerySuggested();
+            
             this.IsLoading = true;
 
             if (initialMessage != null && !this._isCancelling)

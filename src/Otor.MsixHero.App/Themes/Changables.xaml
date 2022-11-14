@@ -8,7 +8,8 @@
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
                     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
                     xmlns:switch="clr-namespace:Otor.MsixHero.App.Controls.Switch"
-                    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop">
+                    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+                    xmlns:mvvm="clr-namespace:Otor.MsixHero.App.Mvvm">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -267,7 +268,7 @@
 
                                         <DockPanel>
                                             <Border 
-                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                x:Name="PART_Error"
                                                 Background="{StaticResource MsixHero.Brushes.Validation}" 
                                                 Padding="8" 
                                                 DockPanel.Dock="Bottom">
@@ -459,6 +460,12 @@
                     </DockPanel>
 
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError}" Value="{StaticResource False}">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Error" />
+                        </DataTrigger>
+                        <Trigger Property="mvvm:DiscreteValidationObject.DiscreteValidationTemplate" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Error" />
+                        </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="SupportsCommandLineBuilding" Value="True" />
