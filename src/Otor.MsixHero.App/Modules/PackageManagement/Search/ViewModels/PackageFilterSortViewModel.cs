@@ -279,7 +279,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             get => (this._application.ApplicationState.Packages.Filter & PackageFilter.HasAppInstaller) == PackageFilter.HasAppInstaller;
             set
             {
-                var newValue = this._application.ApplicationState.Packages.Filter & ~PackageFilter.HasAppInstaller;
+                var newValue = this._application.ApplicationState.Packages.Filter & ~(PackageFilter.HasAppInstaller | PackageFilter.NoAppInstaller);
                 if (value)
                 {
                     newValue |= PackageFilter.HasAppInstaller;
@@ -427,6 +427,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     break;
                 case ClearFilter.AppInstaller:
                     this.SetPackageFilter(PackageFilter.HasAppInstaller, false);
+                    this.SetPackageFilter(PackageFilter.NoAppInstaller, false);
                     break;
                 case ClearFilter.Category:
                     this.SetPackageFilter(PackageFilter.AllSources, true);

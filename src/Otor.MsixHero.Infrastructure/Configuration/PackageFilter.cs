@@ -60,6 +60,6 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         HasAppInstaller = 1 << 13,
 
-        Default = AllArchitectures | InstalledAndRunning | Developer | Store | MainApps | NoAppInstaller | HasAppInstaller
+        Default = AllArchitectures | InstalledAndRunning | Developer | Store | MainApps
     }
 }
