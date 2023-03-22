@@ -26,7 +26,7 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers;
 
-public class StarPackageHandler : AsyncRequestHandler<StarPackageCommand>
+public class StarPackageHandler : IRequestHandler<StarPackageCommand>
 {
     private readonly IConfigurationService _configurationService;
 
@@ -35,7 +35,7 @@ public class StarPackageHandler : AsyncRequestHandler<StarPackageCommand>
         _configurationService = configurationService;
     }
 
-    protected override async Task Handle(StarPackageCommand request, CancellationToken cancellationToken)
+    async Task IRequestHandler<StarPackageCommand>.Handle(StarPackageCommand request, CancellationToken cancellationToken)
     {
         var config = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
         if (config.Packages?.StarredApps?.Contains(request.FullName) == true)

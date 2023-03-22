@@ -8,28 +8,28 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetEventViewerFilterHandler : AsyncRequestHandler<SetEventViewerFilterCommand>
+    public class SetEventViewerFilterHandler : IRequestHandler<SetEventViewerFilterCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IConfigurationService configurationService;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IConfigurationService _configurationService;
 
         public SetEventViewerFilterHandler(IMsixHeroCommandExecutor commandExecutor, IConfigurationService configurationService)
         {
-            this.commandExecutor = commandExecutor;
-            this.configurationService = configurationService;
+            this._commandExecutor = commandExecutor;
+            this._configurationService = configurationService;
         }
 
-        protected override async Task Handle(SetEventViewerFilterCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<SetEventViewerFilterCommand>.Handle(SetEventViewerFilterCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.EventViewer.SearchKey = request.SearchKey;
-            this.commandExecutor.ApplicationState.EventViewer.Filter = request.Filter;
+            this._commandExecutor.ApplicationState.EventViewer.SearchKey = request.SearchKey;
+            this._commandExecutor.ApplicationState.EventViewer.Filter = request.Filter;
 
-            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
+            var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
             cleanConfig.Events ??= new EventsConfiguration();
             cleanConfig.Events.Filter ??= new EventsFilterConfiguration();
             cleanConfig.Events.Filter.Filter = request.Filter;
 
-            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
+            await this._configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -29,13 +29,13 @@ namespace Otor.MsixHero.App.Hero.Executor
 {
     public abstract class BaseMsixHeroCommandExecutor : IMsixHeroCommandExecutor
     {
-        private readonly IEventAggregator eventAggregator;
-        private readonly IMediator mediator;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IMediator _mediator;
 
         protected BaseMsixHeroCommandExecutor(IEventAggregator eventAggregator, IMediator mediator)
         {
-            this.eventAggregator = eventAggregator;
-            this.mediator = mediator;
+            this._eventAggregator = eventAggregator;
+            this._mediator = mediator;
         }
 
         public MsixHeroState ApplicationState { get; set; }
@@ -86,26 +86,26 @@ namespace Otor.MsixHero.App.Hero.Executor
             }
             
             var payload = new UiExecutingPayload<TCommand>(sender, command);
-            this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
+            this._eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
             if (payload.Cancel)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
             }
 
             try
             {
-                this.eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
-                var unit = await this.mediator.Send(command, cancellationToken).ConfigureAwait(false);
-                this.eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
+                await this._mediator.Send(command, cancellationToken).ConfigureAwait(false);
+                this._eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
             }
             catch (OperationCanceledException)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
                 throw;
             }
             catch (Exception exception)
             {
-                this.eventAggregator.GetEvent<UiFailedEvent<TCommand>>().Publish(new UiFailedPayload<TCommand>(sender, command, exception));
+                this._eventAggregator.GetEvent<UiFailedEvent<TCommand>>().Publish(new UiFailedPayload<TCommand>(sender, command, exception));
                 throw;
             }
         }
@@ -113,30 +113,30 @@ namespace Otor.MsixHero.App.Hero.Executor
         public async Task<TResult> Invoke<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : IRequest<TResult>
         {
             var payload = new UiExecutingPayload<TCommand>(sender, command);
-            this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
+            this._eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
             if (payload.Cancel)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
             }
 
             try
             {
-                this.eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
 
-                var result = await this.mediator.Send(command, cancellationToken).ConfigureAwait(false);
+                var result = await this._mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
-                this.eventAggregator.GetEvent<UiExecutedEvent<TCommand, TResult>>().Publish(new UiExecutedPayload<TCommand, TResult>(sender, command, result));
-                this.eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiExecutedEvent<TCommand, TResult>>().Publish(new UiExecutedPayload<TCommand, TResult>(sender, command, result));
+                this._eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
                 return result;
             }
             catch (OperationCanceledException)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
+                this._eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
                 throw;
             }
             catch (Exception exception)
             {
-                this.eventAggregator.GetEvent<UiFailedEvent<TCommand>>().Publish(new UiFailedPayload<TCommand>(sender, command, exception));
+                this._eventAggregator.GetEvent<UiFailedEvent<TCommand>>().Publish(new UiFailedPayload<TCommand>(sender, command, exception));
                 throw;
             }
         }

@@ -8,26 +8,26 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetSidebarVisibilityHandler : AsyncRequestHandler<SetPackageSidebarVisibilityCommand>
+    public class SetSidebarVisibilityHandler : IRequestHandler<SetPackageSidebarVisibilityCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IConfigurationService configurationService;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IConfigurationService _configurationService;
 
         public SetSidebarVisibilityHandler(IMsixHeroCommandExecutor commandExecutor, IConfigurationService configurationService)
         {
-            this.configurationService = configurationService;
-            this.commandExecutor = commandExecutor;
+            this._configurationService = configurationService;
+            this._commandExecutor = commandExecutor;
         }
 
-        protected override async Task Handle(SetPackageSidebarVisibilityCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<SetPackageSidebarVisibilityCommand>.Handle(SetPackageSidebarVisibilityCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Packages.ShowSidebar = request.IsVisible;
+            this._commandExecutor.ApplicationState.Packages.ShowSidebar = request.IsVisible;
 
-            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
+            var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
             cleanConfig.Packages ??= new PackagesConfiguration();
             cleanConfig.Packages.Sidebar ??= new SidebarListConfiguration();
-            cleanConfig.Packages.Sidebar.Visible = this.commandExecutor.ApplicationState.Packages.ShowSidebar;
-            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
+            cleanConfig.Packages.Sidebar.Visible = this._commandExecutor.ApplicationState.Packages.ShowSidebar;
+            await this._configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
         }
     }
 }

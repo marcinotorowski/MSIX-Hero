@@ -8,7 +8,7 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetEventViewerSortingHandler : AsyncRequestHandler<SetEventViewerSortingCommand>
+    public class SetEventViewerSortingHandler : IRequestHandler<SetEventViewerSortingCommand>
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IConfigurationService configurationService;
@@ -18,7 +18,8 @@ namespace Otor.MsixHero.App.Hero.Handlers
             this.commandExecutor = commandExecutor;
             this.configurationService = configurationService;
         }
-        protected override async Task Handle(SetEventViewerSortingCommand request, CancellationToken cancellationToken)
+
+        async Task IRequestHandler<SetEventViewerSortingCommand>.Handle(SetEventViewerSortingCommand request, CancellationToken cancellationToken)
         {
             this.commandExecutor.ApplicationState.EventViewer.SortMode = request.SortMode;
 

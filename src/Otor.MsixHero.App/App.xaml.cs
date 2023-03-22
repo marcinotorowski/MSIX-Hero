@@ -172,7 +172,7 @@ namespace Otor.MsixHero.App
             uacClient.RegisterProxy<IAppxPackageInstallationService>(this.Container);
             uacClient.RegisterProxy<IAppxPackageRunService>(this.Container);
             uacClient.RegisterProxy<IAppAttachManager>(this.Container);
-            
+
             containerRegistry.RegisterSingleton<IUacElevation>(() => uacClient);
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxVolumeService, AppxVolumeService>();
@@ -219,8 +219,6 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
             containerRegistry.RegisterSingleton<ITimeStampFeed>(_ => MsixHeroGistTimeStampFeed.CreateCached());
-            containerRegistry.RegisterSingleton<IMediator>(containerProvider => new Mediator(containerProvider.Resolve));
-
             containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.DialogPaths.PackageExpert);
 
             if (Environment.GetCommandLineArgs().Length < 2)
@@ -228,6 +226,7 @@ namespace Otor.MsixHero.App
                 // containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
 
+            this.Container.GetContainer().RegisterMediator();
             this.Container.GetContainer().RegisterMediatorHandlers(typeof(App).Assembly);
         }
         
@@ -357,49 +356,21 @@ namespace Otor.MsixHero.App
     // ReSharper disable once InconsistentNaming
     public static class IUnityContainerExtensions
     {
-        public static IUnityContainer RegisterMediator(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
+        public static IUnityContainer RegisterMediator(this IUnityContainer container)
         {
-            return container.RegisterType<IMediator, Mediator>(lifetimeManager)
-                .RegisterInstance<ServiceFactory>(type =>
-                {
-                    var enumerableType = type
-                        .GetInterfaces()
-                        .Concat(new[] { type })
-                        .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-
-                    return enumerableType != null
-                        ? container.ResolveAll(enumerableType.GetGenericArguments()[0])
-                        : container.IsRegistered(type)
-                            ? container.Resolve(type)
-                            : null;
-                });
+            return container
+                .RegisterFactory<IMediator>(c => new Mediator(c.Resolve<IServiceProvider>()), new SingletonLifetimeManager())
+                .RegisterInstance<IServiceProvider>(new ContainerServiceProvider(container));
         }
 
         public static IUnityContainer RegisterMediatorHandlers(this IUnityContainer container, Assembly assembly)
         {
-            return container.RegisterTypesImplementingType(assembly, typeof(IRequestHandler<,>))
-                            .RegisterNamedTypesImplementingType(assembly, typeof(INotificationHandler<>));
+            return container
+                .RegisterTypesImplementingType(assembly, typeof(IRequestHandler<>))
+                .RegisterTypesImplementingType(assembly, typeof(IRequestHandler<,>))
+                .RegisterNamedTypesImplementingType(assembly, typeof(INotificationHandler<>));
         }
-
-        internal static bool IsGenericTypeOf(this Type type, Type genericType)
-        {
-            return type.IsGenericType &&
-                   type.GetGenericTypeDefinition() == genericType;
-        }
-
-        internal static void AddGenericTypes(this List<object> list, IUnityContainer container, Type genericType)
-        {
-            var genericHandlerRegistrations =
-                container.Registrations.Where(reg => reg.RegisteredType == genericType);
-
-            foreach (var handlerRegistration in genericHandlerRegistrations)
-            {
-                if (list.All(item => item.GetType() != handlerRegistration.MappedToType))
-                {
-                    list.Add(container.Resolve(handlerRegistration.MappedToType));
-                }
-            }
-        }
+        
 
         /// <summary>
         ///     Register all implementations of a given type for provided assembly.
@@ -443,6 +414,30 @@ namespace Otor.MsixHero.App
             }
 
             return false;
+        }
+
+        private class ContainerServiceProvider : IServiceProvider
+        {
+            private readonly IUnityContainer _container;
+
+            public ContainerServiceProvider(IUnityContainer container)
+            {
+                _container = container;
+            }
+
+            public object GetService(Type type)
+            {
+                var enumerableType = type
+                    .GetInterfaces()
+                    .Concat(new[] { type })
+                    .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+
+                return enumerableType != null
+                    ? _container.ResolveAll(enumerableType.GetGenericArguments()[0])
+                    : _container.IsRegistered(type)
+                        ? _container.Resolve(type)
+                        : null;
+            }
         }
     }
 }

@@ -8,27 +8,27 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetPackageFilterHandler : AsyncRequestHandler<SetPackageFilterCommand>
+    public class SetPackageFilterHandler : IRequestHandler<SetPackageFilterCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IConfigurationService configurationService;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IConfigurationService _configurationService;
 
         public SetPackageFilterHandler(IMsixHeroCommandExecutor commandExecutor, IConfigurationService configurationService)
         {
-            this.commandExecutor = commandExecutor;
-            this.configurationService = configurationService;
+            this._commandExecutor = commandExecutor;
+            this._configurationService = configurationService;
         }
 
-        protected override async Task Handle(SetPackageFilterCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<SetPackageFilterCommand>.Handle(SetPackageFilterCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Packages.Filter = request.Filter;
-            this.commandExecutor.ApplicationState.Packages.SearchKey = request.SearchKey;
+            this._commandExecutor.ApplicationState.Packages.Filter = request.Filter;
+            this._commandExecutor.ApplicationState.Packages.SearchKey = request.SearchKey;
 
-            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
+            var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
             cleanConfig.Packages ??= new PackagesConfiguration();
             cleanConfig.Packages.Filter ??= new PackagesFilterConfiguration();
             cleanConfig.Packages.Filter.Filter = request.Filter;
-            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
+            await this._configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
         }
     }
 }

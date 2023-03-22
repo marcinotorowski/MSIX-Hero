@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
@@ -9,7 +10,7 @@ using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SelectPackagesHandler : RequestHandler<SelectPackagesCommand>
+    public class SelectPackagesHandler : IRequestHandler<SelectPackagesCommand>
     {
         private readonly ReaderWriterLockSlim _packageListSynchronizer = new ReaderWriterLockSlim();
         private readonly IMsixHeroCommandExecutor _commandExecutor;
@@ -21,7 +22,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             this._app = app;
         }
 
-        protected override void Handle(SelectPackagesCommand request)
+        Task IRequestHandler<SelectPackagesCommand>.Handle(SelectPackagesCommand request, CancellationToken cancellationToken)
         {
             IList<PackageEntry> selected;
             List<string> actualSelection;
@@ -89,6 +90,8 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
             this._commandExecutor.ApplicationState.Packages.SelectedPackages.Clear();
             this._commandExecutor.ApplicationState.Packages.SelectedPackages.AddRange(selected);
+
+            return Task.CompletedTask;
         }
     }
 }

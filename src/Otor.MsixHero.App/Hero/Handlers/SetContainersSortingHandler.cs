@@ -8,35 +8,35 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetContainersSortingHandler : AsyncRequestHandler<SetSharedPackageContainersSortingCommand>
+    public class SetContainersSortingHandler : IRequestHandler<SetSharedPackageContainersSortingCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IConfigurationService configurationService;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IConfigurationService _configurationService;
 
         public SetContainersSortingHandler(IMsixHeroCommandExecutor commandExecutor, IConfigurationService configurationService)
         {
-            this.commandExecutor = commandExecutor;
-            this.configurationService = configurationService;
+            this._commandExecutor = commandExecutor;
+            this._configurationService = configurationService;
         }
-        protected override async Task Handle(SetSharedPackageContainersSortingCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<SetSharedPackageContainersSortingCommand>.Handle(SetSharedPackageContainersSortingCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Containers.SortMode = request.SortMode;
+            this._commandExecutor.ApplicationState.Containers.SortMode = request.SortMode;
 
             if (request.Descending.HasValue)
             {
-                this.commandExecutor.ApplicationState.Containers.SortDescending = request.Descending.Value;
+                this._commandExecutor.ApplicationState.Containers.SortDescending = request.Descending.Value;
             }
             else
             {
-                this.commandExecutor.ApplicationState.Containers.SortDescending = !this.commandExecutor.ApplicationState.Containers.SortDescending;
+                this._commandExecutor.ApplicationState.Containers.SortDescending = !this._commandExecutor.ApplicationState.Containers.SortDescending;
             }
 
-            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
+            var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
             cleanConfig.Containers ??= new ContainersConfiguration();
             cleanConfig.Containers.Sorting ??= new ContainersSortConfiguration();
-            cleanConfig.Containers.Sorting.SortingMode = this.commandExecutor.ApplicationState.Containers.SortMode;
-            cleanConfig.Containers.Sorting.Descending = this.commandExecutor.ApplicationState.Containers.SortDescending;
-            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
+            cleanConfig.Containers.Sorting.SortingMode = this._commandExecutor.ApplicationState.Containers.SortMode;
+            cleanConfig.Containers.Sorting.Descending = this._commandExecutor.ApplicationState.Containers.SortDescending;
+            await this._configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
         }
     }
 }

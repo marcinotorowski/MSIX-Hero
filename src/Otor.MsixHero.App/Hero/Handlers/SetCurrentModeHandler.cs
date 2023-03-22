@@ -1,14 +1,16 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
 using Prism.Modularity;
 using Prism.Regions;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetCurrentModeHandler : RequestHandler<SetCurrentModeCommand>
+    public class SetCurrentModeHandler : IRequestHandler<SetCurrentModeCommand>
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IModuleManager moduleManager;
@@ -24,7 +26,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             this.regionManager = regionManager;
         }
 
-        protected override void Handle(SetCurrentModeCommand request)
+        Task IRequestHandler<SetCurrentModeCommand>.Handle(SetCurrentModeCommand request, CancellationToken cancellationToken)
         {
             this.commandExecutor.ApplicationState.CurrentMode = request.NewMode;
 
@@ -66,6 +68,8 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.ContainersPaths.Search);
                     break;
             }
+
+            return Task.CompletedTask;
         }
     }
 }

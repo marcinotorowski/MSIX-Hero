@@ -23,7 +23,7 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers;
 
-public class UnstarPackageHandler : AsyncRequestHandler<UnstarPackageCommand>
+public class UnstarPackageHandler : IRequestHandler<UnstarPackageCommand>
 {
     private readonly IConfigurationService _configurationService;
 
@@ -32,7 +32,7 @@ public class UnstarPackageHandler : AsyncRequestHandler<UnstarPackageCommand>
         _configurationService = configurationService;
     }
 
-    protected override async Task Handle(UnstarPackageCommand request, CancellationToken cancellationToken)
+    async Task IRequestHandler<UnstarPackageCommand>.Handle(UnstarPackageCommand request, CancellationToken cancellationToken)
     {
         var config = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
         if (config.Packages?.StarredApps == null)

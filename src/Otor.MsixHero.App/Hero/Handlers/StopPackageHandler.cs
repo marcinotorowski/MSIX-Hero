@@ -7,18 +7,18 @@ using Otor.MsixHero.Elevation;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class StopPackageHandler : AsyncRequestHandler<StopPackageCommand>
+    public class StopPackageHandler : IRequestHandler<StopPackageCommand>
     {
-        private readonly IUacElevation uacElevation;
+        private readonly IUacElevation _uacElevation;
 
         public StopPackageHandler(IUacElevation uacElevation)
         {
-            this.uacElevation = uacElevation;
+            this._uacElevation = uacElevation;
         }
 
-        protected override Task Handle(StopPackageCommand request, CancellationToken cancellationToken)
+        Task IRequestHandler<StopPackageCommand>.Handle(StopPackageCommand request, CancellationToken cancellationToken)
         {
-            return this.uacElevation.AsHighestAvailable<IAppxPackageManagerService>().Stop(request.PackageEntry.PackageFullName, cancellationToken);
+            return this._uacElevation.AsHighestAvailable<IAppxPackageManagerService>().Stop(request.PackageEntry.PackageFullName, cancellationToken);
         }
     }
 }

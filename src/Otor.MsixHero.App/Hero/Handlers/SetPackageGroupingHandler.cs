@@ -8,26 +8,26 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetPackageGroupingHandler : AsyncRequestHandler<SetPackageGroupingCommand>
+    public class SetPackageGroupingHandler : IRequestHandler<SetPackageGroupingCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IConfigurationService configurationService;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IConfigurationService _configurationService;
 
         public SetPackageGroupingHandler(IMsixHeroCommandExecutor commandExecutor, IConfigurationService configurationService)
         {
-            this.commandExecutor = commandExecutor;
-            this.configurationService = configurationService;
+            this._commandExecutor = commandExecutor;
+            this._configurationService = configurationService;
         }
 
-        protected override async Task Handle(SetPackageGroupingCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<SetPackageGroupingCommand>.Handle(SetPackageGroupingCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Packages.GroupMode = request.GroupMode;
+            this._commandExecutor.ApplicationState.Packages.GroupMode = request.GroupMode;
 
-            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
+            var cleanConfig = await this._configurationService.GetCurrentConfigurationAsync(false, cancellationToken).ConfigureAwait(false);
             cleanConfig.Packages ??= new PackagesConfiguration();
             cleanConfig.Packages.Group ??= new PackagesGroupConfiguration();
-            cleanConfig.Packages.Group.GroupMode = this.commandExecutor.ApplicationState.Packages.GroupMode;
-            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
+            cleanConfig.Packages.Group.GroupMode = this._commandExecutor.ApplicationState.Packages.GroupMode;
+            await this._configurationService.SetCurrentConfigurationAsync(cleanConfig, cancellationToken).ConfigureAwait(false);
         }
     }
 }

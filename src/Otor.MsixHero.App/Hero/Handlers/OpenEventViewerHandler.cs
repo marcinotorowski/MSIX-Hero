@@ -9,23 +9,23 @@ using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class OpenEventViewerHandler : AsyncRequestHandler<OpenEventViewerCommand>
+    public class OpenEventViewerHandler : IRequestHandler<OpenEventViewerCommand>
     {
-        private readonly IUacElevation uacElevation;
+        private readonly IUacElevation _uacElevation;
 
         public OpenEventViewerHandler(IUacElevation uacElevation)
         {
-            this.uacElevation = uacElevation;
+            this._uacElevation = uacElevation;
         }
 
-        protected override Task Handle(OpenEventViewerCommand request, CancellationToken cancellationToken)
+        Task IRequestHandler<OpenEventViewerCommand>.Handle(OpenEventViewerCommand request, CancellationToken cancellationToken)
         {
             return this.OpenEventViewer(request, cancellationToken, null);
         }
 
         private Task OpenEventViewer(OpenEventViewerCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
         {
-            return this.uacElevation.AsAdministrator<IAppxEventService>().OpenEventViewer(command.Type, cancellationToken, progressData);
+            return this._uacElevation.AsAdministrator<IAppxEventService>().OpenEventViewer(command.Type, cancellationToken, progressData);
         }
     }
 }

@@ -1,21 +1,24 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
 using Otor.MsixHero.App.Hero.Executor;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SelectEventHandler : RequestHandler<SelectEventCommand>
+    public class SelectEventHandler : IRequestHandler<SelectEventCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
 
         public SelectEventHandler(IMsixHeroCommandExecutor commandExecutor)
         {
-            this.commandExecutor = commandExecutor;
+            this._commandExecutor = commandExecutor;
         }
-
-        protected override void Handle(SelectEventCommand request)
+        
+        Task IRequestHandler<SelectEventCommand>.Handle(SelectEventCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.EventViewer.SelectedAppxEvent = request.SelectedAppxEvent;
+            this._commandExecutor.ApplicationState.EventViewer.SelectedAppxEvent = request.SelectedAppxEvent;
+            return Task.CompletedTask;
         }
     }
 }

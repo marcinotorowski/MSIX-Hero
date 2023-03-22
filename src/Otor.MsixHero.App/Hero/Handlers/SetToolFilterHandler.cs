@@ -1,21 +1,24 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Executor;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SetToolFilterHandler : RequestHandler<SetToolFilterCommand>
+    public class SetToolFilterHandler : IRequestHandler<SetToolFilterCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
 
         public SetToolFilterHandler(IMsixHeroCommandExecutor commandExecutor)
         {
-            this.commandExecutor = commandExecutor;
+            this._commandExecutor = commandExecutor;
         }
 
-        protected override void Handle(SetToolFilterCommand request)
+        Task IRequestHandler<SetToolFilterCommand>.Handle(SetToolFilterCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Tools.SearchKey = request.SearchKey;
+            this._commandExecutor.ApplicationState.Tools.SearchKey = request.SearchKey;
+            return Task.CompletedTask;
         }
     }
 }

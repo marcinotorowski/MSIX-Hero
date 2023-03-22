@@ -1,21 +1,24 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Containers;
 using Otor.MsixHero.App.Hero.Executor;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class SelectSharedPackageContainerHandler : RequestHandler<SelectSharedPackageContainerCommand>
+    public class SelectSharedPackageContainerHandler : IRequestHandler<SelectSharedPackageContainerCommand>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
 
         public SelectSharedPackageContainerHandler(IMsixHeroCommandExecutor commandExecutor)
         {
-            this.commandExecutor = commandExecutor;
+            this._commandExecutor = commandExecutor;
         }
 
-        protected override void Handle(SelectSharedPackageContainerCommand request)
+        Task IRequestHandler<SelectSharedPackageContainerCommand>.Handle(SelectSharedPackageContainerCommand request, CancellationToken cancellationToken)
         {
-            this.commandExecutor.ApplicationState.Containers.SelectedContainer = request.SelectedContainer;
+            this._commandExecutor.ApplicationState.Containers.SelectedContainer = request.SelectedContainer;
+            return Task.CompletedTask;
         }
     }
 }
