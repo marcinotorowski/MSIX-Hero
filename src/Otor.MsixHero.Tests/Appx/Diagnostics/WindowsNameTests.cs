@@ -64,74 +64,74 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var parsedWindowsOther = WindowsNames.GetOperatingSystemFromNameAndVersion(windowsOther.Item1, windowsOther.Item2);
             
             // Test if technical versions were recognized
-            Assert.AreEqual("6.1.7601", parsedWindows7.TechnicalVersion);
-            Assert.AreEqual("6.2.9200", parsedWindowsServer2012.TechnicalVersion);
-            Assert.AreEqual("6.3.9600", parsedWindows81.TechnicalVersion);
-            Assert.AreEqual("10.0.10240", parsedWindows101507.TechnicalVersion);
-            Assert.AreEqual("10.0.10586", parsedWindows101511.TechnicalVersion);
-            Assert.AreEqual("10.0.14393", parsedWindows101607.TechnicalVersion);
-            Assert.AreEqual("10.0.15063", parsedWindows101703.TechnicalVersion);
-            Assert.AreEqual("10.0.16299", parsedWindows101709.TechnicalVersion);
-            Assert.AreEqual("10.0.17134", parsedWindows101803.TechnicalVersion);
-            Assert.AreEqual("10.0.17763", parsedWindows101809.TechnicalVersion);
-            Assert.AreEqual("10.0.18362", parsedWindows101903.TechnicalVersion);
-            Assert.AreEqual("10.0.18363", parsedWindows101909.TechnicalVersion);
-            Assert.AreEqual("10.0.19041", parsedWindows102004.TechnicalVersion);
-            Assert.AreEqual("10.0.19042", parsedWindows1020H2.TechnicalVersion);
-            Assert.AreEqual("10.0.19043", parsedWindows1021H1.TechnicalVersion);
-            Assert.AreEqual("10.0.22000", parsedWindows1121H2.TechnicalVersion);
-            Assert.AreEqual("10.0.99999", parsedWindowsOther.TechnicalVersion);
+            Assert.That(parsedWindows7.TechnicalVersion, Is.EqualTo("6.1.7601"));
+            Assert.That(parsedWindowsServer2012.TechnicalVersion, Is.EqualTo("6.2.9200"));
+            Assert.That(parsedWindows81.TechnicalVersion, Is.EqualTo("6.3.9600"));
+            Assert.That(parsedWindows101507.TechnicalVersion, Is.EqualTo("10.0.10240"));
+            Assert.That(parsedWindows101511.TechnicalVersion, Is.EqualTo("10.0.10586"));
+            Assert.That(parsedWindows101607.TechnicalVersion, Is.EqualTo("10.0.14393"));
+            Assert.That(parsedWindows101703.TechnicalVersion, Is.EqualTo("10.0.15063"));
+            Assert.That(parsedWindows101709.TechnicalVersion, Is.EqualTo("10.0.16299"));
+            Assert.That(parsedWindows101803.TechnicalVersion, Is.EqualTo("10.0.17134"));
+            Assert.That(parsedWindows101809.TechnicalVersion, Is.EqualTo("10.0.17763"));
+            Assert.That(parsedWindows101903.TechnicalVersion, Is.EqualTo("10.0.18362"));
+            Assert.That(parsedWindows101909.TechnicalVersion, Is.EqualTo("10.0.18363"));
+            Assert.That(parsedWindows102004.TechnicalVersion, Is.EqualTo("10.0.19041"));
+            Assert.That(parsedWindows1020H2.TechnicalVersion, Is.EqualTo("10.0.19042"));
+            Assert.That(parsedWindows1021H1.TechnicalVersion, Is.EqualTo("10.0.19043"));
+            Assert.That(parsedWindows1121H2.TechnicalVersion, Is.EqualTo("10.0.22000"));
+            Assert.That(parsedWindowsOther.TechnicalVersion, Is.EqualTo("10.0.99999"));
 
             // Test if display versions were recognized
-            Assert.AreEqual("Windows 7 SP1 / Server 2008 R2", parsedWindows7.Name);
-            Assert.AreEqual("Windows 8 / Server 2012", parsedWindowsServer2012.Name);
-            Assert.AreEqual("Windows 8.1 / Server 2012 R2", parsedWindows81.Name);
-            Assert.AreEqual("Windows 10 1507", parsedWindows101507.Name);
-            Assert.AreEqual("Windows 10 1511", parsedWindows101511.Name);
-            Assert.AreEqual("Windows 10 1607", parsedWindows101607.Name);
-            Assert.AreEqual("Windows 10 1703", parsedWindows101703.Name);
-            Assert.AreEqual("Windows 10 1709", parsedWindows101709.Name);
-            Assert.AreEqual("Windows 10 1803", parsedWindows101803.Name);
-            Assert.AreEqual("Windows 10 1809", parsedWindows101809.Name);
-            Assert.AreEqual("Windows 10 1903", parsedWindows101903.Name);
-            Assert.AreEqual("Windows 10 1909", parsedWindows101909.Name);
-            Assert.AreEqual("Windows 10 2004", parsedWindows102004.Name);
-            Assert.AreEqual("Windows 10 20H2", parsedWindows1020H2.Name);
-            Assert.AreEqual("Windows 10 21H1", parsedWindows1021H1.Name);
-            Assert.AreEqual("Windows 11 21H2", parsedWindows1121H2.Name);
-            Assert.AreEqual("Windows 11 (build 99999)", parsedWindowsOther.Name);
+            Assert.That(parsedWindows7.Name, Is.EqualTo("Windows 7 SP1 / Server 2008 R2"));
+            Assert.That(parsedWindowsServer2012.Name, Is.EqualTo("Windows 8 / Server 2012"));
+            Assert.That(parsedWindows81.Name, Is.EqualTo("Windows 8.1 / Server 2012 R2"));
+            Assert.That(parsedWindows101507.Name, Is.EqualTo("Windows 10 1507"));
+            Assert.That(parsedWindows101511.Name, Is.EqualTo("Windows 10 1511"));
+            Assert.That(parsedWindows101607.Name, Is.EqualTo("Windows 10 1607"));
+            Assert.That(parsedWindows101703.Name, Is.EqualTo("Windows 10 1703"));
+            Assert.That(parsedWindows101709.Name, Is.EqualTo("Windows 10 1709"));
+            Assert.That(parsedWindows101803.Name, Is.EqualTo("Windows 10 1803"));
+            Assert.That(parsedWindows101809.Name, Is.EqualTo("Windows 10 1809"));
+            Assert.That(parsedWindows101903.Name, Is.EqualTo("Windows 10 1903"));
+            Assert.That(parsedWindows101909.Name, Is.EqualTo("Windows 10 1909"));
+            Assert.That(parsedWindows102004.Name, Is.EqualTo("Windows 10 2004"));
+            Assert.That(parsedWindows1020H2.Name, Is.EqualTo("Windows 10 20H2"));
+            Assert.That(parsedWindows1021H1.Name, Is.EqualTo("Windows 10 21H1"));
+            Assert.That(parsedWindows1121H2.Name, Is.EqualTo("Windows 11 21H2"));
+            Assert.That(parsedWindowsOther.Name, Is.EqualTo("Windows 11 (build 99999)"));
 
             // Test if type of support for MSIX was recognized
-            Assert.True(parsedWindows7.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
-            Assert.True(parsedWindowsServer2012.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
-            Assert.True(parsedWindows81.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
-            Assert.True(parsedWindows101507.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
-            Assert.True(parsedWindows101511.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
-            Assert.True(parsedWindows101607.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixCore);
+            Assert.That(parsedWindows7.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
+            Assert.That(parsedWindowsServer2012.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
+            Assert.That(parsedWindows81.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
+            Assert.That(parsedWindows101507.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
+            Assert.That(parsedWindows101511.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
+            Assert.That(parsedWindows101607.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixCore));
             
-            Assert.True(parsedWindows101703.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows101709.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows101803.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows101809.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows101903.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows101909.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows102004.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows1020H2.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows1021H1.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
-            Assert.True(parsedWindows1121H2.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
+            Assert.That(parsedWindows101703.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows101709.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows101803.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows101809.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows101903.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows101909.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows102004.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows1020H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows1021H1.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows1121H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
 
             // Test if marketing names were recognized
-            Assert.AreEqual("November Update", parsedWindows101511.MarketingCodename);
-            Assert.AreEqual("Anniversary Update", parsedWindows101607.MarketingCodename);
-            Assert.AreEqual("Creators Update", parsedWindows101703.MarketingCodename);
-            Assert.AreEqual("Fall Creators Update", parsedWindows101709.MarketingCodename);
-            Assert.AreEqual("April 2018 Update", parsedWindows101803.MarketingCodename);
-            Assert.AreEqual("October 2018 Update", parsedWindows101809.MarketingCodename);
-            Assert.AreEqual("May 2019 Update", parsedWindows101903.MarketingCodename);
-            Assert.AreEqual("November 2019 Update", parsedWindows101909.MarketingCodename);
-            Assert.AreEqual("May 2020 Update", parsedWindows102004.MarketingCodename);
-            Assert.AreEqual("October 2020 Update", parsedWindows1020H2.MarketingCodename);
-            Assert.AreEqual("May 2021 Update", parsedWindows1021H1.MarketingCodename);
+            Assert.That(parsedWindows101511.MarketingCodename, Is.EqualTo("November Update"));
+            Assert.That(parsedWindows101607.MarketingCodename, Is.EqualTo("Anniversary Update"));
+            Assert.That(parsedWindows101703.MarketingCodename, Is.EqualTo("Creators Update"));
+            Assert.That(parsedWindows101709.MarketingCodename, Is.EqualTo("Fall Creators Update")); 
+            Assert.That(parsedWindows101803.MarketingCodename, Is.EqualTo("April 2018 Update"));
+            Assert.That(parsedWindows101809.MarketingCodename, Is.EqualTo("October 2018 Update"));
+            Assert.That(parsedWindows101903.MarketingCodename, Is.EqualTo("May 2019 Update"));
+            Assert.That(parsedWindows101909.MarketingCodename, Is.EqualTo("November 2019 Update"));
+            Assert.That(parsedWindows102004.MarketingCodename, Is.EqualTo("May 2020 Update"));
+            Assert.That(parsedWindows1020H2.MarketingCodename, Is.EqualTo("October 2020 Update"));
+            Assert.That(parsedWindows1021H1.MarketingCodename, Is.EqualTo("May 2021 Update"));
         }
     }
 }

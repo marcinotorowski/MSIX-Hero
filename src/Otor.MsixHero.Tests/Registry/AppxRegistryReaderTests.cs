@@ -24,7 +24,7 @@ namespace Otor.MsixHero.Tests.Registry
                 roots.Add(root);
             }
 
-            Assert.AreEqual(1, roots.Count);
+            Assert.That(roots.Count, Is.EqualTo(1));
         }
     }
 }

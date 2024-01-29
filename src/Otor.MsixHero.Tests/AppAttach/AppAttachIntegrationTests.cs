@@ -47,8 +47,8 @@ namespace Otor.MsixHero.Tests.AppAttach
                 throw e.GetBaseException();
             }
             
-            Assert.IsTrue(File.Exists(vhdxPath));
-            Assert.IsTrue(File.Exists(cimPath));
+            Assert.That(File.Exists(vhdxPath), Is.True);
+            Assert.That(File.Exists(cimPath), Is.True);
         }
 
         [Test]
@@ -121,20 +121,20 @@ namespace Otor.MsixHero.Tests.AppAttach
             var jsonPathCertificate = Path.Combine(targetDirectory.FullName, "certificate", "app-attach.json");
             var jsonPathBoth = Path.Combine(targetDirectory.FullName, "both", "app-attach.json");
 
-            Assert.False(File.Exists(cerPathNothing));
-            Assert.False(File.Exists(cerPathScripts));
-            Assert.True(File.Exists(cerPathCertificate));
-            Assert.True(File.Exists(cerPathBoth));
+            Assert.That(File.Exists(cerPathNothing), Is.False);
+            Assert.That(File.Exists(cerPathScripts), Is.False);
+            Assert.That(File.Exists(cerPathCertificate), Is.True);
+            Assert.That(File.Exists(cerPathBoth), Is.True);
 
-            Assert.False(File.Exists(scriptPathNothing));
-            Assert.True(File.Exists(scriptPathScripts));
-            Assert.False(File.Exists(scriptPathCertificate));
-            Assert.True(File.Exists(scriptPathBoth));
+            Assert.That(File.Exists(scriptPathNothing), Is.False);
+            Assert.That(File.Exists(scriptPathScripts), Is.True);
+            Assert.That(File.Exists(scriptPathCertificate), Is.False);
+            Assert.That(File.Exists(scriptPathBoth), Is.True);
 
-            Assert.True(File.Exists(jsonPathNothing));
-            Assert.True(File.Exists(jsonPathScripts));
-            Assert.True(File.Exists(jsonPathCertificate));
-            Assert.True(File.Exists(jsonPathBoth));
+            Assert.That(File.Exists(jsonPathNothing), Is.True);
+            Assert.That(File.Exists(jsonPathScripts), Is.True);
+            Assert.That(File.Exists(jsonPathCertificate), Is.True);
+            Assert.That(File.Exists(jsonPathBoth), Is.True);
         }
 
         [Test]
@@ -164,14 +164,14 @@ namespace Otor.MsixHero.Tests.AppAttach
                 throw e.GetBaseException();
             }
 
-            Assert.IsTrue(File.Exists(vhdPath1));
-            Assert.IsTrue(File.Exists(vhdPath2));
+            Assert.That(File.Exists(vhdPath1), Is.True);
+            Assert.That(File.Exists(vhdPath2), Is.True);
 
             var fileSize1 = new FileInfo(vhdPath1).Length;
             var fileSize2 = new FileInfo(vhdPath2).Length;
             
-            Assert.AreEqual(50, (int)fileSize2 / 1024 / 1024);
-            Assert.Greater(fileSize2, fileSize1, "Custom size 50MB must product a bigger package than the auto-size of a relatively small package.");
+            Assert.That((int)fileSize2 / 1024 / 1024, Is.EqualTo(50));
+            Assert.That(fileSize2, Is.GreaterThan(fileSize1), "Custom size 50MB must product a bigger package than the auto-size of a relatively small package.");
         }
 
         [Test]
@@ -216,17 +216,17 @@ namespace Otor.MsixHero.Tests.AppAttach
                 throw e.GetBaseException();
             }
 
-            Assert.True(File.Exists(Path.Combine(targetVhd, "pkg1.vhd")));
-            Assert.True(File.Exists(Path.Combine(targetVhd, "pkg2.vhd")));
-            Assert.True(File.Exists(Path.Combine(targetVhd, "pkg3.vhd")));
+            Assert.That(File.Exists(Path.Combine(targetVhd, "pkg1.vhd")), Is.True);
+            Assert.That(File.Exists(Path.Combine(targetVhd, "pkg2.vhd")), Is.True);
+            Assert.That(File.Exists(Path.Combine(targetVhd, "pkg3.vhd")), Is.True);
 
-            Assert.True(File.Exists(Path.Combine(targetVhdx, "pkg1.vhdx")));
-            Assert.True(File.Exists(Path.Combine(targetVhdx, "pkg2.vhdx")));
-            Assert.True(File.Exists(Path.Combine(targetVhdx, "pkg3.vhdx")));
+            Assert.That(File.Exists(Path.Combine(targetVhdx, "pkg1.vhdx")), Is.True);
+            Assert.That(File.Exists(Path.Combine(targetVhdx, "pkg2.vhdx")), Is.True);
+            Assert.That(File.Exists(Path.Combine(targetVhdx, "pkg3.vhdx")), Is.True);
             
-            Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg1")));
-            Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg2")));
-            Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg3")));
+            Assert.That(Directory.Exists(Path.Combine(targetCim, "pkg1")), Is.True);
+            Assert.That(Directory.Exists(Path.Combine(targetCim, "pkg2")), Is.True);
+            Assert.That(Directory.Exists(Path.Combine(targetCim, "pkg3")), Is.True);
         }
     }
 

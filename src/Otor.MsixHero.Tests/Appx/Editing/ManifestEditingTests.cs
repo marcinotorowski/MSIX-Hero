@@ -28,12 +28,12 @@ namespace Otor.MsixHero.Tests.Appx.Editing
 
             // ReSharper disable once AssignNullToNotNullAttribute
             var item = metadata.XPathSelectElements("//*[local-name()='Item']").ToList();
-            Assert.AreEqual(1, item.Count);
+            Assert.That(item.Count, Is.EqualTo(1));
 
             var name = item[0].Attribute("Name")?.Value;
-            Assert.AreEqual("componentA", name);
+            Assert.That(name, Is.EqualTo("componentA"));
             var version = item[0].Attribute("Version")?.Value;
-            Assert.AreEqual("1.2.3", version);
+            Assert.That(version, Is.EqualTo("1.2.3"));
         }
 
         [Test]
@@ -58,12 +58,12 @@ namespace Otor.MsixHero.Tests.Appx.Editing
 
             // ReSharper disable once AssignNullToNotNullAttribute
             var item = metadata.XPathSelectElements("//*[local-name()='Item']").ToList();
-            Assert.AreEqual(2, item.Count);
+            Assert.That(item.Count, Is.EqualTo(2));
 
             var name = item[1].Attribute("Name")?.Value;
-            Assert.AreEqual("componentA", name);
+            Assert.That(name, Is.EqualTo("componentA"));
             var version = item[1].Attribute("Version")?.Value;
-            Assert.AreEqual("1.2.3", version);
+            Assert.That(version, Is.EqualTo("1.2.3"));
         }
     }
 }

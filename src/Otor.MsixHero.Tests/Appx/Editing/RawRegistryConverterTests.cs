@@ -16,28 +16,28 @@ namespace Otor.MsixHero.Tests.Appx.Editing
             var asBase64 = Convert.ToBase64String(originalBytes);
 
             var converted = RawRegistryValueConverter.GetByteArrayFromString(asBase64);
-            Assert.IsTrue(originalBytes.SequenceEqual(converted));
+            Assert.That(originalBytes.SequenceEqual(converted), Is.True);
 
             asBase64 += "=22";
             Assert.Throws<ArgumentException>(() => RawRegistryValueConverter.GetByteArrayFromString(asBase64));
 
             var asHex = "0x" + Convert.ToHexString(originalBytes);
             converted = RawRegistryValueConverter.GetByteArrayFromString(asHex);
-            Assert.IsTrue(converted.SequenceEqual(originalBytes));
+            Assert.That(converted.SequenceEqual(originalBytes), Is.True);
 
             var asDecimal = string.Join(", ", originalBytes.Select(b => b.ToString("0")));
             converted = RawRegistryValueConverter.GetByteArrayFromString(asDecimal);
-            Assert.IsTrue(converted.SequenceEqual(originalBytes));
+            Assert.That(converted.SequenceEqual(originalBytes), Is.True);
         }
 
         [Test]
         public void TestDWordConversion()
         {
             var inputAsNumber = "134";
-            Assert.AreEqual((uint)134, RawRegistryValueConverter.GetDWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetDWordFromString(inputAsNumber), Is.EqualTo((uint)134));
 
             inputAsNumber = "0x10";
-            Assert.AreEqual((uint)0x10, RawRegistryValueConverter.GetDWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetDWordFromString(inputAsNumber), Is.EqualTo((uint)0x10));
 
             inputAsNumber = uint.MaxValue.ToString("0") + "0";
             Assert.Throws<ArgumentException>(() => RawRegistryValueConverter.GetDWordFromString(inputAsNumber));
@@ -46,20 +46,20 @@ namespace Otor.MsixHero.Tests.Appx.Editing
             Assert.Throws<ArgumentException>(() => RawRegistryValueConverter.GetDWordFromString(inputAsNumber));
 
             inputAsNumber = "";
-            Assert.AreEqual((uint)0, RawRegistryValueConverter.GetDWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetDWordFromString(inputAsNumber), Is.EqualTo((uint)0));
         }
 
         [Test]
         public void TestQWordConversion()
         {
             var inputAsNumber = "134";
-            Assert.AreEqual((ulong)134, RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetQWordFromString(inputAsNumber), Is.EqualTo((ulong)134));
 
             inputAsNumber = "0x10";
-            Assert.AreEqual((ulong)0x10, RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetQWordFromString(inputAsNumber), Is.EqualTo((ulong)0x10));
 
             inputAsNumber = ulong.MaxValue.ToString("0");
-            Assert.AreEqual(ulong.MaxValue, RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetQWordFromString(inputAsNumber), Is.EqualTo(ulong.MaxValue));
 
             inputAsNumber = ulong.MaxValue.ToString("0") + "0";
             Assert.Throws<ArgumentException>(() => RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Tests.Appx.Editing
             Assert.Throws<ArgumentException>(() => RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
 
             inputAsNumber = "";
-            Assert.AreEqual((ulong)0, RawRegistryValueConverter.GetQWordFromString(inputAsNumber));
+            Assert.That(RawRegistryValueConverter.GetQWordFromString(inputAsNumber), Is.EqualTo((ulong)0));
         }
 
         [Test]
@@ -76,15 +76,15 @@ namespace Otor.MsixHero.Tests.Appx.Editing
         {
             var inputAsNumber = "1|22|aaa|";
             var converted = RawRegistryValueConverter.GetMultiValueFromString(inputAsNumber);
-            Assert.IsTrue(converted.SequenceEqual(new[] { "1", "22", "aaa", "" }));
+            Assert.That(converted.SequenceEqual(new[] { "1", "22", "aaa", "" }), Is.True);
 
             inputAsNumber = "";
             converted = RawRegistryValueConverter.GetMultiValueFromString(inputAsNumber);
-            Assert.AreEqual(1, converted.Length);
+            Assert.That(converted.Length, Is.EqualTo(1));
 
             inputAsNumber = " ";
             converted = RawRegistryValueConverter.GetMultiValueFromString(inputAsNumber);
-            Assert.IsTrue(converted.SequenceEqual(new[] { " " }));
+            Assert.That(converted.SequenceEqual(new[] { " " }), Is.True);
         }
     }
 }

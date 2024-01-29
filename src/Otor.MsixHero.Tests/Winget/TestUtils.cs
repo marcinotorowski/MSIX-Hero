@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using NUnit.Framework;
 using Otor.MsixHero.Winget.Helpers;
 using Otor.MsixHero.Winget.Yaml;
@@ -34,7 +35,7 @@ namespace Otor.MsixHero.Tests.Winget
             {
                 File.WriteAllText(testFile, "abc");
                 var hash = new YamlUtils().CalculateHashAsync(new FileInfo(testFile)).Result;
-                Assert.AreEqual("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad".ToUpperInvariant(), hash.ToUpperInvariant());
+                Assert.That(hash.ToUpperInvariant(), Is.EqualTo("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad".ToUpperInvariant()));
             }
             finally
             {
@@ -48,7 +49,7 @@ namespace Otor.MsixHero.Tests.Winget
             var nonExistingFile = "J:\\test\\file.msix";
 
             var util = new YamlUtils();
-            Assert.Throws<FileNotFoundException>(() =>
+            Assert.That(() =>
             {
                 try
                 {
@@ -58,10 +59,10 @@ namespace Otor.MsixHero.Tests.Winget
                 {
                     throw e.GetBaseException();
                 }
-            });
+            }, Throws.InstanceOf<FileNotFoundException>());
 
             nonExistingFile = "https://msixhero2.net/notexisting.fuk";
-            Assert.Throws<WebException>(() =>
+            Assert.That(() =>
             {
                 try
                 {
@@ -71,7 +72,7 @@ namespace Otor.MsixHero.Tests.Winget
                 {
                     throw e.GetBaseException();
                 }
-            });
+            }, Throws.InstanceOf<HttpRequestException>());
         }
     }
 }

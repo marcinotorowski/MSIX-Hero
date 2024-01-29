@@ -9,8 +9,8 @@ namespace Otor.MsixHero.Tests.Appx.Editing
         [Test]
         public void TestSimpleMasks()
         {
-            Assert.AreEqual("1.2.3.4", VersionStringOperations.ResolveMaskedVersion("1.2.3.4"));
-            Assert.AreEqual("1.2.3.4", VersionStringOperations.ResolveMaskedVersion("1.2.3.4", "1.2.3.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.3.4"), Is.EqualTo("1.2.3.4"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.3.4", "1.2.3.0"), Is.EqualTo("1.2.3.4"));
         }
 
         [Test]
@@ -25,49 +25,49 @@ namespace Otor.MsixHero.Tests.Appx.Editing
         [Test]
         public void TestAutoMask()
         {
-            Assert.AreEqual("1.0.0.0", VersionStringOperations.ResolveMaskedVersion("auto"));
-            Assert.AreEqual("1.0.0.1", VersionStringOperations.ResolveMaskedVersion("auto", "1.0.0.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("auto"), Is.EqualTo("1.0.0.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("auto", "1.0.0.0"), Is.EqualTo("1.0.0.1"));
         }
 
         [Test]
         public void TestIncrementation()
         {
-            Assert.AreEqual("2.1.1.1", VersionStringOperations.ResolveMaskedVersion("^.^.^.^"));
-            Assert.AreEqual("2.3.4.5", VersionStringOperations.ResolveMaskedVersion("^.^.^.^", "1.2.3.4"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("^.^.^.^"), Is.EqualTo("2.1.1.1"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("^.^.^.^", "1.2.3.4"), Is.EqualTo("2.3.4.5"));
         }
 
         [Test]
         public void TestMasking()
         {
-            Assert.AreEqual("1.2.3.0", VersionStringOperations.ResolveMaskedVersion("1.2.3.*"));
-            Assert.AreEqual("1.2.0.3", VersionStringOperations.ResolveMaskedVersion("1.2.*.3"));
-            Assert.AreEqual("1.0.2.3", VersionStringOperations.ResolveMaskedVersion("1.*.2.3"));
-            Assert.AreEqual("1.1.2.3", VersionStringOperations.ResolveMaskedVersion("*.1.2.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.3.*"), Is.EqualTo("1.2.3.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.*.3"), Is.EqualTo("1.2.0.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.*.2.3"), Is.EqualTo("1.0.2.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("*.1.2.3"), Is.EqualTo("1.1.2.3"));
 
-            Assert.AreEqual("1.2.3.0", VersionStringOperations.ResolveMaskedVersion("x.2.3.*"));
-            Assert.AreEqual("1.0.0.3", VersionStringOperations.ResolveMaskedVersion("1.x.*.3"));
-            Assert.AreEqual("1.0.0.3", VersionStringOperations.ResolveMaskedVersion("1.*.x.3"));
-            Assert.AreEqual("1.1.2.0", VersionStringOperations.ResolveMaskedVersion("*.1.2.x"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("x.2.3.*"), Is.EqualTo("1.2.3.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.x.*.3"), Is.EqualTo("1.0.0.3"));
+                Assert.That(VersionStringOperations.ResolveMaskedVersion("1.*.x.3"), Is.EqualTo("1.0.0.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("*.1.2.x"), Is.EqualTo("1.1.2.0"));
 
-            Assert.AreEqual("1.2.3.0", VersionStringOperations.ResolveMaskedVersion("x.2.3."));
-            Assert.AreEqual("1.0.0.3", VersionStringOperations.ResolveMaskedVersion("1.x..3"));
-            Assert.AreEqual("1.0.0.3", VersionStringOperations.ResolveMaskedVersion("1..x.3"));
-            Assert.AreEqual("1.1.2.0", VersionStringOperations.ResolveMaskedVersion(".1.2.x"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("x.2.3."), Is.EqualTo("1.2.3.0"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.x..3"), Is.EqualTo("1.0.0.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1..x.3"), Is.EqualTo("1.0.0.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion(".1.2.x"), Is.EqualTo("1.1.2.0"));
             
-            Assert.AreEqual("1.2.3.8", VersionStringOperations.ResolveMaskedVersion("1.2.3.*", "5.6.7.8"));
-            Assert.AreEqual("1.2.7.3", VersionStringOperations.ResolveMaskedVersion("1.2.*.3", "5.6.7.8"));
-            Assert.AreEqual("1.6.2.3", VersionStringOperations.ResolveMaskedVersion("1.*.2.3", "5.6.7.8"));
-            Assert.AreEqual("5.1.2.3", VersionStringOperations.ResolveMaskedVersion("*.1.2.3", "5.6.7.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.3.*", "5.6.7.8"), Is.EqualTo("1.2.3.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.2.*.3", "5.6.7.8"), Is.EqualTo("1.2.7.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.*.2.3", "5.6.7.8"), Is.EqualTo("1.6.2.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("*.1.2.3", "5.6.7.8"), Is.EqualTo("5.1.2.3"));
 
-            Assert.AreEqual("5.2.3.8", VersionStringOperations.ResolveMaskedVersion("x.2.3.*", "5.6.7.8"));
-            Assert.AreEqual("1.6.7.3", VersionStringOperations.ResolveMaskedVersion("1.x.*.3", "5.6.7.8"));
-            Assert.AreEqual("1.6.7.3", VersionStringOperations.ResolveMaskedVersion("1.*.x.3", "5.6.7.8"));
-            Assert.AreEqual("5.1.2.8", VersionStringOperations.ResolveMaskedVersion("*.1.2.x", "5.6.7.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("x.2.3.*", "5.6.7.8"), Is.EqualTo("5.2.3.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.x.*.3", "5.6.7.8"), Is.EqualTo("1.6.7.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1.*.x.3", "5.6.7.8"), Is.EqualTo("1.6.7.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("*.1.2.x", "5.6.7.8"), Is.EqualTo("5.1.2.8"));
 
-            Assert.AreEqual("5.6.3.8", VersionStringOperations.ResolveMaskedVersion("x..3.*", "5.6.7.8"));
-            Assert.AreEqual("1.6.7.3", VersionStringOperations.ResolveMaskedVersion("1..*.3", "5.6.7.8"));
-            Assert.AreEqual("5.6.7.3", VersionStringOperations.ResolveMaskedVersion(".*.x.3", "5.6.7.8"));
-            Assert.AreEqual("5.6.2.8", VersionStringOperations.ResolveMaskedVersion("*..2.x", "5.6.7.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("x..3.*", "5.6.7.8"), Is.EqualTo("5.6.3.8"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("1..*.3", "5.6.7.8"), Is.EqualTo("1.6.7.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion(".*.x.3", "5.6.7.8"), Is.EqualTo("5.6.7.3"));
+            Assert.That(VersionStringOperations.ResolveMaskedVersion("*..2.x", "5.6.7.8"), Is.EqualTo("5.6.2.8"));
         }
     }
 }

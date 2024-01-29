@@ -148,10 +148,10 @@ namespace Otor.MsixHero.Tests
 
                 var app = manifest.Applications[0];
                 var type = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, manifest.IsFramework);
-                Assert.AreEqual(MsixPackageType.Win32Psf, type);
+                Assert.That(type, Is.EqualTo(MsixPackageType.Win32Psf));
 
-                Assert.AreEqual(app.Proxy.Executable, "VFS\\AppVPackageDrive\\ConEmuPack\\ConEmu64.exe");
-                Assert.AreEqual("VFS\\AppVPackageDrive\\ConEmuPack\\PsfLauncher1.exe", app.Executable);
+                Assert.That("VFS\\AppVPackageDrive\\ConEmuPack\\ConEmu64.exe", Is.EqualTo(app.Proxy.Executable));
+                Assert.That(app.Executable, Is.EqualTo("VFS\\AppVPackageDrive\\ConEmuPack\\PsfLauncher1.exe"));
             }
         }
 
@@ -202,18 +202,18 @@ namespace Otor.MsixHero.Tests
 }";
             var obj = new PsfConfigSerializer().Deserialize(configJson);
 
-            Assert.AreEqual(2, obj.Applications.Count);
+            Assert.That(obj.Applications.Count, Is.EqualTo(2));
 
             var sample = obj.Applications[0];
-            Assert.NotNull(sample.StartScript);
-            Assert.AreEqual("RunMePlease.ps1", sample.StartScript.ScriptPath);
-            Assert.AreEqual("\"First argument\" secondArgument", sample.StartScript.ScriptArguments);
-            Assert.IsTrue(sample.StartScript.RunInVirtualEnvironment);
-            Assert.IsTrue(sample.StartScript.ShowWindow);
-            Assert.IsFalse(sample.StartScript.WaitForScriptToFinish);
-            Assert.NotNull(sample.EndScript);
-            Assert.AreEqual("RunMeAfter.ps1", sample.EndScript.ScriptPath);
-            Assert.AreEqual("ThisIsMe.txt", sample.EndScript.ScriptArguments);
+            Assert.That(sample.StartScript, Is.Not.Null);
+            Assert.That(sample.StartScript.ScriptPath, Is.EqualTo("RunMePlease.ps1"));
+            Assert.That(sample.StartScript.ScriptArguments, Is.EqualTo("\"First argument\" secondArgument"));
+            Assert.That(sample.StartScript.RunInVirtualEnvironment, Is.True);
+            Assert.That(sample.StartScript.ShowWindow, Is.True);
+            Assert.That(sample.StartScript.WaitForScriptToFinish, Is.False);
+            Assert.That(sample.EndScript, Is.Not.Null);
+            Assert.That(sample.EndScript.ScriptPath, Is.EqualTo("RunMeAfter.ps1"));
+            Assert.That(sample.EndScript.ScriptArguments, Is.EqualTo("ThisIsMe.txt"));
 
             var cppSample = obj.Applications[1];
         }

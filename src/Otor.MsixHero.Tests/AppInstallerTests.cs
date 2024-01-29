@@ -75,27 +75,23 @@ namespace Otor.MsixHero.Tests
 
             var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig2017));
 
-            using (var stream = new StringReader(stringXml))
-            {
-                var result = (AppInstallerConfig2017) xmlSerializer.Deserialize(stream);
+            using var stream = new StringReader(stringXml);
+            var result = (AppInstallerConfig2017) xmlSerializer.Deserialize(stream);
 
-                Assert.AreEqual("http://mywebservice.azurewebsites.net/appset.appinstaller", result.Uri);
-                Assert.NotNull(result.Dependencies);
-                Assert.AreEqual(2, result.Dependencies.Count);
-                Assert.AreEqual("Microsoft.VCLibs.140.00", result.Dependencies[0].Name);
-                Assert.AreEqual("14.0.24605.0", result.Dependencies[0].Version);
-                Assert.AreEqual("http://foobarbaz.com/fwkx86.appx", result.Dependencies[0].Uri);
-                Assert.AreEqual(AppInstallerPackageArchitecture.x86, ((AppInstallerPackageEntry)result.Dependencies[0]).Architecture);
-                Assert.AreEqual("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", result.Dependencies[0].Publisher);
+            Assert.That(result.Uri, Is.EqualTo("http://mywebservice.azurewebsites.net/appset.appinstaller"));
+            Assert.That(result.Dependencies, Is.Not.Null);
+            Assert.That(result.Dependencies.Count, Is.EqualTo(2));
+            Assert.That(result.Dependencies[0].Name, Is.EqualTo("Microsoft.VCLibs.140.00"));
+            Assert.That(result.Dependencies[0].Version, Is.EqualTo("14.0.24605.0"));
+            Assert.That(result.Dependencies[0].Uri, Is.EqualTo("http://foobarbaz.com/fwkx86.appx"));
+            Assert.That(((AppInstallerPackageEntry)result.Dependencies[0]).Architecture, Is.EqualTo(AppInstallerPackageArchitecture.x86));
+            Assert.That(result.Dependencies[0].Publisher, Is.EqualTo("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"));
 
-                Assert.NotNull(result.UpdateSettings);
-                Assert.NotNull(result.UpdateSettings.OnLaunch);
-                Assert.AreEqual(12, result.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks);
-                Assert.IsFalse(result.UpdateSettings.OnLaunch.ShowPrompt);
-                Assert.IsFalse(result.UpdateSettings.OnLaunch.UpdateBlocksActivation);
-
-
-            }
+            Assert.That(result.UpdateSettings, Is.Not.Null);
+            Assert.That(result.UpdateSettings.OnLaunch, Is.Not.Null);
+            Assert.That(result.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks, Is.EqualTo(12));
+            Assert.That(result.UpdateSettings.OnLaunch.ShowPrompt, Is.False);
+            Assert.That(result.UpdateSettings.OnLaunch.UpdateBlocksActivation, Is.False);
         }
     }
 }

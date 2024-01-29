@@ -31,44 +31,44 @@ namespace Otor.MsixHero.Tests
             var resolvableFolder = new ResolvablePath();
 
             resolvableFolder.Resolved = "C:\\Program Files (x86)\\Test";
-            Assert.AreEqual("{{ProgramFilesX86}}\\Test", resolvableFolder.Compacted, "The value must be compacted to ProgramFiles (x86).");
+            Assert.That(resolvableFolder.Compacted, Is.EqualTo("{{ProgramFilesX86}}\\Test"), "The value must be compacted to ProgramFiles (x86).");
 
             resolvableFolder.Resolved = "C:\\Program Files\\Test";
-            Assert.AreEqual("{{ProgramFiles}}\\Test", resolvableFolder.Compacted);
+            Assert.That(resolvableFolder.Compacted, Is.EqualTo("{{ProgramFiles}}\\Test"));
 
             resolvableFolder.Compacted = "{{ProgramFilesX86}}\\ABC";
-            Assert.AreEqual("C:\\Program Files (x86)\\ABC", resolvableFolder.Resolved);
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo("C:\\Program Files (x86)\\ABC"));
 
             resolvableFolder.Compacted = "{{ProgramFiles}}\\ABC";
-            Assert.AreEqual("C:\\Program Files\\ABC", resolvableFolder.Resolved);
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo("C:\\Program Files\\ABC"));
 
             resolvableFolder.Compacted = null;
-            Assert.AreEqual(resolvableFolder.Compacted, resolvableFolder.Resolved, "If compacted path is null, the resolved path must be also null.");
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo(resolvableFolder.Compacted), "If compacted path is null, the resolved path must be also null.");
 
             resolvableFolder.Resolved = null;
-            Assert.AreEqual(resolvableFolder.Compacted, resolvableFolder.Resolved, "If resolved path is null, the compacted path must be also null.");
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo(resolvableFolder.Compacted), "If resolved path is null, the compacted path must be also null.");
 
             resolvableFolder.Compacted = string.Empty;
-            Assert.AreEqual(resolvableFolder.Compacted, resolvableFolder.Resolved, "If compacted path is an empty string, the resolved path must be also an empty string.");
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo(resolvableFolder.Compacted), "If compacted path is an empty string, the resolved path must be also an empty string.");
 
             resolvableFolder.Resolved = string.Empty;
-            Assert.AreEqual(resolvableFolder.Compacted, resolvableFolder.Resolved, "If resolved path is an empty string, the compacted path must be also an empty string.");
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo(resolvableFolder.Compacted), "If resolved path is an empty string, the compacted path must be also an empty string.");
 
             resolvableFolder.Compacted = "abc";
-            Assert.AreEqual("abc", resolvableFolder.Resolved, "If compacted path has no variables, the resolved path must be the same value.");
+            Assert.That(resolvableFolder.Resolved, Is.EqualTo("abc"), "If compacted path has no variables, the resolved path must be the same value.");
 
             resolvableFolder.Resolved = "abc";
-            Assert.AreEqual("abc", resolvableFolder.Compacted, "If resolved path does not have any resolvable path, then the compacted path must be the same.");
+            Assert.That(resolvableFolder.Compacted, Is.EqualTo("abc"), "If resolved path does not have any resolvable path, then the compacted path must be the same.");
         }
 
         [Test]
         public void TestImplicitConversion()
         {
             ResolvablePath folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.AdminTools, Environment.SpecialFolderOption.DoNotVerify), "Test");
-            Assert.AreEqual("{{AdminTools}}\\Test", folder.Compacted);
+            Assert.That(folder.Compacted, Is.EqualTo("{{AdminTools}}\\Test"));
 
             string resolved = folder;
-            Assert.AreEqual(folder.Resolved, resolved);
+            Assert.That(resolved, Is.EqualTo(folder.Resolved));
         }
         
         [Test]
@@ -78,9 +78,9 @@ namespace Otor.MsixHero.Tests
             var serialized = JsonConvert.SerializeObject(folder, new ResolvablePathConverter());
             var deserialized = JsonConvert.DeserializeObject<ResolvablePath>(serialized, new ResolvablePathConverter());
 
-            Assert.IsTrue(serialized.Contains("\"{{ProgramFiles}}\\\\ABC\"", StringComparison.Ordinal), "Serialized object must be a plain type (compacted).");
-            Assert.AreEqual(deserialized.Compacted, folder.Compacted, "Value before and after serialization must be the same.");
-            Assert.AreEqual(deserialized.Resolved, folder.Resolved, "Value before and after serialization must be the same.");
+            Assert.That(serialized.Contains("\"{{ProgramFiles}}\\\\ABC\"", StringComparison.Ordinal), Is.True, "Serialized object must be a plain type (compacted).");
+            Assert.That(folder.Compacted, Is.EqualTo(deserialized.Compacted), "Value before and after serialization must be the same.");
+            Assert.That(folder.Resolved, Is.EqualTo(deserialized.Resolved), "Value before and after serialization must be the same.");
         }
     }
 }

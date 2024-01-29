@@ -14,10 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
@@ -41,7 +39,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
                     { "MsixHero", "1.5.0" }
                 };
                 
-                Assert.IsTrue(packagingToolDetector.TryDetectMsixHero(buildParams, out _));
+                Assert.That(packagingToolDetector.TryDetectMsixHero(buildParams, out _), Is.True);
             }
         }
         
@@ -55,9 +53,9 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
                 { "Raynet.RaySuite.Common.Appx", "6.2.7060.150"},
             };
 
-            Assert.IsTrue(packagingToolDetector.TryDetectRayPack(buildParams, out var rpk));
-            Assert.AreEqual("RayPack 6.2", rpk.ProductName);
-            Assert.AreEqual("(MSIX builder v6.2.7060.150)", rpk.ProductVersion);
+            Assert.That(packagingToolDetector.TryDetectRayPack(buildParams, out var rpk), Is.True);
+            Assert.That(rpk.ProductName, Is.EqualTo("RayPack 6.2"));
+            Assert.That(rpk.ProductVersion, Is.EqualTo("(MSIX builder v6.2.7060.150)"));
         }
     }
 }

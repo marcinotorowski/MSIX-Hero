@@ -28,10 +28,10 @@ namespace Otor.MsixHero.Tests
                 files.Add(file.Name);
             }
             
-            Assert.IsTrue(folders.Contains("VFS"));
-            Assert.IsTrue(folders.Contains("Assets"));
+            Assert.That(folders.Contains("VFS"), Is.True);
+            Assert.That(folders.Contains("Assets"), Is.True);
 
-            Assert.IsTrue(files.Contains("AppxManifest.xml"));
+            Assert.That(files.Contains("AppxManifest.xml"), Is.True);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.Tests
                 files.Add(file);
             }
 
-            Assert.AreEqual(@"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe", files.Single().FullPath);
+            Assert.That(files.Single().FullPath, Is.EqualTo(@"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe"));
         }
 
         [Test]
@@ -56,21 +56,11 @@ namespace Otor.MsixHero.Tests
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var reader = FileReaderFactory.CreateFileReader(msixHeroPackage.FullName);
 
-            var folders = new List<string>();
-            var files = new List<AppxFileInfo>();
+            var folders = await reader.EnumerateDirectories(@"VFS\AppVPackageDrive").ToListAsync();
+            var files = await reader.EnumerateFiles(@"VFS\AppVPackageDrive\ConEmuPack").ToListAsync();
 
-            await foreach (var dir in reader.EnumerateDirectories(@"VFS\AppVPackageDrive"))
-            {
-                folders.Add(dir);
-            }
-
-            await foreach (var file in reader.EnumerateFiles(@"VFS\AppVPackageDrive\ConEmuPack"))
-            {
-                files.Add(file);
-            }
-
-            Assert.IsTrue(new[] { @"VFS\AppVPackageDrive\ConEmuPack" }.OrderBy(c => c).SequenceEqual(folders.OrderBy(d => d)));
-            Assert.IsTrue(new[] { @"VFS\AppVPackageDrive\ConEmuPack\ConEmu.exe", @"VFS\AppVPackageDrive\ConEmuPack\ConEmu64.exe", @"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe" }.OrderBy(c => c).SequenceEqual(files.Select(f => f.FullPath).OrderBy(f => f)));
+            Assert.That(new[] { @"VFS\AppVPackageDrive\ConEmuPack" }.OrderBy(c => c).SequenceEqual(folders.OrderBy(d => d)), Is.True);
+            Assert.That(new[] { @"VFS\AppVPackageDrive\ConEmuPack\ConEmu.exe", @"VFS\AppVPackageDrive\ConEmuPack\ConEmu64.exe", @"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe" }.OrderBy(c => c).SequenceEqual(files.Select(f => f.FullPath).OrderBy(f => f)), Is.True);
         }
 
 

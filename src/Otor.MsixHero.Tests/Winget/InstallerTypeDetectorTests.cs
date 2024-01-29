@@ -34,11 +34,9 @@ namespace Otor.MsixHero.Tests.Winget
 
             var nsis = resources.First(r => r.IndexOf("nsis", StringComparison.OrdinalIgnoreCase) != -1);
 
-            using (var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(nsis))
-            {
-                var detect = sd.DetectSetupType(s).Result;
-                Assert.AreEqual(YamlInstallerType.Nullsoft, detect);
-            }
+            using var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(nsis);
+            var detect = sd.DetectSetupType(s).Result;
+            Assert.That(detect, Is.EqualTo(YamlInstallerType.Nullsoft));
         }
 
         [Test]
@@ -48,11 +46,9 @@ namespace Otor.MsixHero.Tests.Winget
 
             var resources = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceNames();
             var inno = resources.First(r => r.IndexOf("inno", StringComparison.OrdinalIgnoreCase) != -1);
-            using (var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(inno))
-            {
-                var detect = sd.DetectSetupType(s).Result;
-                Assert.AreEqual(YamlInstallerType.InnoSetup, detect);
-            }
+            using var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(inno);
+            var detect = sd.DetectSetupType(s).Result;
+            Assert.That(detect, Is.EqualTo(YamlInstallerType.InnoSetup));
         }
     }
 }

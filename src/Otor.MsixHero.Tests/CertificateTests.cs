@@ -48,10 +48,10 @@ namespace Otor.MsixHero.Tests
             var check3 = manager.IsTrusted(fileUnsigned.FullName, CancellationToken.None).GetAwaiter().GetResult();
             var check4 = manager.IsTrusted(fileNotSignable.FullName, CancellationToken.None).GetAwaiter().GetResult();
 
-            Assert.IsFalse(check1.IsTrusted);
-            Assert.IsTrue(check2.IsTrusted);
-            Assert.IsFalse(check3.IsTrusted);
-            Assert.IsFalse(check4.IsTrusted);
+            Assert.That(check1.IsTrusted, Is.False);
+            Assert.That(check2.IsTrusted, Is.True);
+            Assert.That(check3.IsTrusted, Is.False);
+            Assert.That(check4.IsTrusted, Is.False);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Tests.Sdk
                 .Split("\r\n").ToList();
 
             SignToolWrapper.TryGetErrorMessageFromSignToolOutput(output, out var error);
-            Assert.IsTrue(error.Contains("EKU", StringComparison.CurrentCultureIgnoreCase));
+            Assert.That(error, Contains.Substring("EKU"));
         }
     }
 }

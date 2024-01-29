@@ -26,58 +26,58 @@ namespace Otor.MsixHero.Tests.UpdateImpact
             
             var compare = comparer.Analyze(stream1, stream2).Result;
             
-            Assert.AreEqual(1406036, compare.UpdateImpact);
-            Assert.AreEqual(403522, compare.SizeDifference);
-            Assert.AreEqual(294784, compare.AddedFiles.FileSize);
-            Assert.AreEqual(1406036, compare.AddedFiles.BlockSize);
-            Assert.AreEqual(108523, compare.AddedFiles.UpdateImpact);
-            Assert.AreEqual(1, compare.AddedFiles.FileCount);
-            Assert.AreEqual(294784, compare.AddedFiles.SizeDifference);
-            Assert.AreEqual(72, compare.AddedFiles.BlockCount);
+            Assert.That(compare.UpdateImpact, Is.EqualTo(1406036));
+            Assert.That(compare.SizeDifference, Is.EqualTo(403522));
+            Assert.That(compare.AddedFiles.FileSize, Is.EqualTo(294784));
+            Assert.That(compare.AddedFiles.BlockSize, Is.EqualTo(1406036)); 
+            Assert.That(compare.AddedFiles.UpdateImpact, Is.EqualTo(108523));
+            Assert.That(compare.AddedFiles.FileCount, Is.EqualTo(1));
+            Assert.That(compare.AddedFiles.SizeDifference, Is.EqualTo(294784));
+            Assert.That(compare.AddedFiles.BlockCount, Is.EqualTo(72));
 
-            Assert.AreEqual(66144, compare.DeletedFiles.FileSize);
-            Assert.AreEqual(1270988, compare.DeletedFiles.BlockSize);
-            Assert.AreEqual(2, compare.DeletedFiles.FileCount);
-            Assert.AreEqual(67, compare.DeletedFiles.BlockCount);
-            Assert.AreEqual(0, compare.DeletedFiles.UpdateImpact);
-            Assert.AreEqual(-66144, compare.DeletedFiles.SizeDifference);
+            Assert.That(compare.DeletedFiles.FileSize, Is.EqualTo(66144));
+            Assert.That(compare.DeletedFiles.BlockSize, Is.EqualTo(1270988));
+            Assert.That(compare.DeletedFiles.FileCount, Is.EqualTo(2));
+            Assert.That(compare.DeletedFiles.BlockCount, Is.EqualTo(67));
+            Assert.That(compare.DeletedFiles.UpdateImpact, Is.EqualTo(0));
+            Assert.That(compare.DeletedFiles.SizeDifference, Is.EqualTo(-66144));
 
-            Assert.AreEqual(18, compare.ChangedFiles.FileCount);
-            Assert.AreEqual(4023390, compare.ChangedFiles.OldPackageFileSize);
-            Assert.AreEqual(71, compare.ChangedFiles.OldPackageBlockCount);
-            Assert.AreEqual(1337955, compare.ChangedFiles.OldPackageBlockSize);
-            Assert.AreEqual(4198272, compare.ChangedFiles.NewPackageFileSize);
-            Assert.AreEqual(73, compare.ChangedFiles.NewPackageBlockCount);
-            Assert.AreEqual(1395168, compare.ChangedFiles.NewPackageBlockSize);
-            Assert.AreEqual(1297513, compare.ChangedFiles.UpdateImpact);
-            Assert.AreEqual(174882, compare.ChangedFiles.SizeDifference);
+            Assert.That(compare.ChangedFiles.FileCount, Is.EqualTo(18));
+            Assert.That(compare.ChangedFiles.OldPackageFileSize, Is.EqualTo(4023390));
+            Assert.That(compare.ChangedFiles.OldPackageBlockCount, Is.EqualTo(71));
+            Assert.That(compare.ChangedFiles.OldPackageBlockSize, Is.EqualTo(1337955));
+            Assert.That(compare.ChangedFiles.NewPackageFileSize, Is.EqualTo(4198272));
+            Assert.That(compare.ChangedFiles.NewPackageBlockCount, Is.EqualTo(73));
+            Assert.That(compare.ChangedFiles.NewPackageBlockSize, Is.EqualTo(1395168));
+            Assert.That(compare.ChangedFiles.UpdateImpact, Is.EqualTo(1297513));
+            Assert.That(compare.ChangedFiles.SizeDifference, Is.EqualTo(174882));
             
-            Assert.AreEqual(64379562, compare.UnchangedFiles.FileSize);
-            Assert.AreEqual(23685618, compare.UnchangedFiles.BlockSize);
-            Assert.AreEqual(244, compare.UnchangedFiles.FileCount);
-            Assert.AreEqual(1116, compare.UnchangedFiles.BlockCount);
+            Assert.That(compare.UnchangedFiles.FileSize, Is.EqualTo(64379562));
+            Assert.That(compare.UnchangedFiles.BlockSize, Is.EqualTo(23685618));
+            Assert.That(compare.UnchangedFiles.FileCount, Is.EqualTo(244));
+            Assert.That(compare.UnchangedFiles.BlockCount, Is.EqualTo(1116));
             
-            Assert.AreEqual(24956606, compare.OldPackageLayout.BlockSize);
-            Assert.AreEqual(1183, compare.OldPackageLayout.BlockCount);
-            Assert.AreEqual(68469096, compare.OldPackageLayout.FileSize);
-            Assert.AreEqual(264, compare.OldPackageLayout.FileCount);
-            Assert.AreEqual(24975386, compare.OldPackageLayout.Size);
+            Assert.That(compare.OldPackageLayout.BlockSize, Is.EqualTo(24956606));
+            Assert.That(compare.OldPackageLayout.BlockCount, Is.EqualTo(1183));
+            Assert.That(compare.OldPackageLayout.FileSize, Is.EqualTo(68469096));
+            Assert.That(compare.OldPackageLayout.FileCount, Is.EqualTo(264));
+            Assert.That(compare.OldPackageLayout.Size, Is.EqualTo(24975386));
             
-            Assert.AreEqual(25091654, compare.NewPackageLayout.BlockSize);
-            Assert.AreEqual(1188, compare.NewPackageLayout.BlockCount);
-            Assert.AreEqual(68872618, compare.NewPackageLayout.FileSize);
-            Assert.AreEqual(263, compare.NewPackageLayout.FileCount);
-            Assert.AreEqual(25110368, compare.NewPackageLayout.Size);
+            Assert.That(compare.NewPackageLayout.BlockSize, Is.EqualTo(25091654));
+            Assert.That(compare.NewPackageLayout.BlockCount, Is.EqualTo(1188));
+            Assert.That(compare.NewPackageLayout.FileSize, Is.EqualTo(68872618));
+            Assert.That(compare.NewPackageLayout.FileCount, Is.EqualTo(263));
+            Assert.That(compare.NewPackageLayout.Size, Is.EqualTo(25110368));
             
-            Assert.AreEqual(335503, compare.OldPackageDuplication.PossibleSizeReduction);
-            Assert.AreEqual(103374, compare.OldPackageDuplication.PossibleImpactReduction);
-            Assert.AreEqual(335503, compare.OldPackageDuplication.FileSize);
-            Assert.AreEqual(96, compare.OldPackageDuplication.FileCount);
+            Assert.That(compare.OldPackageDuplication.PossibleSizeReduction, Is.EqualTo(335503));
+            Assert.That(compare.OldPackageDuplication.PossibleImpactReduction, Is.EqualTo(103374));
+            Assert.That(compare.OldPackageDuplication.FileSize, Is.EqualTo(335503));
+            Assert.That(compare.OldPackageDuplication.FileCount, Is.EqualTo(96));
             
-            Assert.AreEqual(335503, compare.NewPackageDuplication.PossibleSizeReduction);
-            Assert.AreEqual(103374, compare.NewPackageDuplication.PossibleImpactReduction);
-            Assert.AreEqual(335503, compare.NewPackageDuplication.FileSize);
-            Assert.AreEqual(96, compare.NewPackageDuplication.FileCount);
+            Assert.That(compare.NewPackageDuplication.PossibleSizeReduction, Is.EqualTo(335503));
+            Assert.That(compare.NewPackageDuplication.PossibleImpactReduction, Is.EqualTo(103374));
+            Assert.That(compare.NewPackageDuplication.FileSize, Is.EqualTo(335503));
+            Assert.That(compare.NewPackageDuplication.FileCount, Is.EqualTo(96));
             
         }
     }

@@ -19,11 +19,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest).ConfigureAwait(false);
 
-            Assert.NotNull(GetBuildVersion(manifest, "MsixHero"));
-            Assert.NotNull(GetBuildVersion(manifest, "OperatingSystem"));
-            Assert.NotNull(GetBuildVersion(manifest, "SignTool.exe"));
-            Assert.NotNull(GetBuildVersion(manifest, "MakePri.exe"));
-            Assert.NotNull(GetBuildVersion(manifest, "MakeAppx.exe"));
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.NaN);
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.Not.NaN);
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.Not.NaN);
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.Not.NaN);
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.Not.NaN);
         }
 
         [Test]
@@ -43,11 +43,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
-            Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
-            Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must be overridden.");
-            Assert.AreNotEqual("93.0", GetBuildVersion(manifest, "MakePri.exe"), "By default this value must be overridden.");
-            Assert.AreNotEqual("94.0", GetBuildVersion(manifest, "SignTool.exe"), "By default this value must be overridden.");
-            Assert.AreNotEqual("95.0", GetBuildVersion(manifest, "MakeAppx.exe"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.EqualTo("91.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.Not.EqualTo("92.0  "), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.Not.EqualTo("93.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.Not.EqualTo("94.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.Not.EqualTo("95.0"), "By default this value must be overridden.");
         }
 
         [Test]
@@ -67,11 +67,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
-            Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
-            Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must be overridden.");
-            Assert.AreNotEqual("93.0", GetBuildVersion(manifest, "MakePri.exe"), "By default this value must be overridden.");
-            Assert.AreNotEqual("94.0", GetBuildVersion(manifest, "SignTool.exe"), "By default this value must be overridden.");
-            Assert.AreNotEqual("95.0", GetBuildVersion(manifest, "MakeAppx.exe"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.EqualTo("91.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.Not.EqualTo("92.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.Not.EqualTo("93.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.Not.EqualTo("94.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.Not.EqualTo("95.0"), "By default this value must be overridden.");
         }
 
         [Test]
@@ -91,11 +91,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest);
 
-            Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
-            Assert.AreEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must not be overridden.");
-            Assert.AreEqual("93.0", GetBuildVersion(manifest, "MakePri.exe"), "By default this value must not be overridden.");
-            Assert.AreNotEqual("94.0", GetBuildVersion(manifest, "SignTool.exe"), "By default this value must be overridden.");
-            Assert.AreNotEqual("95.0", GetBuildVersion(manifest, "MakeAppx.exe"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.EqualTo("91.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.EqualTo("92.0"), "By default this value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.EqualTo("93.0"), "By default this value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.Not.EqualTo("94.0"), "By default this value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.Not.EqualTo("95.0"), "By default this value must be overridden.");
         }
 
         [Test]
@@ -115,11 +115,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
 
-            Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "This value must be always overridden.");
-            Assert.AreEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "This value must not be overridden.");
-            Assert.AreEqual("93.0", GetBuildVersion(manifest, "MakePri.exe"), "This value must not be overridden.");
-            Assert.AreEqual("94.0", GetBuildVersion(manifest, "SignTool.exe"), "This value must not be overridden.");
-            Assert.AreEqual("95.0", GetBuildVersion(manifest, "MakeAppx.exe"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.EqualTo("92.0  "), "This value must be always overridden.");
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.EqualTo("92.0"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.EqualTo("93.0"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.EqualTo("94.0"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.EqualTo("95.0"), "This value must not be overridden.");
 
             var existingIncompleteValues = new Dictionary<string, string>
             {
@@ -131,11 +131,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
 
             await  injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
 
-            Assert.NotNull(GetBuildVersion(manifest, "MsixHero"));
-            Assert.NotNull(GetBuildVersion(manifest, "OperatingSystem"));
-            Assert.NotNull(GetBuildVersion(manifest, "MakePri.exe"));
-            Assert.AreEqual("94.0", GetBuildVersion(manifest, "SignTool.exe"), "This value must not be overridden.");
-            Assert.AreEqual("95.0", GetBuildVersion(manifest, "MakeAppx.exe"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.Null);
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.Not.Null);
+            Assert.That(GetBuildVersion(manifest, "MakePri.exe"), Is.Not.Null);
+            Assert.That(GetBuildVersion(manifest, "SignTool.exe"), Is.EqualTo("94.0"), "This value must not be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx.exe"), Is.EqualTo("95.0"), "This value must not be overridden.");
         }
 
         [Test]
@@ -155,11 +155,11 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var injector = new MsixHeroBrandingInjector();
             await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
-            Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "This value must be overridden.");
-            Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "This value must be overridden.");
-            Assert.AreNotEqual("93.0", GetBuildVersion(manifest, "MakePri"), "This value must be overridden.");
-            Assert.AreNotEqual("94.0", GetBuildVersion(manifest, "SignTool"), "This value must be overridden.");
-            Assert.AreNotEqual("95.0", GetBuildVersion(manifest, "MakeAppx"), "This value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MsixHero"), Is.Not.EqualTo("91.0"), "This value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "OperatingSystem"), Is.Not.EqualTo("92.0"), "This value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakePri"), Is.Not.EqualTo("93.0"), "This value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "SignTool"), Is.Not.EqualTo("94.0"), "This value must be overridden.");
+            Assert.That(GetBuildVersion(manifest, "MakeAppx"), Is.Not.EqualTo("95.0"), "This value must be overridden.");
         }
 
         private XDocument PrepareMockManifest()

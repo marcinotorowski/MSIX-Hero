@@ -80,14 +80,14 @@ namespace Otor.MsixHero.Tests
                 
                 var identity = reader.GetIdentity(bundleManifest).Result;
 
-                Assert.AreEqual("Microsoft.DesktopAppInstaller", identity.Name);
-                Assert.AreEqual("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", identity.Publisher);
-                Assert.AreEqual("2021.119.2316.0", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(3, identity.Architectures.Length);
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.Arm));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x64));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x86));
+                Assert.That(identity.Name, Is.EqualTo("Microsoft.DesktopAppInstaller"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"));
+                Assert.That(identity.Version, Is.EqualTo("2021.119.2316.0"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(3));
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.Arm), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x64), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x86), Is.True);
             });
 
             // in a manifest, saved on disk
@@ -108,14 +108,14 @@ namespace Otor.MsixHero.Tests
                 }
 
                 var identity = reader.GetIdentity(manifestFile).Result;
-                Assert.AreEqual("Microsoft.DesktopAppInstaller", identity.Name);
-                Assert.AreEqual("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", identity.Publisher);
-                Assert.AreEqual("2021.119.2316.0", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(3, identity.Architectures.Length);
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.Arm));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x64));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x86));
+                Assert.That(identity.Name, Is.EqualTo("Microsoft.DesktopAppInstaller"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"));
+                Assert.That(identity.Version, Is.EqualTo("2021.119.2316.0"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(3));
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.Arm), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x64), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x86), Is.True);
             });
 
             // in a zip file
@@ -139,14 +139,14 @@ namespace Otor.MsixHero.Tests
                 memStream.Seek(0, SeekOrigin.Begin);
                 IAppxIdentityReader reader = new AppxIdentityReader();
                 var identity = reader.GetIdentity(memStream).Result;
-                Assert.AreEqual("Microsoft.DesktopAppInstaller", identity.Name);
-                Assert.AreEqual("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", identity.Publisher);
-                Assert.AreEqual("2021.119.2316.0", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(3, identity.Architectures.Length);
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.Arm));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x64));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x86));
+                Assert.That(identity.Name, Is.EqualTo("Microsoft.DesktopAppInstaller"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"));
+                Assert.That(identity.Version, Is.EqualTo("2021.119.2316.0"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(3));
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.Arm), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x64), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x86), Is.True);
             });
 
             // in a zip file, saved on disk
@@ -170,14 +170,14 @@ namespace Otor.MsixHero.Tests
 
                 IAppxIdentityReader reader = new AppxIdentityReader();
                 var identity = reader.GetIdentity(tempFile).Result;
-                Assert.AreEqual("Microsoft.DesktopAppInstaller", identity.Name);
-                Assert.AreEqual("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", identity.Publisher);
-                Assert.AreEqual("2021.119.2316.0", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(3, identity.Architectures.Length);
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.Arm));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x64));
-                Assert.IsTrue(identity.Architectures.Contains(AppxPackageArchitecture.x86));
+                Assert.That(identity.Name, Is.EqualTo("Microsoft.DesktopAppInstaller"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"));
+                Assert.That(identity.Version, Is.EqualTo("2021.119.2316.0"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(3));
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.Arm), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x64), Is.True);
+                Assert.That(identity.Architectures.Contains(AppxPackageArchitecture.x86), Is.True);
             });
         }
 
@@ -244,12 +244,12 @@ namespace Otor.MsixHero.Tests
                 
                 var stream = new MemoryStream(utfEncoding.GetBytes(SimpleAppxManifestContent));
                 var identity = reader.GetIdentity(stream).Result;
-                Assert.AreEqual("SampleProduct", identity.Name);
-                Assert.AreEqual("CN=me", identity.Publisher);
-                Assert.AreEqual("1.2.3.4", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(1, identity.Architectures.Length);
-                Assert.AreEqual(AppxPackageArchitecture.x64, identity.Architectures[0]);
+                Assert.That(identity.Name, Is.EqualTo("SampleProduct"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=me"));
+                Assert.That(identity.Version, Is.EqualTo("1.2.3.4"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(1));
+                Assert.That(identity.Architectures[0], Is.EqualTo(AppxPackageArchitecture.x64));
             });
 
             // in a manifest, saved on disk
@@ -262,12 +262,12 @@ namespace Otor.MsixHero.Tests
                 File.WriteAllText(manifestFile, SimpleAppxManifestContent, utfEncoding);
 
                 var identity = reader.GetIdentity(manifestFile).Result;
-                Assert.AreEqual("SampleProduct", identity.Name);
-                Assert.AreEqual("CN=me", identity.Publisher);
-                Assert.AreEqual("1.2.3.4", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(1, identity.Architectures.Length);
-                Assert.AreEqual(AppxPackageArchitecture.x64, identity.Architectures[0]);
+                Assert.That(identity.Name, Is.EqualTo("SampleProduct"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=me"));
+                Assert.That(identity.Version, Is.EqualTo("1.2.3.4"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(1));
+                Assert.That(identity.Architectures[0], Is.EqualTo(AppxPackageArchitecture.x64));
             });
 
             // in a zip file
@@ -290,12 +290,12 @@ namespace Otor.MsixHero.Tests
                 memStream.Seek(0, SeekOrigin.Begin);
                 IAppxIdentityReader reader = new AppxIdentityReader();
                 var identity = reader.GetIdentity(memStream).Result;
-                Assert.AreEqual("SampleProduct", identity.Name);
-                Assert.AreEqual("CN=me", identity.Publisher);
-                Assert.AreEqual("1.2.3.4", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(1, identity.Architectures.Length);
-                Assert.AreEqual(AppxPackageArchitecture.x64, identity.Architectures[0]);
+                Assert.That(identity.Name, Is.EqualTo("SampleProduct"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=me"));
+                Assert.That(identity.Version, Is.EqualTo("1.2.3.4"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(1));
+                Assert.That(identity.Architectures[0], Is.EqualTo(AppxPackageArchitecture.x64));
             });
 
             // in a zip file, saved on disk
@@ -320,12 +320,12 @@ namespace Otor.MsixHero.Tests
 
                 IAppxIdentityReader reader = new AppxIdentityReader();
                 var identity = reader.GetIdentity(tempFile).Result;
-                Assert.AreEqual("SampleProduct", identity.Name);
-                Assert.AreEqual("CN=me", identity.Publisher);
-                Assert.AreEqual("1.2.3.4", identity.Version);
-                Assert.NotNull(identity.Architectures);
-                Assert.AreEqual(1, identity.Architectures.Length);
-                Assert.AreEqual(AppxPackageArchitecture.x64, identity.Architectures[0]);
+                Assert.That(identity.Name, Is.EqualTo("SampleProduct"));
+                Assert.That(identity.Publisher, Is.EqualTo("CN=me"));
+                Assert.That(identity.Version, Is.EqualTo("1.2.3.4"));
+                Assert.That(identity.Architectures, Is.Not.Null);
+                Assert.That(identity.Architectures.Length, Is.EqualTo(1));
+                Assert.That(identity.Architectures[0], Is.EqualTo(AppxPackageArchitecture.x64));
             });
         }
         

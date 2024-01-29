@@ -14,9 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
@@ -35,23 +32,23 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Never;
             appInstaller = builder.Build();
-            Assert.IsNull(appInstaller.UpdateSettings?.OnLaunch);
-            Assert.IsNull(appInstaller.UpdateSettings?.AutomaticBackgroundTask);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch, Is.Null);
+            Assert.That(appInstaller.UpdateSettings?.AutomaticBackgroundTask, Is.Null);
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
             appInstaller = builder.Build();
-            Assert.IsNotNull(appInstaller.UpdateSettings?.OnLaunch);
-            Assert.IsNull(appInstaller.UpdateSettings?.AutomaticBackgroundTask);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch, Is.Not.Null);
+            Assert.That(appInstaller.UpdateSettings?.AutomaticBackgroundTask, Is.Null);
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.LaunchAndBackground;
             appInstaller = builder.Build();
-            Assert.IsNotNull(appInstaller.UpdateSettings?.OnLaunch);
-            Assert.IsNotNull(appInstaller.UpdateSettings?.AutomaticBackgroundTask);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch, Is.Not.Null);
+            Assert.That(appInstaller.UpdateSettings?.AutomaticBackgroundTask, Is.Not.Null);
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Background;
             appInstaller = builder.Build();
-            Assert.IsNull(appInstaller.UpdateSettings?.OnLaunch);
-            Assert.IsNotNull(appInstaller.UpdateSettings?.AutomaticBackgroundTask);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch, Is.Null);
+            Assert.That(appInstaller.UpdateSettings?.AutomaticBackgroundTask, Is.Not.Null);
         }
 
         [Test]
@@ -63,39 +60,39 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
             
             builder.AllowDowngrades = true;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.ForceUpdateFromAnyVersion);
+            Assert.That(appInstaller.UpdateSettings?.ForceUpdateFromAnyVersion, Is.True);
             
             builder.AllowDowngrades = false;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.ForceUpdateFromAnyVersion != true);
+            Assert.That(appInstaller.UpdateSettings?.ForceUpdateFromAnyVersion, Is.Not.EqualTo(true));
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
             builder.UpdateBlocksActivation = true;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.OnLaunch?.UpdateBlocksActivation);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.UpdateBlocksActivation, Is.True);
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
             builder.UpdateBlocksActivation = false;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.OnLaunch?.UpdateBlocksActivation != true);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.UpdateBlocksActivation, Is.Not.EqualTo(true));
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
             builder.ShowPrompt = true;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.OnLaunch?.ShowPrompt);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.ShowPrompt, Is.True);
 
             builder.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
             builder.ShowPrompt = false;
             appInstaller = builder.Build();
-            Assert.IsTrue(appInstaller.UpdateSettings?.OnLaunch?.ShowPrompt != true);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.ShowPrompt, Is.Not.EqualTo(true));
 
             builder.HoursBetweenUpdateChecks = 20;
             appInstaller = builder.Build();
-            Assert.AreEqual(20, appInstaller.UpdateSettings?.OnLaunch?.HoursBetweenUpdateChecks);
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.HoursBetweenUpdateChecks, Is.EqualTo(20));
 
             builder.HoursBetweenUpdateChecks = 24;
             appInstaller = builder.Build();
-            Assert.AreNotEqual(24, appInstaller.UpdateSettings?.OnLaunch?.HoursBetweenUpdateChecks, "24 as a default value should be ignored.");
+            Assert.That(appInstaller.UpdateSettings?.OnLaunch?.HoursBetweenUpdateChecks, Is.Not.EqualTo(24), "24 as a default value should be ignored.");
         }
     }
 }

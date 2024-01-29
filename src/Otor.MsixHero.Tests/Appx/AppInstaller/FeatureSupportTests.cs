@@ -30,26 +30,26 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
         {
             var appInstaller = GetConfig();
             var supportHelper = new AppInstallerFeatureSupportHelper();
-            Assert.AreEqual(1709, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1709));
 
             // AutomaticBackgroundTask should be supported from 1803 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 AutomaticBackgroundTask = new AutomaticBackgroundTaskSettings()
             });
-            Assert.AreEqual(1803, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1803));
 
             // ForceUpdateFromAnyVersion should be supported from 1809 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 ForceUpdateFromAnyVersion = true
             });
-            Assert.AreEqual(1809, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1809));
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 ForceUpdateFromAnyVersion = false
             });
-            Assert.AreEqual(1709, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1709));
 
             // UpdateBlocksActivation should be supported from 1903 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
@@ -59,7 +59,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     UpdateBlocksActivation = true
                 }
             });
-            Assert.AreEqual(1903, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1903));
             
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     UpdateBlocksActivation = false
                 }
             });
-            Assert.AreEqual(1709, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1709));
 
             // ShowPrompt should be supported from 1903 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
@@ -78,7 +78,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     ShowPrompt = true
                 }
             });
-            Assert.AreEqual(1903, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1903));
             
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     ShowPrompt = false
                 }
             });
-            Assert.AreEqual(1709, supportHelper.GetLowestSupportedWindows10Build(appInstaller));
+            Assert.That(supportHelper.GetLowestSupportedWindows10Build(appInstaller), Is.EqualTo(1709));
         }
 
         [Test]
@@ -95,26 +95,26 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
         {
             var appInstaller = GetConfig();
             var supportHelper = new AppInstallerFeatureSupportHelper();
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017"));
 
             // AutomaticBackgroundTask should be supported from 1803 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 AutomaticBackgroundTask = new AutomaticBackgroundTaskSettings()
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017/2", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017/2"));
 
             // ForceUpdateFromAnyVersion should be supported from 1809 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 ForceUpdateFromAnyVersion = true
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017/2", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017/2"));
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
                 ForceUpdateFromAnyVersion = false
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017"));
 
             // UpdateBlocksActivation should be supported from 1903 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
@@ -124,7 +124,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     UpdateBlocksActivation = true
                 }
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2018", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2018"));
 
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
@@ -133,7 +133,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     UpdateBlocksActivation = false
                 }
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017"));
 
             // ShowPrompt should be supported from 1903 onward
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
@@ -143,7 +143,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     ShowPrompt = true
                 }
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2018", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2018"));
 
             appInstaller = GetConfig(c => c.UpdateSettings = new UpdateSettings
             {
@@ -152,7 +152,7 @@ namespace Otor.MsixHero.Tests.Appx.AppInstaller
                     ShowPrompt = false
                 }
             });
-            Assert.AreEqual("http://schemas.microsoft.com/appx/appinstaller/2017", supportHelper.GetLowestCommonNamespace(appInstaller));
+            Assert.That(supportHelper.GetLowestCommonNamespace(appInstaller), Is.EqualTo("http://schemas.microsoft.com/appx/appinstaller/2017"));
         }
 
         private static AppInstallerConfig GetConfig(Action<AppInstallerConfig> configurator = null)

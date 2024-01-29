@@ -96,37 +96,37 @@ ManifestVersion: 1.0.0
             using TextReader textReader = new StringReader(evernote);
             var yaml = reader.Read(textReader);
 
-            Assert.AreEqual("evernote.evernote", yaml.PackageIdentifier);
-            Assert.AreEqual("Evernote", yaml.PackageName);
-            Assert.AreEqual("Evernote", yaml.Publisher);
-            Assert.AreEqual("evernote", yaml.Moniker);
-            Assert.AreEqual("Copyright (c) 2020 Evernote Corporation. All rights reserved.", yaml.License);
-            Assert.AreEqual("https://evernote.com/legal/terms-of-service", yaml.LicenseUrl);
-            Assert.AreEqual("6.24.2.8919", yaml.PackageVersion);
-            Assert.AreEqual("10.0.0.0", yaml.MinimumOperatingSystemVersion.ToString());
-            Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio … and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
-            Assert.AreEqual("evernote.evernote", yaml.ShortDescription);
-            Assert.AreEqual("https://www.evernote.com", yaml.PackageUrl);
-            Assert.AreEqual("evernote,notes,cloud,online", string.Join(",", yaml.Tags));
+            Assert.That(yaml.PackageIdentifier, Is.EqualTo("evernote.evernote"));
+            Assert.That(yaml.PackageName, Is.EqualTo("Evernote"));
+            Assert.That(yaml.Publisher, Is.EqualTo("Evernote"));
+            Assert.That(yaml.Moniker, Is.EqualTo("evernote"));
+            Assert.That(yaml.License, Is.EqualTo("Copyright (c) 2020 Evernote Corporation. All rights reserved."));
+            Assert.That(yaml.LicenseUrl, Is.EqualTo("https://evernote.com/legal/terms-of-service"));
+            Assert.That(yaml.PackageVersion, Is.EqualTo("6.24.2.8919"));
+            Assert.That(yaml.MinimumOperatingSystemVersion.ToString(), Is.EqualTo("10.0.0.0"));
+            Assert.That(yaml.Description, Is.EqualTo("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio … and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go."));
+            Assert.That(yaml.ShortDescription, Is.EqualTo("evernote.evernote"));
+            Assert.That(yaml.PackageUrl, Is.EqualTo("https://www.evernote.com"));
+            Assert.That(string.Join(",", yaml.Tags), Is.EqualTo("evernote,notes,cloud,online"));
 #pragma warning disable 618
-            Assert.AreEqual("Evernote", yaml.Author);
-            Assert.AreEqual(YamlInstallerType.Exe, yaml.InstallerType);
+            Assert.That(yaml.Author, Is.EqualTo("Evernote"));
+            Assert.That(yaml.InstallerType, Is.EqualTo(YamlInstallerType.Exe));
 #pragma warning restore 618
-            Assert.NotNull(yaml.Installers);
-            Assert.AreEqual(1, yaml.Installers.Count);
+            Assert.That(yaml.Installers, Is.Not.Null);
+            Assert.That(yaml.Installers.Count, Is.EqualTo(1));
 
             var ins = yaml.Installers[0];
 
-            Assert.AreEqual(YamlArchitecture.X64, ins.Architecture);
-            Assert.AreEqual("https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe", ins.InstallerUrl);
+            Assert.That(ins.Architecture, Is.EqualTo(YamlArchitecture.X64));
+            Assert.That(ins.InstallerUrl, Is.EqualTo("https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe"));
 #pragma warning disable 618
-            Assert.AreEqual("en-US", ins.InstallerLocale);
+            Assert.That(ins.InstallerLocale, Is.EqualTo("en-US"));
 #pragma warning restore 618
-            Assert.AreEqual(YamlScope.User, ins.Scope);
-            Assert.NotNull(ins.InstallerSwitches);
+            Assert.That(ins.Scope, Is.EqualTo(YamlScope.User));
+            Assert.That(ins.InstallerSwitches, Is.Not.Null);
 
-            Assert.AreEqual("/qn", ins.InstallerSwitches.Silent);
-            Assert.AreEqual("/qn", ins.InstallerSwitches.SilentWithProgress);
+            Assert.That(ins.InstallerSwitches.Silent, Is.EqualTo("/qn"));
+            Assert.That(ins.InstallerSwitches.SilentWithProgress, Is.EqualTo("/qn"));
         }
     }
 }

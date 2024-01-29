@@ -31,9 +31,9 @@ namespace Otor.MsixHero.Tests.Appx.Editing
 
             var allCapabilities = manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");
             var objects3d = allCapabilities.Elements().Single();
-            Assert.AreEqual("objects3D", objects3d.Attribute("Name").Value);
-            Assert.AreEqual("uap", objects3d.GetPrefixOfNamespace(objects3d.Name.Namespace));
-            Assert.IsTrue(manifest.Root.Attribute("IgnorableNamespaces").Value.Split(' ').Contains("uap"));
+            Assert.That(objects3d.Attribute("Name").Value, Is.EqualTo("objects3D"));
+            Assert.That(objects3d.GetPrefixOfNamespace(objects3d.Name.Namespace), Is.EqualTo("uap"));
+            Assert.That(manifest.Root.Attribute("IgnorableNamespaces").Value.Split(' ').Contains("uap"), Is.True);
         }
 
         [Test]
@@ -62,9 +62,9 @@ namespace Otor.MsixHero.Tests.Appx.Editing
 
             var allCapabilities = manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");
             var objects3d = allCapabilities.Elements().Last();
-            Assert.AreEqual("objects3D", objects3d.Attribute("Name").Value);
-            Assert.AreEqual("uap", objects3d.GetPrefixOfNamespace(objects3d.Name.Namespace));
-            Assert.AreEqual("uap uap4", manifest.Root.Attribute("IgnorableNamespaces").Value);
+            Assert.That(objects3d.Attribute("Name").Value, Is.EqualTo("objects3D"));
+            Assert.That(objects3d.GetPrefixOfNamespace(objects3d.Name.Namespace), Is.EqualTo("uap"));
+            Assert.That(manifest.Root.Attribute("IgnorableNamespaces").Value, Is.EqualTo("uap uap4"));
         }
 
         [Test]
@@ -87,9 +87,9 @@ namespace Otor.MsixHero.Tests.Appx.Editing
 
             var allCapabilities = manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");
             var runFullTrust = allCapabilities.Elements().Single();
-            Assert.AreEqual("runFullTrust", runFullTrust.Attribute("Name").Value);
-            Assert.IsTrue(runFullTrust.GetPrefixOfNamespace(runFullTrust.Name.Namespace) == "rescap");
-            Assert.IsTrue(manifest.Root.Attribute("IgnorableNamespaces").Value.Split(' ').Contains("rescap"));
+            Assert.That(runFullTrust.Attribute("Name").Value, Is.EqualTo("runFullTrust"));
+            Assert.That(runFullTrust.GetPrefixOfNamespace(runFullTrust.Name.Namespace), Is.EqualTo("rescap"));
+            Assert.That(manifest.Root.Attribute("IgnorableNamespaces").Value.Split(' '), Contains.Item("rescap"));
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace Otor.MsixHero.Tests.Appx.Editing
             
             var allCapabilities = manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");
             var location = allCapabilities.Elements().Single();
-            Assert.AreEqual("location", location.Attribute("Name").Value);
+            Assert.That(location.Attribute("Name").Value, Is.EqualTo("location"));
         }
     }
 }
