@@ -11,7 +11,7 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Common;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent
 {

@@ -36,7 +36,6 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,6 +46,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Navigation
 {

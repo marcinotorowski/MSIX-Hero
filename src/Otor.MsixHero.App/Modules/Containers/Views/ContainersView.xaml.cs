@@ -17,7 +17,7 @@
 using System.Windows;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.Main.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.Containers.Views
 {

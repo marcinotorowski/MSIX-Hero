@@ -24,9 +24,9 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
 using Prism.Commands;
+using Prism.Dialogs;
 using Prism.Events;
 using Prism.Modularity;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 {

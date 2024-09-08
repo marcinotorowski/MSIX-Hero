@@ -18,7 +18,7 @@ using System.Collections;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
 {

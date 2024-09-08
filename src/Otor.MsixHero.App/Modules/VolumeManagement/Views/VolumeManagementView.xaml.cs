@@ -20,9 +20,9 @@ using Otor.MsixHero.App.Modules.Main.Events;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Dialogs;
 using Prism.Modularity;
-using Prism.Regions;
-using Prism.Services.Dialogs;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement.Views
 {

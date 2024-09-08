@@ -5,8 +5,8 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
 using Prism.Modularity;
-using Prism.Regions;
 using System.Threading.Tasks;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {

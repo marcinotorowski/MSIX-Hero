@@ -23,7 +23,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Prism.Commands;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
 {

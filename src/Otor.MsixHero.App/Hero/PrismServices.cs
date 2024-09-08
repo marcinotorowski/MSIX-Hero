@@ -14,9 +14,9 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Prism.Dialogs;
 using Prism.Modularity;
-using Prism.Regions;
-using Prism.Services.Dialogs;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Hero
 {

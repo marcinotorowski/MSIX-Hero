@@ -14,7 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
 using System.IO;
 using System.Linq;
 using Otor.MsixHero.App.Hero;
@@ -23,7 +22,7 @@ using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 {
@@ -61,7 +60,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         public void OnDialogClosed()
         {
-            this.RequestClose?.Invoke(new DialogResult());
+            this.RequestClose.Invoke(new DialogResult());
         }
         
         public void OnDialogOpened(IDialogParameters parameters)
@@ -84,8 +83,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
         }
 
         public string Title { get; private set; } = "MSIX Hero";
-        
-        public event Action<IDialogResult> RequestClose;
+
+        public DialogCloseListener RequestClose { get; set; }
 
         public ProgressProperty Progress { get; } = new ProgressProperty();
 

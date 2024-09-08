@@ -34,7 +34,7 @@ using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.Containers.Details.ViewModels
 {

@@ -4,8 +4,8 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Dialogs;
 using Prism.Modularity;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Helpers.Dialogs
 {

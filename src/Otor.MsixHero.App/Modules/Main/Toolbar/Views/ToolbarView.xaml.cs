@@ -16,7 +16,7 @@
 
 using Otor.MsixHero.App.Modules.Main.Events;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.Main.Toolbar.Views
 {

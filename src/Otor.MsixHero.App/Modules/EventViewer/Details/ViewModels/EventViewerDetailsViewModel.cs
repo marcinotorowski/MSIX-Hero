@@ -17,7 +17,7 @@
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Diagnostic.Events.Entities;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 {

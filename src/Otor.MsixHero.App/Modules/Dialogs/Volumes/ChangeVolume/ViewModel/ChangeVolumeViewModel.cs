@@ -31,8 +31,8 @@ using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Dialogs;
 using Prism.Modularity;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 {
@@ -67,7 +67,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     return;
                 }
 
-                var dr = t.Result.LastOrDefault();
+                var dr = t.Result.LastOrDefault(d => d.Model?.DiskLabel != null);
                 if (dr != null)
                 {
                     this.TargetVolume.CurrentValue = dr.Model;
@@ -216,7 +216,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
             var current = this.AllVolumes.CurrentValue.Select(c => c.PackageStorePath).ToList();
 
             this._moduleManager.LoadModule(ModuleNames.Dialogs.Volumes);
-            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesNewVolume, new DialogParameters(), async result =>
+           
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesNewVolume, new DialogParameters(), result =>
             {
                 if (result.Result == ButtonResult.Cancel)
                 {
@@ -224,7 +225,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                 }
 
                 var t1 = this.GetAllVolumes();
-                await this.AllVolumes.Load(t1).ConfigureAwait(false);
+                this.AllVolumes.Load(t1).GetAwaiter().GetResult();
 
                 var allVolumes = this.AllVolumes.CurrentValue;
                 var newVolume = allVolumes.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? allVolumes.FirstOrDefault();

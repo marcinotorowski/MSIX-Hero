@@ -48,10 +48,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.View
             var oldValue = e.RemovedItems?.OfType<VolumeCandidateViewModel>().FirstOrDefault();
             var newValue = e.AddedItems?.OfType<VolumeCandidateViewModel>().FirstOrDefault();
 
-            if (newValue?.Name == null)
+            if (oldValue != null && newValue?.Name == null)
             {
-                ((Selector) sender).SelectedValue = oldValue?.Name;
-                ((ChangeVolumeViewModel)this.DataContext).CreateNew();
+                ((Selector) sender).SelectedValue = oldValue.Name;
+                Dispatcher.BeginInvoke(() => ((ChangeVolumeViewModel)this.DataContext).CreateNew());
             }
         }
     }

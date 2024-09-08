@@ -20,7 +20,7 @@ using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
 {
@@ -48,13 +48,13 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
             switch (this.application.ApplicationState.Volumes.SelectedVolumes.Count)
             {
                 case 0:
-                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.ZeroSelection, UriKind.Relative), parameters);
+                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.ZeroSelection, UriKind.Relative), _ => { }, parameters);
                     break;
                 case 1:
-                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.SingleSelection, UriKind.Relative), parameters);
+                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.SingleSelection, UriKind.Relative), _ => { }, parameters);
                     break;
                 default:
-                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.MultipleSelection, UriKind.Relative), parameters);
+                    this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.MultipleSelection, UriKind.Relative), _ => { }, parameters);
                     break;
             }
         }

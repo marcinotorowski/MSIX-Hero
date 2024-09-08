@@ -31,6 +31,7 @@ using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Containers.Commands
 {
@@ -145,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             };
 
             this._prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Packaging);
-            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, dialogRequest.ToDialogParameters(), _ => { });
+            this._prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingSharedPackageContainer, dialogRequest.ToDialogParameters(), DialogCallback.Empty);
         }
 
         private bool CanRefresh()

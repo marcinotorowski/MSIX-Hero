@@ -19,7 +19,7 @@ using Otor.MsixHero.App.Modules.WhatsNew.ViewModels;
 using Otor.MsixHero.App.Modules.WhatsNew.Views;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.WhatsNew
 {

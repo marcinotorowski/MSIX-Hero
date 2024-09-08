@@ -79,13 +79,13 @@ using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.Updates;
+using Prism.Container.Unity;
+using Prism.Dialogs;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Regions;
-using Prism.Services.Dialogs;
-using Prism.Unity;
+using Prism.Navigation.Regions;
 using Unity;
 using Unity.Lifetime;
 

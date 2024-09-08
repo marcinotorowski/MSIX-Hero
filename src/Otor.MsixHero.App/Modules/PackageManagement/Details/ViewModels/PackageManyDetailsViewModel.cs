@@ -5,7 +5,7 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Prism.Commands;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
 {

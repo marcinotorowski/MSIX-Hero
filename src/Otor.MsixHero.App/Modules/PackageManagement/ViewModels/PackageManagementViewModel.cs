@@ -24,7 +24,7 @@ using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
 {
@@ -64,13 +64,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
             switch (this._application.ApplicationState.Packages.SelectedPackages.Count)
             {
                 case 0:
-                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), _ => { }, parameters);
                     break;
                 case 1:
-                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), _ => { }, parameters);
                     break;
                 default:
-                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), _ => { }, parameters);
                     break;
             }
         }

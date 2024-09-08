@@ -41,8 +41,8 @@ using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {

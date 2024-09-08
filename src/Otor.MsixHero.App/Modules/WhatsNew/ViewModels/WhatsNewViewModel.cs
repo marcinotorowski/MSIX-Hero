@@ -28,7 +28,7 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 {
@@ -118,7 +118,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             set => this.SetField(ref this._showUpdateScreen, value);
         }
 
-        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             var cfg = this._configurationService.GetCurrentConfiguration();
             this._showUpdateScreen = cfg.Update?.HideNewVersionInfo != true;
@@ -129,12 +129,12 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             this.OnPropertyChanged(nameof(Caption));
         }
 
-        bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
+        bool IRegionAware.IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
         }
 
-        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
             if (navigationContext.Uri.OriginalString == NavigationPaths.WhatsNew)
             {

@@ -17,7 +17,6 @@
 using Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.Details.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels;
@@ -27,7 +26,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement
 {

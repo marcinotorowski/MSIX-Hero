@@ -22,7 +22,7 @@ using Otor.MsixHero.App.Modules.Main.Toolbar.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.Main
 {

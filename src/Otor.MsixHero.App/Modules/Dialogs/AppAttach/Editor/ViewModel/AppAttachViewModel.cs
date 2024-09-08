@@ -32,7 +32,7 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 {

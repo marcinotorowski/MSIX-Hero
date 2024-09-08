@@ -23,7 +23,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Prism.Regions;
+using Prism.Navigation;
 
 namespace Otor.MsixHero.App.Modules.Containers.ViewModels
 {
@@ -52,12 +52,12 @@ namespace Otor.MsixHero.App.Modules.Containers.ViewModels
 
             if (command.Request.SelectedContainer == null)
             {
-                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.NoDetails, UriKind.Relative), parameters);
+                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.NoDetails, UriKind.Relative), _ => { }, parameters);
             }
             else
             {
                 parameters.Add("selection", this._application.ApplicationState.Containers.SelectedContainer);
-                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.Details, UriKind.Relative), parameters);
+                _prismServices.RegionManager.Regions[ContainersRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.ContainersPaths.Details, UriKind.Relative), _ => { }, parameters);
             }
         }
     }

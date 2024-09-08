@@ -22,7 +22,7 @@ using System.Windows.Input;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 {
@@ -122,8 +122,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 
             return this.IsValid || !this.DisplayValidationErrors;
         }
-
-        public event Action<IDialogResult> RequestClose;
+        
+        public DialogCloseListener RequestClose { get; set; }
 
         private void OkExecute(bool closeWindow)
         {
@@ -216,22 +216,17 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 
         private void CloseExecute(ButtonResult? button)
         {
-            if (this.RequestClose == null)
-            {
-                throw new NotSupportedException("This dialog does not support closing itself.");
-            }
-            
             if (button.HasValue)
             {
-                this.RequestClose(new DialogResult(button.Value));
+                this.RequestClose.Invoke(new DialogResult(button.Value));
             }
             else if (this.State.WasSaved)
             {
-                this.RequestClose(new DialogResult(ButtonResult.OK));
+                this.RequestClose.Invoke(new DialogResult(ButtonResult.OK));
             }
             else
             {
-                this.RequestClose(new DialogResult(ButtonResult.Cancel));
+                this.RequestClose.Invoke(new DialogResult(ButtonResult.Cancel));
             }
         }
 

@@ -23,9 +23,9 @@ using Otor.MsixHero.App.Modules.Containers.List.ViewModels;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Regions;
 using Otor.MsixHero.App.Modules.Containers.Details.ViewModels;
 using Otor.MsixHero.App.Modules.Containers.Details.Views;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.Containers
 {

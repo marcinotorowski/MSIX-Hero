@@ -37,8 +37,8 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Dialogs;
 using Prism.Events;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 {
@@ -568,10 +568,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             return true;
         }
 
-        /// <inheritdoc />
-#pragma warning disable CS0067
-        public event Action<IDialogResult> RequestClose;
-#pragma warning restore CS0067
+        public DialogCloseListener RequestClose { get; set; }
 
         private string ValidateUri(string value)
         {

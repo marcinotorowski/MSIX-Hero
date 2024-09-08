@@ -40,8 +40,8 @@ using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
 using Otor.MsixHero.Appx.Signing.Testing;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel
 {

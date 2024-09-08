@@ -24,7 +24,7 @@ using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Updates;
 using Prism.Commands;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.About.ViewModel
 {
@@ -63,7 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.About.ViewModel
 
         void IDialogAware.OnDialogClosed()
         {
-            this.RequestClose?.Invoke(new DialogResult());
+            this.RequestClose.Invoke(new DialogResult());
         }
 
         void IDialogAware.OnDialogOpened(IDialogParameters parameters)
@@ -72,14 +72,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.About.ViewModel
 
         private void OnShowReleaseNotes()
         {
-            this.RequestClose?.Invoke(new DialogResult());
+
+            this.RequestClose.Invoke(new DialogResult());
             this._application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
         }
 
-        string IDialogAware.Title => Resources.Localization.Dialogs_About_WindowTitle;
-
-        public event Action<IDialogResult> RequestClose;
-
+        public DialogCloseListener RequestClose { get; set; }
+        
         public bool IsChecked
         {
             get => this._isChecked;

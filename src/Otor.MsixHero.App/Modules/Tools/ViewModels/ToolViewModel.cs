@@ -25,9 +25,9 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
+using Prism.Dialogs;
 using Prism.Events;
 using Prism.Modularity;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Tools.ViewModels
 {

@@ -28,22 +28,22 @@ using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 {
     public class NewSelfSignedViewModel : ChangeableAutomatedDialogViewModel<NewCertVerb>
     {
-        private readonly ISigningManager signingManagerFactory;
-        private bool isSubjectTouched;
-        private ICommand importNewCertificate;
+        private readonly ISigningManager _signingManagerFactory;
+        private bool _isSubjectTouched;
+        private ICommand _importNewCertificate;
 
         public NewSelfSignedViewModel(
             ISigningManager signingManagerFactory, 
             IInteractionService interactionService, 
             IConfigurationService configurationService) : base(Resources.Localization.Dialogs_NewCert_Title, interactionService)
         {
-            this.signingManagerFactory = signingManagerFactory;
+            this._signingManagerFactory = signingManagerFactory;
             
             this.OutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_NewCert_OutputPath, interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
             this.PublisherName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_NewCert_PublisherName, "CN=", AppxValidatorFactory.ValidateSubject());
@@ -92,13 +92,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 
         public ChangeableFolderProperty OutputPath { get; }
 
-        public ICommand ImportNewCertificate => this.importNewCertificate ??= new DelegateCommand(this.ImportNewCertificateExecute);
+        public ICommand ImportNewCertificate => this._importNewCertificate ??= new DelegateCommand(this.ImportNewCertificateExecute);
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await this.signingManagerFactory.CreateSelfSignedCertificate(
+            await this._signingManagerFactory.CreateSelfSignedCertificate(
                 new DirectoryInfo(this.OutputPath.CurrentValue),
                 this.PublisherName.CurrentValue,
                 this.PublisherFriendlyName.CurrentValue,
@@ -133,7 +133,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
                 return;
             }
 
-            var mgr = this.signingManagerFactory;
+            var mgr = this._signingManagerFactory;
             await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(true);
 
             this.CloseCommand.Execute(ButtonResult.OK);
@@ -141,24 +141,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
         
         private void PublisherNameOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            this.isSubjectTouched = true;
+            this._isSubjectTouched = true;
         }
 
         private void PublisherFriendlyNameOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (this.isSubjectTouched)
+            if (this._isSubjectTouched)
             {
                 return;
             }
 
-            var touch = this.isSubjectTouched;
+            var touch = this._isSubjectTouched;
             try
             {
                 this.PublisherName.CurrentValue = "CN=" + (string) e.NewValue;
             }
             finally
             {
-                this.isSubjectTouched = touch;
+                this._isSubjectTouched = touch;
             }
         }
     }

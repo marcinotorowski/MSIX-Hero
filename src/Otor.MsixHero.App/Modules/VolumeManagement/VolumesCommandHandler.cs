@@ -30,8 +30,8 @@ using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Dialogs;
 using Prism.Modularity;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement
 {

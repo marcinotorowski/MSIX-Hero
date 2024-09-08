@@ -1,14 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                    xmlns:dialogs="http://prismlibrary.com/"
                     xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
                     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
                     xmlns:switch="clr-namespace:Otor.MsixHero.App.Controls.Switch"
-                    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop">
+                    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+                    xmlns:dialogs="clr-namespace:Prism.Dialogs;assembly=Prism">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>

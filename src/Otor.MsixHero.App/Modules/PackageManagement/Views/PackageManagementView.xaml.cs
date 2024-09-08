@@ -17,23 +17,23 @@
 using System.Windows;
 using Otor.MsixHero.App.Modules.Main.Events;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Views
 {
     public partial class PackageManagementView : INavigationAware
     {
-        private readonly IEventAggregator eventAggregator;
+        private readonly IEventAggregator _eventAggregator;
 
         public PackageManagementView(IEventAggregator eventAggregator)
         {
-            this.eventAggregator = eventAggregator;
+            this._eventAggregator = eventAggregator;
             this.InitializeComponent();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Views
 
         private void RegionOnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
     }
 }

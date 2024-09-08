@@ -29,7 +29,7 @@ using Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty;
 using Otor.MsixHero.Appx.Diagnostic.Store;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 {
@@ -37,8 +37,8 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
     {
         protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
         protected readonly IWindowsStoreAutoDownloadConfigurator WindowsStoreAutoDownloadConfigurator = new WindowsStoreAutoDownloadConfigurator();
-        private readonly IEventAggregator eventAggregator;
-        private bool isLoading;
+        private readonly IEventAggregator _eventAggregator;
+        private bool _isLoading;
 
         public SystemStatusViewModel(
             IEventAggregator eventAggregator,
@@ -46,7 +46,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
             IServiceRecommendationAdvisor serviceAdvisor,
             IInteractionService interactionService)
         {
-            this.eventAggregator = eventAggregator;
+            this._eventAggregator = eventAggregator;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
 
             if (this.SideloadingConfigurator.Flavor == SideloadingFlavor.Windows10Below2004)
@@ -77,22 +77,22 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
         public ObservableCollection<BaseRecommendationViewModel> Items { get; }
         public bool IsLoading
         {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
+            get => this._isLoading;
+            set => this.SetField(ref this._isLoading, value);
         }
 
-        bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
+        bool IRegionAware.IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
         }
 
-        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
 
-        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(0.0));
+            this._eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(0.0));
             this.Refresh();
         }
 

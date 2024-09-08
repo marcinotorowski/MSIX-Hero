@@ -18,7 +18,7 @@ using System.Collections;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Volumes.Entities;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
 {
@@ -32,7 +32,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
             set => this.SetField(ref this.volume, value);
         }
 
-        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.First().Value is IEnumerable packages)
             {
@@ -48,12 +48,12 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
             }
         }
 
-        bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
+        bool IRegionAware.IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
         }
 
-        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
+        void IRegionAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
     }

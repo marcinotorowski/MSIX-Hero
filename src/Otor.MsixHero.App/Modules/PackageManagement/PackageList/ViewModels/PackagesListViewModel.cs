@@ -32,7 +32,7 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {

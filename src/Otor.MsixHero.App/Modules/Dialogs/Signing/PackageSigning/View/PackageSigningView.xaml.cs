@@ -17,7 +17,7 @@
 using System.Linq;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel;
-using Prism.Services.Dialogs;
+using Prism.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View
 {

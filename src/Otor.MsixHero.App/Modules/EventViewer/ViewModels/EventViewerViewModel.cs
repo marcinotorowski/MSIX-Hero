@@ -19,7 +19,7 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
-using Prism.Regions;
+using Prism.Navigation;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
 {
@@ -43,12 +43,12 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
 
             if (command.Request.SelectedAppxEvent == null)
             {
-                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.NoDetails, UriKind.Relative), parameters);
+                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.NoDetails, UriKind.Relative), _ => { }, parameters);
             }
             else
             {
                 parameters.Add("selection", this.application.ApplicationState.EventViewer.SelectedAppxEvent);
-                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.Details, UriKind.Relative), parameters);
+                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.Details, UriKind.Relative), _ => { }, parameters);
             }
         }
     }
