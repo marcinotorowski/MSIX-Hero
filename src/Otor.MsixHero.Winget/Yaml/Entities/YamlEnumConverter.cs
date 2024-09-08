@@ -12,8 +12,8 @@ namespace Otor.MsixHero.Winget.Yaml.Entities
     public class YamlStringEnumConverter : IYamlTypeConverter
     {
         public bool Accepts(Type type) => type.IsEnum;
-
-        public object ReadYaml(IParser parser, Type type)
+        
+        public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
         {
             var parsedEnum = parser.Consume<Scalar>();
             var serializableValues = type.GetMembers()
@@ -30,7 +30,7 @@ namespace Otor.MsixHero.Winget.Yaml.Entities
             return Enum.Parse(type, serializableValues[parsedEnum.Value].Name);
         }
 
-        public void WriteYaml(IEmitter emitter, object value, Type type)
+        public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
         {
             var valueString = value?.ToString();
             if (valueString == null)
