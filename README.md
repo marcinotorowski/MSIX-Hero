@@ -8,6 +8,7 @@ Bug reports, feature improvements and pull requests are welcome.
 
 ## Prerequisites
 * .NET 7.0
+* .NET Framework 4.7 and PowerShell
 * Windows 10 1809 or newer / Windows 11
 
 ## Official binaries ###
