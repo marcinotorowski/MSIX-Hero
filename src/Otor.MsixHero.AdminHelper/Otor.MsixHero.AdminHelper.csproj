@@ -12,6 +12,7 @@
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+	<CsWinRTAotOptimizerEnabled>False</CsWinRTAotOptimizerEnabled>
     <PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
   </PropertyGroup>
 
