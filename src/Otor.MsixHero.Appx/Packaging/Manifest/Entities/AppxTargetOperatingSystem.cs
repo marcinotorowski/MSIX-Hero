@@ -22,6 +22,42 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
     [Serializable]
     public class AppxTargetOperatingSystem
     {
+        public AppxTargetOperatingSystem()
+        {
+        }
+
+        public AppxTargetOperatingSystem(string name, Version technicalVersion, string marketingCodename, AppxTargetOperatingSystemType isNativeMsixPlatform, WindowsVersion windowsVersion)
+        {
+            this.Name = name;
+            this.TechnicalVersion = technicalVersion.ToString();
+            this.MarketingCodename = marketingCodename;
+            this.IsNativeMsixPlatform = isNativeMsixPlatform;
+            this.WindowsVersion = windowsVersion;
+        }
+
+        public AppxTargetOperatingSystem(string name, string marketingCodename, AppxTargetOperatingSystemType isNativeMsixPlatform, WindowsVersion windowsVersion)
+        {
+            this.Name = name;
+            this.MarketingCodename = marketingCodename;
+            this.IsNativeMsixPlatform = isNativeMsixPlatform;
+            this.WindowsVersion = windowsVersion;
+        }
+
+        public AppxTargetOperatingSystem(string name, Version technicalVersion, AppxTargetOperatingSystemType isNativeMsixPlatform, WindowsVersion windowsVersion)
+        {
+            this.Name = name;
+            this.TechnicalVersion = technicalVersion.ToString();
+            this.IsNativeMsixPlatform = isNativeMsixPlatform;
+            this.WindowsVersion = windowsVersion;
+        }
+
+        public AppxTargetOperatingSystem(string name, AppxTargetOperatingSystemType isNativeMsixPlatform, WindowsVersion windowsVersion)
+        {
+            this.Name = name;
+            this.IsNativeMsixPlatform = isNativeMsixPlatform;
+            this.WindowsVersion = windowsVersion;
+        }
+
         public string Name { get; set; }
         
         public string NativeFamilyName { get; set; }
