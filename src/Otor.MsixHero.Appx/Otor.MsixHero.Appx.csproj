@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+	<AllowUnsageBlocks>true</AllowUnsageBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +31,10 @@
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.5" />
     <PackageReference Include="Registry" Version="1.3.4" />
     <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.1" />
+    <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
