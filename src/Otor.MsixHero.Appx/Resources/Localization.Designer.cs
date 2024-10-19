@@ -844,6 +844,33 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Win32 + MSIX Helper.
+        /// </summary>
+        public static string Packages_Types_MsixHelper {
+            get {
+                return ResourceManager.GetString("Packages_Types_MsixHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classic Win32 app enhanced by MSIX Helper.
+        /// </summary>
+        public static string Packages_Types_MsixHelper_Long {
+            get {
+                return ResourceManager.GetString("Packages_Types_MsixHelper_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MSIX Helper.
+        /// </summary>
+        public static string Packages_Types_MsixHelper_Short {
+            get {
+                return ResourceManager.GetString("Packages_Types_MsixHelper_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Win32 + PSF.
         /// </summary>
         public static string Packages_Types_Psf {

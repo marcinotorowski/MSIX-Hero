@@ -48,6 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
                     case MsixPackageType.Win32:
                     case MsixPackageType.Win32Psf:
                     case MsixPackageType.Win32AiStub:
+                    case MsixPackageType.MsixHelper:
                         return _model.Executable;
                     case MsixPackageType.Web:
                         return _model.StartPage;
@@ -66,20 +67,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
         {
             get
             {
-                switch (Type)
+                if (_model.Proxy != null)
                 {
-                    case MsixPackageType.Win32: 
-                        return Target;
+                    if (_model.Proxy?.Arguments == null)
+                    {
+                        return _model.Proxy?.Executable ?? _model.Executable;
+                    }
 
-                    case MsixPackageType.Win32Psf:
-                    case MsixPackageType.Win32AiStub:
-
-                        if (_model.Proxy?.Arguments == null)
-                        {
-                            return _model.Proxy?.Executable ?? _model.Executable;
-                        }
-
-                        return _model.Proxy.Executable + " " + _model.Proxy.Arguments;
+                    return _model.Proxy.Executable + " " + _model.Proxy.Arguments;
                 }
 
                 return string.IsNullOrEmpty(_model.EntryPoint) ? _model.Executable : _model.EntryPoint;

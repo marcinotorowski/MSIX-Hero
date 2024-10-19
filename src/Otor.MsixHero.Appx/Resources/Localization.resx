@@ -333,6 +333,15 @@
 	<data name="Packages_Types_AiStub_Short" xml:space="preserve">
     <value>AI</value>
   </data>
+	<data name="Packages_Types_MsixHelper" xml:space="preserve">
+    <value>Win32 + MSIX Helper</value>
+  </data>
+	<data name="Packages_Types_MsixHelper_Long" xml:space="preserve">
+    <value>Classic Win32 app enhanced by MSIX Helper</value>
+  </data>
+	<data name="Packages_Types_MsixHelper_Short" xml:space="preserve">
+    <value>MSIX Helper</value>
+  </data>
 	<data name="Packages_Types_Pwa" xml:space="preserve">
     <value>PWA</value>
   </data>

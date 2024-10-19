@@ -83,6 +83,20 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
+            var isMsixHelper = (packageType & MsixPackageType.MsixHelper) == MsixPackageType.MsixHelper;
+            if (isMsixHelper)
+            {
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return Resources.Localization.Packages_Types_MsixHelper_Long;
+                    case PackageTypeDisplay.Short:
+                        return Resources.Localization.Packages_Types_MsixHelper_Short;
+                    default:
+                        return Resources.Localization.Packages_Types_MsixHelper;
+                }
+            }
+
             var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web ||
                         (packageType & MsixPackageType.ProgressiveWebApp) == MsixPackageType.ProgressiveWebApp;
             if (isWeb)
@@ -161,6 +175,18 @@ namespace Otor.MsixHero.Appx.Packaging
                                 executable.IndexOf("\\ai_stubs", StringComparison.OrdinalIgnoreCase) != -1)
                             {
                                 return MsixPackageType.Win32AiStub;
+                            }
+
+                            if (
+                                executable.IndexOf("\\msixhelper32.exe", StringComparison.OrdinalIgnoreCase) != -1)
+                            {
+                                return MsixPackageType.MsixHelper;
+                            }
+
+                            if (
+                                executable.IndexOf("\\msixhelper64.exe", StringComparison.OrdinalIgnoreCase) != -1)
+                            {
+                                return MsixPackageType.MsixHelper;
                             }
 
                             return MsixPackageType.Win32;

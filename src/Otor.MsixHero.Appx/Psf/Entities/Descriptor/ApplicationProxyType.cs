@@ -19,5 +19,6 @@ namespace Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 public enum ApplicationProxyType
 {
     PackageSupportFramework,
-    AdvancedInstallerStub
+    AdvancedInstallerStub,
+    MsixHelper
 }

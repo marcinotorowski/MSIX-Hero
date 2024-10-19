@@ -27,6 +27,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
         Web = 8,
         Framework = 16,
         ProgressiveWebApp = 32,
-        Win32AiStub = 64
+        Win32AiStub = 64,
+        MsixHelper = 128
     }
 }

@@ -6,11 +6,26 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Psf\MsixHelper\AppxManifest.xml" />
+    <None Remove="Psf\MsixHelper\MSIXHelper32.exe" />
+    <None Remove="Psf\MsixHelper\MSIXHelper32.ini" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <EmbeddedResource Include="Registry\team.reg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Content Include="Psf\MsixHelper\AppxManifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Psf\MsixHelper\MSIXHelper32.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Psf\MsixHelper\MSIXHelper32.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Registry\registry.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

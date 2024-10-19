@@ -39,6 +39,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             {
                 PsfApplicationProxy psfProxy => new PsfApplicationProxyViewModel(package.RootFolder, psfProxy),
                 AdvancedInstallerApplicationProxy advancedInstallerApplicationProxy => new AdvancedInstallerApplicationProxyViewModel(advancedInstallerApplicationProxy),
+                MsixHelperApplicationProxy msixHelperApplicationProxy => new MsixHelperApplicationProxyViewModel(msixHelperApplicationProxy),
                 _ => null
             };
 
@@ -77,6 +78,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
                     case MsixPackageType.Win32:
                     case MsixPackageType.Win32Psf:
                     case MsixPackageType.Win32AiStub:
+                    case MsixPackageType.MsixHelper:
                         return this._model.Executable;
                     case MsixPackageType.Web:
                         return this._model.StartPage;

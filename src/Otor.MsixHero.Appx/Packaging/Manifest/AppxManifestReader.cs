@@ -36,9 +36,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
     public class AppxManifestReader : IAppxManifestReader
     {
-        protected readonly ApplicationProxyReader PsfReader = new ApplicationProxyReader();
-
         private static readonly LogSource Logger = new();
+        
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var isMsix = fileReader.FileExists(FileConstants.AppxManifestFile);
@@ -183,6 +182,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             {
                 appxPackage.Name = nodeIdentity.Attribute("Name")?.Value;
                 var procArch = nodeIdentity.Attribute("ProcessorArchitecture")?.Value;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (Enum.TryParse(typeof(AppxPackageArchitecture), procArch ?? string.Empty, true, out object parsedArchitecture) && parsedArchitecture != null)
                 {
                     appxPackage.ProcessorArchitecture = (AppxPackageArchitecture)parsedArchitecture;
@@ -408,12 +408,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var type = PackageTypeConverter.GetPackageTypeFrom(psfApp.EntryPoint, psfApp.Executable, psfApp.StartPage, appxPackage.IsFramework);
-                    if (type != MsixPackageType.Win32Psf && type != MsixPackageType.Win32AiStub)
-                    {
-                        continue;
-                    }
 
-                    psfApp.Proxy = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
+                    switch (type)
+                    {
+                        case MsixPackageType.Win32AiStub:
+                        case MsixPackageType.Win32Psf:
+                        case MsixPackageType.MsixHelper:
+                            var proxyReader = ApplicationProxyReader.Create(psfApp.Id, psfApp.Executable, fileReader);
+                            psfApp.Proxy = await proxyReader.Inspect(cancellationToken).ConfigureAwait(false);
+                            break;
+                    }
                 }
             }
 
