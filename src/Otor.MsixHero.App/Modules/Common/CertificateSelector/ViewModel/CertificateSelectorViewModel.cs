@@ -270,8 +270,6 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
 
         private async void ExecuteSignInDeviceGuard()
         {
-            var tokenCreator = new DgssTokenCreator();
-            
             try
             {
                 this.Progress.Progress = 0;
@@ -279,7 +277,7 @@ namespace Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel
 
                 using var cancellation = new CancellationTokenSource();
                 IProgress<ProgressData> progress = new Progress<ProgressData>();
-                var task = tokenCreator.SignIn(true, cancellation.Token, progress);
+                var task = DgssTokenCreator.SignIn(true, progress, cancellation.Token);
                 this.Progress.MonitorProgress(task, cancellation, progress);
                 
                 var result = await task.ConfigureAwait(true);

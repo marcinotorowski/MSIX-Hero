@@ -26,11 +26,11 @@ using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
 namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 {
-    public class DeviceGuardHelper
+    public static class DeviceGuardHelper
     {
         private static readonly LogSource Logger = new();
 
-        public async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, CancellationToken cancellationToken = default)
+        public static async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, CancellationToken cancellationToken = default)
         {
             string tempFile = null;
             try
@@ -41,10 +41,9 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                     RefreshToken = refreshToken
                 };
 
-                var helper = new DgssTokenCreator();
-                tempFile = await helper.CreateDeviceGuardJsonTokenFile(cfg, cancellationToken).ConfigureAwait(false);
+                tempFile = await DgssTokenCreator.CreateDeviceGuardJsonTokenFile(cfg, cancellationToken).ConfigureAwait(false);
 
-                return await this.GetSubjectFromDeviceGuardSigning(tempFile, cancellationToken).ConfigureAwait(false);
+                return await GetSubjectFromDeviceGuardSigning(tempFile, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -55,7 +54,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             }
         }
 
-        public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, CancellationToken cancellationToken = default)
+        public static async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, CancellationToken cancellationToken = default)
         {
             Logger.Info().WriteLine("Getting certificate subject for Device Guard signing…");
 
@@ -78,7 +77,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
                 var sdk = new SignToolWrapper();
                 Logger.Debug().WriteLine($"Signing temporary file path {tempFilePath}");
-                await sdk.SignWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
+                await sdk.SignWithDeviceGuard([tempFilePath], "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
                 using var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath);
                 Logger.Info().WriteLine($"Certificate subject is {tempFilePath}");

@@ -453,14 +453,13 @@ namespace Otor.MsixHero.Appx.Signing
         {
             Logger.Info().WriteLine("Signing package {0} using Device Guard for {1}.", package, config.Subject);
 
-            var dgssTokenPath = await new DgssTokenCreator().CreateDeviceGuardJsonTokenFile(config, cancellationToken);
+            var dgssTokenPath = await DgssTokenCreator.CreateDeviceGuardJsonTokenFile(config, cancellationToken);
             try
             {
                 var publisherName = config.Subject;
                 if (publisherName == null)
                 {
-                    var dgh = new DeviceGuardHelper();
-                    publisherName = await dgh.GetSubjectFromDeviceGuardSigning(dgssTokenPath, cancellationToken).ConfigureAwait(false);
+                    publisherName = await DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(dgssTokenPath, cancellationToken).ConfigureAwait(false);
                 }
 
                 var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, publisherName, cancellationToken).ConfigureAwait(false);
@@ -705,7 +704,7 @@ namespace Otor.MsixHero.Appx.Signing
             if (list?.Count > 0)
             {
                 // ReSharper disable once PossibleNullReferenceException
-                cert.DisplayName = list[^1].ToString();
+                cert.DisplayName = list[^1];
             }
 
             return cert;

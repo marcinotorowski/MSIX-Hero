@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Identity.Client;
@@ -29,10 +28,9 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 {
     public class DgssTokenCreator
     {
-        private static readonly string[] Scope = { "https://onestore.microsoft.com/user_impersonation" };
-
-
-        public async Task<DeviceGuardConfig> SignIn(bool validateSubject = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private static readonly string[] Scope = ["https://onestore.microsoft.com/user_impersonation"];
+        
+        public static async Task<DeviceGuardConfig> SignIn(bool validateSubject = false, IProgress<ProgressData> progress = default, CancellationToken cancellationToken = default)
         {
             var factory = new MsixHeroClientFactory();
             string refreshToken = null;
@@ -59,12 +57,11 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 {
                     progress?.Report(new ProgressData(50, Resources.Localization.Signing_DeviceGuard_Validation));
 
-                    var dgh = new DeviceGuardHelper();
-                    var json = await this.CreateDeviceGuardJsonTokenFile(new DeviceGuardConfig(result.AccessToken, refreshToken), cancellationToken).ConfigureAwait(false);
+                    var json = await CreateDeviceGuardJsonTokenFile(new DeviceGuardConfig(result.AccessToken, refreshToken), cancellationToken).ConfigureAwait(false);
                     try
                     {
                         // set the result subject.
-                        tokens.Subject = await dgh.GetSubjectFromDeviceGuardSigning(json, cancellationToken).ConfigureAwait(false);
+                        tokens.Subject = await DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json, cancellationToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -83,25 +80,9 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             }
         }
 
-        public SecureString CreateDeviceGuardJsonToken(DeviceGuardConfig tokens, CancellationToken cancellationToken = default)
+        public static async Task<string> CreateDeviceGuardJsonTokenFile(DeviceGuardConfig tokens, CancellationToken cancellationToken = default)
         {
-            var secureString = new SecureString();
-
-            var jsonObject = new JObject();
-            jsonObject["access_token"] = tokens.AccessToken;
-            jsonObject["refresh_token"] = tokens.RefreshToken;
-
-            foreach (var c in jsonObject.ToString(Formatting.Indented))
-            {
-                secureString.AppendChar(c);
-            }
-
-            return secureString;
-        }
-
-        public async Task<string> CreateDeviceGuardJsonTokenFile(DeviceGuardConfig tokens, CancellationToken cancellationToken = default)
-        {
-            var tmpFile = Path.Combine(Path.GetTempPath(), "msixhero-dg-" + Guid.NewGuid().ToString("N").Substring(0, 12) + ".json");
+            var tmpFile = Path.Combine(Path.GetTempPath(), "msixhero-dg-" + Guid.NewGuid().ToString("N")[..12] + ".json");
 
             await using var text = File.Create(tmpFile);
             var jsonObject = new JObject
@@ -126,16 +107,16 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 this.GotRefreshToken?.Invoke(this, token);
             }
 
-            public HttpClient GetHttpClient() => new HttpClient(new MsixHeroDelegationHandler(this));
+            public HttpClient GetHttpClient() => new(new MsixHeroDelegationHandler(this));
 
             private class MsixHeroDelegationHandler : DelegatingHandler
             {
-                private readonly MsixHeroClientFactory clientFactory;
+                private readonly MsixHeroClientFactory _clientFactory;
 
                 public MsixHeroDelegationHandler(MsixHeroClientFactory clientFactory)
                 {
                     this.InnerHandler = new HttpClientHandler();
-                    this.clientFactory = clientFactory;
+                    this._clientFactory = clientFactory;
                 }
 
                 protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -145,16 +126,16 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                     {
                         return response;
                     }
-
+                    
                     try
                     {
-                        var responseText = await response.Content.ReadAsStringAsync();
+                        var responseText = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                         var responseJson = JObject.Parse(responseText);
-                        this.clientFactory.RaiseGotRefreshToken(responseJson["refresh_token"]?.Value<string>());
+                        this._clientFactory.RaiseGotRefreshToken(responseJson["refresh_token"]?.Value<string>());
                     }
                     catch (Exception)
                     {
-                        this.clientFactory.RaiseGotRefreshToken(null);
+                        this._clientFactory.RaiseGotRefreshToken(null);
                     }
 
                     return response;

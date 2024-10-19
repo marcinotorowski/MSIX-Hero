@@ -42,9 +42,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         private static readonly LogSource Logger = new();        
         private readonly ISigningManager _signingManager;
         private readonly IConfigurationService _configurationService;
-        protected readonly DeviceGuardHelper DeviceGuardHelper = new();
-        protected readonly DgssTokenCreator DeviceGuardTokenCreator = new();
 
+        // ReSharper disable once ConvertToPrimaryConstructor
         public SignVerbExecutor(SignVerb signVerb, ISigningManager signingManager, IConfigurationService configurationService, IConsole console) : base(signVerb, console)
         {
             this._signingManager = signingManager;
@@ -101,7 +100,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 if (cfg.Subject == null && !this.Verb.NoPublisherUpdate)
                 {
                     await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_DeviceGuardDeterminingPublisher).ConfigureAwait(false);
-                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken);
+                    cfg.Subject = await DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken);
                     await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Sign_NewName_Format, cfg.Subject)).ConfigureAwait(false);
                 }
 
@@ -368,13 +367,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             try
             {
-                cfg = await this.DeviceGuardTokenCreator.SignIn(false, CancellationToken.None).ConfigureAwait(false);
-                json = await this.DeviceGuardTokenCreator.CreateDeviceGuardJsonTokenFile(cfg).ConfigureAwait(false);
+                cfg = await DgssTokenCreator.SignIn(false, default, CancellationToken.None).ConfigureAwait(false);
+                json = await DgssTokenCreator.CreateDeviceGuardJsonTokenFile(cfg).ConfigureAwait(false);
 
                 if (!this.Verb.NoPublisherUpdate)
                 {
                     await this.Console.WriteInfo(Resources.Localization.Signing_DeviceGuard_Reading).ConfigureAwait(false);
-                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json).ConfigureAwait(false);
+                    cfg.Subject = await DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json).ConfigureAwait(false);
                     await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Sign_NewName_Format, cfg.Subject)).ConfigureAwait(false);
                 }
             }

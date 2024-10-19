@@ -188,7 +188,7 @@ public class SigningTestService : ISigningTestService
         tokens.RefreshToken = FromSecureString(crypto.Unprotect(config.EncodedRefreshToken));
         tokens.Subject = config.Subject;
 
-        var dgssTokenPath = await new DgssTokenCreator().CreateDeviceGuardJsonTokenFile(tokens, cancellation).ConfigureAwait(false);
+        var dgssTokenPath = await DgssTokenCreator.CreateDeviceGuardJsonTokenFile(tokens, cancellation).ConfigureAwait(false);
         var tempFile = await GetCandidateForSigning(cancellation).ConfigureAwait(false);
 
         try
