@@ -113,31 +113,10 @@ public static class PackageEntryExtensions
                 DisplayName = appxPackage.DisplayName,
                 AppInstallerUri = default,
                 InstallDate = default,
-                InstallDirPath = default
+                InstallDirPath = default,
+                ImageContent = appxPackage.Logo
             };
 
-            
-            var details = await AppxManifestSummaryReader.FromMsix(appxPackageReader).ConfigureAwait(false);
-
-            if (details.Logo != null)
-            {
-                if (appxPackageReader is IAppxDiskFileReader diskReader)
-                {
-                    entry.ImagePath = Path.Combine(diskReader.RootDirectory, details.Logo);
-                }
-                else
-                {
-                    if (appxPackageReader.FileExists(details.Logo))
-                    {
-                        await using var s = appxPackageReader.GetFile(details.Logo);
-                        await using var m = new MemoryStream();
-                        await s.CopyToAsync(m, cancellationToken).ConfigureAwait(false);
-                        m.Seek(0, SeekOrigin.Begin);
-                        entry.ImageContent = m.ToArray();
-                    }
-                }
-            }
-            
             packages.Add(entry);
         }
 
@@ -346,26 +325,7 @@ public static class PackageEntryExtensions
                 throw new ArgumentOutOfRangeException(nameof(packageContextMode), packageContextMode, null);
         }
 
-        var details = await AppxManifestSummaryReader.FromMsix(appxPackageReader).ConfigureAwait(false);
-
-        if (details.Logo != null)
-        {
-            if (appxPackageReader is IAppxDiskFileReader diskReader)
-            {
-                entry.ImagePath = Path.Combine(diskReader.RootDirectory, details.Logo);
-            }
-            else
-            {
-                if (appxPackageReader.FileExists(details.Logo))
-                {
-                    await using var s = appxPackageReader.GetFile(details.Logo);
-                    await using var m = new MemoryStream();
-                    await s.CopyToAsync(m, cancellationToken).ConfigureAwait(false);
-                    m.Seek(0, SeekOrigin.Begin);
-                    entry.ImageContent = m.ToArray();
-                }
-            }
-        }
+        entry.ImageContent = appxPackage.Logo;
 
         if (installPkg != null)
         {
