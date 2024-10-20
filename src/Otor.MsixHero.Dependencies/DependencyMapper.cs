@@ -194,7 +194,7 @@ namespace Otor.MsixHero.Dependencies
             var progressForGettingAddOns = new RangeProgress(progress, 70, 90);
             var progressForCalculation = new RangeProgress(progress, 90, 100);
             
-            var allPackages = await _packageQueryService.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
+            var allPackages = await _packageQueryService.GetInstalledPackages(PackageQuerySourceType.Installed, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
             var consideredPackages = new List<AppxPackage> { startPackage };
             var addOnPackages = new List<AppxPackage>();
 

@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
 {

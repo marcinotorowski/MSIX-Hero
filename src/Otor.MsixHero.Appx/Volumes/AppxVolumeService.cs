@@ -31,10 +31,10 @@ using Dapplo.Log;
 using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Windows.Media.Ocr;
 using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.Appx.Volumes
 {

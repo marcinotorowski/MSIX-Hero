@@ -17,7 +17,7 @@
 using System;
 using Windows.Management.Deployment;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation
+namespace Otor.MsixHero.Appx.Packaging
 {
     public class PackageManagerSingleton
     {

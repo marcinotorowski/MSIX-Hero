@@ -148,7 +148,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         
         private async Task<int> GetAddOnsCount(AppxPackage package, CancellationToken cancellationToken = default)
         {
-            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
+            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(package.FullName, PackageQuerySourceType.Installed, cancellationToken).ConfigureAwait(false);
             return results.Count;
         }
     }

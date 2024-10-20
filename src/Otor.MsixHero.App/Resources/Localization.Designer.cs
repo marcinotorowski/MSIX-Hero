@@ -10910,6 +10910,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DIRECTORY.
+        /// </summary>
+        public static string Packages_Search_Badge_Directory {
+            get {
+                return ResourceManager.GetString("Packages_Search_Badge_Directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MACHINE.
         /// </summary>
         public static string Packages_Search_Badge_Machine {

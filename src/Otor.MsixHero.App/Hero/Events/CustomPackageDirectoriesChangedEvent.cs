@@ -15,23 +15,12 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
-using MediatR;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Prism.Events;
 
-namespace Otor.MsixHero.App.Hero.Commands.Packages
+namespace Otor.MsixHero.App.Hero.Events
 {
-    public class GetInstalledPackagesCommand : IRequest<IList<PackageEntry>>
+    public class CustomPackageDirectoriesChangedEvent : PubSubEvent<IReadOnlyCollection<PackageDirectoryConfiguration>>
     {
-        public PackageFindMode? FindMode { get; }
-
-        public GetInstalledPackagesCommand()
-        {
-        }
-
-        public GetInstalledPackagesCommand(PackageFindMode findMode)
-        {
-            this.FindMode = findMode;
-        }
     }
 }

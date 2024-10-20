@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Hero.State
@@ -28,7 +29,7 @@ namespace Otor.MsixHero.App.Hero.State
         {
             this.AllPackages = new List<PackageEntry>();
             this.SelectedPackages = new List<PackageEntry>();
-            this.Mode = PackageInstallationContext.CurrentUser;
+            this.Mode = PackageQuerySource.InstalledForCurrentUser();
         }
 
         public List<PackageEntry> AllPackages { get; }
@@ -39,7 +40,7 @@ namespace Otor.MsixHero.App.Hero.State
         
         public string SearchKey { get; set; }
 
-        public PackageInstallationContext Mode { get; set; }
+        public PackageQuerySource Mode { get; set; }
 
         public PackageSort SortMode { get; set; }
 

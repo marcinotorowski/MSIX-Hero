@@ -31,7 +31,6 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Appx.Reader.Manifest;
 using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
@@ -308,19 +307,19 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             }
         }
 
-        public async Task<bool> IsInstalled(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<bool> IsInstalled(string manifestPath, PackageQuerySourceType mode = PackageQuerySourceType.InstalledForCurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            PackageFindMode actualMode = mode;
-            if (actualMode == PackageFindMode.Auto)
+            PackageQuerySourceType actualMode = mode;
+            if (actualMode == PackageQuerySourceType.Installed)
             {
                 var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
                 if (isAdmin)
                 {
-                    actualMode = PackageFindMode.AllUsers;
+                    actualMode = PackageQuerySourceType.InstalledForAllUsers;
                 }
                 else
                 {
-                    actualMode = PackageFindMode.CurrentUser;
+                    actualMode = PackageQuerySourceType.InstalledForCurrentUser;
                 }
             }
 
@@ -335,12 +334,12 @@ namespace Otor.MsixHero.Appx.Packaging.Services
 
             switch (actualMode)
             {
-                case PackageFindMode.CurrentUser:
+                case PackageQuerySourceType.InstalledForCurrentUser:
                     var pkg = await Task.Run(
                         () => PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, pkgFullName),
                         cancellationToken).ConfigureAwait(false);
                     return pkg != null;
-                case PackageFindMode.AllUsers:
+                case PackageQuerySourceType.InstalledForAllUsers:
                     var pkgAllUsers = await Task.Run(
                         () => PackageManagerSingleton.Instance.FindPackage(pkgFullName),
                         cancellationToken).ConfigureAwait(false);

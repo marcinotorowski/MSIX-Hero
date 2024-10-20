@@ -26,20 +26,20 @@ namespace Otor.MsixHero.Appx.Packaging.Services
 {
     public interface IAppxPackageQueryService
     {
-        Task<List<PackageEntry>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<List<PackageEntry>> GetInstalledPackages(PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<PackageEntry> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<PackageEntry> GetInstalledPackage(string fullName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<PackageEntry> GetInstalledPackageByFamilyName(string familyName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<PackageEntry> GetInstalledPackageByFamilyName(string familyName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task<List<User>> GetUsersForPackage(PackageEntry packageEntry, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<List<PackageEntry>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<List<PackageEntry>> GetModificationPackages(string packageFullName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<AppxPackage> GetByIdentity(string packageName, PackageQuerySourceType mode = PackageQuerySourceType.InstalledForCurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<AppxPackage> GetByManifestPath(string manifestPath, PackageQuerySourceType mode = PackageQuerySourceType.InstalledForCurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

@@ -29,7 +29,6 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Appx.Reader.Manifest;
@@ -39,15 +38,9 @@ using Otor.MsixHero.Appx.Reader.File.Adapters;
 
 namespace Otor.MsixHero.Appx.Packaging.Services;
 
-public class AppxPackageQueryService : IAppxPackageQueryService
+public class AppxPackageQueryService(IConfigurationService configurationService) : IAppxPackageQueryService
 {
     private static readonly LogSource Logger = new();
-    private readonly IConfigurationService _configurationService;
-
-    public AppxPackageQueryService(IConfigurationService configurationService)
-    {
-        this._configurationService = configurationService;
-    }
 
     public Task<List<User>> GetUsersForPackage(PackageEntry packageEntry, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
@@ -75,23 +68,43 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         return result;
     }
 
-    public Task<List<PackageEntry>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    public Task<List<PackageEntry>> GetInstalledPackages(PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
-        return QueryInstalledPackages(null, mode, cancellationToken, progress);
-    }
-
-    public async Task<List<PackageEntry>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-    {
-        if (mode == PackageFindMode.Auto)
+        switch (mode)
         {
-            mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
         }
 
-        var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageFullName) : PackageManagerSingleton.Instance.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
+        return this.QueryInstalledPackages(null, mode, cancellationToken, progress);
+    }
+
+    public async Task<List<PackageEntry>> GetModificationPackages(string packageFullName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    {
+        switch (mode)
+        {
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
+        }
+
+        if (mode == PackageQuerySourceType.Installed)
+        {
+            mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageQuerySourceType.InstalledForAllUsers : PackageQuerySourceType.InstalledForCurrentUser;
+        }
+
+        var find = await Task.Run(() => mode == PackageQuerySourceType.InstalledForCurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageFullName) : PackageManagerSingleton.Instance.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
         if (find == null)
         {
             var packageIdentity = PackageIdentity.FromFullName(packageFullName);
-            find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManagerSingleton.Instance.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
+            find = await Task.Run(() => mode == PackageQuerySourceType.InstalledForCurrentUser ? PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManagerSingleton.Instance.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
 
             if (find == null)
             {
@@ -115,47 +128,87 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         return list;
     }
 
-    public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    public async Task<AppxPackage> GetByIdentity(string packageName, PackageQuerySourceType mode = PackageQuerySourceType.InstalledForCurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
-        using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, mode == PackageFindMode.CurrentUser ? PackageInstallationContext.CurrentUser : PackageInstallationContext.AllUsers, packageName);
+        switch (mode)
+        {
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
+        }
+
+        using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, mode == PackageQuerySourceType.InstalledForCurrentUser ? PackageInstallationContext.CurrentUser : PackageInstallationContext.AllUsers, packageName);
 
         var manifestReader = new AppxManifestReaderWithDependencyResolving(new AppxManifestReader());
         // ReSharper disable once AccessToDisposedClosure
-        var package = await Task.Run(() => manifestReader.Read(reader, cancellationToken), cancellationToken).ConfigureAwait(false);
+        var package = await manifestReader.Read(reader, cancellationToken).ConfigureAwait(false);
         return package;
     }
 
-    public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageQuerySourceType mode = PackageQuerySourceType.InstalledForCurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
+        switch (mode)
+        {
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
+        }
+
         using IAppxFileReader reader = new FileInfoFileReaderAdapter(manifestPath);
         var manifestReader = new AppxManifestReaderWithDependencyResolving(new AppxManifestReader());
         // ReSharper disable once AccessToDisposedClosure
-        var package = await Task.Run(() => manifestReader.Read(reader,  cancellationToken), cancellationToken).ConfigureAwait(false);
+        var package = await manifestReader.Read(reader,  cancellationToken).ConfigureAwait(false);
         return package;
     }
 
-    public async Task<PackageEntry> GetInstalledPackage(string fullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    public async Task<PackageEntry> GetInstalledPackage(string fullName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
+        switch (mode)
+        {
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
+        }
+
         var pkgs = await QueryInstalledPackages(fullName, mode, cancellationToken).ConfigureAwait(false);
         return pkgs.FirstOrDefault();
     }
 
-    public async Task<PackageEntry> GetInstalledPackageByFamilyName(string familyName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+    public async Task<PackageEntry> GetInstalledPackageByFamilyName(string familyName, PackageQuerySourceType mode = PackageQuerySourceType.Installed, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
-        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
-        if (mode == PackageFindMode.Auto)
+        switch (mode)
         {
-            mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            case PackageQuerySourceType.Installed:
+            case PackageQuerySourceType.InstalledForCurrentUser:
+            case PackageQuerySourceType.InstalledForAllUsers:
+                break;
+            default:
+                throw new NotSupportedException($"Mode {mode} is not supported by this method.");
+        }
+
+        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+        if (mode == PackageQuerySourceType.Installed)
+        {
+            mode = isAdmin ? PackageQuerySourceType.InstalledForAllUsers : PackageQuerySourceType.InstalledForCurrentUser;
         }
 
         Package found;
 
         switch (mode)
         {
-            case PackageFindMode.CurrentUser:
+            case PackageQuerySourceType.InstalledForCurrentUser:
                 found = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty, familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
                 break;
-            case PackageFindMode.AllUsers:
+            case PackageQuerySourceType.InstalledForAllUsers:
                 found = await Task.Run(() => PackageManagerSingleton.Instance.FindPackages(familyName).FirstOrDefault(), cancellationToken).ConfigureAwait(false);
                 break;
             default:
@@ -170,12 +223,12 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         return await GetInstalledPackage(found.Id.FullName, mode, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<List<PackageEntry>> QueryInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
-    {   
-        if (mode == PackageFindMode.Auto)
+    private async Task<List<PackageEntry>> QueryInstalledPackages(string packageName, PackageQuerySourceType mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+    {
+        if (mode == PackageQuerySourceType.Installed)
         {
             var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
-            mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            mode = isAdmin ? PackageQuerySourceType.InstalledForAllUsers : PackageQuerySourceType.InstalledForCurrentUser;
         }
 
         progress?.Report(new ProgressData(0, Resources.Localization.Packages_GettingApps));
@@ -201,10 +254,10 @@ public class AppxPackageQueryService : IAppxPackageQueryService
             Logger.Info().WriteLine("Getting all packages by find mode = '{0}'", mode);
             switch (mode)
             {
-                case PackageFindMode.CurrentUser:
+                case PackageQuerySourceType.InstalledForCurrentUser:
                     allPackages = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
-                case PackageFindMode.AllUsers:
+                case PackageQuerySourceType.InstalledForAllUsers:
                     allPackages = await Task.Run(() => PackageManagerSingleton.Instance.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                     break;
                 default:
@@ -218,7 +271,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
 
             switch (mode)
             {
-                case PackageFindMode.CurrentUser:
+                case PackageQuerySourceType.InstalledForCurrentUser:
                 {
                     var pkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packageName);
 
@@ -230,7 +283,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
                     break;
                 }
 
-                case PackageFindMode.AllUsers:
+                case PackageQuerySourceType.InstalledForAllUsers:
                 {
                     var pkg = PackageManagerSingleton.Instance.FindPackage(packageName);
                         
@@ -252,7 +305,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         var total = 10.0;
         var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
         
-        var config = await this._configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
+        var config = await configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
 
         int maxSimultaneousTasks;
         if (config.Advanced?.DisableTasksForGetPackages == false || config.Advanced?.MaxTasksForGetPackages < 2)

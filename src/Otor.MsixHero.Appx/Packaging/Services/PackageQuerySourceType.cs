@@ -16,10 +16,11 @@
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {
-    public enum PackageFindMode
+    public enum PackageQuerySourceType
     {
-        Auto,
-        CurrentUser,
-        AllUsers
+        Installed,
+        InstalledForCurrentUser,
+        InstalledForAllUsers,
+        Directory
     }
 }

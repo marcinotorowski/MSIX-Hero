@@ -13,15 +13,110 @@
     xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Common.Enums;assembly=Otor.MsixHero.Appx.Common"
+    xmlns:services="clr-namespace:Otor.MsixHero.Appx.Packaging.Services;assembly=Otor.MsixHero.Appx"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     FocusManager.IsFocusScope="True"
     d:DesignHeight="340" d:DesignWidth="500" d:DataContext="{d:DesignInstance viewModels:PackageFilterSortViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <controls:ProgressOverlay 
         Style="{StaticResource CompactOverlay}"
         Progress="{Binding Progress}"
         IsShown="{Binding IsBusy}">
         <UniformGrid Margin="8" Columns="2" Rows="1">
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel.Resources>
+                    <converters:FilterHeaderVisibilityConverter x:Key="FilterHeaderVisibilityConverter" />
+                </StackPanel.Resources>
+                <DockPanel Margin="8 4 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Activity}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <TextBlock
+        Visibility="{Binding FilterRunning, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
+        Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink 
+            Command="{Binding Clear}" 
+            CommandParameter="{x:Static viewModels:ClearFilter.Activity}">
+            <Run Text="{localization:Loc Button_Clear}" />
+        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterRunning}" Margin="8 4" Content="{localization:Loc Packages_Filter_Activity_RunningNow}" />
+
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppInstaller}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <TextBlock
+        Visibility="{Binding FilterHasAppInstaller, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
+        Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink 
+            Command="{Binding Clear}" 
+            CommandParameter="{x:Static viewModels:ClearFilter.AppInstaller}">
+            <Run Text="{localization:Loc Button_Clear}" />
+        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterHasAppInstaller}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppInstaller_Defined}" />
+
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppType}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterTypeCaption}" />
+                    <TextBlock
+        Visibility="{Binding FilterTypeCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
+        Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink 
+            Command="{Binding Clear}" 
+            CommandParameter="{x:Static viewModels:ClearFilter.Type}">
+            <Run Text="{localization:Loc Button_Clear}" />
+        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterMainApp}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_MainApp}" />
+                <CheckBox IsChecked="{Binding FilterAddOn}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_AddOn}" />
+
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Category}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterCategoryCaption}" />
+                    <TextBlock
+        Visibility="{Binding FilterCategoryCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
+        Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink 
+            Command="{Binding Clear}" 
+            CommandParameter="{x:Static viewModels:ClearFilter.Category}">
+            <Run Text="{localization:Loc Button_Clear}" />
+        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <CheckBox IsChecked="{Binding FilterStore}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Store}" />
+                <CheckBox IsChecked="{Binding FilterSideLoaded}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Sideloaded}" />
+                <CheckBox IsChecked="{Binding FilterSystem}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_SystemApp}" />
+
+                <DockPanel Margin="8 16 8 4">
+                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Architecture}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterArchitectureCaption}" />
+                    <TextBlock
+        Visibility="{Binding FilterArchitectureCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
+        Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink 
+            Command="{Binding Clear}" 
+            CommandParameter="{x:Static viewModels:ClearFilter.Architecture}">
+            <Run Text="{localization:Loc Button_Clear}" />
+        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <UniformGrid Margin="4">
+                    <CheckBox IsChecked="{Binding FilterNeutral}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_Neutral}" />
+                    <CheckBox IsChecked="{Binding FilterX86}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_32Bit}" />
+                    <CheckBox IsChecked="{Binding FilterX64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_64Bit}" />
+                    <CheckBox IsChecked="{Binding FilterArm}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM}" />
+                    <CheckBox IsChecked="{Binding FilterArm64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM64}" />
+                </UniformGrid>
+            </StackPanel>
+
             <StackPanel VerticalAlignment="Top">
                 <StackPanel.Resources>
                     <Style TargetType="RadioButton">
@@ -33,27 +128,97 @@
                                 <ControlTemplate TargetType="RadioButton">
                                     <Border Background="{TemplateBinding Background}">
                                         <DockPanel Margin="{TemplateBinding Padding}">
-                                            <Path Opacity="0" x:Name="Checkmark" Fill="{TemplateBinding Foreground}" Data="{StaticResource SmallCheckMark}" Style="{StaticResource SmallIcon}" DockPanel.Dock="Left" VerticalAlignment="Center" />
+                                            <Canvas Width="16" Height="16">
+                                                <Border 
+                                                    Name="CheckmarkOuter" 
+                                                    CornerRadius="16" 
+                                                    Width="16" 
+                                                    Height="16" 
+                                                    DockPanel.Dock="Left" 
+                                                    VerticalAlignment="Center" 
+                                                    Background="White"
+                                                    BorderThickness="{StaticResource MsixHero.Button.Normal.Border.Thickness}" 
+                                                    BorderBrush="{StaticResource MsixHero.RadioButton.Normal.Border.Brush}">
+                                                </Border>
+                                                <Border 
+                                                    Canvas.Left="2"
+                                                    Canvas.Top="2"
+                                                    Width="8" 
+                                                    Height="8" 
+                                                    Name="CheckmarkInner" 
+                                                    CornerRadius="8" 
+                                                    Margin="2" 
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Background="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" />
+                                            </Canvas>
+
+                                            <!--<Path Opacity="0" x:Name="Checkmark" Fill="{TemplateBinding Foreground}" Data="{StaticResource SmallCheckMark}" Style="{StaticResource SmallIcon}" DockPanel.Dock="Left" VerticalAlignment="Center" />-->
                                             <ContentPresenter Margin="4 0 0 0" VerticalAlignment="Center" />
                                         </DockPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Trigger.EnterActions>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsChecked" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <MultiTrigger.Setters>
+                                                <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Visible" />
+                                                <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Visible" />
+                                            </MultiTrigger.Setters>
+                                            <!--<MultiTrigger.EnterActions>
                                                 <BeginStoryboard>
                                                     <Storyboard>
-                                                        <DoubleAnimation To="1.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                        <DoubleAnimation To="1.0" Storyboard.TargetName="CheckmarkInner" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
                                                     </Storyboard>
                                                 </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
+                                            </MultiTrigger.EnterActions>
+                                            <MultiTrigger.ExitActions>
                                                 <BeginStoryboard>
                                                     <Storyboard>
-                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="Checkmark" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="CheckmarkInner" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
                                                     </Storyboard>
                                                 </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
+                                            </MultiTrigger.ExitActions>-->
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsChecked" Value="False" />
+                                                <Condition Property="IsMouseOver" Value="False" />
+                                            </MultiTrigger.Conditions>
+                                            <MultiTrigger.Setters>
+                                                <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Hidden" />
+                                                <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Hidden" />
+                                            </MultiTrigger.Setters>
+                                            <!--<MultiTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="CheckmarkInner" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="CheckmarkOuter" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiTrigger.EnterActions>-->
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsChecked" Value="False" />
+                                                <Condition Property="IsMouseOver" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <MultiTrigger.Setters>
+                                                <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Hidden" />
+                                                <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Visible" />
+                                            </MultiTrigger.Setters>
+                                            <!--<MultiTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation To="0.0" Storyboard.TargetName="CheckmarkInner" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                        <DoubleAnimation To="1.0" Storyboard.TargetName="CheckmarkOuter" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.35" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiTrigger.EnterActions>-->
+                                        </MultiTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -84,16 +249,16 @@
                     </Style>
                 </StackPanel.Resources>
 
-                <DockPanel>
+                <DockPanel Visibility="Collapsed">
                     <Label DockPanel.Dock="Top" Margin="8 4" Content="{localization:Loc Packages_Filter_Source}" Style="{StaticResource FormLabelThin}" />
 
                     <RadioButton
                     GroupName="s1"
-                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageInstallationContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}"
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static services:PackageQuerySourceType.InstalledForCurrentUser}, Converter={StaticResource EnumToBooleanConverter}}"
                     Margin="8 0"
                     DockPanel.Dock="Top" Content="{localization:Loc Packages_Filter_Source_User}" />
                     <RadioButton
-                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageInstallationContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}"
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static services:PackageQuerySourceType.InstalledForAllUsers}, Converter={StaticResource EnumToBooleanConverter}}"
                     GroupName="s2"
                     Margin="8 0"
                     DockPanel.Dock="Top">
@@ -114,7 +279,7 @@
 
                 </DockPanel>
 
-                <Label Margin="8 16 8 4" Content="{localization:Loc Packages_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
+                <Label Margin="8 4 8 4" Content="{localization:Loc Packages_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
                 <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 GroupName="orderBy1"
@@ -191,92 +356,6 @@
                 <RadioButton 
                 IsChecked="{Binding Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageGroup.Type}}"
                 GroupName="groupBy3" Margin="8 0" Content="{localization:Loc Packages_Filter_GroupBy_Category}" />
-            </StackPanel>
-            <StackPanel VerticalAlignment="Top">
-                <StackPanel.Resources>
-                    <converters:FilterHeaderVisibilityConverter x:Key="FilterHeaderVisibilityConverter" />
-                </StackPanel.Resources>
-                <DockPanel Margin="8 4 8 4">
-                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Activity}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                    <TextBlock
-                    Visibility="{Binding FilterRunning, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
-                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <Hyperlink 
-                        Command="{Binding Clear}" 
-                        CommandParameter="{x:Static viewModels:ClearFilter.Activity}">
-                        <Run Text="{localization:Loc Button_Clear}" />
-                    </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-                <CheckBox IsChecked="{Binding FilterRunning}" Margin="8 4" Content="{localization:Loc Packages_Filter_Activity_RunningNow}" />
-
-                <DockPanel Margin="8 16 8 4">
-                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppInstaller}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                    <TextBlock
-                    Visibility="{Binding FilterHasAppInstaller, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
-                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <Hyperlink 
-                        Command="{Binding Clear}" 
-                        CommandParameter="{x:Static viewModels:ClearFilter.AppInstaller}">
-                        <Run Text="{localization:Loc Button_Clear}" />
-                    </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-                <CheckBox IsChecked="{Binding FilterHasAppInstaller}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppInstaller_Defined}" />
-
-                <DockPanel Margin="8 16 8 4">
-                    <Label Margin="0" Content="{localization:Loc Packages_Filter_AppType}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterTypeCaption}" />
-                    <TextBlock
-                    Visibility="{Binding FilterTypeCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
-                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <Hyperlink 
-                        Command="{Binding Clear}" 
-                        CommandParameter="{x:Static viewModels:ClearFilter.Type}">
-                        <Run Text="{localization:Loc Button_Clear}" />
-                    </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-                <CheckBox IsChecked="{Binding FilterMainApp}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_MainApp}" />
-                <CheckBox IsChecked="{Binding FilterAddOn}" Margin="8 4" Content="{localization:Loc Packages_Filter_AppType_AddOn}" />
-
-                <DockPanel Margin="8 16 8 4">
-                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Category}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterCategoryCaption}" />
-                    <TextBlock
-                    Visibility="{Binding FilterCategoryCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
-                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <Hyperlink 
-                        Command="{Binding Clear}" 
-                        CommandParameter="{x:Static viewModels:ClearFilter.Category}">
-                        <Run Text="{localization:Loc Button_Clear}" />
-                    </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-                <CheckBox IsChecked="{Binding FilterStore}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Store}" />
-                <CheckBox IsChecked="{Binding FilterSideLoaded}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Sideloaded}" />
-                <CheckBox IsChecked="{Binding FilterSystem}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_SystemApp}" />
-
-                <DockPanel Margin="8 16 8 4">
-                    <Label Margin="0" Content="{localization:Loc Packages_Filter_Architecture}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
-                    <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterArchitectureCaption}" />
-                    <TextBlock
-                    Visibility="{Binding FilterArchitectureCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
-                    Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <Hyperlink 
-                        Command="{Binding Clear}" 
-                        CommandParameter="{x:Static viewModels:ClearFilter.Architecture}">
-                        <Run Text="{localization:Loc Button_Clear}" />
-                    </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-                <UniformGrid Margin="4">
-                    <CheckBox IsChecked="{Binding FilterNeutral}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_Neutral}" />
-                    <CheckBox IsChecked="{Binding FilterX86}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_32Bit}" />
-                    <CheckBox IsChecked="{Binding FilterX64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_64Bit}" />
-                    <CheckBox IsChecked="{Binding FilterArm}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM}" />
-                    <CheckBox IsChecked="{Binding FilterArm64}" Margin="4" Content="{localization:Loc Packages_Filter_Architecture_ARM64}" />
-                </UniformGrid>
             </StackPanel>
         </UniformGrid>
     </controls:ProgressOverlay>

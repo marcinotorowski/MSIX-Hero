@@ -8,6 +8,10 @@
     xmlns:mvvm="http://prismlibrary.com/"
     xmlns:viewModels1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:services="clr-namespace:Otor.MsixHero.Appx.Packaging.Services;assembly=Otor.MsixHero.Appx"
+    xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     Focusable="False"
@@ -85,12 +89,13 @@
                 </Button.Style>
             </Button>
 
-            <CheckBox 
-                FocusVisualStyle="{x:Null}"
+            <ToggleButton
+                x:Name="Toggle"
+                DataContext="{Binding Path=SourceType}"
                 ToolTip="{localization:Loc Packages_Search_Badge_Tooltip}"
-                IsChecked="{Binding IsAllUsers, Mode=TwoWay}">
-                <CheckBox.Style>
-                    <Style TargetType="CheckBox">
+                FocusVisualStyle="{x:Null}">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
                         <Setter Property="Background" Value="#BB0173C7" />
                         <Setter Property="Foreground" Value="#FFFFFF" />
                         <Setter Property="Margin" Value="3" />
@@ -104,20 +109,23 @@
                         <Setter Property="VerticalContentAlignment" Value="Center" />
                         <Setter Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="CheckBox">
+                                <ControlTemplate TargetType="ToggleButton">
                                     <Border
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        Background="{TemplateBinding Background}">
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Background="{TemplateBinding Background}">
                                         <TextBlock 
-                                            x:Name="PART_Label" 
-                                            Text="{localization:Loc Packages_Search_Badge_User}"
-                                            Margin="{TemplateBinding Padding}" 
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                             x:Name="PART_Label" 
+                                             Text="{localization:Loc Packages_Search_Badge_User}"
+                                             Margin="{TemplateBinding Padding}" 
+                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True">
+                                        <Trigger Property="DataContext" Value="{x:Static services:PackageQuerySourceType.InstalledForAllUsers}">
                                             <Setter TargetName="PART_Label" Property="Text" Value="{localization:Loc Packages_Search_Badge_Machine}" />
+                                        </Trigger>
+                                        <Trigger Property="DataContext" Value="{x:Static services:PackageQuerySourceType.Directory}">
+                                            <Setter TargetName="PART_Label" Property="Text" Value="{localization:Loc Packages_Search_Badge_Directory}" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="#0173C7" />
@@ -133,8 +141,225 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </CheckBox.Style>
-            </CheckBox>
+                </ToggleButton.Style>
+
+            </ToggleButton>
+
+            <Popup
+                AllowsTransparency="True"
+                PlacementTarget="{Binding ElementName=Toggle}"
+                Placement="Bottom"
+                IsOpen="{Binding ElementName=Toggle, Path=IsChecked}"
+                StaysOpen="False">
+                <Border Padding="8" Background="White" BorderBrush="Black" BorderThickness="1" helpers:ButtonClosePopup.PopupOwner="{Binding ElementName=Toggle}">
+
+                    <StackPanel>
+
+                        <ListBox Margin="0 -4" SelectedItem="{Binding SelectedSource}" ItemsSource="{Binding Sources}" x:Name="Selector">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="1" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.Template>
+                                <ControlTemplate TargetType="ListBox">
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </ListBox.Template>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Margin" Value="0 4" />
+                                    <Setter Property="MinHeight" Value="30" />
+                                    <Setter Property="Padding" Value="8 " />
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <DockPanel Margin="{TemplateBinding Padding}">
+                                                        <Canvas VerticalAlignment="Center" Margin="0 0 0 0" Width="16" Height="16">
+                                                            <Border 
+                                                                Name="CheckmarkOuter" 
+                                                                CornerRadius="16" 
+                                                                Width="16" 
+                                                                Height="16" 
+                                                                DockPanel.Dock="Left" 
+                                                                VerticalAlignment="Center" 
+                                                                Background="White"
+                                                                BorderThickness="{StaticResource MsixHero.Button.Normal.Border.Thickness}" 
+                                                                BorderBrush="{StaticResource MsixHero.RadioButton.Normal.Border.Brush}" />
+                                                            <Border 
+                                                                Canvas.Left="2"
+                                                                Canvas.Top="2"
+                                                                Width="8" 
+                                                                Height="8" 
+                                                                Name="CheckmarkInner" 
+                                                                CornerRadius="8" 
+                                                                Margin="2" 
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Center"
+                                                                Background="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" />
+                                                            </Canvas>
+                                                            <ContentPresenter Margin="4 0 0 0" VerticalAlignment="Center" />
+                                                        </DockPanel>
+                                                    </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Visible" />
+                                                            <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Visible" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
+
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="False" />
+                                                            <Condition Property="IsMouseOver" Value="False" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Hidden" />
+                                                            <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Hidden" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
+
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="False" />
+                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter TargetName="CheckmarkInner" Property="Visibility" Value="Hidden" />
+                                                            <Setter TargetName="CheckmarkOuter" Property="Visibility" Value="Visible" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type viewModels1:SourceViewModel}">
+                                    <DockPanel>
+                                        <Path 
+                                            Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
+                                            Data="{StaticResource VectorDirectory}" x:Name="Icon" Style="{StaticResource LargeIcon}" Margin="0 0 8 0" />
+                                        <DockPanel VerticalAlignment="Center">
+                                            <Button Content="Browse..." Command="Open" CommandParameter="{Binding}" HorizontalAlignment="Left" x:Name="BrowseForFolder" Visibility="Visible" Margin="8 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" />
+                                            <StackPanel VerticalAlignment="Center">
+                                                <WrapPanel>
+                                                    <TextBlock x:Name="DisplayName" Text="{Binding DisplayName, Mode=OneWay}" FontWeight="SemiBold" />
+                                                    <Image 
+                                                        x:Name="UacIcon"
+                                                        VerticalAlignment="Center" 
+                                                        Source="{x:Static interop:WindowsIcons.UacShield}" 
+                                                        Stretch="None" 
+                                                        Margin="4 0 0 0"
+                                                        Visibility="Collapsed"
+                                                        UseLayoutRounding="True" 
+                                                        SnapsToDevicePixels="True">
+                                                    </Image>
+                                                </WrapPanel>
+                                                <TextBlock x:Name="SecondLine" Text="{Binding Path=SourceType.Path, Mode=OneWay}" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding SourceType.Type}" Value="{x:Static services:PackageQuerySourceType.InstalledForAllUsers}">
+                                            <Setter Property="Data" TargetName="Icon" Value="{StaticResource VectorUsers}" />
+                                            <Setter TargetName="UacIcon" Property="Visibility" Value="Visible" />
+                                            <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="DisplayName" Property="Text" Value="All users" />
+                                            <Setter TargetName="SecondLine" Property="Text" Value="Displays packages, installed for all users on this machine" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SourceType.Type}" Value="{x:Static services:PackageQuerySourceType.InstalledForCurrentUser}">
+                                            <Setter Property="Data" TargetName="Icon" Value="{StaticResource VectorUser}" />
+                                            <Setter TargetName="UacIcon" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="DisplayName" Property="Text" Value="Current user" />
+                                            <Setter TargetName="SecondLine" Property="Text" Value="Displays packages, installed for the current user" />
+                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SourceType.Type}" Value="{x:Static services:PackageQuerySourceType.Directory}" />
+                                                <Condition Binding="{Binding SourceType.Path}" Value="{x:Null}" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter TargetName="UacIcon" Property="Visibility" Value="Collapsed" />
+                                                <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Visible" />
+                                                <Setter TargetName="DisplayName" Property="Text" Value="Directory" />
+                                                <Setter TargetName="SecondLine" Property="Text" Value="Browses the current computer and shows packages from a specified directory" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+
+                            <commands:RoutedCommandHandlers.Commands>
+                                <commands:RoutedCommandHandler 
+                                    RoutedCommand="Open" 
+                                    Command="{Binding Browse}" />
+                            </commands:RoutedCommandHandlers.Commands>
+                        </ListBox>
+
+                        <!--<RadioButton 
+                            IsChecked="{Binding SourceType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static services:PackageQuerySourceType.InstalledForCurrentUser}}"
+                            GroupName="source1">
+                            <DockPanel>
+                                <Path Data="{StaticResource VectorUser}" Style="{StaticResource LargeIcon}" Margin="0 0 8 0" />
+                                <StackPanel>
+                                    <TextBlock Text="Current user" FontWeight="SemiBold" />
+                                    <TextBlock Text="Displays packages, installed by the current user." />
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+                        <RadioButton
+                            IsChecked="{Binding SourceType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static services:PackageQuerySourceType.InstalledForAllUsers}}"
+                            GroupName="source2">
+                            <DockPanel>
+                                <Path Data="{StaticResource VectorUsers}" Style="{StaticResource LargeIcon}" Margin="0 0 8 0" />
+                                <StackPanel>
+                                    <WrapPanel>
+                                        <TextBlock Text="All users" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <Image 
+                                            VerticalAlignment="Center" 
+                                            Source="{x:Static interop:WindowsIcons.UacShield}" 
+                                            Stretch="None" 
+                                            Margin="4 0 0 0"
+                                            UseLayoutRounding="True" 
+                                            SnapsToDevicePixels="True">
+                                        </Image>
+                                    </WrapPanel>
+                                    <TextBlock Text="Displays packages, installed for all users on this machine" />
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+                        <RadioButton
+                            IsEnabled="False"
+                            IsChecked="{Binding SourceType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static services:PackageQuerySourceType.Directory}}"
+                            GroupName="source3">
+                            <DockPanel>
+                                <Path Data="{StaticResource VectorDirectory}" Style="{StaticResource LargeIcon}" Margin="0 0 8 0" />
+                                <StackPanel>
+                                    <TextBlock Text="Directory" FontWeight="SemiBold" />
+                                    <TextBlock Text="Displays packages or loose files from a specified folder" />
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>-->
+                    </StackPanel>
+                </Border>
+            </Popup>
         </StackPanel>
     </Grid>
 </UserControl>

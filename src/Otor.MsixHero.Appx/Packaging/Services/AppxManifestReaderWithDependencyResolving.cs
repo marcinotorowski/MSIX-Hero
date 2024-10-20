@@ -1,6 +1,5 @@
 ﻿using Dapplo.Log;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Reader.File.Adapters;
 using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Appx.Reader.Manifest.Entities;

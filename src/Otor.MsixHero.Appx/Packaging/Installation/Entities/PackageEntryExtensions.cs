@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,6 @@ using Windows.ApplicationModel;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
-using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -42,7 +42,7 @@ public static class PackageEntryExtensions
 
     public static async Task<IList<PackageEntry>> FromFilePaths(
         IEnumerable<string> filePaths,
-        PackageFindMode packageContextMode = PackageFindMode.Auto,
+        PackageQuerySourceType packageContextMode = PackageQuerySourceType.Installed,
         bool checkIfRunning = false,
         CancellationToken cancellationToken = default)
     {
@@ -70,10 +70,206 @@ public static class PackageEntryExtensions
 
         return packages;
     }
-    
+
+    public static async IAsyncEnumerable<PackageEntry> FromReaders(IEnumerable<IAppxFileReader> appxPackageReaders, PackageQuerySourceType packageContextMode = PackageQuerySourceType.Installed, bool checkIfRunning = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (packageContextMode == PackageQuerySourceType.Installed)
+        {
+            if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+            {
+                packageContextMode = PackageQuerySourceType.InstalledForAllUsers;
+            }
+            else
+            {
+                packageContextMode = PackageQuerySourceType.InstalledForCurrentUser;
+            }
+        }
+
+        var packages = new List<PackageEntry>();
+        foreach (var appxPackageReader in appxPackageReaders)
+        {
+            var manifestReader = new AppxManifestReader();
+            var appxPackage = await manifestReader.Read(appxPackageReader, cancellationToken).ConfigureAwait(false);
+
+            Logger.Debug().WriteLine("Getting details about package {0} from its manifest information…", appxPackage.FullName);
+
+            var entry = new PackageEntry
+            {
+                Name = appxPackage.Name,
+                PackageFullName = appxPackage.FullName,
+                ManifestPath = appxPackage.PackagePath,
+                PackageFamilyName = appxPackage.FamilyName,
+                DisplayPublisherName = appxPackage.PublisherDisplayName,
+                Description = appxPackage.Description,
+                Publisher = appxPackage.Publisher,
+                ResourceId = appxPackage.ResourceId,
+                Architecture = appxPackage.ProcessorArchitecture,
+                IsFramework = appxPackage.IsFramework,
+                IsOptional = appxPackage.IsOptional,
+                Version = Version.TryParse(appxPackage.Version, out var parsedVersion) ? parsedVersion : throw new ArgumentException(@"Wrong version value.", nameof(appxPackage)),
+                SignatureKind = SignatureKind.Unknown,
+                IsRunning = false,
+                IsProvisioned = false,
+                DisplayName = appxPackage.DisplayName,
+                AppInstallerUri = default,
+                InstallDate = default,
+                InstallDirPath = default
+            };
+
+            
+            var details = await AppxManifestSummaryReader.FromMsix(appxPackageReader).ConfigureAwait(false);
+
+            if (details.Logo != null)
+            {
+                if (appxPackageReader is IAppxDiskFileReader diskReader)
+                {
+                    entry.ImagePath = Path.Combine(diskReader.RootDirectory, details.Logo);
+                }
+                else
+                {
+                    if (appxPackageReader.FileExists(details.Logo))
+                    {
+                        await using var s = appxPackageReader.GetFile(details.Logo);
+                        await using var m = new MemoryStream();
+                        await s.CopyToAsync(m, cancellationToken).ConfigureAwait(false);
+                        m.Seek(0, SeekOrigin.Begin);
+                        entry.ImageContent = m.ToArray();
+                    }
+                }
+            }
+            
+            packages.Add(entry);
+        }
+
+        if (!packages.Any())
+        {
+            yield break;
+        }
+
+        if (packages.Count == 1)
+        {
+            // Simple case - just one package
+            Package installPkg = null;
+
+            switch (packageContextMode)
+            {
+                case PackageQuerySourceType.InstalledForCurrentUser:
+                    installPkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, packages[0].PackageFullName);
+                    if (installPkg == null)
+                    {
+                        var identity = PackageIdentity.FromFullName(packages[0].PackageFullName);
+                        if (string.IsNullOrWhiteSpace(identity.ResourceId))
+                        {
+                            identity.ResourceId = "Neutral";
+                            installPkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, identity.ToString());
+                        }
+                    }
+                    break;
+
+                case PackageQuerySourceType.InstalledForAllUsers:
+                    installPkg = PackageManagerSingleton.Instance.FindPackage(packages[0].PackageFullName);
+                    if (installPkg == null)
+                    {
+                        var identity = PackageIdentity.FromFullName(packages[0].PackageFullName);
+                        if (string.IsNullOrWhiteSpace(identity.ResourceId))
+                        {
+                            identity.ResourceId = "Neutral";
+                            installPkg = PackageManagerSingleton.Instance.FindPackage(identity.ToString());
+                        }
+                    }
+
+                    break;
+            }
+
+            if (installPkg != null)
+            {
+                packages[0].InstallDirPath = ExceptionGuard.Guard(() => installPkg.InstalledLocation?.Path);
+                packages[0].InstallDate = ExceptionGuard.Guard(() => installPkg.InstalledDate.LocalDateTime);
+                packages[0].AppInstallerUri = installPkg.GetAppInstallerInfo()?.Uri;
+                packages[0].SignatureKind = ConvertSignatureKind(installPkg.SignatureKind);
+            }
+            else
+            {
+                packages[0].SignatureKind = SignatureKind.Unknown;
+            }
+
+            if (checkIfRunning)
+            {
+                var detector = new RunningAppsDetector();
+                var getRunning = detector.GetCurrentlyRunningPackageFamilyNames();
+                packages[0].IsRunning = getRunning.Contains(packages[0].PackageFamilyName);
+            }
+
+            yield return packages[0];
+        }
+        else
+        {
+            IList<Package> installedPackages = null;
+            switch (packageContextMode)
+            {
+                case PackageQuerySourceType.InstalledForCurrentUser:
+                    installedPackages = PackageManagerSingleton.Instance.FindPackagesForUser(string.Empty).ToList();
+                    break;
+
+                case PackageQuerySourceType.InstalledForAllUsers:
+                    installedPackages = PackageManagerSingleton.Instance.FindPackages().ToList();
+                    break;
+            }
+
+            if (installedPackages != null)
+            {
+                IList<string> runningFamilyNames;
+                if (checkIfRunning)
+                {
+                    var detector = new RunningAppsDetector();
+                    runningFamilyNames = detector.GetCurrentlyRunningPackageFamilyNames();
+                }
+                else
+                {
+                    runningFamilyNames = new List<string>();
+                }
+
+                foreach (var p in packages)
+                {
+                    var identity = PackageIdentity.FromFullName(p.PackageFullName);
+                    var lookFor = identity.ToString();
+                    var findMatch = installedPackages.FirstOrDefault(ip => ip.Id.FullName == lookFor);
+                    if (findMatch == null)
+                    {
+                        if (string.IsNullOrWhiteSpace(identity.ResourceId))
+                        {
+                            identity.ResourceId = "Neutral";
+                            lookFor = identity.ToString();
+                            findMatch = installedPackages.FirstOrDefault(ip => ip.Id.FullName == lookFor);
+
+                            if (findMatch == null)
+                            {
+                                yield return p;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            yield return p;
+                            continue;
+                        }
+                    }
+
+                    p.InstallDirPath = ExceptionGuard.Guard(() => findMatch.InstalledLocation?.Path);
+                    p.InstallDate = ExceptionGuard.Guard(() => findMatch.InstalledDate.LocalDateTime);
+                    p.AppInstallerUri = findMatch.GetAppInstallerInfo()?.Uri;
+                    p.SignatureKind = ConvertSignatureKind(findMatch.SignatureKind);
+                    p.IsRunning = runningFamilyNames.Contains(p.PackageFamilyName);
+
+                    yield return p;
+                }
+            }
+        }
+    }
+
     public static async Task<PackageEntry> FromReader(
         IAppxFileReader appxPackageReader,
-        PackageFindMode packageContextMode = PackageFindMode.Auto,
+        PackageQuerySourceType packageContextMode = PackageQuerySourceType.Installed,
         bool checkIfRunning = false,
         CancellationToken cancellationToken = default)
     {
@@ -105,22 +301,22 @@ public static class PackageEntryExtensions
             InstallDirPath = default
         };
 
-        if (packageContextMode == PackageFindMode.Auto)
+        if (packageContextMode == PackageQuerySourceType.Installed)
         {
             if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
             {
-                packageContextMode = PackageFindMode.AllUsers;
+                packageContextMode = PackageQuerySourceType.InstalledForAllUsers;
             }
             else
             {
-                packageContextMode = PackageFindMode.CurrentUser;
+                packageContextMode = PackageQuerySourceType.InstalledForCurrentUser;
             }
         }
 
         Package installPkg;
         switch (packageContextMode)
         {
-            case PackageFindMode.CurrentUser:
+            case PackageQuerySourceType.InstalledForCurrentUser:
                 installPkg = PackageManagerSingleton.Instance.FindPackageForUser(string.Empty, appxPackage.FullName);
                 if (installPkg == null)
                 {
@@ -133,7 +329,7 @@ public static class PackageEntryExtensions
                 }
                 break;
 
-            case PackageFindMode.AllUsers:
+            case PackageQuerySourceType.InstalledForAllUsers:
                 installPkg = PackageManagerSingleton.Instance.FindPackage(appxPackage.FullName);
                 if (installPkg == null)
                 {
@@ -195,7 +391,7 @@ public static class PackageEntryExtensions
 
     public static async Task<PackageEntry> FromFilePath(
         string fullFilePath,
-        PackageFindMode packageContextMode = PackageFindMode.Auto,
+        PackageQuerySourceType packageContextMode = PackageQuerySourceType.Installed,
         bool checkIfRunning = false,
         CancellationToken cancellationToken = default)
     {

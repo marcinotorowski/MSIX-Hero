@@ -253,6 +253,11 @@ namespace Otor.MsixHero.Infrastructure.Services
                 result.Packages.Tools = defaults.Packages.Tools;
             }
 
+            if (result.Packages.CustomPackageDirectories == null)
+            {
+                result.Packages.CustomPackageDirectories = defaults.Packages.CustomPackageDirectories;
+            }
+
             if (result.Packages.StarredApps == null)
             {
                 result.Packages.StarredApps = defaults.Packages.StarredApps;

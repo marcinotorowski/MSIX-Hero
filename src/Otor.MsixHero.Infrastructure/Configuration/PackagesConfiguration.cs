@@ -45,6 +45,9 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         [DataMember(Name = "tools")]
         public List<ToolListConfiguration> Tools { get; set; }
 
+        [DataMember(Name = "customPackageDirs")]
+        public List<PackageDirectoryConfiguration> CustomPackageDirectories { get; set; }
+
         [DataMember(Name = "starredApps")]
         public List<string> StarredApps { get; set; }
     }

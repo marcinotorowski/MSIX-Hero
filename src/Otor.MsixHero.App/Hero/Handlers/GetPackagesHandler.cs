@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,23 +8,24 @@ using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
-    public class GetPackagesHandler : IRequestHandler<GetInstalledPackagesCommand, IList<PackageEntry>>, IObserver<ActivePackageFullNames>
+    public class GetPackagesHandler : IRequestHandler<GetPackagesCommand, IList<PackageEntry>>, IObserver<ActivePackageFullNames>
     {
-        private readonly IMsixHeroCommandExecutor commandExecutor;
-        private readonly IBusyManager busyManager;
-        private readonly IUacElevation uacElevation;
-        private readonly IEventAggregator eventAggregator;
-        private readonly IRunningAppsDetector detector;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IBusyManager _busyManager;
+        private readonly IUacElevation _uacElevation;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IRunningAppsDetector _detector;
 
         public GetPackagesHandler(
             IMsixHeroCommandExecutor commandExecutor,
@@ -33,86 +35,83 @@ namespace Otor.MsixHero.App.Hero.Handlers
             IRunningAppsDetector detector)
         {
             detector.Subscribe(this);
-            this.commandExecutor = commandExecutor;
-            this.busyManager = busyManager;
-            this.uacElevation = uacElevation;
-            this.eventAggregator = eventAggregator;
-            this.detector = detector;
+            this._commandExecutor = commandExecutor;
+            this._busyManager = busyManager;
+            this._uacElevation = uacElevation;
+            this._eventAggregator = eventAggregator;
+            this._detector = detector;
         }
 
-        public async Task<IList<PackageEntry>> Handle(GetInstalledPackagesCommand request, CancellationToken cancellationToken)
+        public async Task<IList<PackageEntry>> Handle(GetPackagesCommand request, CancellationToken cancellationToken)
         {
-            var context = this.busyManager.Begin(OperationType.PackageLoading);
+            var context = this._busyManager.Begin(OperationType.PackageLoading);
             try
             {
-                var manager = request.FindMode == PackageFindMode.AllUsers ? this.uacElevation.AsAdministrator<IAppxPackageQueryService>() : this.uacElevation.AsHighestAvailable<IAppxPackageQueryService>();
+                PackageQuerySource mode;
+                var selected = this._commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToList();
 
-                PackageFindMode mode;
-                if (request.FindMode.HasValue)
+                List<PackageEntry> results;
+                if (request.Source.HasValue && request.Source.Value.Type == PackageQuerySourceType.Directory)
                 {
-                    mode = request.FindMode.Value;
-                    if (mode == PackageFindMode.Auto)
+                    SearchOption so;
+                    var actualPath = request.Source.Value.Path;
+                    if (actualPath.EndsWith("/*", StringComparison.OrdinalIgnoreCase) || actualPath.EndsWith("\\*", StringComparison.OrdinalIgnoreCase))
                     {
-                        var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken);
-                        mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+                        so = SearchOption.AllDirectories;
+                        actualPath = actualPath[..^2];
                     }
+                    else
+                    {
+                        so = SearchOption.TopDirectoryOnly;
+                    }
+
+                    var allFiles = System.IO.Directory.EnumerateFiles(actualPath, "*.msix", so);
+
+                    results = await PackageEntryExtensions.FromReaders(allFiles.Select(FileReaderFactory.CreateFileReader), checkIfRunning: true, cancellationToken: cancellationToken).ToListAsync(cancellationToken: cancellationToken);
+
+                    this._commandExecutor.ApplicationState.Packages.AllPackages.Clear();
+                    this._commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
+
+                    mode = PackageQuerySource.FromFolder(actualPath, so == SearchOption.AllDirectories);
                 }
                 else
                 {
-                    switch (this.commandExecutor.ApplicationState.Packages.Mode)
+                    var manager = request.Source.HasValue && request.Source.Value.Type == PackageQuerySourceType.InstalledForAllUsers ? this._uacElevation.AsAdministrator<IAppxPackageQueryService>() : this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>();
+
+                    if (request.Source.HasValue)
                     {
-                        case PackageInstallationContext.CurrentUser:
-                            mode = PackageFindMode.CurrentUser;
-                            break;
-                        case PackageInstallationContext.AllUsers:
-                            mode = PackageFindMode.AllUsers;
-                            break;
-                        default:
-                            throw new NotSupportedException();
+                        mode = request.Source.Value;
+                        if (mode.Type == PackageQuerySourceType.Installed)
+                        {
+                            var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken);
+                            mode = isAdmin ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser();
+                        }
                     }
+                    else
+                    {
+                        mode = this._commandExecutor.ApplicationState.Packages.Mode;
+                    }
+
+                    results = await manager.GetInstalledPackages(mode.Type, cancellationToken, context).ConfigureAwait(false);
+
+                    var currentlyRunning = new HashSet<string>(this._detector.GetCurrentlyRunningPackageFamilyNames(), StringComparer.Ordinal);
+
+                    foreach (var item in this._commandExecutor.ApplicationState.Packages.AllPackages)
+                    {
+                        item.IsRunning = currentlyRunning.Contains(item.PackageFamilyName);
+                    }
+
+                    // this.packageListSynchronizer.EnterWriteLock();
+                    this._commandExecutor.ApplicationState.Packages.AllPackages.Clear();
+                    this._commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
                 }
 
-                var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToList();
-                
-                var results = await manager.GetInstalledPackages(mode, cancellationToken, context).ConfigureAwait(false);
-                
-                // this.packageListSynchronizer.EnterWriteLock();
-                this.commandExecutor.ApplicationState.Packages.AllPackages.Clear();
-                this.commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
-
-                var currentlyRunning = new HashSet<string>(this.detector.GetCurrentlyRunningPackageFamilyNames(), StringComparer.Ordinal);
-
-                foreach (var item in this.commandExecutor.ApplicationState.Packages.AllPackages)
-                {
-                    item.IsRunning = currentlyRunning.Contains(item.PackageFamilyName);
-                }
-
-                switch (mode)
-                {
-                    case PackageFindMode.CurrentUser:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.CurrentUser;
-                        break;
-                    case PackageFindMode.AllUsers:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.AllUsers;
-                        break;
-                }
-
-                switch (mode)
-                {
-                    case PackageFindMode.CurrentUser:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.CurrentUser;
-                        break;
-                    case PackageFindMode.AllUsers:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.AllUsers;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                this._commandExecutor.ApplicationState.Packages.Mode = mode;
 
                 // Just in case, make sure to remove stuff from the selection if the list of packages does not have it anymore.
                 for (var i = selected.Count - 1; i >= 0; i--)
                 {
-                    if (this.commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.PackageFullName == selected[i]))
+                    if (this._commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.PackageFullName == selected[i]))
                     {
                         continue;
                     }
@@ -120,13 +119,13 @@ namespace Otor.MsixHero.App.Hero.Handlers
                     selected.RemoveAt(i);
                 }
 
-                await this.commandExecutor.Invoke(this, new SelectPackagesCommand(selected), cancellationToken).ConfigureAwait(false);
+                await this._commandExecutor.Invoke(this, new SelectPackagesCommand(selected), cancellationToken).ConfigureAwait(false);
 
                 return results;
             }
             finally
             {
-                this.busyManager.End(context);
+                this._busyManager.End(context);
             }
         }
         
@@ -140,8 +139,8 @@ namespace Otor.MsixHero.App.Hero.Handlers
 
         void IObserver<ActivePackageFullNames>.OnNext(ActivePackageFullNames value)
         {
-            this.commandExecutor.ApplicationState.Packages.ActivePackageNames = value.Running;
-            this.eventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Publish(value);
+            this._commandExecutor.ApplicationState.Packages.ActivePackageNames = value.Running;
+            this._eventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Publish(value);
         }
     }
 }
