@@ -29,7 +29,8 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Winget.Helpers;
@@ -70,7 +71,7 @@ namespace Otor.MsixHero.Winget.Yaml
                 throw new InvalidOperationException(Resources.Localization.Winget_Error_DownloadFailed);
             }
 
-            var tempFileName = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileConstants.MsixExtension);
+            var tempFileName = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileExtensions.Msix);
 
             try
             {
@@ -123,10 +124,10 @@ namespace Otor.MsixHero.Winget.Yaml
 
             switch (ext.ToLowerInvariant())
             {
-                case FileConstants.AppxExtension:
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxBundleExtension:
-                case FileConstants.MsixBundleExtension:
+                case FileExtensions.Appx:
+                case FileExtensions.Msix:
+                case FileExtensions.AppxBundle:
+                case FileExtensions.MsixBundle:
                 {
                     using IAppxFileReader src = new ZipArchiveFileReaderAdapter(fileInfo.FullName);
                     if (!src.FileExists("AppxSignature.p7x"))

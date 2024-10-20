@@ -100,7 +100,7 @@ Task("Test")
 
         var projectDir = System.IO.Path.Combine("src", "Otor.MsixHero.Tests");
         var unitTestCsProj = System.IO.Path.Combine(projectDir, "Otor.MsixHero.Tests.csproj");
-        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "net6.0-windows");
+        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "net8.0-windows");
         var unitTestDll = System.IO.Path.Combine(publishDir, "Otor.MsixHero.Tests.dll");
         
         Information("Building unit tests...");        
@@ -180,10 +180,6 @@ Task("Trim publish folder")
             "runtimes\\osx",
             "runtimes\\osx-x64",
             "runtimes\\unix",
-            "runtimes\\win7-x64",
-            "runtimes\\win7-x86",
-            "runtimes\\win8-x64",
-            "runtimes\\win8-x86",
             "runtimes\\win81-x64",
             "runtimes\\win81-x86",
             "runtimes\\win-arm",
@@ -191,7 +187,8 @@ Task("Trim publish folder")
             "ref" };
         
         Information("Removing " + removeFolder.Length + " folders from '" + binFolder + "'...");
-        DeleteDirectories(removeFolder.Select(p => System.IO.Path.Combine(binFolder, p)), new DeleteDirectorySettings {
+        
+        DeleteDirectories(removeFolder.Where(p => System.IO.Directory.Exists(System.IO.Path.Combine(binFolder, p))).Select(p => System.IO.Path.Combine(binFolder, p)), new DeleteDirectorySettings {
             Recursive = true,
             Force = true
         });

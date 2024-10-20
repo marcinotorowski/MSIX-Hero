@@ -14,7 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Packaging
+namespace Otor.MsixHero.Appx.Common.Enums
 {
     public enum PackageType
     {

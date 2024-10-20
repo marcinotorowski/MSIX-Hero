@@ -1,5 +1,5 @@
 ﻿using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items
 {

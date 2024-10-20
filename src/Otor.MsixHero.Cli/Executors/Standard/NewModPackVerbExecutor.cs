@@ -22,6 +22,7 @@ using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Cli.Verbs;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Common;
 
 namespace Otor.MsixHero.Cli.Executors.Standard
 {
@@ -54,8 +55,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
                 switch (Path.GetExtension(this.Verb.OutputPath)?.ToLowerInvariant())
                 {
-                    case FileConstants.MsixExtension:
-                    case FileConstants.AppxExtension:
+                    case FileExtensions.Msix:
+                    case FileExtensions.Appx:
                     {
                         file = this.Verb.OutputPath;
                         action = ModificationPackageBuilderAction.Msix;
@@ -64,7 +65,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     default:
                     {
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        file = Path.Combine(this.Verb.OutputPath, FileConstants.AppxManifestFile);
+                        file = Path.Combine(this.Verb.OutputPath, AppxFileConstants.AppxManifestFile);
                         action = ModificationPackageBuilderAction.Manifest;
                         break;
                     }

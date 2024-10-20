@@ -18,11 +18,13 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Common.Enums;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Reader.Adapters;
 
 namespace Otor.MsixHero.Appx.Packaging
 {
@@ -47,7 +49,7 @@ namespace Otor.MsixHero.Appx.Packaging
 
         public AppxPackageArchitecture Architecture { get; set; }
 
-        public MsixPackageType PackageType { get; set; }
+        public MsixApplicationType PackageType { get; set; }
 
         public string Description { get; set; }
 
@@ -118,7 +120,7 @@ namespace Otor.MsixHero.Appx.Packaging
 
             using IAppxFileReader reader = this.ManifestPath != null && File.Exists(this.ManifestPath)
                 ? new FileInfoFileReaderAdapter(this.ManifestPath)
-                : new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, this.PackageFullName);
+                : new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, PackageInstallationContext.CurrentUser, this.PackageFullName);
 
             return await manifestReader.Read(reader, cancellationToken).ConfigureAwait(false);
         }

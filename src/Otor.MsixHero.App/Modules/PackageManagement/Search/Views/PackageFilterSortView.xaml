@@ -11,8 +11,8 @@
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
-    xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Packaging.Installation.Enums;assembly=Otor.MsixHero.Appx"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Common.Enums;assembly=Otor.MsixHero.Appx.Common"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     FocusManager.IsFocusScope="True"
@@ -89,11 +89,11 @@
 
                     <RadioButton
                     GroupName="s1"
-                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}"
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageInstallationContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}"
                     Margin="8 0"
                     DockPanel.Dock="Top" Content="{localization:Loc Packages_Filter_Source_User}" />
                     <RadioButton
-                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}"
+                    IsChecked="{Binding Path=Source, ConverterParameter={x:Static enums:PackageInstallationContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}"
                     GroupName="s2"
                     Margin="8 0"
                     DockPanel.Dock="Top">

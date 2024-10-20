@@ -6,7 +6,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Commo
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Files.Items;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Prism.Commands;
 

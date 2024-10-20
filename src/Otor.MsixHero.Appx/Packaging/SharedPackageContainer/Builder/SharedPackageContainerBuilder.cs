@@ -9,8 +9,8 @@ using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
+using Otor.MsixHero.Appx.Reader;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder
 {

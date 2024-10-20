@@ -19,13 +19,16 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overv
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Registry;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
@@ -151,7 +154,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
                 }
                 else
                 {
-                    using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, filePathOrIdOrDirectory);
+                    using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, PackageInstallationContext.CurrentUser, filePathOrIdOrDirectory);
                     await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
                 }
             }
@@ -166,7 +169,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             }
             else if (objectToLoad is PackageEntry installedPackage)
             {
-                using var reader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, installedPackage.PackageFullName);
+                using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, PackageInstallationContext.CurrentUser, installedPackage.PackageFullName);
                 await this.LoadPackage(reader, cancellationToken).ConfigureAwait(false);
             }
             else if (objectToLoad != null)
@@ -196,7 +199,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel
             var path = fileReader switch
             {
                 FileInfoFileReaderAdapter file => file.FilePath,
-                IAppxDiskFileReader diskFileReader => Path.Combine(diskFileReader.RootDirectory, FileConstants.AppxManifestFile),
+                IAppxDiskFileReader diskFileReader => Path.Combine(diskFileReader.RootDirectory, AppxFileConstants.AppxManifestFile),
                 ZipArchiveFileReaderAdapter zipReader => zipReader.PackagePath,
                 _ => throw new NotSupportedException()
             };

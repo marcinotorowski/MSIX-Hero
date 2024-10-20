@@ -17,8 +17,8 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
 namespace Otor.MsixHero.App.Mvvm.Converters
 {
@@ -31,7 +31,7 @@ namespace Otor.MsixHero.App.Mvvm.Converters
                 type = PackageTypeDisplay.Normal;
             }
 
-            if (!(value is MsixPackageType msixPackageType))
+            if (!(value is MsixApplicationType msixPackageType))
             {
                 return Binding.DoNothing;
             }

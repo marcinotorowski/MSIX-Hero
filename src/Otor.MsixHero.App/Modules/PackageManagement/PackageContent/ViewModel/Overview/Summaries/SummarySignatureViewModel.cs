@@ -24,7 +24,8 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Commo
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Elevation;

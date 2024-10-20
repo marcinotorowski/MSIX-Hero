@@ -2,6 +2,7 @@
 using System.IO;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Dialogs;
@@ -47,7 +48,7 @@ namespace Otor.MsixHero.App.Helpers.Dialogs
                 return;
             }
 
-            if (file.Name.Equals(FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+            if (file.Name.Equals(AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
                 OpenMsix(file);
                 return;
@@ -55,14 +56,14 @@ namespace Otor.MsixHero.App.Helpers.Dialogs
 
             switch (file.Extension.ToLowerInvariant())
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.Appx:
                     OpenMsix(file);
                     break;
-                case FileConstants.AppInstallerExtension:
+                case FileExtensions.AppInstaller:
                     OpenAppInstaller(file);
                     break;
-                case FileConstants.WingetExtension:
+                case FileExtensions.Winget:
                     OpenYaml(file);
                     break;
                 default:

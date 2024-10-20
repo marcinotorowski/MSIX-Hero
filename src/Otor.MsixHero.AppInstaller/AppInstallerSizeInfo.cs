@@ -19,7 +19,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Otor.MsixHero.AppInstaller.Entities;
-using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.AppInstaller;
 

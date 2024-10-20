@@ -23,8 +23,8 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Localization;
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         private readonly IMsixHeroApplication _application;
         private readonly IInteractionService _interactionService;
         private readonly IBusyManager _busyManager;
-        private PackageContext _source;
+        private PackageInstallationContext _source;
         private bool _isBusy;
         private int _progress;
 
@@ -108,7 +108,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             set => this._application.CommandExecutor.Invoke(this, new SetPackageSortingCommand(value, this.IsDescending));
         }
 
-        public PackageContext Source
+        public PackageInstallationContext Source
         {
             get => this._source;
             set => this.LoadContext(value);
@@ -372,7 +372,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private async void LoadContext(PackageContext mode)
+        private async void LoadContext(PackageInstallationContext mode)
         {
             var executor = this._application.CommandExecutor
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading)
@@ -380,10 +380,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 
             switch (mode)
             {
-                case PackageContext.AllUsers:
+                case PackageInstallationContext.AllUsers:
                     await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
                     break;
-                case PackageContext.CurrentUser:
+                case PackageInstallationContext.CurrentUser:
                     await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
                     break;
             }

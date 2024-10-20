@@ -22,7 +22,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 
@@ -239,11 +240,11 @@ namespace Otor.MsixHero.Appx.Updates
         {
             switch (Path.GetExtension(filePath).ToLowerInvariant())
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.Appx:
                     return PackageType.Msix;
-                case FileConstants.MsixBundleExtension:
-                case FileConstants.AppxBundleExtension:
+                case FileExtensions.MsixBundle:
+                case FileExtensions.AppxBundle:
                     return PackageType.Bundle;
 
                 case ".xml":

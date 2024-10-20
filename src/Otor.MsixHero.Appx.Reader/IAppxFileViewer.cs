@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader
 {
     public interface IAppxFileViewer : IDisposable
     {

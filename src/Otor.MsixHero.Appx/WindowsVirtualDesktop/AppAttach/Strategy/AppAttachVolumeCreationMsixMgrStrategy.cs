@@ -49,13 +49,13 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
             switch (Path.GetExtension(volumePath).ToLowerInvariant())
             {
-                case FileConstants.AppAttachVhdxExtension:
+                case FileExtensions.Vhdx:
                     fileType = MsixMgrWrapper.FileType.Vhdx;
                     break;
-                case FileConstants.AppAttachVhdExtension:
+                case FileExtensions.Vhd:
                     fileType = MsixMgrWrapper.FileType.Vhd;
                     break;
-                case FileConstants.AppAttachCimExtension:
+                case FileExtensions.Cim:
                     fileType = MsixMgrWrapper.FileType.Cim;
                     break;
                 default:
@@ -73,11 +73,11 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
                 switch (Path.GetExtension(volumePath).ToLowerInvariant())
                 {
-                    case FileConstants.AppAttachVhdExtension:
-                    case FileConstants.AppAttachVhdxExtension:
+                    case FileExtensions.Vhd:
+                    case FileExtensions.Vhdx:
                         sizeCalculator = new VhdSizeCalculator();
                         break;
-                    case FileConstants.AppAttachCimExtension:
+                    case FileExtensions.Cim:
                         sizeCalculator = new CimSizeCalculator();
                         break;
                     default:

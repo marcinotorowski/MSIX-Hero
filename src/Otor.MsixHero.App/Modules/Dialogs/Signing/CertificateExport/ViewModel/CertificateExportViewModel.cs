@@ -200,8 +200,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
             switch (ext?.ToLowerInvariant())
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.Appx:
                     this.CanExtract.CurrentValue = true;
                     break;
                 default:

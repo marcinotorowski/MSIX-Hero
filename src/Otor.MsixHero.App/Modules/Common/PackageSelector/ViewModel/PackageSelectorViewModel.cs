@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
@@ -120,7 +121,7 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
 
         public bool AllowBrowsing { get; private set; }
         
-        public bool IsBundle => this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle;
+        public bool IsBundle => this.PackageType.CurrentValue == Appx.Common.Enums.PackageType.Bundle;
 
         public ChangeableProperty<PackageType> PackageType { get; }
         
@@ -225,18 +226,18 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
                 var extension = Path.GetExtension((string)e.NewValue);
                 this.PackageType.CurrentValue = 0;
 
-                if (extension != null)
+                if (!string.IsNullOrEmpty(extension))
                 {
                     switch (extension.ToLowerInvariant())
                     {
-                        case FileConstants.AppxBundleExtension:
-                        case FileConstants.MsixBundleExtension:
-                            this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
+                        case FileExtensions.AppxBundle:
+                        case FileExtensions.MsixBundle:
+                            this.PackageType.CurrentValue = Appx.Common.Enums.PackageType.Bundle;
                             break;
                         
-                        case FileConstants.AppxExtension:
-                        case FileConstants.MsixExtension:
-                            this.PackageType.CurrentValue = Appx.Packaging.PackageType.Package;
+                        case FileExtensions.Appx:
+                        case FileExtensions.Msix:
+                            this.PackageType.CurrentValue = Appx.Common.Enums.PackageType.Package;
                             break;
                     }
                 }
@@ -300,7 +301,7 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
             
             if (allowPackages)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Package)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Common.Enums.PackageType.Package)
                 {
                     filterBuilder.WithPackages();
                 }
@@ -308,7 +309,7 @@ namespace Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel
 
             if (allowBundles)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Common.Enums.PackageType.Bundle)
                 {
                     // ReSharper disable once StringLiteralTypo
                     filterBuilder.WithPackages(DialogFilterBuilderPackagesExtensions.PackageTypes.AppxBundle | DialogFilterBuilderPackagesExtensions.PackageTypes.MsixBundle);

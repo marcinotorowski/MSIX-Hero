@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
@@ -167,7 +168,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             await this.AdjustManifest(xml, options, sourceDirectory, entryPoints).ConfigureAwait(false);
             var manifestContent = xml.ToString(SaveOptions.OmitDuplicateNamespaces);
             
-            var manifestFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(FileConstants.AppxManifestFile) + "-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".xml");
+            var manifestFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(AppxFileConstants.AppxManifestFile) + "-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".xml");
             await File.WriteAllTextAsync(manifestFilePath, manifestContent, Encoding.UTF8, cancellationToken);
 
             yield return CreatedItem.CreateManifest(manifestFilePath);
@@ -188,7 +189,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
         {
             var result = new AppxManifestCreatorAdviser();
 
-            var manifest = new FileInfo(Path.Combine(directoryInfo.FullName, FileConstants.AppxManifestFile));
+            var manifest = new FileInfo(Path.Combine(directoryInfo.FullName, AppxFileConstants.AppxManifestFile));
             if (manifest.Exists)
             {
                 result.Manifest = manifest;

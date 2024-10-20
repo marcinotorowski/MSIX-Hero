@@ -27,7 +27,6 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Signing;
@@ -37,6 +36,8 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Dapplo.Log;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -165,12 +166,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                         return false;
                     }
 
-                    selectedPath = Path.Join(selectedPath, FileConstants.AppxManifestFile);
+                    selectedPath = Path.Join(selectedPath, AppxFileConstants.AppxManifestFile);
                     break;
 
                 case ModificationPackageBuilderAction.Msix:
                 case ModificationPackageBuilderAction.SignedMsix:
-                    if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_ModPack_MSIX_OpenDialog + "|*" + FileConstants.MsixExtension), out selectedPath))
+                    if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_ModPack_MSIX_OpenDialog + "|*" + FileExtensions.Msix), out selectedPath))
                     {
                         return false;
                     }

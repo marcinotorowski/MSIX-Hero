@@ -16,7 +16,7 @@
 
 using System;
 using System.IO;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging
 {
@@ -29,9 +29,9 @@ namespace Otor.MsixHero.Appx.Packaging
 
     public static class PackageTypeConverter
     {
-        public static string GetPackageTypeStringFrom(MsixPackageType packageType, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
+        public static string GetPackageTypeStringFrom(MsixApplicationType packageType, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
         {
-            var isUwp = (packageType & MsixPackageType.Uwp) == MsixPackageType.Uwp;
+            var isUwp = (packageType & MsixApplicationType.Uwp) == MsixApplicationType.Uwp;
             if (isUwp)
             {
                 switch (displayType)
@@ -43,7 +43,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isBridge = (packageType & MsixPackageType.Win32) == MsixPackageType.Win32;
+            var isBridge = (packageType & MsixApplicationType.Win32) == MsixApplicationType.Win32;
             if (isBridge)
             {
                 switch (displayType)
@@ -55,7 +55,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isPsf = (packageType & MsixPackageType.Win32Psf) == MsixPackageType.Win32Psf;
+            var isPsf = (packageType & MsixApplicationType.Win32Psf) == MsixApplicationType.Win32Psf;
             if (isPsf)
             {
                 switch (displayType)
@@ -69,7 +69,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isAiStub = (packageType & MsixPackageType.Win32AiStub) == MsixPackageType.Win32AiStub;
+            var isAiStub = (packageType & MsixApplicationType.Win32AiStub) == MsixApplicationType.Win32AiStub;
             if (isAiStub)
             {
                 switch (displayType)
@@ -83,7 +83,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isMsixHelper = (packageType & MsixPackageType.MsixHelper) == MsixPackageType.MsixHelper;
+            var isMsixHelper = (packageType & MsixApplicationType.MsixHelper) == MsixApplicationType.MsixHelper;
             if (isMsixHelper)
             {
                 switch (displayType)
@@ -97,8 +97,8 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web ||
-                        (packageType & MsixPackageType.ProgressiveWebApp) == MsixPackageType.ProgressiveWebApp;
+            var isWeb = (packageType & MsixApplicationType.Web) == MsixApplicationType.Web ||
+                        (packageType & MsixApplicationType.ProgressiveWebApp) == MsixApplicationType.ProgressiveWebApp;
             if (isWeb)
             {
                 switch (displayType)
@@ -110,7 +110,7 @@ namespace Otor.MsixHero.Appx.Packaging
                 }
             }
 
-            var isFramework = (packageType & MsixPackageType.Framework) == MsixPackageType.Framework;
+            var isFramework = (packageType & MsixApplicationType.Framework) == MsixApplicationType.Framework;
             if (isFramework)
             {
                 switch (displayType)
@@ -141,16 +141,16 @@ namespace Otor.MsixHero.Appx.Packaging
             return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework, hostId), displayType);
         }
 
-        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework, string hostId = null)
+        public static MsixApplicationType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework, string hostId = null)
         {
             if (hostId == "PWA")
             {
-                return MsixPackageType.ProgressiveWebApp;
+                return MsixApplicationType.ProgressiveWebApp;
             }
 
             if (isFramework)
             {
-                return MsixPackageType.Framework;
+                return MsixApplicationType.Framework;
             }
             
             if (!string.IsNullOrEmpty(entryPoint))
@@ -168,28 +168,28 @@ namespace Otor.MsixHero.Appx.Packaging
                                 executable.IndexOf("\\psfrundll", StringComparison.OrdinalIgnoreCase) != -1 ||
                                 executable.IndexOf("\\psfmonitor", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                return MsixPackageType.Win32Psf;
+                                return MsixApplicationType.Win32Psf;
                             }
 
                             if (
                                 executable.IndexOf("\\ai_stubs", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                return MsixPackageType.Win32AiStub;
+                                return MsixApplicationType.Win32AiStub;
                             }
 
                             if (
                                 executable.IndexOf("\\msixhelper32.exe", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                return MsixPackageType.MsixHelper;
+                                return MsixApplicationType.MsixHelper;
                             }
 
                             if (
                                 executable.IndexOf("\\msixhelper64.exe", StringComparison.OrdinalIgnoreCase) != -1)
                             {
-                                return MsixPackageType.MsixHelper;
+                                return MsixApplicationType.MsixHelper;
                             }
 
-                            return MsixPackageType.Win32;
+                            return MsixApplicationType.Win32;
                         }
 
                         return 0;
@@ -197,7 +197,7 @@ namespace Otor.MsixHero.Appx.Packaging
 
                 if (string.IsNullOrEmpty(startPage))
                 {
-                    return MsixPackageType.Uwp;
+                    return MsixApplicationType.Uwp;
                 }
 
                 return 0;
@@ -206,10 +206,10 @@ namespace Otor.MsixHero.Appx.Packaging
             if (executable?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true)
             {
                 // workaround for MS Edge…
-                return MsixPackageType.Win32;
+                return MsixApplicationType.Win32;
             }
 
-            return string.IsNullOrEmpty(startPage) ? 0 : MsixPackageType.Web;
+            return string.IsNullOrEmpty(startPage) ? 0 : MsixApplicationType.Web;
         }
     }
 }

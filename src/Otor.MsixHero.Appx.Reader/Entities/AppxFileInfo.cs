@@ -1,21 +1,21 @@
 ﻿using System.IO;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader.Entities
 {
     public readonly struct AppxFileInfo
     {
         public AppxFileInfo(string fullPath, long size)
         {
-            this.FullPath = fullPath;
-            this.Size = size;
-            this.Name = System.IO.Path.GetFileName(fullPath);
+            FullPath = fullPath;
+            Size = size;
+            Name = Path.GetFileName(fullPath);
         }
 
         public AppxFileInfo(FileInfo fileInfo)
         {
-            this.FullPath = fileInfo.FullName;
-            this.Size = fileInfo.Length;
-            this.Name = fileInfo.Name;
+            FullPath = fileInfo.FullName;
+            Size = fileInfo.Length;
+            Name = fileInfo.Name;
         }
 
         public string Name { get; }

@@ -28,11 +28,12 @@ using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Reader;
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {
@@ -130,7 +131,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                     throw new ArgumentNullException(nameof(filePath));
                 }
 
-                if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(Path.GetFileName(filePath), AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                 {
                     if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                     {
@@ -160,7 +161,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
                         cancellationToken,
                         progress).ConfigureAwait(false);
                 }
-                else if (string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(FileExtensions.AppInstaller, Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
                 {
                     if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                     {
@@ -199,8 +200,8 @@ namespace Otor.MsixHero.Appx.Packaging.Services
 
                     switch (Path.GetExtension(filePath))
                     {
-                        case FileConstants.AppxBundleExtension:
-                        case FileConstants.MsixBundleExtension:
+                        case FileExtensions.AppxBundle:
+                        case FileExtensions.MsixBundle:
                             {
                                 IAppxIdentityReader reader = new AppxIdentityReader();
                                 var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);

@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
         public string DisplayName { get; set; }
         
-        public MsixPackageType PackageType { get; set; }
+        public MsixApplicationType PackageType { get; set; }
 
         public string DisplayPublisher { get; set; }
 

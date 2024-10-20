@@ -7,22 +7,15 @@ using GraphX.Logic.Algorithms.LayoutAlgorithms;
 using GraphX.Logic.Algorithms.OverlapRemoval;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Dependencies.Domain;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
 {
-    public class DependenciesLogicCoreGenerator
+    public class DependenciesLogicCoreGenerator(IDependencyMapper dependencyMapper)
     {
-        private readonly IDependencyMapper dependencyMapper;
-
-        public DependenciesLogicCoreGenerator(IDependencyMapper dependencyMapper)
-        {
-            this.dependencyMapper = dependencyMapper;
-        }
-
         public DependencyLogicCore LogicCore { get; private set; }
         
         public AppxPackage Package { get; private set; }
@@ -36,7 +29,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
             }
 
             var graph = new DependencyBidirectionalGraph();
-            var mapping = await this.dependencyMapper.GetGraph(this.Package, cancellationToken, progress).ConfigureAwait(false);
+            var mapping = await dependencyMapper.GetGraph(this.Package, cancellationToken, progress).ConfigureAwait(false);
             var dict = new Dictionary<GraphElement, DependencyVertex>();
             foreach (var item in mapping.Elements)
             {

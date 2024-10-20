@@ -26,10 +26,8 @@ using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -46,7 +44,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Otor.MsixHero.Appx.Reader;
 using Prism.Dialogs;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 {
@@ -556,7 +556,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
             switch (updateResult)
             {
                 case AppInstallerUpdateAvailabilityResult.Unknown:
-                    msg = string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource, FileConstants.AppInstallerExtension);
+                    msg = string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource, FileExtensions.AppInstaller);
                     break;
                 case AppInstallerUpdateAvailabilityResult.NoUpdates:
                     msg = Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource;
@@ -774,7 +774,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 
         private bool CanOpenPsfConfig()
         {
-            return this._packageEntry?.PackageType == MsixPackageType.Win32Psf;
+            return this._packageEntry?.PackageType == MsixApplicationType.Win32Psf;
         }
 
         private bool CanOpenManifest() => this.IsCurrentPresentAndInstalled();

@@ -17,19 +17,15 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Files;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Cli.Verbs.Edit.Files;
 
 namespace Otor.MsixHero.Cli.Executors.Edit.Files
 {
-    public class AddFileEditVerbExecutor : BaseEditVerbExecutor<AddFileEditVerb>
+    public class AddFileEditVerbExecutor(string package, AddFileEditVerb verb, IConsole console) : BaseEditVerbExecutor<AddFileEditVerb>(package, verb, console)
     {
-        public AddFileEditVerbExecutor(string package, AddFileEditVerb verb, IConsole console) : base(package, verb, console)
-        {
-        }
-
         protected override async Task<int> Validate()
         {
             if (!File.Exists(this.Verb.SourcePath))
@@ -38,7 +34,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Files
                 return StandardExitCodes.ErrorParameter;
             }
 
-            if (string.Equals(FileConstants.AppxManifestFile, this.Verb.DestinationPath))
+            if (string.Equals(AppxFileConstants.AppxManifestFile, this.Verb.DestinationPath))
             {
                 await this.Console.WriteError(Resources.Localization.CLI_Executor_AddFile_Error_DirectManifestImport).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;

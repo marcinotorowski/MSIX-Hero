@@ -18,8 +18,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 
 namespace Otor.MsixHero.Appx.Psf
 {

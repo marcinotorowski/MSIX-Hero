@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Editor.Helpers;
 using Otor.MsixHero.Appx.Packaging.Packer.Enums;
@@ -39,7 +40,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             CancellationToken cancellationToken = default, 
             IProgress<ProgressData> progress = default)
         {
-            var manifestFile = Path.Combine(directory, FileConstants.AppxManifestFile);
+            var manifestFile = Path.Combine(directory, AppxFileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
             {
                 throw new FileNotFoundException(Resources.Localization.Packages_Error_ManifestNotFound, manifestFile);
@@ -121,7 +122,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     }
                     
                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                    if (string.Equals(FileConstants.AppxManifestFile, relativePath, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(AppxFileConstants.AppxManifestFile, relativePath, StringComparison.OrdinalIgnoreCase))
                     {
                         listBuilder.AddManifest(tempManifestFilePath);
                         item.CopyTo(tempManifestFilePath, true);
@@ -137,7 +138,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        if (string.Equals(Path.GetFileName(item.Key), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(Path.GetFileName(item.Key), AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                         {
                             tempManifestFilePath = item.Value;
                             listBuilder.AddFile(item.Value, item.Key);

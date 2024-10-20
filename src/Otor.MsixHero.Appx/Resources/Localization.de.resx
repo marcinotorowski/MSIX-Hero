@@ -165,9 +165,6 @@
   <data name="Packages_Error_DeveloperMode" xml:space="preserve">
     <value>Der Entwicklermodus muss aktiviert sein, um diese Funktion nutzen zu können.</value>
   </data>
-  <data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
-    <value>Das Verzeichnis '{0}' existiert nicht.</value>
-  </data>
   <data name="Packages_Error_DiskFormatNotSupported" xml:space="preserve">
     <value>Das Laufwerkformat {0} wird nicht unterstützt.</value>
   </data>
@@ -179,9 +176,6 @@
   </data>
   <data name="Packages_Error_ExtensionNotSupported_Format" xml:space="preserve">
     <value>Die Erweiterung {0} wird nicht unterstützt.</value>
-  </data>
-  <data name="Packages_Error_FileMissing_Format" xml:space="preserve">
-    <value>Die Datei '{0}' existiert nicht.</value>
   </data>
   <data name="Packages_Error_FileNotSupported" xml:space="preserve">
     <value>Der Dateipfad {0} wird nicht unterstützt.</value>
@@ -528,23 +522,8 @@
   <data name="Signing_Signing" xml:space="preserve">
     <value>Signierung…</value>
   </data>
-  <data name="Packages_Error_FileInsideNotFound" xml:space="preserve">
-    <value>Datei {0} wurde im MSIX-Paket nicht gefunden.</value>
-  </data>
   <data name="Packages_Error_FileNotFound" xml:space="preserve">
     <value>Die Datei existiert nicht.</value>
-  </data>
-  <data name="Packages_Error_FileNotFound_Format" xml:space="preserve">
-    <value>Die Datei {0} existiert nicht.</value>
-  </data>
-  <data name="Packages_Error_NoPackageInFolder" xml:space="preserve">
-    <value>Dieser Ordner enthält weder APPX/MSIX-Pakete noch die APPX-Bundles.</value>
-  </data>
-  <data name="Packages_Error_NotAPackage" xml:space="preserve">
-    <value>Diese Datei ist kein MSIX/APPX-Paket, oder der Inhalt des Pakets ist beschädigt.</value>
-  </data>
-  <data name="Packages_Error_PackageNotFound" xml:space="preserve">
-    <value>Das Paket konnte nicht gefunden werden.</value>
   </data>
   <data name="Packages_Error_FullName" xml:space="preserve">
     <value>Der vollständige Name muss eine Zeichenfolge mit 5 Einheiten sein, die durch Unterstriche getrennt sind.</value>
@@ -623,5 +602,11 @@
   </data>
   <data name="Signing_Test_WrongThumbPrint_Format" xml:space="preserve">
     <value>Es konnte kein Zertifikat mit Thumbprint = '{0}' gefunden werden.</value>
+  </data>
+  <data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
+    <value>Das Verzeichnis '{0}' existiert nicht.</value>
+  </data>
+  <data name="Packages_Error_FileMissing_Format" xml:space="preserve">
+    <value>Die Datei '{0}' existiert nicht.</value>
   </data>
 </root>

@@ -18,8 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Otor.MsixHero.Appx.Reader.Entities;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader
 {
     public interface IAppxFileReader : IDisposable
     {

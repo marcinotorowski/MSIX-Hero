@@ -24,16 +24,17 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Common.Enums;
+using Otor.MsixHero.Appx.Reader.Adapters;
 
 namespace Otor.MsixHero.Appx.Packaging.Services;
 
@@ -115,7 +116,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
 
     public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
-        using var reader = new PackageIdentityFileReaderAdapter(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers, packageName);
+        using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, mode == PackageFindMode.CurrentUser ? PackageInstallationContext.CurrentUser : PackageInstallationContext.AllUsers, packageName);
         var manifestReader = new AppxManifestReader();
         // ReSharper disable once AccessToDisposedClosure
         var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
@@ -325,7 +326,7 @@ public class AppxPackageQueryService : IAppxPackageQueryService
 
     public struct MsixPackageVisuals
     {
-        public MsixPackageVisuals(string displayName, string displayPublisherName, string logoRelativePath, string description, string color, MsixPackageType packageType)
+        public MsixPackageVisuals(string displayName, string displayPublisherName, string logoRelativePath, string description, string color, MsixApplicationType packageType)
         {
             DisplayName = displayName;
             DisplayPublisherName = displayPublisherName;
@@ -340,6 +341,6 @@ public class AppxPackageQueryService : IAppxPackageQueryService
         public string DisplayPublisherName;
         public string LogoRelativePath;
         public string Color;
-        public MsixPackageType PackageType;
+        public MsixApplicationType PackageType;
     }
 }

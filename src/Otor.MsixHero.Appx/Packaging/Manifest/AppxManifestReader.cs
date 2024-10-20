@@ -23,14 +23,17 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Diagnostic.System;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
 using Otor.MsixHero.Appx.Psf;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Common.Enums;
+using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
@@ -40,13 +43,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
         
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
-            var isMsix = fileReader.FileExists(FileConstants.AppxManifestFile);
+            var isMsix = fileReader.FileExists(AppxFileConstants.AppxManifestFile);
             if (isMsix)
             {
                 return this.ReadMsix(fileReader, cancellationToken);
             }
 
-            var isAppxBundle = fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
+            var isAppxBundle = fileReader.FileExists(AppxFileConstants.AppxBundleManifestFilePath);
             if (isAppxBundle)
             {
                 return Task.FromException<AppxPackage>(new NotSupportedException(Resources.Localization.Packages_Error_BundleNotSupported));
@@ -64,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    using IAppxFileReader tempReader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, item.Name, item.Publisher, item.Version);
+                    using IAppxFileReader tempReader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, PackageInstallationContext.CurrentUser, item.Name, item.Publisher, item.Version);
                     try
                     {
                         item.Dependency = await this.Read(tempReader, cancellationToken).ConfigureAwait(false);
@@ -82,7 +85,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
         public async Task<AppxBundle> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             var bundle = new AppxBundle();
-            await using var file = fileReader.GetFile(FileConstants.AppxBundleManifestFilePath);
+            await using var file = fileReader.GetFile(AppxFileConstants.AppxBundleManifestFilePath);
             var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
             if (document.Root == null)
             {
@@ -108,7 +111,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
         private async Task<AppxPackage> ReadMsix(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
-            await using var file = fileReader.GetFile(FileConstants.AppxManifestFile);
+            await using var file = fileReader.GetFile(AppxFileConstants.AppxManifestFile);
             var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
             if (document.Root == null)
             {
@@ -168,7 +171,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
             if (fileReader is IAppxDiskFileReader diskReader)
             {
-                appxPackage.PackagePath = Path.Combine(diskReader.RootDirectory, FileConstants.AppxManifestFile);
+                appxPackage.PackagePath = Path.Combine(diskReader.RootDirectory, AppxFileConstants.AppxManifestFile);
                 appxPackage.RootFolder = diskReader.RootDirectory;
             }
             else if (fileReader is ZipArchiveFileReaderAdapter zipArchiveReader)
@@ -411,9 +414,9 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                     switch (type)
                     {
-                        case MsixPackageType.Win32AiStub:
-                        case MsixPackageType.Win32Psf:
-                        case MsixPackageType.MsixHelper:
+                        case MsixApplicationType.Win32AiStub:
+                        case MsixApplicationType.Win32Psf:
+                        case MsixApplicationType.MsixHelper:
                             var proxyReader = ApplicationProxyReader.Create(psfApp.Id, psfApp.Executable, fileReader);
                             psfApp.Proxy = await proxyReader.Inspect(cancellationToken).ConfigureAwait(false);
                             break;

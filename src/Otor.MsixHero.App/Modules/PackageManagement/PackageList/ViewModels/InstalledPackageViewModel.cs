@@ -15,8 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
@@ -52,7 +52,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public string ManifestLocation => this.Model.ManifestPath;
 
-        public MsixPackageType PackageType => this.Model.PackageType;
+        public MsixApplicationType PackageType => this.Model.PackageType;
 
         public string DisplayPackageType => PackageTypeConverter.GetPackageTypeStringFrom(this.Model.PackageType);
 

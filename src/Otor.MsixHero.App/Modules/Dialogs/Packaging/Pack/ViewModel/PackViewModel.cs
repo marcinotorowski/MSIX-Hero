@@ -266,7 +266,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             if (string.IsNullOrEmpty(this.OutputPath.CurrentValue))
             {
                 var newValue = (string)e.NewValue;
-                this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + FileConstants.MsixExtension;
+                this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + FileExtensions.Msix;
             }
 
             this.PrePackOptions = null;

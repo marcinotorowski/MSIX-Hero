@@ -18,8 +18,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 
@@ -62,7 +63,7 @@ namespace Otor.MsixHero.Appx.Updates
             try
             {
                 using IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(path);
-                return fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
+                return fileReader.FileExists(AppxFileConstants.AppxBundleManifestFilePath);
             }
             catch (Exception)
             {

@@ -18,8 +18,8 @@ using System;
 using System.Linq;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items.Psf;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
@@ -73,12 +73,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(this._model.EntryPoint, this._model.Executable, this._model.StartPage, this._package.IsFramework))
                 {
-                    case MsixPackageType.Win32:
-                    case MsixPackageType.Win32Psf:
-                    case MsixPackageType.Win32AiStub:
-                    case MsixPackageType.MsixHelper:
+                    case MsixApplicationType.Win32:
+                    case MsixApplicationType.Win32Psf:
+                    case MsixApplicationType.Win32AiStub:
+                    case MsixApplicationType.MsixHelper:
                         return this._model.Executable;
-                    case MsixPackageType.Web:
+                    case MsixApplicationType.Web:
                         return this._model.StartPage;
                     default:
                         if (string.IsNullOrEmpty(this._model.EntryPoint))
@@ -91,10 +91,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
             }
         }
 
-        public string EntryPoint => this.Type == MsixPackageType.Uwp ? this._model.EntryPoint : null;
+        public string EntryPoint => this.Type == MsixApplicationType.Uwp ? this._model.EntryPoint : null;
 
-        public bool HasEntryPoint => this.Type == MsixPackageType.Uwp;
+        public bool HasEntryPoint => this.Type == MsixApplicationType.Uwp;
 
-        public MsixPackageType Type { get; }
+        public MsixApplicationType Type { get; }
     }
 }

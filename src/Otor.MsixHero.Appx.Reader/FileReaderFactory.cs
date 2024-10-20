@@ -16,8 +16,11 @@
 
 using System;
 using System.IO;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.Helpers;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader
 {
     public class FileReaderFactory
     {
@@ -39,7 +42,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
 
             var fileName = Path.GetFileName(path);
-            if (string.Equals(FileConstants.AppxManifestFile, fileName, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(AppxFileConstants.AppxManifestFile, fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return new FileInfoFileReaderAdapter(path);
             }
@@ -47,10 +50,21 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var ext = Path.GetExtension(path);
             switch (ext.ToLowerInvariant())
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
-                    return new ZipArchiveFileReaderAdapter(path);
+                case ".msix":
+                case ".appx":
+                    if (ZipFileChecker.IsZipFile(path))
+                    {
+                        return new ZipArchiveFileReaderAdapter(path);
+                    }
+
+                    throw new InvalidOperationException("Not an MSIX/APPX file.");
+
                 default:
+                    if (ZipFileChecker.IsZipFile(path))
+                    {
+                        return new ZipArchiveFileReaderAdapter(path);
+                    }
+
                     return new FileInfoFileReaderAdapter(path);
             }
         }

@@ -22,40 +22,41 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Otor.MsixHero.Appx.Reader.Entities;
 using Otor.MsixHero.Infrastructure.Helpers;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader.Adapters
 {
     public class ZipArchiveFileReaderAdapter : IAppxFileReader
     {
-        private readonly string msixPackagePath;
-        private ZipArchive msixPackage;
-        private IDisposable[] disposableStreams;
+        private readonly string _msixPackagePath;
+        private ZipArchive _msixPackage;
+        private IDisposable[] _disposableStreams;
 
         public ZipArchiveFileReaderAdapter(ZipArchive msixPackage, string msixPackagePath = null)
         {
-            this.PackagePath = msixPackagePath;
-            this.msixPackage = msixPackage;
+            PackagePath = msixPackagePath;
+            _msixPackage = msixPackage;
         }
 
         public ZipArchiveFileReaderAdapter(string msixPackagePath)
         {
-            this.PackagePath = msixPackagePath;
-            this.msixPackagePath = msixPackagePath;
+            PackagePath = msixPackagePath;
+            _msixPackagePath = msixPackagePath;
         }
 
         public ZipArchiveFileReaderAdapter(FileStream msixPackage, bool ownStream = true)
         {
-            this.msixPackagePath = msixPackage.Name;
-            this.msixPackage = new ZipArchive(msixPackage, ZipArchiveMode.Read, !ownStream);
+            _msixPackagePath = msixPackage.Name;
+            _msixPackage = new ZipArchive(msixPackage, ZipArchiveMode.Read, !ownStream);
 
             if (ownStream)
             {
-                this.disposableStreams = new IDisposable[] { msixPackage, this.msixPackage };
+                _disposableStreams = new IDisposable[] { msixPackage, _msixPackage };
             }
             else
             {
-                this.disposableStreams = new IDisposable[] { this.msixPackage };
+                _disposableStreams = new IDisposable[] { _msixPackage };
             }
         }
 
@@ -75,9 +76,9 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
 
             var hashset = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            
-            this.EnsureInitialized();
-            foreach (var entry in msixPackage.Entries)
+
+            EnsureInitialized();
+            foreach (var entry in _msixPackage.Entries)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -85,7 +86,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 {
                     continue;
                 }
-                
+
                 var firstSlash = entry.FullName.IndexOf('/', rootRelativePath.Length);
                 if (firstSlash == -1)
                 {
@@ -115,11 +116,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             var regex = string.IsNullOrEmpty(wildcard) ? null : RegexBuilder.FromWildcard(wildcard);
 
-            this.EnsureInitialized();
-            foreach (var entry in msixPackage.Entries)
+            EnsureInitialized();
+            foreach (var entry in _msixPackage.Entries)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 if (!entry.FullName.StartsWith(rootRelativePath, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
@@ -135,7 +136,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 {
                     fileName = entry.FullName.Substring(rootRelativePath.Length);
                 }
-                
+
                 if (searchOption == SearchOption.AllDirectories)
                 {
                     if (regex == null || regex.IsMatch(fileName))
@@ -158,7 +159,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
         public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
         {
-            return this.EnumerateFiles(rootRelativePath, "*", SearchOption.TopDirectoryOnly, cancellationToken);
+            return EnumerateFiles(rootRelativePath, "*", SearchOption.TopDirectoryOnly, cancellationToken);
         }
 
         public Stream GetFile(string filePath)
@@ -168,12 +169,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            this.EnsureInitialized();
+            EnsureInitialized();
 
-            var entry = msixPackage.GetEntry(filePath.Replace(Path.DirectorySeparatorChar, '/'));
+            var entry = _msixPackage.GetEntry(filePath.Replace(Path.DirectorySeparatorChar, '/'));
             if (entry == null)
             {
-                entry = msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace(Path.DirectorySeparatorChar, '/'), StringComparison.OrdinalIgnoreCase));
+                entry = _msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace(Path.DirectorySeparatorChar, '/'), StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                 {
                     throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileInsideNotFound, filePath));
@@ -190,17 +191,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return null;
             }
 
-            this.EnsureInitialized();
+            EnsureInitialized();
 
-            if (this.FileExists(resourceFilePath))
+            if (FileExists(resourceFilePath))
             {
-                return this.GetFile(resourceFilePath);
+                return GetFile(resourceFilePath);
             }
 
             var resourceDir = Path.GetDirectoryName(resourceFilePath) + "/";
             var resourceFileName = Path.GetFileName(resourceFilePath);
 
-            foreach (var item in this.msixPackage.Entries)
+            foreach (var item in _msixPackage.Entries)
             {
                 var currentName = item.FullName;
                 if (resourceDir.Length > 1)
@@ -215,7 +216,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
                 // 1) Remove quantified folder names
                 currentName = Regex.Replace(currentName, @"[^\.\-]+-[^\.\-]+[\\/]", string.Empty);
-                
+
                 // 2) Remove quantified file names
                 currentName = Regex.Replace(currentName, @"\.[^\.\-]+-[^\.\-]+", string.Empty);
 
@@ -235,16 +236,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return false;
             }
 
-            this.EnsureInitialized();
+            EnsureInitialized();
 
             filePath = filePath.Replace(Path.DirectorySeparatorChar, '/');
-            var entry = this.msixPackage.GetEntry(filePath);
+            var entry = _msixPackage.GetEntry(filePath);
             if (entry != null)
             {
                 return true;
             }
 
-            return this.msixPackage.Entries.Any(e => string.Equals(filePath, e.FullName, StringComparison.OrdinalIgnoreCase));
+            return _msixPackage.Entries.Any(e => string.Equals(filePath, e.FullName, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool DirectoryExists(string directoryPath)
@@ -254,51 +255,51 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return false;
             }
 
-            this.EnsureInitialized();
+            EnsureInitialized();
 
             directoryPath = directoryPath.Replace(Path.DirectorySeparatorChar, '/').TrimEnd('/') + '/';
-            return this.msixPackage.Entries.Any(e => e.FullName.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase));
+            return _msixPackage.Entries.Any(e => e.FullName.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()
         {
-            if (this.disposableStreams == null)
+            if (_disposableStreams == null)
             {
                 return;
             }
 
-            foreach (var item in this.disposableStreams)
+            foreach (var item in _disposableStreams)
             {
                 item.Dispose();
             }
         }
         private void EnsureInitialized()
         {
-            if (this.msixPackage != null)
+            if (_msixPackage != null)
             {
                 return;
             }
 
-            if (!File.Exists(this.msixPackagePath))
+            if (!File.Exists(_msixPackagePath))
             {
-                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, this.msixPackagePath));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, _msixPackagePath));
             }
 
-            var fileStream = File.OpenRead(msixPackagePath);
+            var fileStream = File.OpenRead(_msixPackagePath);
 
             try
             {
-                this.msixPackage = new ZipArchive(fileStream, ZipArchiveMode.Read, false);
-                this.disposableStreams = new IDisposable[] { this.msixPackage, fileStream };
+                _msixPackage = new ZipArchive(fileStream, ZipArchiveMode.Read, false);
+                _disposableStreams = new IDisposable[] { _msixPackage, fileStream };
             }
             catch (InvalidDataException e)
             {
-                this.disposableStreams = new IDisposable[] { fileStream };
+                _disposableStreams = new IDisposable[] { fileStream };
                 throw new InvalidDataException(Resources.Localization.Packages_Error_NotAPackage, e);
             }
             catch (Exception)
             {
-                this.disposableStreams = new IDisposable[] { fileStream };
+                _disposableStreams = new IDisposable[] { fileStream };
                 throw;
             }
         }

@@ -7,13 +7,13 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
+using Otor.MsixHero.Appx.Reader;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf
@@ -44,7 +44,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.P
             this.Psf = null;
             using var reader = FileReaderFactory.CreateFileReader(filePath);
 
-            var paths = model.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, model.IsFramework) == MsixPackageType.Win32Psf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
+            var paths = model.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, model.IsFramework) == MsixApplicationType.Win32Psf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             paths.Add(string.Empty);
 
             var scripts = new ObservableCollection<ScriptViewModel>();

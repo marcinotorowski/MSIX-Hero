@@ -18,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader.Entities;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader.Adapters
 {
     public class DirectoryInfoFileReaderAdapter : IAppxDiskFileReader
     {
@@ -32,12 +34,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, appxManifestFolder.FullName));
             }
 
-            this.RootDirectory = appxManifestFolder.FullName;
+            RootDirectory = appxManifestFolder.FullName;
 
-            var appxManifest = Path.Combine(appxManifestFolder.FullName, FileConstants.AppxManifestFile);
+            var appxManifest = Path.Combine(appxManifestFolder.FullName, AppxFileConstants.AppxManifestFile);
             if (!File.Exists(appxManifest))
             {
-                appxManifest = Path.Combine(appxManifestFolder.FullName, FileConstants.AppxBundleManifestFilePath);
+                appxManifest = Path.Combine(appxManifestFolder.FullName, AppxFileConstants.AppxBundleManifestFilePath);
                 if (!File.Exists(appxManifest))
                 {
                     throw new ArgumentException(Resources.Localization.Packages_Error_NoPackageInFolder, nameof(appxManifestFolder));
@@ -47,7 +49,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
             else
             {
-                _adapter = new FileInfoFileReaderAdapter(Path.Combine(appxManifestFolder.FullName, FileConstants.AppxManifestFile));
+                _adapter = new FileInfoFileReaderAdapter(Path.Combine(appxManifestFolder.FullName, AppxFileConstants.AppxManifestFile));
             }
         }
 
@@ -64,27 +66,27 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return null;
             }
 
-            return this._adapter.GetFile(filePath);
+            return _adapter.GetFile(filePath);
         }
 
         public IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, CancellationToken cancellationToken = default)
         {
-            return this._adapter.EnumerateDirectories(rootRelativePath, cancellationToken);
+            return _adapter.EnumerateDirectories(rootRelativePath, cancellationToken);
         }
 
         public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default)
         {
-            return this._adapter.EnumerateFiles(rootRelativePath, wildcard, searchOption, cancellationToken);
+            return _adapter.EnumerateFiles(rootRelativePath, wildcard, searchOption, cancellationToken);
         }
 
         public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
         {
-            return this._adapter.EnumerateFiles(rootRelativePath, cancellationToken);
+            return _adapter.EnumerateFiles(rootRelativePath, cancellationToken);
         }
 
         public bool DirectoryExists(string directoryPath)
         {
-            return string.IsNullOrWhiteSpace(directoryPath) || this._adapter.DirectoryExists(directoryPath);
+            return string.IsNullOrWhiteSpace(directoryPath) || _adapter.DirectoryExists(directoryPath);
         }
 
         public bool FileExists(string filePath)
@@ -94,7 +96,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return false;
             }
 
-            return this._adapter.FileExists(filePath);
+            return _adapter.FileExists(filePath);
         }
 
         public Stream GetResource(string resourceFilePath)
@@ -104,12 +106,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                 return null;
             }
 
-            return this._adapter.GetResource(resourceFilePath);
+            return _adapter.GetResource(resourceFilePath);
         }
 
         void IDisposable.Dispose()
         {
-            this._adapter.Dispose();
+            _adapter.Dispose();
         }
     }
 }

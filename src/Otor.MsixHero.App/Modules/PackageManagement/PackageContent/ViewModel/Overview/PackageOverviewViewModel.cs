@@ -25,11 +25,13 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -147,7 +149,7 @@ public class PackageOverviewViewModel : NotifyPropertyChanged, ILoadPackage, IPa
             var path = reader switch
             {
                 FileInfoFileReaderAdapter file => file.FilePath,
-                IAppxDiskFileReader fileReader => Path.Combine(fileReader.RootDirectory, FileConstants.AppxManifestFile),
+                IAppxDiskFileReader fileReader => Path.Combine(fileReader.RootDirectory, AppxFileConstants.AppxManifestFile),
                 ZipArchiveFileReaderAdapter zipReader => zipReader.PackagePath,
                 _ => throw new NotSupportedException()
             };

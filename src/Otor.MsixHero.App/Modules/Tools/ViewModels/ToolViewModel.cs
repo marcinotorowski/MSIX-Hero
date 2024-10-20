@@ -211,7 +211,7 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter,
-                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenWinget_TitleFormat, $"*{FileConstants.WingetExtension}")
+                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenWinget_TitleFormat, $"*{FileExtensions.Winget}")
                 };
 
                 if (!this._interactionService.SelectFile(settings, out var filePath))
@@ -239,7 +239,7 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter,
-                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenAppInstaller_TitleFormat, $"*{FileConstants.AppInstallerExtension}")
+                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenAppInstaller_TitleFormat, $"*{FileExtensions.AppInstaller}")
                 };
 
                 if (!this._interactionService.SelectFile(settings, out var filePath))

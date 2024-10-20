@@ -7,9 +7,9 @@ using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -61,10 +61,10 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 {
                     switch (this.commandExecutor.ApplicationState.Packages.Mode)
                     {
-                        case PackageContext.CurrentUser:
+                        case PackageInstallationContext.CurrentUser:
                             mode = PackageFindMode.CurrentUser;
                             break;
-                        case PackageContext.AllUsers:
+                        case PackageInstallationContext.AllUsers:
                             mode = PackageFindMode.AllUsers;
                             break;
                         default:
@@ -90,20 +90,20 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageContext.CurrentUser;
+                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.CurrentUser;
                         break;
                     case PackageFindMode.AllUsers:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageContext.AllUsers;
+                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.AllUsers;
                         break;
                 }
 
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageContext.CurrentUser;
+                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.CurrentUser;
                         break;
                     case PackageFindMode.AllUsers:
-                        this.commandExecutor.ApplicationState.Packages.Mode = PackageContext.AllUsers;
+                        this.commandExecutor.ApplicationState.Packages.Mode = PackageInstallationContext.AllUsers;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

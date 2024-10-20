@@ -31,7 +31,6 @@ using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -43,6 +42,7 @@ using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Prism.Dialogs;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {
@@ -426,7 +426,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
@@ -469,7 +469,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
                 AppxIdentity appxIdentity = null;
-                if (!string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(FileExtensions.AppInstaller, Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                 {
                     appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 
@@ -614,7 +614,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 switch (updateResult)
                 {
                     case AppInstallerUpdateAvailabilityResult.Unknown:
-                        msg = string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource, FileConstants.AppInstallerExtension);
+                        msg = string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource, FileExtensions.AppInstaller);
                         break;
                     case AppInstallerUpdateAvailabilityResult.NoUpdates:
                         msg = Resources.Localization.PackageExpert_Commands_AppInstaller_NoUpdates;
@@ -671,7 +671,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     switch (key)
                     {
                         case AppInstallerUpdateAvailabilityResult.Unknown:
-                            stringBuilder.AppendLine(string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource_Multiple, FileConstants.AppInstallerExtension));
+                            stringBuilder.AppendLine(string.Format(Resources.Localization.PackageExpert_Commands_AppInstaller_WrongSource_Multiple, FileExtensions.AppInstaller));
                             break;
                         case AppInstallerUpdateAvailabilityResult.NoUpdates:
                             stringBuilder.AppendLine(Resources.Localization.PackageExpert_Commands_AppInstaller_NoUpdates_Multiple);
@@ -846,7 +846,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         break;
                 }
 
-                await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -869,7 +869,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 return false;
             }
 
-            return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixPackageType.Win32Psf;
+            return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixApplicationType.Win32Psf;
         }
 
         private bool CanOpenManifest() => this.IsSingleSelected();

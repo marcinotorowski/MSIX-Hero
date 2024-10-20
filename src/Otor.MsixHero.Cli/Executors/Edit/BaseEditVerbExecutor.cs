@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Editor.Helpers;
 using Otor.MsixHero.Cli.Verbs.Edit;
@@ -42,7 +43,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                 if (File.Exists(this._package))
                 {
                     // This is a file…
-                    if (string.Equals(Path.GetFileName(this._package), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(Path.GetFileName(this._package), AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                     {
                         // .. a manifest file
                         var result = await this.ExecuteOnExtractedPackage(Path.GetDirectoryName(this._package)).ConfigureAwait(false);
@@ -105,7 +106,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                 else if (Directory.Exists(this._package))
                 {
                     // this is extracted directory
-                    var manifestPath = Path.Combine(this._package, FileConstants.AppxManifestFile);
+                    var manifestPath = Path.Combine(this._package, AppxFileConstants.AppxManifestFile);
                     if (File.Exists(manifestPath))
                     {
                         var result = await this.ExecuteOnExtractedPackage(this._package).ConfigureAwait(false);

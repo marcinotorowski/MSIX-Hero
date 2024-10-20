@@ -23,12 +23,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation.Entities;
@@ -256,7 +257,7 @@ public static class PackageEntryExtensions
             ImagePath = installLocation == null || details.LogoRelativePath == null ? null : Path.Combine(installLocation, details.LogoRelativePath),
             PackageFullName = originalPackageEntry.Id.FullName,
             InstallDirPath = installLocation,
-            ManifestPath = installLocation == null ? null : Path.Combine(installLocation, FileConstants.AppxManifestFile),
+            ManifestPath = installLocation == null ? null : Path.Combine(installLocation, AppxFileConstants.AppxManifestFile),
             PackageFamilyName = originalPackageEntry.Id.FamilyName,
             Publisher = originalPackageEntry.Id.Publisher,
             ResourceId = originalPackageEntry.Id.ResourceId,

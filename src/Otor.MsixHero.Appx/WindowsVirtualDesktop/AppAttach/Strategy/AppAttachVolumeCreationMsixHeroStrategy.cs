@@ -108,8 +108,8 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
             switch (Path.GetExtension(volumePath).ToLowerInvariant())
             {
-                case FileConstants.AppAttachVhdExtension:
-                case FileConstants.AppAttachVhdxExtension:
+                case FileExtensions.Vhdx:
+                case FileExtensions.Vhd:
                     break;
                 default:
                     throw new NotSupportedException(string.Format(Resources.Localization.Packages_Error_DiskFormatNotSupported, Path.GetExtension(volumePath)));

@@ -20,9 +20,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Dapplo.Log;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Common.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
@@ -40,13 +41,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             }
             
             using var reader = FileReaderFactory.CreateFileReader(fullMsixFilePath);
-            var package = reader.GetFile(FileConstants.AppxManifestFile);
+            var package = reader.GetFile(AppxFileConstants.AppxManifestFile);
             return await FromManifest(package, mode).ConfigureAwait(false);
         }      
 
         public static async Task<AppxManifestSummary> FromMsix(IAppxFileReader msixFileReader, ReadMode mode = ReadMode.Minimal)
         {
-            var package = msixFileReader.GetFile(FileConstants.AppxManifestFile);
+            var package = msixFileReader.GetFile(AppxFileConstants.AppxManifestFile);
             return await FromManifest(package, mode).ConfigureAwait(false);
         }
 
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
             }
 
-            return FromManifest(Path.Join(installLocation, FileConstants.AppxManifestFile), mode);
+            return FromManifest(Path.Join(installLocation, AppxFileConstants.AppxManifestFile), mode);
         }
 
         public static async Task<AppxManifestSummary> FromManifest(string fullManifestPath, ReadMode mode = ReadMode.Minimal)
@@ -147,7 +148,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
             if ((mode & ReadMode.Applications) == ReadMode.Applications)
             {
-                result.PackageType = result.IsFramework ? MsixPackageType.Framework : 0;
+                result.PackageType = result.IsFramework ? MsixApplicationType.Framework : 0;
                 
                 var applicationsNode = packageNode.Element(win10Namespace + "Applications") ?? packageNode.Element(appxNamespace + "Applications");
                 if (applicationsNode != null)

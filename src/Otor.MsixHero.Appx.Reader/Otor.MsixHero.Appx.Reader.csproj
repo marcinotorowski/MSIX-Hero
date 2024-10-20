@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  	<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+  	<Copyright>Copyright (C) 2024 by Marcin Otorowski</Copyright>
+  	<Authors>Marcin Otorowski</Authors>
+  	<Company>Marcin Otorowski</Company>
+  	<Product>MSIX Hero</Product>
+  	<RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
+  	<PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+  	<RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
+  	<PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Otor.MsixHero.Appx.Common\Otor.MsixHero.Appx.Common.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Localization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Localization.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Localization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

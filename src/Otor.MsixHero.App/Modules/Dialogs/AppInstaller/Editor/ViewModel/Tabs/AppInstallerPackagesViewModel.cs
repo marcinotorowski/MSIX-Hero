@@ -171,7 +171,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
                     var newFilePath = new FileInfo(selectedFile);
                     var read = await reader.GetIdentity(selectedFile).ConfigureAwait(true);
 
-                    if (string.Equals(FileConstants.AppxBundleExtension, newFilePath.Extension, StringComparison.OrdinalIgnoreCase) || string.Equals(FileConstants.MsixBundleExtension, newFilePath.Extension, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(FileExtensions.AppxBundle, newFilePath.Extension, StringComparison.OrdinalIgnoreCase) || string.Equals(FileExtensions.MsixBundle, newFilePath.Extension, StringComparison.OrdinalIgnoreCase))
                     {
                         this.Items.Add(new AppInstallerBundleViewModel(new AppInstallerBundleEntry
                         {

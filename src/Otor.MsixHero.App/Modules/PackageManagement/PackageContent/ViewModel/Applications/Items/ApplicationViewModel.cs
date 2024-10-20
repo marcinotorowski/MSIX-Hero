@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items
@@ -45,12 +45,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(_model.EntryPoint, _model.Executable, _model.StartPage, _package.IsFramework))
                 {
-                    case MsixPackageType.Win32:
-                    case MsixPackageType.Win32Psf:
-                    case MsixPackageType.Win32AiStub:
-                    case MsixPackageType.MsixHelper:
+                    case MsixApplicationType.Win32:
+                    case MsixApplicationType.Win32Psf:
+                    case MsixApplicationType.Win32AiStub:
+                    case MsixApplicationType.MsixHelper:
                         return _model.Executable;
-                    case MsixPackageType.Web:
+                    case MsixApplicationType.Web:
                         return _model.StartPage;
                     default:
                         if (string.IsNullOrEmpty(_model.EntryPoint))
@@ -87,8 +87,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
             {
                 switch (Type)
                 {
-                    case MsixPackageType.Win32Psf:
-                    case MsixPackageType.Win32AiStub:
+                    case MsixApplicationType.Win32Psf:
+                    case MsixApplicationType.Win32AiStub:
                         if (_model.Proxy?.Executable == null)
                         {
                             return null;
@@ -118,9 +118,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
 
         public string HostId => _model.HostId;
 
-        public string EntryPoint => Type == MsixPackageType.Uwp ? _model.EntryPoint : null;
+        public string EntryPoint => Type == MsixApplicationType.Uwp ? _model.EntryPoint : null;
 
-        public bool HasEntryPoint => Type == MsixPackageType.Uwp;
+        public bool HasEntryPoint => Type == MsixApplicationType.Uwp;
 
         public bool HasHostId => !string.IsNullOrEmpty(HostId);
 
@@ -132,7 +132,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.A
 
         public bool HasAlias => !string.IsNullOrEmpty(Alias);
 
-        public MsixPackageType Type { get; }
+        public MsixApplicationType Type { get; }
 
         public string DisplayedType => PackageTypeConverter.GetPackageTypeStringFrom(_model.EntryPoint, _model.Executable, _model.StartPage, _package.IsFramework, _model.HostId, PackageTypeDisplay.Long);
     }

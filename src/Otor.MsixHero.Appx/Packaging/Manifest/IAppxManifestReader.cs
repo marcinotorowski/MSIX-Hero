@@ -17,7 +17,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {

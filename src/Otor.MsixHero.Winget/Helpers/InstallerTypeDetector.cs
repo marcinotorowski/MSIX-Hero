@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Winget.Yaml.Entities;
 
@@ -52,18 +53,18 @@ namespace Otor.MsixHero.Winget.Helpers
                 throw new FileNotFoundException(Resources.Localization.Winget_Error_FileNotFound, fileName);
             }
 
-            if (string.Equals(fileInfo.Name, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(fileInfo.Name, AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
                 return YamlInstallerType.Msix;
             }
             
             switch (fileInfo.Extension.ToLowerInvariant())
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.MsixBundleExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.MsixBundle:
                     return YamlInstallerType.Msix;
-                case FileConstants.AppxExtension:
-                case FileConstants.AppxBundleExtension:
+                case FileExtensions.Appx:
+                case FileExtensions.AppxBundle:
                     return YamlInstallerType.Appx;
                 case ".msi":
                     return YamlInstallerType.Msi;

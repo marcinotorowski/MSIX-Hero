@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
@@ -95,7 +95,7 @@ namespace Otor.MsixHero.Tests
             {
                 IAppxIdentityReader reader = new AppxIdentityReader();
 
-                var manifestFile = Path.Combine(tempDirectory.FullName, FileConstants.AppxBundleManifestFile);
+                var manifestFile = Path.Combine(tempDirectory.FullName, AppxFileConstants.AppxBundleManifestFile);
 
                 using (var fs = File.OpenWrite(manifestFile))
                 {
@@ -126,7 +126,7 @@ namespace Otor.MsixHero.Tests
                 // build package resembling MSIX structure
                 using (var stream = new ZipArchive(memStream, ZipArchiveMode.Create, true))
                 {
-                    var entry = stream.CreateEntry(FileConstants.AppxBundleManifestFilePath);
+                    var entry = stream.CreateEntry(AppxFileConstants.AppxBundleManifestFilePath);
                     var entryStream = entry.Open();
 
                     var embeddedResourceName = this.GetType().Assembly.GetManifestResourceNames().First(rn => rn.Contains("resources.appxbundlemanifest.xml", StringComparison.OrdinalIgnoreCase));
@@ -158,7 +158,7 @@ namespace Otor.MsixHero.Tests
                 {
                     // build package resembling MSIX structure
                     using var stream = new ZipArchive(tempFileStream, ZipArchiveMode.Create, false);
-                    var entry = stream.CreateEntry(FileConstants.AppxBundleManifestFilePath);
+                    var entry = stream.CreateEntry(AppxFileConstants.AppxBundleManifestFilePath);
                     var entryStream = entry.Open();
 
                     var embeddedResourceName = this.GetType().Assembly.GetManifestResourceNames().First(rn => rn.Contains("resources.appxbundlemanifest.xml", StringComparison.OrdinalIgnoreCase));
@@ -192,7 +192,7 @@ namespace Otor.MsixHero.Tests
                 {
                     using (var zip = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                     {
-                        var entry = zip.CreateEntry(FileConstants.AppxBundleManifestFilePath);
+                        var entry = zip.CreateEntry(AppxFileConstants.AppxBundleManifestFilePath);
                         var entryStream = entry.Open();
 
                         var embeddedResourceName = this.GetType().Assembly.GetManifestResourceNames().First(rn => rn.Contains("resources.appxbundlemanifest.xml", StringComparison.OrdinalIgnoreCase));
@@ -257,7 +257,7 @@ namespace Otor.MsixHero.Tests
             {
                 IAppxIdentityReader reader = new AppxIdentityReader();
 
-                var manifestFile = Path.Combine(tempDirectory.FullName, FileConstants.AppxManifestFile);
+                var manifestFile = Path.Combine(tempDirectory.FullName, AppxFileConstants.AppxManifestFile);
                 var utfEncoding = new UTF8Encoding(false, false);
                 File.WriteAllText(manifestFile, SimpleAppxManifestContent, utfEncoding);
 
@@ -278,7 +278,7 @@ namespace Otor.MsixHero.Tests
                 // build package resembling MSIX structure
                 using (var stream = new ZipArchive(memStream, ZipArchiveMode.Create, true))
                 {
-                    var entry = stream.CreateEntry(FileConstants.AppxManifestFile);
+                    var entry = stream.CreateEntry(AppxFileConstants.AppxManifestFile);
                     var entryStream = entry.Open();
                     var utfEncoding = new UTF8Encoding(false, false);
                     using (var streamWriter = new StreamWriter(entryStream, utfEncoding, leaveOpen: true))
@@ -308,7 +308,7 @@ namespace Otor.MsixHero.Tests
                     // build package resembling MSIX structure
                     using (var stream = new ZipArchive(tempFileStream, ZipArchiveMode.Create, false))
                     {
-                        var entry = stream.CreateEntry(FileConstants.AppxManifestFile);
+                        var entry = stream.CreateEntry(AppxFileConstants.AppxManifestFile);
                         var entryStream = entry.Open();
                         var utfEncoding = new UTF8Encoding(false, false);
                         using (var streamWriter = new StreamWriter(entryStream, utfEncoding, leaveOpen: true))

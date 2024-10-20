@@ -24,20 +24,10 @@ using PriFormat;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
-    public class ResourceTranslator
+    public class ResourceTranslator(string packageFullName, string priFile)
     {
-        private readonly string _packageFullName;
-        private readonly string _priFile;
-        private readonly Lazy<PriFile> _parsedPriFile;
-        private readonly string _packageName;
-
-        public ResourceTranslator(string packageFullName, string priFile)
-        {
-            this._packageFullName = packageFullName;
-            this._priFile = priFile;
-            this._parsedPriFile = new Lazy<PriFile>(() => GetPriFileFromFilePath(priFile));
-            this._packageName = PackageIdentity.FromFullName(packageFullName).AppName;
-        }
+        private readonly Lazy<PriFile> _parsedPriFile = new(() => GetPriFileFromFilePath(priFile));
+        private readonly string _packageName = PackageIdentity.FromFullName(packageFullName).AppName;
 
         public static string Translate(string priFile, string packageFullName, string resourceId)
         {
@@ -47,7 +37,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
         public string Translate(string resourceId)
         {
-            return Translate(this._parsedPriFile, this._priFile, this._packageName, this._packageFullName, resourceId);
+            return Translate(this._parsedPriFile, priFile, this._packageName, packageFullName, resourceId);
         }
 
         private static PriFile GetPriFileFromFilePath(string filePath)

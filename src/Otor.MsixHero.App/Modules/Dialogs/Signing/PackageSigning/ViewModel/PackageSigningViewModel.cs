@@ -303,7 +303,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 return 0;
             }
 
-            var hasMsixFiles = Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension).Any();
+            var hasMsixFiles = Directory.EnumerateFiles(folder, "*" + FileExtensions.Msix).Any();
             var hasSubfolders = Directory.EnumerateDirectories(folder).Any();
 
             var recurse = !hasMsixFiles;
@@ -325,7 +325,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 recurse = userChoice == 1;
             }
             
-            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
+            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*" + FileExtensions.Msix, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
             var cnt = this.Files.Count;
             this.Files.AddRange(files.Except(this.Files, StringComparer.OrdinalIgnoreCase));
 

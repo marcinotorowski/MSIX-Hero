@@ -14,10 +14,20 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+using System;
+
+namespace Otor.MsixHero.Appx.Common.Enums
 {
-    public interface IAppxDiskFileReader : IAppxFileReader
+    [Flags]
+    public enum MsixApplicationType
     {
-        string RootDirectory { get; }
+        Uwp = 1,
+        Win32 = 2,
+        Win32Psf = 4,
+        Web = 8,
+        Framework = 16,
+        ProgressiveWebApp = 32,
+        Win32AiStub = 64,
+        MsixHelper = 128
     }
 }

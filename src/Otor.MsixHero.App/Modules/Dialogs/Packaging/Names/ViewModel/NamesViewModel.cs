@@ -9,13 +9,15 @@ using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
@@ -184,22 +186,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 
         private void SetCalculatedProperties()
         {
-            if (this[nameof(Publisher)] != null)
+            if (!string.IsNullOrEmpty(this[nameof(Publisher)]))
             {
                 this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
                 this._publisherHash = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
                 this._familyName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
             }
-            else if (this[nameof(Name)] != null)
+            else if (!string.IsNullOrEmpty(this[nameof(Name)]))
             {
                 this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
                 this._familyName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
             }
-            else if (this[nameof(Version)] != null)
+            else if (!string.IsNullOrEmpty(this[nameof(Version)]))
             {
                 this._fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageVersion;
             }
-            else if (this[nameof(Resource)] != null)
+            else if (!string.IsNullOrEmpty(this[nameof(Resource)]))
             {
                 this._fullName = Resources.Localization.Dialogs_PackageName_InvalidResourceId;
             }
@@ -250,8 +252,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
             {
                 switch (Path.GetExtension(file).ToLowerInvariant())
                 {
-                    case FileConstants.MsixExtension:
-                    case FileConstants.AppxExtension:
+                    case FileExtensions.Msix:
+                    case FileExtensions.Appx:
                         {
                             using var reader = FileReaderFactory.CreateFileReader(file);
                             var manifestReader = new AppxManifestReader();
@@ -261,7 +263,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 
                     case ".xml":
                         {
-                            if (Path.GetFileName(file).Equals(FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                            if (Path.GetFileName(file).Equals(AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                             {
                                 using var reader = new FileInfoFileReaderAdapter(file);
                                 var manifestReader = new AppxManifestReader();

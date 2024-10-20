@@ -16,12 +16,13 @@
 
 using System.IO;
 using NUnit.Framework;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 
 namespace Otor.MsixHero.Tests
 {
@@ -39,7 +40,7 @@ namespace Otor.MsixHero.Tests
 
             var app = manifest.Applications[0];
             var type = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, manifest.IsFramework);
-            Assert.That(type, Is.EqualTo(MsixPackageType.Win32Psf));
+            Assert.That(type, Is.EqualTo(MsixApplicationType.Win32Psf));
 
             Assert.That("VFS\\AppVPackageDrive\\ConEmuPack\\ConEmu64.exe", Is.EqualTo(app.Proxy.Executable));
             Assert.That(app.Executable, Is.EqualTo("VFS\\AppVPackageDrive\\ConEmuPack\\PsfLauncher1.exe"));

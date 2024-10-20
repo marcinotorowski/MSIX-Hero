@@ -19,7 +19,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Infrastructure.Helpers;
 
-namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
+namespace Otor.MsixHero.Appx.Reader
 {
     public class AppxFileViewer : IAppxFileViewer
     {

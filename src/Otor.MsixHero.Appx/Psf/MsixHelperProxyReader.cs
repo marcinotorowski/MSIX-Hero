@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using IniParser.Model.Configuration;
 using IniParser.Parser;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader;
 
 namespace Otor.MsixHero.Appx.Psf;
 

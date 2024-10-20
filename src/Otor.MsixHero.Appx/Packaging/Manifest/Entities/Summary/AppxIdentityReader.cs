@@ -23,8 +23,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader.Adapters;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
@@ -36,12 +38,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             switch (Path.GetExtension(filePath).ToLowerInvariant())
             {
                 case ".xml":
-                    if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(AppxFileConstants.AppxManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
                     {
                         await using var manifestStream = File.OpenRead(filePath);
                         return await GetIdentityFromPackageManifest(manifestStream, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (string.Equals(FileConstants.AppxBundleManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(AppxFileConstants.AppxBundleManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
                     {
                         await using var manifestStream = File.OpenRead(filePath);
                         return await GetIdentityFromBundleManifest(manifestStream, cancellationToken).ConfigureAwait(false);
@@ -51,11 +53,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                         throw new ArgumentException($"File name {Path.GetFileName(filePath)} is not supported.");
                     }
                 
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.Appx:
                     return await GetIdentityFromPackage(filePath, cancellationToken).ConfigureAwait(false);
-                case FileConstants.AppxBundleExtension:
-                case FileConstants.MsixBundleExtension:
+                case FileExtensions.AppxBundle:
+                case FileExtensions.MsixBundle:
                     return await GetIdentityFromBundle(filePath, cancellationToken).ConfigureAwait(false);
                 default:
                     throw new ArgumentException($"File extension {Path.GetExtension(filePath)} is not supported.");
@@ -76,29 +78,29 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Logger.Debug().WriteLine("The input is a file stream, trying to evaluate its name…");
                 switch (Path.GetExtension(fileStream.Name).ToLowerInvariant())
                 {
-                    case FileConstants.AppxBundleExtension:
-                    case FileConstants.MsixBundleExtension:
+                    case FileExtensions.AppxBundle:
+                    case FileExtensions.MsixBundle:
                     {
                         Logger.Info().WriteLine("The file seems to be a bundle package (compressed).");
                         try
                         {
                             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
-                            return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+                            return await GetIdentityFromBundleManifest(reader.GetFile(AppxFileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
                         }
                         catch (FileNotFoundException e)
                         {
-                            throw new ArgumentException("File  " + fileStream.Name + " is not an APPX/MSIX bundle, because it does not contain a manifest.", nameof(file), e);
+                            throw new ArgumentException("File " + fileStream.Name + " is not an APPX/MSIX bundle, because it does not contain a manifest.", nameof(file), e);
                         }
                     }
                         
-                    case FileConstants.AppxExtension:
-                    case FileConstants.MsixExtension:
+                    case FileExtensions.Appx:
+                    case FileExtensions.Msix:
                     {
                         Logger.Info().WriteLine("The file seems to be a package (compressed).");
                         try
                         {
                             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
-                            return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+                            return await GetIdentityFromBundleManifest(reader.GetFile(AppxFileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
                         }
                         catch (FileNotFoundException e)
                         {
@@ -109,10 +111,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 
                 switch (Path.GetFileName(fileStream.Name).ToLowerInvariant())
                 {
-                    case FileConstants.AppxManifestFile:
+                    case AppxFileConstants.AppxManifestFile:
                         Logger.Info().WriteLine("The file seems to be a package (manifest).");
                         return await GetIdentityFromPackageManifest(fileStream, cancellationToken).ConfigureAwait(false);
-                    case FileConstants.AppxBundleManifestFile:
+                    case AppxFileConstants.AppxBundleManifestFile:
                         Logger.Info().WriteLine("The file seems to be a bundle (manifest).");
                         return await GetIdentityFromBundleManifest(fileStream, cancellationToken).ConfigureAwait(false);
                 }
@@ -153,14 +155,14 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 using var zip = new ZipArchive(file, ZipArchiveMode.Read, true);
                 using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(zip);
                 
-                if (reader.FileExists(FileConstants.AppxManifestFile))
+                if (reader.FileExists(AppxFileConstants.AppxManifestFile))
                 {
-                    return await GetIdentityFromPackageManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+                    return await GetIdentityFromPackageManifest(reader.GetFile(AppxFileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
                 }
                         
-                if (reader.FileExists(FileConstants.AppxBundleManifestFilePath))
+                if (reader.FileExists(AppxFileConstants.AppxBundleManifestFilePath))
                 {
-                    return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+                    return await GetIdentityFromBundleManifest(reader.GetFile(AppxFileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
                 }
                 
                 // This is a ZIP archive but neither a package or bundle, so we can stop here.
@@ -180,7 +182,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(packagePath);
             try
             {
-                return await GetIdentityFromPackageManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+                return await GetIdentityFromPackageManifest(reader.GetFile(AppxFileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
             }
             catch (FileNotFoundException e)
             {
@@ -193,7 +195,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             try
             {
                 using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(bundlePath);
-                return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+                return await GetIdentityFromBundleManifest(reader.GetFile(AppxFileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
             }
             catch (FileNotFoundException e)
             {

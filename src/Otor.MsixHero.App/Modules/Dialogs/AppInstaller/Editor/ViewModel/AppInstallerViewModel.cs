@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
@@ -186,7 +187,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
                 switch (ext.ToLowerInvariant())
                 {
-                    case FileConstants.AppInstallerExtension:
+                    case FileExtensions.AppInstaller:
                         this.OpenCommand.Execute(sourceFile);
                         break;
                     default:
@@ -414,7 +415,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             if (!string.IsNullOrEmpty((string)e.NewValue))
             {
-                var isManifest = string.Equals(Path.GetFileName((string)e.NewValue), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase);
+                var isManifest = string.Equals(Path.GetFileName((string)e.NewValue), AppxFileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase);
                 
                 if (isManifest)
                 {
@@ -443,7 +444,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                     configValue = "http://server-name/";
                 }
 
-                var newName = Path.ChangeExtension(newFilePath.Name, FileConstants.AppInstallerExtension);
+                var newName = Path.ChangeExtension(newFilePath.Name, FileExtensions.AppInstaller);
                 this.AppInstallerUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newName}";
             }
         }

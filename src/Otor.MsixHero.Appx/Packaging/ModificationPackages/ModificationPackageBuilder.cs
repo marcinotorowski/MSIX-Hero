@@ -29,23 +29,19 @@ using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 {
-    public class ModificationPackageBuilder : IModificationPackageBuilder
+    public class ModificationPackageBuilder(IAppxPacker packer) : IModificationPackageBuilder
     {
         private static readonly LogSource Logger = new();
-        private readonly IAppxPacker packer;
-
-        public ModificationPackageBuilder(IAppxPacker packer)
-        {
-            this.packer = packer;
-        }
 
         public async Task Create(ModificationPackageConfig config, string filePath, ModificationPackageBuilderAction action, CancellationToken cancellation = default, IProgress<ProgressData> progress = default)
         {
@@ -159,7 +155,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                     await this.CopyRegistry(config.IncludeRegistry, new DirectoryInfo(tempFolder)).ConfigureAwait(false);
                 }
 
-                var manifestPath = new FileInfo(Path.Join(tempFolder, FileConstants.AppxManifestFile));
+                var manifestPath = new FileInfo(Path.Join(tempFolder, AppxFileConstants.AppxManifestFile));
                 if (manifestPath.Exists)
                 {
                     manifestPath.Delete();
@@ -170,7 +166,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 }
 
                 await File.WriteAllTextAsync(manifestPath.FullName, manifestContent, Encoding.UTF8, cancellation).ConfigureAwait(false);
-                await this.packer.PackFiles(tempFolder, filePath, 0, cancellation, progress).ConfigureAwait(false);
+                await packer.PackFiles(tempFolder, filePath, 0, cancellation, progress).ConfigureAwait(false);
             }
             finally
             {
@@ -230,7 +226,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
         {
             var listOfFoldersToCreate = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(inputPackage)))
+            if (string.Equals(AppxFileConstants.AppxManifestFile, Path.GetFileName(inputPackage)))
             {
                 var baseDir = Path.GetDirectoryName(inputPackage);
                 // ReSharper disable once AssignNullToNotNullAttribute
@@ -245,8 +241,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             {
                 switch (Path.GetExtension(inputPackage).ToLowerInvariant())
                 {
-                    case FileConstants.MsixExtension:
-                    case FileConstants.AppxExtension:
+                    case FileExtensions.Msix:
+                    case FileExtensions.Appx:
                     {
                         using var sourceStream = File.OpenRead(inputPackage);
                         using var zip = new ZipArchive(sourceStream);
@@ -345,7 +341,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 IAppxFileReader reader = null;
                 try
                 {
-                    if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(AppxFileConstants.AppxManifestFile, Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
                     {
                         reader = new FileInfoFileReaderAdapter(config.ParentPackagePath);
                     }

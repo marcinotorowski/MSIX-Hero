@@ -165,9 +165,6 @@
   <data name="Packages_Error_DeveloperMode" xml:space="preserve">
     <value>Aby używać tej funkcji należy aktywować tryb deweloperski.</value>
   </data>
-  <data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
-    <value>Folder '{0}' nie istnieje.</value>
-  </data>
   <data name="Packages_Error_DiskFormatNotSupported" xml:space="preserve">
     <value>Format dysku {0} nie jest wspierany.</value>
   </data>
@@ -179,9 +176,6 @@
   </data>
   <data name="Packages_Error_ExtensionNotSupported_Format" xml:space="preserve">
     <value>Rozszerzenie {0} nie jest wspierane.</value>
-  </data>
-  <data name="Packages_Error_FileMissing_Format" xml:space="preserve">
-    <value>Plik '{0}' nie istnieje.</value>
   </data>
   <data name="Packages_Error_FileNotSupported" xml:space="preserve">
     <value>Plik {0} nie jest wspierany.</value>
@@ -528,23 +522,8 @@
   <data name="Signing_Signing" xml:space="preserve">
     <value>Podpisywanie…</value>
   </data>
-  <data name="Packages_Error_FileInsideNotFound" xml:space="preserve">
-    <value>Plik {0} nie został odnaleziony w pakiecie MSIX.</value>
-  </data>
   <data name="Packages_Error_FileNotFound" xml:space="preserve">
     <value>Plik nie znaleziony.</value>
-  </data>
-  <data name="Packages_Error_FileNotFound_Format" xml:space="preserve">
-    <value>Plik {0} nie istnieje.</value>
-  </data>
-  <data name="Packages_Error_NoPackageInFolder" xml:space="preserve">
-    <value>Ten folder nie zawiera pakietów APPX/MSIX ani pakietów zbiorczyh APPXBUNDLE.</value>
-  </data>
-  <data name="Packages_Error_NotAPackage" xml:space="preserve">
-    <value>Ten plik nie jest pakietem MSIX/APPX, lub jego zawartość jest uszkodzona</value>
-  </data>
-  <data name="Packages_Error_PackageNotFound" xml:space="preserve">
-    <value>Nie udało się znaleźć wymaganej paczki.</value>
   </data>
   <data name="Packages_Error_FullName" xml:space="preserve">
     <value>Pełna nazwa musi być łańcuchem znaków z pięcioma członami, oddzielonymi znakami podkreślenia.</value>
@@ -623,5 +602,11 @@
   </data>
   <data name="Signing_Test_WrongThumbPrint_Format" xml:space="preserve">
     <value>Nie znaleziono certyfikatu o identyfikatorze = '{0}'.</value>
+  </data>
+  <data name="Packages_Error_DirectoryMissing_Format" xml:space="preserve">
+    <value>Folder '{0}' nie istnieje.</value>
+  </data>
+  <data name="Packages_Error_FileMissing_Format" xml:space="preserve">
+    <value>Plik '{0}' nie istnieje.</value>
   </data>
 </root>

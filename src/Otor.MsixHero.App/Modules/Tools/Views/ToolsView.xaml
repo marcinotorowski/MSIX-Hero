@@ -80,12 +80,6 @@
                         <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}" />
                     </Style>
 
-                    <Style TargetType="Path" BasedOn="{StaticResource LargeIcon}" x:Key="ButtonIcon">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="0 0 8 0" />
-                        <Setter Property="Fill" Value="{StaticResource MsixHero.Brushes.Accent}" />
-                    </Style>
-
                     <Style TargetType="TextBlock" x:Key="ButtonText">
                         <Setter Property="HorizontalAlignment" Value="Left" />
                         <Setter Property="Margin" Value="0 0 12 0" />
@@ -148,7 +142,7 @@
                                 <cards:CardAction.ContentRight>
                                     <Border Style="{StaticResource ExtensionBackground}">
                                         <TextBlock Style="{StaticResource ExtensionText}"
-                                            Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                                            Text="{x:Static packaging:FileExtensions.Msix}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
                                 <TextBlock Style="{StaticResource ButtonText}"
@@ -169,7 +163,7 @@
                                 <cards:CardAction.ContentRight>
                                     <Border Style="{StaticResource ExtensionBackground}">
                                         <TextBlock Style="{StaticResource ExtensionText}"
-                                            Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                                            Text="{x:Static packaging:FileExtensions.Msix}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
                                 <TextBlock Style="{StaticResource ButtonText}"
@@ -186,7 +180,7 @@
                                 <cards:CardAction.ContentRight>
                                     <Border Style="{StaticResource ExtensionBackground}">
                                         <TextBlock Style="{StaticResource ExtensionText}"
-                                            Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
+                                            Text="{x:Static packaging:FileExtensions.AppInstaller}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
 
@@ -236,7 +230,7 @@
                                 <cards:CardAction.ContentRight>
                                     <Border Style="{StaticResource ExtensionBackground}">
                                         <TextBlock Style="{StaticResource ExtensionText}"
-                                            Text="{x:Static packaging:FileConstants.WingetExtension}" />
+                                            Text="{x:Static packaging:FileExtensions.Winget}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
 

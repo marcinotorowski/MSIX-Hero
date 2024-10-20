@@ -22,8 +22,8 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.busyManager = busyManager;
             this.interactionService = interactionService;
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand);
-            this.isAllUsers = application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
+            this.isAllUsers = application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
 
             eventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<UiFailedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
@@ -76,19 +76,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         
         private void OnGetPackages(UiFailedPayload<GetInstalledPackagesCommand> obj)
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
+            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
         }
 
         private void OnGetPackages(UiExecutedPayload<GetInstalledPackagesCommand> obj)
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
+            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
         }
 
         private void OnGetPackages(UiCancelledPayload<GetInstalledPackagesCommand> obj)
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageContext.AllUsers;
+            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
             this.OnPropertyChanged(nameof(IsAllUsers));
         }
 

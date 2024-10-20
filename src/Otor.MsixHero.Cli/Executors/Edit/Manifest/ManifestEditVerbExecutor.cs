@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Editor.Helpers;
 using Otor.MsixHero.Appx.Packaging;
@@ -36,7 +37,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
 
         protected sealed override async Task<int> ExecuteOnExtractedPackage(string directoryPath)
         {
-            var manifestFile = Path.Combine(directoryPath, FileConstants.AppxManifestFile);
+            var manifestFile = Path.Combine(directoryPath, AppxFileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
             {
                 throw new FileNotFoundException(string.Format(Resources.Localization.CLI_Executor_ManifestEdit_MissingFile_Format, manifestFile));

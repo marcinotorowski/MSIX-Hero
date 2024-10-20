@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Helpers.Dialogs;
@@ -33,22 +34,22 @@ public static class DialogFilterBuilderPackagesExtensions
 
         if (hasMsix)
         {
-            dialogFilterBuilder.WithExtension(FileConstants.MsixExtension, Resources.Localization.Dialogs_Filter_Packages, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.Msix, Resources.Localization.Dialogs_Filter_Packages, order);
         }
 
         if (hasAppx)
         {
-            dialogFilterBuilder.WithExtension(FileConstants.AppxExtension, Resources.Localization.Dialogs_Filter_Packages, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.Appx, Resources.Localization.Dialogs_Filter_Packages, order);
         }
 
         if (hasMsixBundle)
         {
-            dialogFilterBuilder.WithExtension(FileConstants.MsixBundleExtension, Resources.Localization.Dialogs_Filter_Bundles, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.MsixBundle, Resources.Localization.Dialogs_Filter_Bundles, order);
         }
 
         if (hasAppxBundle)
         {
-            dialogFilterBuilder.WithExtension(FileConstants.AppxBundleExtension, Resources.Localization.Dialogs_Filter_Bundles, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.AppxBundle, Resources.Localization.Dialogs_Filter_Bundles, order);
         }
 
         return dialogFilterBuilder;
@@ -58,7 +59,7 @@ public static class DialogFilterBuilderPackagesExtensions
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithExtension(FileConstants.MsiExtension, Resources.Localization.Dialogs_Filter_Msi, order);
+        dialogFilterBuilder.WithExtension(FileExtensions.Msi, Resources.Localization.Dialogs_Filter_Msi, order);
         return dialogFilterBuilder;
     }
 
@@ -66,7 +67,7 @@ public static class DialogFilterBuilderPackagesExtensions
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithExtension(FileConstants.ExeExtension, Resources.Localization.Dialogs_Filter_Exe, order);
+        dialogFilterBuilder.WithExtension(FileExtensions.Exe, Resources.Localization.Dialogs_Filter_Exe, order);
         return dialogFilterBuilder;
     }
 
@@ -74,7 +75,7 @@ public static class DialogFilterBuilderPackagesExtensions
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithExtension(FileConstants.RegExtension, Resources.Localization.Dialogs_Filter_Registry, order);
+        dialogFilterBuilder.WithExtension(FileExtensions.Reg, Resources.Localization.Dialogs_Filter_Registry, order);
         return dialogFilterBuilder;
     }
 
@@ -82,14 +83,14 @@ public static class DialogFilterBuilderPackagesExtensions
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithFile(FileConstants.AppxManifestFile, Resources.Localization.Dialogs_Filter_Manifests, order);
+        dialogFilterBuilder.WithFile(AppxFileConstants.AppxManifestFile, Resources.Localization.Dialogs_Filter_Manifests, order);
         return dialogFilterBuilder;
     }
     public static DialogFilterBuilder WithWinget(
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithExtension(FileConstants.WingetExtension, Resources.Localization.Dialogs_Filter_Winget, order);
+        dialogFilterBuilder.WithExtension(FileExtensions.Winget, Resources.Localization.Dialogs_Filter_Winget, order);
         return dialogFilterBuilder;
     }
 
@@ -100,12 +101,12 @@ public static class DialogFilterBuilderPackagesExtensions
     {
         if (types.HasFlag(CertificateTypes.Pfx))
         {
-            dialogFilterBuilder.WithExtension(FileConstants.PfxExtension, Resources.Localization.Dialogs_Filter_Certificates, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.Pfx, Resources.Localization.Dialogs_Filter_Certificates, order);
         }
 
         if (types.HasFlag(CertificateTypes.Cer))
         {
-            dialogFilterBuilder.WithExtension(FileConstants.CerExtension, Resources.Localization.Dialogs_Filter_Certificates, order);
+            dialogFilterBuilder.WithExtension(FileExtensions.Cer, Resources.Localization.Dialogs_Filter_Certificates, order);
         }
 
         return dialogFilterBuilder;
@@ -115,7 +116,7 @@ public static class DialogFilterBuilderPackagesExtensions
         this DialogFilterBuilder dialogFilterBuilder, 
         int order = 0)
     {
-        dialogFilterBuilder.WithExtension(FileConstants.AppInstallerExtension, Resources.Localization.Dialogs_Filter_AppInstaller, order);
+        dialogFilterBuilder.WithExtension(FileExtensions.AppInstaller, Resources.Localization.Dialogs_Filter_AppInstaller, order);
         return dialogFilterBuilder;
     }
 

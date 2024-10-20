@@ -358,15 +358,6 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File {0} not found in MSIX package..
-        /// </summary>
-        public static string Packages_Error_FileInsideNotFound {
-            get {
-                return ResourceManager.GetString("Packages_Error_FileInsideNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The file &apos;{0}&apos; does not exist..
         /// </summary>
         public static string Packages_Error_FileMissing_Format {
@@ -381,15 +372,6 @@ namespace Otor.MsixHero.Appx.Resources {
         public static string Packages_Error_FileNotFound {
             get {
                 return ResourceManager.GetString("Packages_Error_FileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File {0} does not exist..
-        /// </summary>
-        public static string Packages_Error_FileNotFound_Format {
-            get {
-                return ResourceManager.GetString("Packages_Error_FileNotFound_Format", resourceCulture);
             }
         }
         
@@ -556,38 +538,11 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This folder does not contain APPX/MSIX package nor APPX bundle..
-        /// </summary>
-        public static string Packages_Error_NoPackageInFolder {
-            get {
-                return ResourceManager.GetString("Packages_Error_NoPackageInFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This package has no Start Menu entry points..
         /// </summary>
         public static string Packages_Error_NoStartMenu {
             get {
                 return ResourceManager.GetString("Packages_Error_NoStartMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This file is not an MSIX/APPX package, or the content of the package is damaged..
-        /// </summary>
-        public static string Packages_Error_NotAPackage {
-            get {
-                return ResourceManager.GetString("Packages_Error_NotAPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not find the required package..
-        /// </summary>
-        public static string Packages_Error_PackageNotFound {
-            get {
-                return ResourceManager.GetString("Packages_Error_PackageNotFound", resourceCulture);
             }
         }
         

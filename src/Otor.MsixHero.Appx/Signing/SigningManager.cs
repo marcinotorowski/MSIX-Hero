@@ -33,6 +33,7 @@ using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
@@ -102,12 +103,12 @@ namespace Otor.MsixHero.Appx.Signing
             {
                 switch (Path.GetExtension(certificateFileOrSignedFile).ToLowerInvariant())
                 {
-                    case FileConstants.MsixExtension:
-                    case FileConstants.AppxExtension:
+                    case FileExtensions.Msix:
+                    case FileExtensions.Appx:
                     case ".exe":
                     case ".dll":
-                    case FileConstants.AppxBundleExtension:
-                    case FileConstants.MsixBundleExtension:
+                    case FileExtensions.AppxBundle:
+                    case FileExtensions.MsixBundle:
                         Logger.Info().WriteLine("Verifying certificate from a signable file {0}…", certificateFileOrSignedFile);
 
                         try
@@ -295,12 +296,12 @@ namespace Otor.MsixHero.Appx.Signing
         {
             switch (Path.GetExtension(certificateFileOrSignedFile.ToLowerInvariant()))
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                case FileExtensions.Msix:
+                case FileExtensions.Appx:
                 case ".exe":
                 case ".dll":
-                case FileConstants.AppxBundleExtension:
-                case FileConstants.MsixBundleExtension:
+                case FileExtensions.AppxBundle:
+                case FileExtensions.MsixBundle:
                     await this.ImportCertificateFromMsix(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
                     break;
 
@@ -747,7 +748,7 @@ namespace Otor.MsixHero.Appx.Signing
                     Logger.Debug().WriteLine("Unpacking {0} to {1}.", package, tempDirectory);
                     await sdk.Unpack(MakeAppxUnpackOptions.Create(package, tempDirectory), cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    var manifestFilePath = Path.Combine(tempDirectory, FileConstants.AppxManifestFile);
+                    var manifestFilePath = Path.Combine(tempDirectory, AppxFileConstants.AppxManifestFile);
                     if (!File.Exists(manifestFilePath))
                     {
                         throw new FileNotFoundException(string.Format(Resources.Localization.Signing_Error_NoManifest, package));

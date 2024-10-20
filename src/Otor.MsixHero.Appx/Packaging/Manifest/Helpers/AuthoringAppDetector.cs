@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using Otor.MsixHero.Appx.Diagnostic.System;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Reader;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
 {

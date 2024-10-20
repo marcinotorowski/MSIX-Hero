@@ -14,9 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Otor.MsixHero.Appx.Common;
+
 namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
-    public readonly struct CreatedItem
+    public readonly record struct CreatedItem
     {
         public CreatedItem(string sourcePath, string packageRelativePath, ItemType type)
         {
@@ -33,7 +35,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 
         public static CreatedItem CreateManifest(string sourcePath)
         {
-            return new CreatedItem(sourcePath, FileConstants.AppxManifestFile, ItemType.Manifest);
+            return new CreatedItem(sourcePath, AppxFileConstants.AppxManifestFile, ItemType.Manifest);
         }
 
         public static CreatedItem CreateRegistry(string sourcePath, string relativePath)
