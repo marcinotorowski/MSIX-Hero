@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Input;
@@ -23,7 +24,6 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -47,7 +47,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         private readonly IMsixHeroApplication _application;
         private readonly IInteractionService _interactionService;
         private readonly IBusyManager _busyManager;
-        private PackageInstallationContext _source;
+        private PackageQuerySourceType _source;
         private bool _isBusy;
         private int _progress;
 
@@ -60,15 +60,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this._interactionService = interactionService;
             this._busyManager = busyManager;
 
-            this._source = this._application.ApplicationState.Packages.Mode;
+            this._source = this._application.ApplicationState.Packages.Mode.Type;
 
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilter);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping);
 
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
-            this._application.EventAggregator.GetEvent<UiFailedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
-            this._application.EventAggregator.GetEvent<UiCancelledEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this._application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
 
             this._busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
@@ -108,11 +108,28 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             set => this._application.CommandExecutor.Invoke(this, new SetPackageSortingCommand(value, this.IsDescending));
         }
 
-        public PackageInstallationContext Source
+        public PackageQuerySourceType Source
         {
             get => this._source;
-            set => this.LoadContext(value);
+            set
+            {
+                switch (value)
+                {
+                    case PackageQuerySourceType.Installed:
+                        this.LoadContext(PackageQuerySource.Installed());
+                        break;
+                    case PackageQuerySourceType.InstalledForCurrentUser:
+                        break;
+                    case PackageQuerySourceType.InstalledForAllUsers:
+                        break;
+                    case PackageQuerySourceType.Directory:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
+                }
+            }
         }
+
         public PackageGroup Group
         {
             get => this._application.ApplicationState.Packages.GroupMode;
@@ -354,39 +371,31 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(FilterTypeCaption));
         }
 
-        private void OnGetPackages(UiFailedPayload<GetInstalledPackagesCommand> _)
+        private void OnGetPackages(UiFailedPayload<GetPackagesCommand> _)
         {
-            this._source = this._application.ApplicationState.Packages.Mode;
+            this._source = this._application.ApplicationState.Packages.Mode.Type;
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private void OnGetPackages(UiExecutedPayload<GetInstalledPackagesCommand> _)
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> _)
         {
-            this._source = this._application.ApplicationState.Packages.Mode;
+            this._source = this._application.ApplicationState.Packages.Mode.Type;
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private void OnGetPackages(UiCancelledPayload<GetInstalledPackagesCommand> _)
+        private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> _)
         {
-            this._source = this._application.ApplicationState.Packages.Mode;
+            this._source = this._application.ApplicationState.Packages.Mode.Type;
             this.OnPropertyChanged(nameof(Source));
         }
 
-        private async void LoadContext(PackageInstallationContext mode)
+        private async void LoadContext(PackageQuerySource mode)
         {
             var executor = this._application.CommandExecutor
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading)
                 .WithErrorHandling(this._interactionService, true);
 
-            switch (mode)
-            {
-                case PackageInstallationContext.AllUsers:
-                    await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.AllUsers), CancellationToken.None).ConfigureAwait(false);
-                    break;
-                case PackageInstallationContext.CurrentUser:
-                    await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
-                    break;
-            }
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void SetPackageFilter(PackageFilter packageFilter, bool isSet)

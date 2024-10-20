@@ -106,7 +106,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.I
             var addOns = new ObservableCollection<PackageEntry>();
 
             var usersTask = this.GetUsers(model, false, cancellationToken);
-            var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(model.FullName, PackageFindMode.Auto, cancellationToken);
+            var addOnsTask = this._uacElevation.AsHighestAvailable<IAppxPackageQueryService>().GetModificationPackages(model.FullName, PackageQuerySourceType.Installed, cancellationToken);
 
             await Task.WhenAll(usersTask, addOnsTask).ConfigureAwait(false);
             

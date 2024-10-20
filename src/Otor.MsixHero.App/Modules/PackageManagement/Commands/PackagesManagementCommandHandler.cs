@@ -426,7 +426,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser()), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
@@ -484,7 +484,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 #pragma warning restore 4014
                 }
 
-                var allPackages = await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                var allPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(forAllUsers ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser()), progress: p2).ConfigureAwait(false);
                     
                 if (appxIdentity != null)
                 {
@@ -846,7 +846,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         break;
                 }
 
-                await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
