@@ -13,6 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="chausner.PriFormat.Forked" Version="1.0.0" />
+    <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+    <PackageReference Include="Registry" Version="1.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Otor.MsixHero.Appx.Common\Otor.MsixHero.Appx.Common.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
   </ItemGroup>

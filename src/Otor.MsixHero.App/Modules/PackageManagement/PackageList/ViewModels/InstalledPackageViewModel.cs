@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;

@@ -10,14 +10,14 @@ using Microsoft.Xaml.Behaviors.Core;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Common;
+using Otor.MsixHero.Appx.Common.Identity;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Interop;
-using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
@@ -207,9 +207,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
             }
             else
             {
-                this._familyName = AppxPackaging.GetPackageFamilyName(this._name, this._publisher);
+                this._familyName = AppxPackagingNameHelper.GetPackageFamilyName(this._name, this._publisher);
                 this._publisherHash = this._familyName.Split('_').Last();
-                this._fullName = AppxPackaging.GetPackageFullName(this._name, this._publisher, this._architecture, this._version, this._resource);
+                this._fullName = AppxPackagingNameHelper.GetPackageFullName(this._name, this._publisher, this._architecture, this._version, this._resource);
             }
 
             this.OnPropertyChanged(null);

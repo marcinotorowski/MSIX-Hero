@@ -25,8 +25,8 @@ using System.Xml.Serialization;
 using CsvHelper;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.AppInstaller

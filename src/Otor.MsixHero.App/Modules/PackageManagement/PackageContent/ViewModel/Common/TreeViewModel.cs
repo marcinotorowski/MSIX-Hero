@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common
 {

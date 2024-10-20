@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using GraphX.Common.Enums;
 using GraphX.Logic.Algorithms.LayoutAlgorithms;
 using GraphX.Logic.Algorithms.OverlapRemoval;
-using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Dependencies.Domain;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -25,7 +25,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
             var reader = new AppxManifestReader();
             using (var fileReader = FileReaderFactory.CreateFileReader(packagePath))
             {
-                this.Package = await reader.Read(fileReader, false, cancellationToken).ConfigureAwait(false);
+                this.Package = await reader.Read(fileReader, cancellationToken).ConfigureAwait(false);
             }
 
             var graph = new DependencyBidirectionalGraph();

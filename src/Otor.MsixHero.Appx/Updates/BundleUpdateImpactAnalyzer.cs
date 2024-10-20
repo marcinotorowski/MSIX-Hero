@@ -19,8 +19,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Common;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 

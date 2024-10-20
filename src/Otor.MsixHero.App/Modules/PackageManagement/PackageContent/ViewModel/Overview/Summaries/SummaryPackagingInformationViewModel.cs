@@ -21,8 +21,8 @@ using System.Threading.Tasks;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Build;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries
 {

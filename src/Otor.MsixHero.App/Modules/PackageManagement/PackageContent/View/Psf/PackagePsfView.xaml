@@ -8,8 +8,8 @@
              xmlns:psf1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-             xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx.Reader"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance psf:PackagePsfViewModel}">
     <DockPanel VerticalAlignment="Top">

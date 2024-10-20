@@ -7,13 +7,14 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Psf.Entities;
-using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
-using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Psf.Entities;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf

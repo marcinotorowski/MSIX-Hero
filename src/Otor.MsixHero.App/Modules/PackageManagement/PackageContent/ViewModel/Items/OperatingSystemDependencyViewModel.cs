@@ -15,8 +15,9 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items
 {

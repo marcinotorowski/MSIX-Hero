@@ -9,11 +9,13 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items;
+using Otor.MsixHero.Appx.Common.Identity;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Interop;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -38,7 +40,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.D
                 ExceptionGuard.Guard(() =>
                 {
                     var dep = (AppxPackageDependency)p;
-                    var familyName = AppxPackaging.GetPackageFamilyName(dep.Name, dep.Publisher);
+                    var familyName = AppxPackagingNameHelper.GetPackageFamilyName(dep.Name, dep.Publisher);
                     var pkg = manager.GetInstalledPackageByFamilyName(familyName).GetAwaiter().GetResult();
 
                     var dialogOpener = new DialogOpener(prismServices, interactionService);

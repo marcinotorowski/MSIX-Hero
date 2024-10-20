@@ -24,17 +24,18 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Common.Identity;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
 
 namespace Otor.MsixHero.Appx.Packaging.Services;
 
@@ -117,18 +118,19 @@ public class AppxPackageQueryService : IAppxPackageQueryService
     public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
         using var reader = new PackageIdentityFileReaderAdapter(PackageManagerSingleton.Instance, mode == PackageFindMode.CurrentUser ? PackageInstallationContext.CurrentUser : PackageInstallationContext.AllUsers, packageName);
-        var manifestReader = new AppxManifestReader();
+
+        var manifestReader = new AppxManifestReaderWithDependencyResolving(new AppxManifestReader());
         // ReSharper disable once AccessToDisposedClosure
-        var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+        var package = await Task.Run(() => manifestReader.Read(reader, cancellationToken), cancellationToken).ConfigureAwait(false);
         return package;
     }
 
     public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
     {
         using IAppxFileReader reader = new FileInfoFileReaderAdapter(manifestPath);
-        var manifestReader = new AppxManifestReader();
+        var manifestReader = new AppxManifestReaderWithDependencyResolving(new AppxManifestReader());
         // ReSharper disable once AccessToDisposedClosure
-        var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+        var package = await Task.Run(() => manifestReader.Read(reader,  cancellationToken), cancellationToken).ConfigureAwait(false);
         return package;
     }
 

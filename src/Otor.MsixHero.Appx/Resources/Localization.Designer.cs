@@ -286,15 +286,6 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bundles are not supported..
-        /// </summary>
-        public static string Packages_Error_BundleNotSupported {
-            get {
-                return ResourceManager.GetString("Packages_Error_BundleNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The package cannot be installed, because it is not signed by a trusted certificate..
         /// </summary>
         public static string Packages_Error_CertTrust {
@@ -394,42 +385,6 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The full name must be a string with 5 units, separated by underscores..
-        /// </summary>
-        public static string Packages_Error_FullName {
-            get {
-                return ResourceManager.GetString("Packages_Error_FullName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid package architecture..
-        /// </summary>
-        public static string Packages_Error_FullNameInvalid_Architecture_Format {
-            get {
-                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Architecture_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid publisher hash..
-        /// </summary>
-        public static string Packages_Error_FullNameInvalid_Hash_Format {
-            get {
-                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Hash_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid full package name. String &apos;{1}&apos; is not a valid version..
-        /// </summary>
-        public static string Packages_Error_FullNameInvalid_Version_Format {
-            get {
-                return ResourceManager.GetString("Packages_Error_FullNameInvalid_Version_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not install {0} {1}..
         /// </summary>
         public static string Packages_Error_Install_Format {
@@ -444,42 +399,6 @@ namespace Otor.MsixHero.Appx.Resources {
         public static string Packages_Error_InvalidVersion {
             get {
                 return ResourceManager.GetString("Packages_Error_InvalidVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The manifest is malformed, missing &lt;Identity /&gt;..
-        /// </summary>
-        public static string Packages_Error_Manifest_Identity {
-            get {
-                return ResourceManager.GetString("Packages_Error_Manifest_Identity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The manifest is malformed. There is no root element..
-        /// </summary>
-        public static string Packages_Error_Manifest_Root {
-            get {
-                return ResourceManager.GetString("Packages_Error_Manifest_Root", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The manifest is malformed. The document root must be &lt;Package /&gt; element..
-        /// </summary>
-        public static string Packages_Error_Manifest_Root_Package {
-            get {
-                return ResourceManager.GetString("Packages_Error_Manifest_Root_Package", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The manifest is malformed. The document root must be &lt;Package /&gt; element, belonging to a supported namespace..
-        /// </summary>
-        public static string Packages_Error_Manifest_Root_Package_Namespace {
-            get {
-                return ResourceManager.GetString("Packages_Error_Manifest_Root_Package_Namespace", resourceCulture);
             }
         }
         
@@ -561,15 +480,6 @@ namespace Otor.MsixHero.Appx.Resources {
         public static string Packages_Error_SharedContainerNotSupported {
             get {
                 return ResourceManager.GetString("Packages_Error_SharedContainerNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required package source is not supported..
-        /// </summary>
-        public static string Packages_Error_SrcNotSupported {
-            get {
-                return ResourceManager.GetString("Packages_Error_SrcNotSupported", resourceCulture);
             }
         }
         
@@ -691,24 +601,6 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;PackageDirectory&gt;.
-        /// </summary>
-        public static string Packages_PkgDir_Placeholder {
-            get {
-                return ResourceManager.GetString("Packages_PkgDir_Placeholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;PackageDrive&gt;.
-        /// </summary>
-        public static string Packages_PkgDrv_Placeholder {
-            get {
-                return ResourceManager.GetString("Packages_PkgDrv_Placeholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not get the list of running processes..
         /// </summary>
         public static string Packages_Processes_CheckError {
@@ -727,15 +619,6 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Files with extension {0}.
-        /// </summary>
-        public static string Packages_Psf_FilesWithExt_Format {
-            get {
-                return ResourceManager.GetString("Packages_Psf_FilesWithExt_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Removing….
         /// </summary>
         public static string Packages_Removing {
@@ -750,168 +633,6 @@ namespace Otor.MsixHero.Appx.Resources {
         public static string Packages_Removing_Format {
             get {
                 return ResourceManager.GetString("Packages_Removing_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Win32 + AI.
-        /// </summary>
-        public static string Packages_Types_AiStub {
-            get {
-                return ResourceManager.GetString("Packages_Types_AiStub", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Classic Win32 app enhanced by Advanced Installer launcher.
-        /// </summary>
-        public static string Packages_Types_AiStub_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_AiStub_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AI.
-        /// </summary>
-        public static string Packages_Types_AiStub_Short {
-            get {
-                return ResourceManager.GetString("Packages_Types_AiStub_Short", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to App.
-        /// </summary>
-        public static string Packages_Types_App {
-            get {
-                return ResourceManager.GetString("Packages_Types_App", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Framework.
-        /// </summary>
-        public static string Packages_Types_Framework {
-            get {
-                return ResourceManager.GetString("Packages_Types_Framework", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Win32 + MSIX Helper.
-        /// </summary>
-        public static string Packages_Types_MsixHelper {
-            get {
-                return ResourceManager.GetString("Packages_Types_MsixHelper", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Classic Win32 app enhanced by MSIX Helper.
-        /// </summary>
-        public static string Packages_Types_MsixHelper_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_MsixHelper_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MSIX Helper.
-        /// </summary>
-        public static string Packages_Types_MsixHelper_Short {
-            get {
-                return ResourceManager.GetString("Packages_Types_MsixHelper_Short", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Win32 + PSF.
-        /// </summary>
-        public static string Packages_Types_Psf {
-            get {
-                return ResourceManager.GetString("Packages_Types_Psf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Classic Win32 app enhanced by Package Support Framework (PSF).
-        /// </summary>
-        public static string Packages_Types_Psf_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_Psf_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PSF.
-        /// </summary>
-        public static string Packages_Types_Psf_Short {
-            get {
-                return ResourceManager.GetString("Packages_Types_Psf_Short", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PWA.
-        /// </summary>
-        public static string Packages_Types_Pwa {
-            get {
-                return ResourceManager.GetString("Packages_Types_Pwa", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Progressive Web Application.
-        /// </summary>
-        public static string Packages_Types_Pwa_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_Pwa_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown.
-        /// </summary>
-        public static string Packages_Types_Unknown {
-            get {
-                return ResourceManager.GetString("Packages_Types_Unknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UWP.
-        /// </summary>
-        public static string Packages_Types_UWP {
-            get {
-                return ResourceManager.GetString("Packages_Types_UWP", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Universal Windows Platform (UWP) app.
-        /// </summary>
-        public static string Packages_Types_UWP_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_UWP_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Win32.
-        /// </summary>
-        public static string Packages_Types_W32 {
-            get {
-                return ResourceManager.GetString("Packages_Types_W32", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Classic Win32 app.
-        /// </summary>
-        public static string Packages_Types_W32_Long {
-            get {
-                return ResourceManager.GetString("Packages_Types_W32_Long", resourceCulture);
             }
         }
         
@@ -1137,15 +858,6 @@ namespace Otor.MsixHero.Appx.Resources {
         public static string Packages_UpdateImpact_Wait {
             get {
                 return ResourceManager.GetString("Packages_UpdateImpact_Wait", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All files.
-        /// </summary>
-        public static string Psf_Descriptor_AllFiles {
-            get {
-                return ResourceManager.GetString("Psf_Descriptor_AllFiles", resourceCulture);
             }
         }
         

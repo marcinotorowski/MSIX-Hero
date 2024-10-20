@@ -18,9 +18,9 @@ namespace Otor.MsixHero.Appx.Diagnostic.Events.Entities;
 
 public static class AppxEventSources
 {
-    public const string PackagingPerformance = "Microsoft-Windows-AppxPackaging/Performance";
-    public const string PackagingOperational = "Microsoft-Windows-AppxPackaging/Operational";
-    public const string PackagingDebug = "Microsoft-Windows-AppxPackaging/Debug";
+    public const string PackagingPerformance = "Microsoft-Windows-AppxPackagingNameHelper/Performance";
+    public const string PackagingOperational = "Microsoft-Windows-AppxPackagingNameHelper/Operational";
+    public const string PackagingDebug = "Microsoft-Windows-AppxPackagingNameHelper/Debug";
     public const string DeploymentServerOperational = "Microsoft-Windows-AppXDeploymentServer/Operational";
     public const string DeploymentServerDiagnostic = "Microsoft-Windows-AppXDeploymentServer/Diagnostic";
     public const string DeploymentServerRestricted = "Microsoft-Windows-AppXDeploymentServer/Restricted";

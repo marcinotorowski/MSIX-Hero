@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
+using Otor.MsixHero.Appx.Common.Identity;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;

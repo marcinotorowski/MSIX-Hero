@@ -24,9 +24,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Dapplo.Log;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 

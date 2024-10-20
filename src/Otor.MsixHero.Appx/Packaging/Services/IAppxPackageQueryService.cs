@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Progress;
 

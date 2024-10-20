@@ -18,10 +18,10 @@ using System;
 using System.Linq;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items.Psf;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start
 {

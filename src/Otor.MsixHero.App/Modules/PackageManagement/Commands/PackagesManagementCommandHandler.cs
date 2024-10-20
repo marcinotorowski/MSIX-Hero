@@ -31,7 +31,6 @@ using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -43,6 +42,7 @@ using Prism.Commands;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Prism.Dialogs;
 using Otor.MsixHero.Appx.Common.Enums;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {

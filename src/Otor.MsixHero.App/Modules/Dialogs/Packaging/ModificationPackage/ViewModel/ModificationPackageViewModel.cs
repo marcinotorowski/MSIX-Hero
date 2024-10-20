@@ -37,12 +37,13 @@ using Dapplo.Log;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Modules.Common.CertificateSelector.ViewModel;
 using Otor.MsixHero.Appx.Common;
-using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Otor.MsixHero.Appx.Signing.Testing;
 using Prism.Dialogs;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel
 {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf
 {

@@ -6,13 +6,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-    xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start"
     xmlns:converters="clr-namespace:Otor.MsixHero.App.Mvvm.Converters"
     xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+    xmlns:common="clr-namespace:Otor.MsixHero.Appx.Common;assembly=Otor.MsixHero.Appx.Common"
     mc:Ignorable="d" 
     MinWidth="250"
     d:DataContext="{d:DesignInstance items:StartViewModel}"
@@ -64,7 +64,7 @@
                                 <TextBlock Foreground="White"
                                            FontSize="9"
                                            Margin="4 2" FontWeight="Bold" 
-                                           Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, ConverterParameter={x:Static packaging:PackageTypeDisplay.Short}}" />
+                                           Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, ConverterParameter={x:Static common:PackageTypeDisplay.Short}}" />
                                 <Border.RenderTransform>
                                     <TranslateTransform X="20" Y="-12" />
                                 </Border.RenderTransform>

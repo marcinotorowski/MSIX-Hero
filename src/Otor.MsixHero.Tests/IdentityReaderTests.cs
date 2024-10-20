@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Common;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 
 namespace Otor.MsixHero.Tests
 {

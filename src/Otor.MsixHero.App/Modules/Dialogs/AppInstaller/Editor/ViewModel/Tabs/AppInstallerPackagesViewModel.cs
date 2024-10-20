@@ -7,9 +7,9 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Dapplo.Log;
 using Otor.MsixHero.App.Helpers.Dialogs;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 

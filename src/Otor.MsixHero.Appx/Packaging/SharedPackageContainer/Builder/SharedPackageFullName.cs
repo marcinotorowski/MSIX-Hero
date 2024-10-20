@@ -14,6 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Otor.MsixHero.Appx.Common.Identity;
+
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder;
 
 public class SharedPackageFullName : SharedPackage

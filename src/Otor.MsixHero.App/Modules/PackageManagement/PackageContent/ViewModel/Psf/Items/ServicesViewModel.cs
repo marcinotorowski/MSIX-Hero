@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Psf.Items
 {

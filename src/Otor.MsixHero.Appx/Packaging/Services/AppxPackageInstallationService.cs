@@ -27,13 +27,14 @@ using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {
@@ -328,7 +329,7 @@ namespace Otor.MsixHero.Appx.Packaging.Services
             using (var src = FileReaderFactory.CreateFileReader(manifestPath))
             {
                 var manifestReader = new AppxManifestReader();
-                var parsed = await manifestReader.Read(src, false, cancellationToken).ConfigureAwait(false);
+                var parsed = await manifestReader.Read(src, cancellationToken).ConfigureAwait(false);
                 pkgFullName = parsed.FullName;
             }
 

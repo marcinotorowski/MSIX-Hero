@@ -159,9 +159,6 @@
   <data name="Packages_Error_AppInstallerDowngrade" xml:space="preserve">
     <value>Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.</value>
   </data>
-  <data name="Packages_Error_BundleNotSupported" xml:space="preserve">
-    <value>Bundles are not supported.</value>
-  </data>
   <data name="Packages_Error_DeveloperMode" xml:space="preserve">
     <value>Developer mode must be enabled to use this feature.</value>
   </data>
@@ -192,18 +189,6 @@
   <data name="Packages_Error_ManifestNotFound" xml:space="preserve">
     <value>Manifest file has not been found.</value>
   </data>
-  <data name="Packages_Error_Manifest_Identity" xml:space="preserve">
-    <value>The manifest is malformed, missing &lt;Identity /&gt;.</value>
-  </data>
-  <data name="Packages_Error_Manifest_Root" xml:space="preserve">
-    <value>The manifest is malformed. There is no root element.</value>
-  </data>
-  <data name="Packages_Error_Manifest_Root_Package" xml:space="preserve">
-    <value>The manifest is malformed. The document root must be &lt;Package /&gt; element.</value>
-  </data>
-  <data name="Packages_Error_Manifest_Root_Package_Namespace" xml:space="preserve">
-    <value>The manifest is malformed. The document root must be &lt;Package /&gt; element, belonging to a supported namespace.</value>
-  </data>
   <data name="Packages_Error_MissingResource_Format" xml:space="preserve">
     <value>Could not locate resource {0}.</value>
   </data>
@@ -224,9 +209,6 @@
   </data>
   <data name="Packages_Error_Registering" xml:space="preserve">
     <value>The package could not be registered.</value>
-  </data>
-  <data name="Packages_Error_SrcNotSupported" xml:space="preserve">
-    <value>Required package source is not supported.</value>
   </data>
   <data name="Packages_Error_TargetNotDir" xml:space="preserve">
     <value>The target path must be a directory.</value>
@@ -282,80 +264,17 @@
   <data name="Packages_ModPackage_DefaultPublisherName" xml:space="preserve">
     <value>Modification Package Publisher Name</value>
   </data>
-  <data name="Packages_PkgDir_Placeholder" xml:space="preserve">
-    <value>&lt;PackageDirectory&gt;</value>
-  </data>
-  <data name="Packages_PkgDrv_Placeholder" xml:space="preserve">
-    <value>&lt;PackageDrive&gt;</value>
-  </data>
   <data name="Packages_Processes_CheckError" xml:space="preserve">
     <value>Could not get the list of running processes.</value>
   </data>
   <data name="Packages_Provisioning_Format" xml:space="preserve">
     <value>Provisioning {0} {1}…</value>
   </data>
-  <data name="Packages_Psf_FilesWithExt_Format" xml:space="preserve">
-    <value>Files with extension {0}</value>
-  </data>
   <data name="Packages_Removing" xml:space="preserve">
     <value>Removing…</value>
   </data>
   <data name="Packages_Removing_Format" xml:space="preserve">
     <value>Removing {0}…</value>
-  </data>
-  <data name="Packages_Types_App" xml:space="preserve">
-    <value>App</value>
-  </data>
-  <data name="Packages_Types_Framework" xml:space="preserve">
-    <value>Framework</value>
-  </data>
-  <data name="Packages_Types_Psf" xml:space="preserve">
-    <value>Win32 + PSF</value>
-  </data>
-  <data name="Packages_Types_Psf_Long" xml:space="preserve">
-    <value>Classic Win32 app enhanced by Package Support Framework (PSF)</value>
-  </data>
-  <data name="Packages_Types_Psf_Short" xml:space="preserve">
-    <value>PSF</value>
-  </data>
-  <data name="Packages_Types_AiStub" xml:space="preserve">
-    <value>Win32 + AI</value>
-  </data>
-  <data name="Packages_Types_AiStub_Long" xml:space="preserve">
-    <value>Classic Win32 app enhanced by Advanced Installer launcher</value>
-  </data>
-  <data name="Packages_Types_AiStub_Short" xml:space="preserve">
-    <value>AI</value>
-  </data>
-  <data name="Packages_Types_MsixHelper" xml:space="preserve">
-    <value>Win32 + MSIX Helper</value>
-  </data>
-  <data name="Packages_Types_MsixHelper_Long" xml:space="preserve">
-    <value>Classic Win32 app enhanced by MSIX Helper</value>
-  </data>
-  <data name="Packages_Types_MsixHelper_Short" xml:space="preserve">
-    <value>MSIX Helper</value>
-  </data>
-  <data name="Packages_Types_Pwa" xml:space="preserve">
-    <value>PWA</value>
-  </data>
-  <data name="Packages_Types_Pwa_Long" xml:space="preserve">
-    <value>Progressive Web Application</value>
-  </data>
-  <data name="Packages_Types_Unknown" xml:space="preserve">
-    <value>Unknown</value>
-  </data>
-  <data name="Packages_Types_UWP" xml:space="preserve">
-    <value>UWP</value>
-  </data>
-  <data name="Packages_Types_UWP_Long" xml:space="preserve">
-    <value>Universal Windows Platform (UWP) app</value>
-  </data>
-  <data name="Packages_Types_W32" xml:space="preserve">
-    <value>Win32</value>
-  </data>
-  <data name="Packages_Types_W32_Long" xml:space="preserve">
-    <value>Classic Win32 app</value>
   </data>
   <data name="Packages_UpdateImpact_AnalyzingAdded" xml:space="preserve">
     <value>Analyzing added files…</value>
@@ -504,9 +423,6 @@
   <data name="Events_Reading" xml:space="preserve">
     <value>Reading {0}…</value>
   </data>
-  <data name="Psf_Descriptor_AllFiles" xml:space="preserve">
-    <value>All files</value>
-  </data>
   <data name="Signing_AlgNotSupported" xml:space="preserve">
     <value>Signature algorithm {0} is not supported.</value>
   </data>
@@ -525,23 +441,11 @@
   <data name="Packages_Error_FileNotFound" xml:space="preserve">
     <value>File not found.</value>
   </data>
-  <data name="Packages_Error_FullName" xml:space="preserve">
-    <value>The full name must be a string with 5 units, separated by underscores.</value>
-  </data>
   <data name="Packages_Error_SharedContainerNotSupported" xml:space="preserve">
     <value>This operation is not supported on this version of Windows. You need at least Windows 11 build 21354 (10.0.21354) to use this feature.</value>
   </data>
   <data name="Packages_Error_CertTrust" xml:space="preserve">
     <value>The package cannot be installed, because it is not signed by a trusted certificate.</value>
-  </data>
-  <data name="Packages_Error_FullNameInvalid_Architecture_Format" xml:space="preserve">
-    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid package architecture.</value>
-  </data>
-  <data name="Packages_Error_FullNameInvalid_Hash_Format" xml:space="preserve">
-    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid publisher hash.</value>
-  </data>
-  <data name="Packages_Error_FullNameInvalid_Version_Format" xml:space="preserve">
-    <value>The value '{0}' is not a valid full package name. String '{1}' is not a valid version.</value>
   </data>
   <data name="Signing_WrongPassword" xml:space="preserve">
     <value>Incorrect password.</value>

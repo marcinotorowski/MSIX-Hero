@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Applications.Items
 {

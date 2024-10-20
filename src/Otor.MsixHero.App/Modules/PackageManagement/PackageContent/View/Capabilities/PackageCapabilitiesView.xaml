@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:capabilities="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities"
              xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
-             xmlns:entities="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Entities;assembly=Otor.MsixHero.Appx"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Capabilities.Items"
+             xmlns:entities="clr-namespace:Otor.MsixHero.Appx.Reader.Manifest.Entities;assembly=Otor.MsixHero.Appx.Reader"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance capabilities:PackageCapabilitiesViewModel}">
     <DockPanel VerticalAlignment="Top">

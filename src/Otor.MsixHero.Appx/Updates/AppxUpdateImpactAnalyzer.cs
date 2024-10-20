@@ -21,9 +21,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
+using Otor.MsixHero.Appx.Reader.Manifest;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
 

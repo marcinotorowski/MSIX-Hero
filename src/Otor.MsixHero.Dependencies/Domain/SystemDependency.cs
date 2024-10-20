@@ -14,7 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.Dependencies.Domain
 {

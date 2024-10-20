@@ -28,14 +28,13 @@ using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Facades;
-using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Common;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 {
@@ -341,14 +340,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 IAppxFileReader reader = null;
                 try
                 {
-                    if (string.Equals(AppxFileConstants.AppxManifestFile, Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
-                    {
-                        reader = new FileInfoFileReaderAdapter(config.ParentPackagePath);
-                    }
-                    else
-                    {
-                        reader = new ZipArchiveFileReaderAdapter(config.ParentPackagePath);
-                    }
+                    reader = FileReaderFactory.CreateFileReader(config.ParentPackagePath);
 
                     var manifestReader = new AppxManifestReader();
                     var read = await manifestReader.Read(reader).ConfigureAwait(false);

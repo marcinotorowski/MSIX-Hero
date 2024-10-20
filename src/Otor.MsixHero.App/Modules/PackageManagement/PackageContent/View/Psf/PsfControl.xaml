@@ -4,17 +4,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
-    xmlns:trace="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter.Trace;assembly=Otor.MsixHero.Appx"
-    xmlns:redirection="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;assembly=Otor.MsixHero.Appx"
-    xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx"
-    xmlns:electron="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter.Electron;assembly=Otor.MsixHero.Appx"
-    xmlns:interpreter="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter;assembly=Otor.MsixHero.Appx"
-    xmlns:custom="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter.Custom;assembly=Otor.MsixHero.Appx"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:localization1="clr-namespace:Otor.MsixHero.Infrastructure.Localization;assembly=Otor.MsixHero.Infrastructure"
     xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
     xmlns:psf="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:interpreter="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter;assembly=Otor.MsixHero.Appx.Reader"
+    xmlns:redirection="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter.Redirection;assembly=Otor.MsixHero.Appx.Reader"
+    xmlns:trace="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter.Trace;assembly=Otor.MsixHero.Appx.Reader"
+    xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx.Reader"
+    xmlns:electron="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter.Electron;assembly=Otor.MsixHero.Appx.Reader"
+    xmlns:custom="clr-namespace:Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter.Custom;assembly=Otor.MsixHero.Appx.Reader"
     x:Name="PsfControlRoot" mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -247,7 +247,7 @@
 
         <ItemsControl x:Name="ItemsControl" ItemsSource="{Binding ElementName=PsfControlRoot, Path=Psf.TraceRules}" Visibility="{Binding ElementName=PsfControlRoot, Path=HasTraceRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="trace:PsfTraceFixup">
+                <DataTemplate DataType="{x:Type trace:PsfTraceFixup}">
                     <StackPanel>
                         <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PsfProcessMatch}" Margin="0 -5 0 8" />
 
@@ -373,7 +373,7 @@
 
         <ItemsControl ItemsSource="{Binding ElementName=PsfControlRoot, Path=Psf.ElectronRules}" Visibility="{Binding ElementName=PsfControlRoot, Path=HasElectronRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="electron:PsfElectronFixup">
+                <DataTemplate DataType="{x:Type electron:PsfElectronFixup}">
                     <StackPanel>
                         <ContentControl Visibility="{Binding ElementName=PsfControlRoot, Path=HasElectronRules, Converter={StaticResource BooleanToVisibilityConverter}}" Content="{Binding}" ContentTemplate="{StaticResource PsfProcessMatch}" Margin="0 -5 0 8" />
 

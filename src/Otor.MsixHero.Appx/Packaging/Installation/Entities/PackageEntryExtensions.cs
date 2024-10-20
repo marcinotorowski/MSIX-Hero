@@ -26,11 +26,13 @@ using Dapplo.Log;
 using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Appx.Reader;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
+using Otor.MsixHero.Appx.Common.Identity;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation.Entities;
 

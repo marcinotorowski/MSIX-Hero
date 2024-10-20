@@ -29,9 +29,10 @@ using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
 

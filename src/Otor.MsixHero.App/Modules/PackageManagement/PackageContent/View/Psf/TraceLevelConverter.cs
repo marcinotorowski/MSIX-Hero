@@ -19,7 +19,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Reader.Psf.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf
 {

@@ -141,4 +141,34 @@
   <data name="Packages_Error_NoPackageInFolder" xml:space="preserve">
     <value>Dieser Ordner enthält weder APPX/MSIX-Pakete noch die APPX-Bundles.</value>
   </data>
+  <data name="Packages_Error_BundleNotSupported" xml:space="preserve">
+    <value>Bundles werden nicht unterstützt.</value>
+  </data>
+  <data name="Packages_Error_SrcNotSupported" xml:space="preserve">
+    <value>Die erforderliche Paketquelle wird nicht unterstützt.</value>
+  </data>
+  <data name="Packages_Error_Manifest_Identity" xml:space="preserve">
+    <value>Das Manifest ist beschädigt, es fehlt &lt;Identity /&gt;.</value>
+  </data>
+  <data name="Packages_Error_Manifest_Root_Package_Namespace" xml:space="preserve">
+    <value>Das Manifest ist beschädigt. Der Root des Dokuments muss ein &lt;Package /&gt; Element sein, das zu einem unterstützten Namespace gehört.</value>
+  </data>
+  <data name="Packages_Error_Manifest_Root" xml:space="preserve">
+    <value>Das Manifest ist beschädigt. Es gibt kein Root-Element.</value>
+  </data>
+  <data name="Packages_Error_Manifest_Root_Package" xml:space="preserve">
+    <value>Das Manifest ist beschädigt. Der Root des Dokuments muss ein &lt;Package /&gt; Element sein.</value>
+  </data>
+  <data name="Packages_Psf_FilesWithExt_Format" xml:space="preserve">
+    <value>Dateien mit der Erweiterung {0}</value>
+  </data>
+  <data name="Packages_PkgDir_Placeholder" xml:space="preserve">
+    <value>&lt;PaketVerzeichnis&gt;</value>
+  </data>
+  <data name="Packages_PkgDrv_Placeholder" xml:space="preserve">
+    <value>&lt;Paket-Laufwerk&gt;</value>
+  </data>
+  <data name="Psf_Descriptor_AllFiles" xml:space="preserve">
+    <value>Alle Dateien</value>
+  </data>
 </root>

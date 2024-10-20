@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Appx.Common.Identity;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         // obsolete, and we do not have to calculate familyName and publisherHash.
                         if (!this._cachedPublisherHashes.TryGetValue(publisher, out var publisherHashId))
                         {
-                            publisherHashId = AppxPackaging.GetPublisherHash(publisher);
+                            publisherHashId = AppxPackagingNameHelper.GetPublisherHash(publisher);
                             this._cachedPublisherHashes[publisher] = publisherHashId;
                         }
 

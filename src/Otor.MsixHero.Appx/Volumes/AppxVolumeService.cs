@@ -26,7 +26,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using Microsoft.Win32.SafeHandles;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Exceptions;
@@ -35,6 +34,7 @@ using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Windows.Media.Ocr;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.Appx.Volumes
 {

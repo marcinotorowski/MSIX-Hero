@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:full1="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Enums;assembly=Otor.MsixHero.Appx"
-             xmlns:appx="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Common.PackageSelector.ViewModel"
+             xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Common.Enums;assembly=Otor.MsixHero.Appx.Common"
+             xmlns:packagingEnums="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Enums;assembly=Otor.MsixHero.Appx.Common"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageSelectorViewModel}">
@@ -55,9 +55,9 @@
                     </TextBlock.Style>
                 </TextBlock>
                 <StackPanel Margin="0 0 0 16" Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding AllowChangingSourcePackage}" Orientation="Horizontal">
-                    <RadioButton Margin="0 0 16 0" GroupName="pa1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Package}}" 
+                    <RadioButton Margin="0 0 16 0" GroupName="pa1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageType.Package}}" 
                              Content="{localization:Loc PackageSelector_PackageType_Package}" />
-                    <RadioButton Margin="0 0 0 0" GroupName="pa2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Bundle}}" 
+                    <RadioButton Margin="0 0 0 0" GroupName="pa2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageType.Bundle}}" 
                              Content="{localization:Loc PackageSelector_PackageType_Bundle}" />
                 </StackPanel>
 
@@ -139,11 +139,11 @@
                         IsEnabled="{Binding AllowChangingSourcePackage}" 
                         Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                         SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
-                            <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm64}" Content="{localization:Loc Architecture_ARM64}" />
-                            <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm}" Content="{localization:Loc Architecture_ARM}" />
-                            <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Neutral}" Content="{localization:Loc PackageSelector_Architecture_Neutral}" />
-                            <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x64}" Content="{localization:Loc PackageSelector_Architecture_64}" />
-                            <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x86}" Content="{localization:Loc PackageSelector_Architecture_32}" />
+                            <ComboBoxItem Tag="{x:Static packagingEnums:AppxPackageArchitecture.Arm64}" Content="{localization:Loc Architecture_ARM64}" />
+                            <ComboBoxItem Tag="{x:Static packagingEnums:AppxPackageArchitecture.Arm}" Content="{localization:Loc Architecture_ARM}" />
+                            <ComboBoxItem Tag="{x:Static packagingEnums:AppxPackageArchitecture.Neutral}" Content="{localization:Loc PackageSelector_Architecture_Neutral}" />
+                            <ComboBoxItem Tag="{x:Static packagingEnums:AppxPackageArchitecture.x64}" Content="{localization:Loc PackageSelector_Architecture_64}" />
+                            <ComboBoxItem Tag="{x:Static packagingEnums:AppxPackageArchitecture.x86}" Content="{localization:Loc PackageSelector_Architecture_32}" />
                         </ComboBox>
                     </Border>
                 </Grid>

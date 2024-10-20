@@ -23,8 +23,8 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.Enums;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Summaries

@@ -15,27 +15,20 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Descriptor;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Items.Psf;
 
-public abstract class BaseApplicationProxyViewModel : NotifyPropertyChanged
+public abstract class BaseApplicationProxyViewModel(BaseApplicationProxy definition) : NotifyPropertyChanged
 {
-    private readonly BaseApplicationProxy _definition;
+    public string Executable => definition.Executable;
 
-    protected BaseApplicationProxyViewModel(BaseApplicationProxy definition)
-    {
-        this._definition = definition;
-    }
+    public string Arguments => definition.Arguments;
 
-    public string Executable => this._definition.Executable;
+    public string WorkingDirectory => definition.WorkingDirectory;
 
-    public string Arguments => this._definition.Arguments;
+    public bool HasArguments => !string.IsNullOrEmpty(definition.Arguments);
 
-    public string WorkingDirectory => this._definition.WorkingDirectory;
-
-    public bool HasArguments => !string.IsNullOrEmpty(this._definition.Arguments);
-
-    public bool HasWorkingDirectory => !string.IsNullOrEmpty(this._definition.WorkingDirectory);
+    public bool HasWorkingDirectory => !string.IsNullOrEmpty(definition.WorkingDirectory);
 
 }

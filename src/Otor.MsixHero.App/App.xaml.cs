@@ -63,7 +63,7 @@ using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Testing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;

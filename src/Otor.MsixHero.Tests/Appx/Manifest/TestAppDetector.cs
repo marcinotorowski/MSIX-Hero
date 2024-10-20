@@ -17,8 +17,8 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest.Helpers;
 
 namespace Otor.MsixHero.Tests.Appx.Manifest
 {

@@ -20,10 +20,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Dependencies.Domain;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -202,7 +204,7 @@ namespace Otor.MsixHero.Dependencies
             foreach (var addOnPackage in allPackages.Where(installedPackage => installedPackage.IsOptional))
             {
                 using var fileReader = FileReaderFactory.CreateFileReader(addOnPackage.ManifestPath);
-                addOnPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+                addOnPackages.Add(await manifestReader.Read(fileReader, cancellationToken).ConfigureAwait(false));
             }
 
             progressForCalculation.Report(new ProgressData(0, Resources.Localization.Dependencies_ReadingRelations));
@@ -235,7 +237,7 @@ namespace Otor.MsixHero.Dependencies
                     if (candidate != null)
                     {
                         using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestPath);
-                        consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+                        consideredPackages.Add(await manifestReader.Read(fileReader, cancellationToken).ConfigureAwait(false));
                     }
                 }
 
@@ -252,7 +254,7 @@ namespace Otor.MsixHero.Dependencies
                     if (candidate != null)
                     {
                         using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestPath);
-                        consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+                        consideredPackages.Add(await manifestReader.Read(fileReader, cancellationToken).ConfigureAwait(false));
                     }
                 }
             }

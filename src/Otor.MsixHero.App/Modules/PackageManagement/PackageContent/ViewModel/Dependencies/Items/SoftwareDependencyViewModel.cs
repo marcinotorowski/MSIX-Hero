@@ -1,4 +1,4 @@
-﻿using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+﻿using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Dependencies.Items
 {

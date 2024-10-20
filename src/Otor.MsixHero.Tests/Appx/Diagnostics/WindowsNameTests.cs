@@ -16,8 +16,7 @@
 
 using System;
 using NUnit.Framework;
-using Otor.MsixHero.Appx.Diagnostic.System;
-using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
 
 namespace Otor.MsixHero.Tests.Appx.Diagnostics
 {

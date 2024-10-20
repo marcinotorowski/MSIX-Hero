@@ -21,7 +21,7 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Common;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Prism.Commands;
 using Prism.Dialogs;
 
@@ -35,13 +35,24 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.O
         {
             this.OpenPackageNameCalculator = new DelegateCommand(() =>
             {
-                IDialogParameters parameters = new DialogParameters();
-                parameters.Add("name", this.Name);
-                parameters.Add("version", this.Version);
-                parameters.Add("familyName", this.FamilyName);
-                parameters.Add("publisher", this.Publisher);
-                parameters.Add("architecture", this.Architecture);
-                parameters.Add("resourceId", this.ResourceId);
+                var parameters = new DialogParameters();
+                if (this.Name != null)
+                    parameters.Add("name", this.Name);
+
+                if (this.Version != null)
+                    parameters.Add("version", this.Version);
+
+                if (this.FamilyName != null)
+                    parameters.Add("familyName", this.FamilyName);
+
+                if (this.Publisher != null)
+                    parameters.Add("publisher", this.Publisher);
+
+                if (this.Architecture != null)
+                    parameters.Add("architecture", this.Architecture);
+
+                if (this.ResourceId != null)
+                    parameters.Add("resourceId", this.ResourceId);
 
                 prismServices.ModuleManager.LoadModule(ModuleNames.Dialogs.Packaging);
                 prismServices.DialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingNames, parameters, _ => { });

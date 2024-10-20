@@ -27,7 +27,6 @@ using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -44,9 +43,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Otor.MsixHero.Appx.Reader;
 using Prism.Dialogs;
 using Otor.MsixHero.Appx.Common.Enums;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.PackageExpert.ViewModels
 {

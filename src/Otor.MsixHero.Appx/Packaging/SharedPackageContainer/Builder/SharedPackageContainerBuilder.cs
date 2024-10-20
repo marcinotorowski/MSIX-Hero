@@ -6,11 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Otor.MsixHero.Appx.Common.Identity;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.Manifest;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder
 {
@@ -55,7 +57,7 @@ namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Builder
 
         public void Add(string name, string publisher)
         {
-            AddFamilyName(AppxPackaging.GetPackageFamilyName(name, publisher));
+            AddFamilyName(AppxPackagingNameHelper.GetPackageFamilyName(name, publisher));
         }
 
         public Entities.SharedPackageContainer Build()

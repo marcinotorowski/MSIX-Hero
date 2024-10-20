@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel;
 using Otor.MsixHero.Appx.Packaging.Services;
-using Otor.MsixHero.Appx.Reader;
+using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;

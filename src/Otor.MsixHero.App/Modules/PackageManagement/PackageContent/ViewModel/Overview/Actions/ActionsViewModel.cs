@@ -6,7 +6,7 @@ using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overv
 using Otor.MsixHero.App.Modules.PackageManagement.PackageContent.ViewModel.Overview.Actions.Start;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 

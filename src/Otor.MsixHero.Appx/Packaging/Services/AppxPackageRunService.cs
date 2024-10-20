@@ -23,13 +23,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Exceptions;
-using Otor.MsixHero.Appx.Packaging.Manifest;
 using Dapplo.Log;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
+using Otor.MsixHero.Appx.Reader.Manifest;
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {

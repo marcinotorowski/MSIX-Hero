@@ -29,6 +29,7 @@ using System.Windows.Input;
 using Dapplo.Log;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
+using Otor.MsixHero.Appx.Common.Identity;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Helpers;

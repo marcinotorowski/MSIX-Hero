@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Otor.MsixHero.Appx.Psf;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Adapters;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Adapters;
+using Otor.MsixHero.Appx.Reader.Psf;
 
 namespace Otor.MsixHero.Tests.Psf.MsixHelper
 {

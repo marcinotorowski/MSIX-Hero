@@ -63,4 +63,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Psf\" />
+  </ItemGroup>
+
 </Project>

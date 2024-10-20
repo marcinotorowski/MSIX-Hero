@@ -17,7 +17,7 @@ using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Facades;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
+using Otor.MsixHero.Appx.Reader.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 

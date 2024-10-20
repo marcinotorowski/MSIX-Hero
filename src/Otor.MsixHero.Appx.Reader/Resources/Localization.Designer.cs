@@ -61,6 +61,15 @@ namespace Otor.MsixHero.Appx.Reader.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bundles are not supported..
+        /// </summary>
+        internal static string Packages_Error_BundleNotSupported {
+            get {
+                return ResourceManager.GetString("Packages_Error_BundleNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The directory &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string Packages_Error_DirectoryMissing_Format {
@@ -106,6 +115,42 @@ namespace Otor.MsixHero.Appx.Reader.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The manifest is malformed, missing &lt;Identity /&gt;..
+        /// </summary>
+        internal static string Packages_Error_Manifest_Identity {
+            get {
+                return ResourceManager.GetString("Packages_Error_Manifest_Identity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The manifest is malformed. There is no root element..
+        /// </summary>
+        internal static string Packages_Error_Manifest_Root {
+            get {
+                return ResourceManager.GetString("Packages_Error_Manifest_Root", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The manifest is malformed. The document root must be &lt;Package /&gt; element..
+        /// </summary>
+        internal static string Packages_Error_Manifest_Root_Package {
+            get {
+                return ResourceManager.GetString("Packages_Error_Manifest_Root_Package", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The manifest is malformed. The document root must be &lt;Package /&gt; element, belonging to a supported namespace..
+        /// </summary>
+        internal static string Packages_Error_Manifest_Root_Package_Namespace {
+            get {
+                return ResourceManager.GetString("Packages_Error_Manifest_Root_Package_Namespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This folder does not contain APPX/MSIX package nor APPX bundle..
         /// </summary>
         internal static string Packages_Error_NoPackageInFolder {
@@ -129,6 +174,51 @@ namespace Otor.MsixHero.Appx.Reader.Resources {
         internal static string Packages_Error_PackageNotFound {
             get {
                 return ResourceManager.GetString("Packages_Error_PackageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required package source is not supported..
+        /// </summary>
+        internal static string Packages_Error_SrcNotSupported {
+            get {
+                return ResourceManager.GetString("Packages_Error_SrcNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;PackageDirectory&gt;.
+        /// </summary>
+        internal static string Packages_PkgDir_Placeholder {
+            get {
+                return ResourceManager.GetString("Packages_PkgDir_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;PackageDrive&gt;.
+        /// </summary>
+        internal static string Packages_PkgDrv_Placeholder {
+            get {
+                return ResourceManager.GetString("Packages_PkgDrv_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files with extension {0}.
+        /// </summary>
+        internal static string Packages_Psf_FilesWithExt_Format {
+            get {
+                return ResourceManager.GetString("Packages_Psf_FilesWithExt_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All files.
+        /// </summary>
+        internal static string Psf_Descriptor_AllFiles {
+            get {
+                return ResourceManager.GetString("Psf_Descriptor_AllFiles", resourceCulture);
             }
         }
     }

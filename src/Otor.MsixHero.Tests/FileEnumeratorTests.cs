@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Otor.MsixHero.Appx.Reader;
-using Otor.MsixHero.Appx.Reader.Entities;
+using Otor.MsixHero.Appx.Reader.File;
+using Otor.MsixHero.Appx.Reader.File.Entities;
 
 namespace Otor.MsixHero.Tests
 {

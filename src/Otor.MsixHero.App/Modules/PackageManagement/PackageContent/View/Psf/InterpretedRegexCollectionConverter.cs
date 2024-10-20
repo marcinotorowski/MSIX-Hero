@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Windows.Data;
-using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
-using Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter;
+using Otor.MsixHero.Appx.Reader.Psf.Entities.Interpreter.Redirection;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageContent.View.Psf;
 

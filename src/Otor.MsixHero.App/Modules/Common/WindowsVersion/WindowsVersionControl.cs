@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Otor.MsixHero.Appx.Diagnostic.System;
+using Otor.MsixHero.Appx.Common.WindowsVersioning;
 
 namespace Otor.MsixHero.App.Modules.Common.WindowsVersion
 {
@@ -14,7 +14,7 @@ namespace Otor.MsixHero.App.Modules.Common.WindowsVersion
         public static readonly DependencyProperty UnknownImageSourceProperty = DependencyProperty.Register(nameof(UnknownImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
         public static readonly DependencyPropertyKey ActualImageSourcePropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualImageSource), typeof(ImageSource), typeof(WindowsVersionControl), new PropertyMetadata(null));
         public static readonly DependencyProperty ActualImageSourceProperty = ActualImageSourcePropertyKey.DependencyProperty;
-        public static readonly DependencyPropertyKey ActualVersionPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualVersion), typeof(Appx.Packaging.Manifest.Enums.WindowsVersion), typeof(WindowsVersionControl), new PropertyMetadata(Appx.Packaging.Manifest.Enums.WindowsVersion.Unspecified));
+        public static readonly DependencyPropertyKey ActualVersionPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualVersion), typeof(Appx.Common.WindowsVersioning.WindowsVersion), typeof(WindowsVersionControl), new PropertyMetadata(Appx.Common.WindowsVersioning.WindowsVersion.Unspecified));
         public static readonly DependencyProperty ActualVersionProperty = ActualVersionPropertyKey.DependencyProperty;
         public static readonly DependencyProperty WindowsVersionProperty = DependencyProperty.Register(nameof(WindowsVersion), typeof(string), typeof(WindowsVersionControl), new PropertyMetadata(null, CalculateProperties));
 
@@ -54,9 +54,9 @@ namespace Otor.MsixHero.App.Modules.Common.WindowsVersion
             private set => SetValue(ActualImageSourcePropertyKey, value);
         }
         
-        public Appx.Packaging.Manifest.Enums.WindowsVersion ActualVersion
+        public Appx.Common.WindowsVersioning.WindowsVersion ActualVersion
         {
-            get => (Appx.Packaging.Manifest.Enums.WindowsVersion)GetValue(ActualVersionProperty);
+            get => (Appx.Common.WindowsVersioning.WindowsVersion)GetValue(ActualVersionProperty);
             private set => SetValue(ActualVersionPropertyKey, value);
         }
         
@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App.Modules.Common.WindowsVersion
             {
                 // just assign the correct image
                 var newVersion = (string)e.NewValue == null 
-                    ? Appx.Packaging.Manifest.Enums.WindowsVersion.Unspecified 
+                    ? Appx.Common.WindowsVersioning.WindowsVersion.Unspecified 
                     : WindowsNames.GetWindowsDesktop((string)e.NewValue).WindowsVersion;
 
                 var currentVersion = ((WindowsVersionControl)d).ActualVersion;
@@ -86,17 +86,17 @@ namespace Otor.MsixHero.App.Modules.Common.WindowsVersion
 
             switch (((WindowsVersionControl)d).ActualVersion)
             {
-                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win10:
+                case Appx.Common.WindowsVersioning.WindowsVersion.Win10:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows10ImageSource;
                     break;
-                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win11:
+                case Appx.Common.WindowsVersioning.WindowsVersion.Win11:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows11ImageSource;
                     break;
-                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win8:
-                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win81:
+                case Appx.Common.WindowsVersioning.WindowsVersion.Win8:
+                case Appx.Common.WindowsVersioning.WindowsVersion.Win81:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows8ImageSource;
                     break;
-                case Appx.Packaging.Manifest.Enums.WindowsVersion.Win7:
+                case Appx.Common.WindowsVersioning.WindowsVersion.Win7:
                     ((WindowsVersionControl)d).ActualImageSource = ((WindowsVersionControl)d).Windows7ImageSource;
                     break;
                 default:

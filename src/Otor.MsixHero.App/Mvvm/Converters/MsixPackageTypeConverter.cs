@@ -17,6 +17,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
 
