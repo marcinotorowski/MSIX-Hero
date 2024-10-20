@@ -8,7 +8,8 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
              xmlns:star="clr-namespace:Otor.MsixHero.App.Controls.Star"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-             mc:Ignorable="d" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SelectableInstalledPackageViewModel}">
+             mc:Ignorable="d" d:DesignWidth="800" 
+             d:DataContext="{d:DesignInstance viewModels:SelectableInstalledPackageViewModel}">
     <DockPanel>
         <Border
             Panel.ZIndex="2"
@@ -49,15 +50,15 @@
             Panel.ZIndex="1"
             x:Name="Column2"
             DockPanel.Dock="Right">
-            <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+            <TextBlock controls:Highlighter.Selection="{Binding RelativeSource={RelativeSource Self}, Path=(controls:Highlighter.CurrentSearchKey)}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
             <TextBlock Text="{Binding InstallDate, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
         </StackPanel>
 
         <StackPanel 
             x:Name="Column1"
             Margin="10 0">
-            <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
-            <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            <TextBlock controls:Highlighter.Selection="{Binding RelativeSource={RelativeSource Self}, Path=(controls:Highlighter.CurrentSearchKey)}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+            <TextBlock controls:Highlighter.Selection="{Binding RelativeSource={RelativeSource Self}, Path=(controls:Highlighter.CurrentSearchKey)}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
         </StackPanel>
 
     </DockPanel>

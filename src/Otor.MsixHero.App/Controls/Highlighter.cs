@@ -23,8 +23,20 @@ using System.Windows.Media;
 
 namespace Otor.MsixHero.App.Controls
 {
-    internal class Highlighter : DependencyObject
+    public class Highlighter : DependencyObject
     {
+        public static readonly DependencyProperty InheritableProperty = DependencyProperty.RegisterAttached("CurrentSearchKey", typeof(string), typeof(Highlighter), new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.Inherits));
+
+        public static void SetCurrentSearchKey(DependencyObject element, string value)
+        {
+            element.SetValue(InheritableProperty, value);
+        }
+
+        public static string GetCurrentSearchKey(DependencyObject element)
+        {
+            return (string)element.GetValue(InheritableProperty);
+        }
+
         public static readonly DependencyProperty SelectionProperty = DependencyProperty.RegisterAttached("Selection", typeof(string), typeof(Highlighter), new PropertyMetadata(SelectText));
 
         public static string GetSelection(DependencyObject obj)
