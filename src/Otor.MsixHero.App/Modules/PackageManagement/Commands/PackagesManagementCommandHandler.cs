@@ -426,7 +426,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser()), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
