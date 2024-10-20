@@ -115,6 +115,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string Button_Reset {
+            get {
+                return ResourceManager.GetString("Button_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Button_Save {
@@ -10532,6 +10541,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not installed.
+        /// </summary>
+        public static string Packages_Filter_Category_NotInstalled {
+            get {
+                return ResourceManager.GetString("Packages_Filter_Category_NotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Side-loaded.
         /// </summary>
         public static string Packages_Filter_Category_Sideloaded {
@@ -10757,7 +10775,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install path.
+        ///   Looks up a localized string similar to Directory path.
         /// </summary>
         public static string Packages_List_ContextMenu_Copy_InstallPath {
             get {
@@ -10820,7 +10838,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install folder.
+        ///   Looks up a localized string similar to Folder.
         /// </summary>
         public static string Packages_List_ContextMenu_Open_InstallFolder {
             get {
@@ -10906,6 +10924,69 @@ namespace Otor.MsixHero.App.Resources {
         public static string Packages_MoreCommands {
             get {
                 return ResourceManager.GetString("Packages_MoreCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All users.
+        /// </summary>
+        public static string Packages_QuerySource_AllUsers_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_AllUsers_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays packages, installed for all users on this machine.
+        /// </summary>
+        public static string Packages_QuerySource_AllUsers_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_AllUsers_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current user.
+        /// </summary>
+        public static string Packages_QuerySource_CurrentUser_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_CurrentUser_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays packages, installed for the current user.
+        /// </summary>
+        public static string Packages_QuerySource_CurrentUser_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_CurrentUser_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory.
+        /// </summary>
+        public static string Packages_QuerySource_Directory_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_Directory_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browses the current computer and shows packages from a specified directory.
+        /// </summary>
+        public static string Packages_QuerySource_Directory_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_Directory_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DIRECTORY.
+        /// </summary>
+        public static string Packages_Search_Badge_Directory {
+            get {
+                return ResourceManager.GetString("Packages_Search_Badge_Directory", resourceCulture);
             }
         }
         

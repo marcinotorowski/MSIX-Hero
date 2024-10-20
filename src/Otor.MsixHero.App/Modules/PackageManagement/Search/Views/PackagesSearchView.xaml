@@ -8,6 +8,9 @@
     xmlns:mvvm="http://prismlibrary.com/"
     xmlns:viewModels1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:services="clr-namespace:Otor.MsixHero.Appx.Packaging.Services;assembly=Otor.MsixHero.Appx"
+    xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.Views"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     Focusable="False"
@@ -85,15 +88,16 @@
                 </Button.Style>
             </Button>
 
-            <CheckBox 
-                FocusVisualStyle="{x:Null}"
+            <ToggleButton
+                x:Name="Toggle"
+                DataContext="{Binding Path=SourceType}"
                 ToolTip="{localization:Loc Packages_Search_Badge_Tooltip}"
-                IsChecked="{Binding IsAllUsers, Mode=TwoWay}">
-                <CheckBox.Style>
-                    <Style TargetType="CheckBox">
+                FocusVisualStyle="{x:Null}">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
                         <Setter Property="Background" Value="#BB0173C7" />
                         <Setter Property="Foreground" Value="#FFFFFF" />
-                        <Setter Property="Margin" Value="3" />
+                        <Setter Property="Margin" Value="2" />
                         <Setter Property="Padding" Value="6 0" />
                         <Setter Property="HorizontalAlignment" Value="Right" />
                         <Setter Property="Cursor" Value="Hand" />
@@ -104,20 +108,73 @@
                         <Setter Property="VerticalContentAlignment" Value="Center" />
                         <Setter Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="CheckBox">
+                                <ControlTemplate TargetType="ToggleButton">
                                     <Border
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        Background="{TemplateBinding Background}">
-                                        <TextBlock 
-                                            x:Name="PART_Label" 
-                                            Text="{localization:Loc Packages_Search_Badge_User}"
-                                            Margin="{TemplateBinding Padding}" 
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Padding="0 0 4 0"
+                                         Background="{TemplateBinding Background}">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock 
+                                                 x:Name="PART_Label" 
+                                                 Text="{localization:Loc Packages_Search_Badge_User}"
+                                                 Margin="{TemplateBinding Padding}" 
+                                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                            
+                                            <Border
+                                                x:Name="Arrow"
+                                                Background="Transparent"
+                                                IsHitTestVisible="False"
+                                                Margin="0"
+                                                RenderTransformOrigin="0.5,0.5"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+
+                                                <Border.RenderTransform>
+                                                    <RotateTransform Angle="0" />
+                                                </Border.RenderTransform>
+
+                                                <TextBlock
+                                                    FontFamily="{StaticResource FluentSystemIcons}"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0"
+                                                    Text="&#xF2A4;"
+                                                    VerticalAlignment="Center" />
+                                            </Border>
+                                        </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsChecked" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Duration="00:00:00.15"
+                                                            Storyboard.TargetName="Arrow"
+                                                            Storyboard.TargetProperty="(Border.RenderTransform).(RotateTransform.Angle)"
+                                                            To="180.0" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Duration="00:00:00.15"
+                                                            Storyboard.TargetName="Arrow"
+                                                            Storyboard.TargetProperty="(Border.RenderTransform).(RotateTransform.Angle)"
+                                                            To="0.0" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+
+                                        <Trigger Property="DataContext" Value="{x:Static services:PackageQuerySourceType.InstalledForAllUsers}">
                                             <Setter TargetName="PART_Label" Property="Text" Value="{localization:Loc Packages_Search_Badge_Machine}" />
+                                        </Trigger>
+                                        <Trigger Property="DataContext" Value="{x:Static services:PackageQuerySourceType.Directory}">
+                                            <Setter TargetName="PART_Label" Property="Text" Value="{localization:Loc Packages_Search_Badge_Directory}" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="#0173C7" />
@@ -133,8 +190,26 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </CheckBox.Style>
-            </CheckBox>
+                </ToggleButton.Style>
+
+            </ToggleButton>
+
+            <Popup
+                AllowsTransparency="True"
+                PlacementTarget="{Binding ElementName=Toggle}"
+                Placement="Bottom"
+                IsOpen="{Binding ElementName=Toggle, Path=IsChecked}"
+                StaysOpen="False">
+
+                <Border Padding="0 0 18 18">
+                    <Border Padding="8" Background="White" BorderBrush="#ccc" BorderThickness="1" helpers:ButtonClosePopup.PopupOwner="{Binding ElementName=Toggle}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
+                        </Border.Effect>
+                        <views:PackageQuerySourcePopup />
+                    </Border>
+                </Border>
+            </Popup>
         </StackPanel>
     </Grid>
 </UserControl>

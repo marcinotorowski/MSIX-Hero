@@ -187,7 +187,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -371,7 +371,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private bool CanMountRegistry()
         {
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -397,7 +397,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private bool CanDismountRegistry()
         {
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -426,7 +426,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this._interactionService, true)
                 .WithBusyManager(this._busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
@@ -484,7 +484,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 #pragma warning restore 4014
                 }
 
-                var allPackages = await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                var allPackages = await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(forAllUsers ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser()), progress: p2).ConfigureAwait(false);
                     
                 if (appxIdentity != null)
                 {
@@ -544,16 +544,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
         }
 
-        private bool CanStartApp(object parameter) => this.IsSingleSelected();
+        private bool CanStartApp(object parameter) => this.IsSingleSelected() && this.AreAllSelectedInstalled();
 
         private bool CanRunTool(object parameter)
         {
-            if (!(parameter is ToolListConfiguration))
-            {
-                return false;
-            }
+            //if (!(parameter is ToolListConfiguration))
+            //{
+            //    return false;
+            //}
 
-            return this.IsSingleSelected();
+            return this.IsSingleSelected() && this.AreAllSelectedInstalled();
         }
 
         private async void OnRunTool(object parameter)
@@ -721,7 +721,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this._application.ApplicationState.Packages.SelectedPackages.Any(p => p.SignatureKind == SignatureKind.Store || p.AppInstallerUri != null);
         }
 
-        private bool CanChangeVolume() => this.GetSingleOrDefaultSelection()?.InstallDirPath != null;
+        private bool CanChangeVolume() =>  this.GetSingleOrDefaultSelection()?.InstallDirPath != null && this.AreAllSelectedInstalled();
 
         private void OnChangeVolume()
         {
@@ -846,7 +846,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         break;
                 }
 
-                await this._application.CommandExecutor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(this._application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                await this._application.CommandExecutor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(this._application.ApplicationState.Packages.Mode), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -858,7 +858,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
         }
 
-        private bool CanRemovePackage() => this.IsAnySelected();
+        private bool CanRemovePackage() => this.IsAnySelected() && this.AreAllSelectedInstalled();
 
         private bool CanOpenStore() => this.IsSingleSelected() && this._application.ApplicationState.Packages.SelectedPackages.FirstOrDefault()?.SignatureKind == SignatureKind.Store;
 
@@ -872,7 +872,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixApplicationType.Win32Psf;
         }
 
-        private bool CanOpenManifest() => this.IsSingleSelected();
+        private bool CanOpenManifest() => this.IsSingleSelected() && this.AreAllSelectedInstalled();
 
         private void OnOpenManifest()
         {
@@ -916,6 +916,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             return true;
+        }
+
+        private bool AreAllSelectedInstalled()
+        {
+            if (!this._application.ApplicationState.Packages.SelectedPackages.Any())
+            {
+                return false;
+            }
+
+            return this._application.ApplicationState.Packages.SelectedPackages.All(p => p.IsInstalled);
         }
 
         private bool IsAnySelected()
@@ -1019,6 +1029,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         {
             var selection = this.GetSingleOrDefaultSelection();
             if (selection?.PackageFamilyName == null)
+            {
+                return false;
+            }
+
+            if (!this.AreAllSelectedInstalled())
             {
                 return false;
             }

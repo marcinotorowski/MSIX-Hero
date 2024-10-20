@@ -18,10 +18,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
-using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Common.Enums;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Reader.File;
 using Otor.MsixHero.Appx.Reader.File.Adapters;
 using Otor.MsixHero.Appx.Reader.Manifest;
@@ -107,6 +105,8 @@ namespace Otor.MsixHero.Appx.Packaging
         public bool IsFramework { get; set; }
 
         public bool IsRunning { get; set; }
+
+        public bool IsInstalled => this.SignatureKind != SignatureKind.Unknown;
 
         public Uri AppInstallerUri { get; set; }
 

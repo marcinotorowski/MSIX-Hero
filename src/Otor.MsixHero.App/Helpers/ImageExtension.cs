@@ -8,14 +8,14 @@ namespace Otor.MsixHero.App.Helpers
 {
     internal class ImageExtension : DependencyObject
     {
-        public static readonly DependencyProperty SourceImagePathProperty = DependencyProperty.RegisterAttached("SourceImagePath", typeof(string), typeof(ImageExtension), new PropertyMetadata(null, PropertyChangedCallback));
+        public static readonly DependencyProperty SourceImagePathProperty = DependencyProperty.RegisterAttached("SourceImagePath", typeof(object), typeof(ImageExtension), new PropertyMetadata(null, PropertyChangedCallback));
         
-        public static string GetSourceImagePath(DependencyObject obj)
+        public static object GetSourceImagePath(DependencyObject obj)
         {
-            return (string)obj.GetValue(SourceImagePathProperty);
+            return obj.GetValue(SourceImagePathProperty);
         }
 
-        public static void SetSourceImagePath(DependencyObject obj, string value)
+        public static void SetSourceImagePath(DependencyObject obj, object value)
         {
             obj.SetValue(SourceImagePathProperty, value);
         }

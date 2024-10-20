@@ -26,9 +26,11 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         System = 1 << 1,
 
-        Developer = 1 << 2,
+        Developer = 1 << 2, 
 
-        AllSources = Store | System | Developer,
+        NotInstalled = 1 << 14,
+
+        AllSources = Store | System | Developer | NotInstalled,
 
         Addons = 1 << 3,
 

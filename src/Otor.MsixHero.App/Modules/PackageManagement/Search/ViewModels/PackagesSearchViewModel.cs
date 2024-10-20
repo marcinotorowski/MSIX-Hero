@@ -15,90 +15,292 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
+using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Appx.Common.Enums;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Commands;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
     public class PackagesSearchViewModel : NotifyPropertyChanged
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IBusyManager busyManager;
-        private readonly IInteractionService interactionService;
-        private bool isAllUsers;
+        private readonly IMsixHeroApplication _application;
+        private readonly IBusyManager _busyManager;
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
+        private bool _isAllUsers;
+        private SourceViewModel _selectedSource;
+        private bool _showAddSourcesButton;
 
         public PackagesSearchViewModel(
             IEventAggregator eventAggregator,
             IMsixHeroApplication application,
             IBusyManager busyManager,
-            IInteractionService interactionService)
+            IInteractionService interactionService,
+            IConfigurationService configurationService)
         {
-            this.application = application;
-            this.busyManager = busyManager;
-            this.interactionService = interactionService;
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand);
-            this.isAllUsers = application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
+            this._application = application;
+            this._busyManager = busyManager;
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand);
+            this._isAllUsers = application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers;
 
-            eventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
-            eventAggregator.GetEvent<UiFailedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
-            eventAggregator.GetEvent<UiCancelledEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackages);
-        }
-        
-        public string SearchKey
-        {
-            get => this.application.ApplicationState.Packages.SearchKey;
-            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.Filter, value));
-        }
+            eventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            eventAggregator.GetEvent<CustomPackageDirectoriesChangedEvent>().Subscribe(this.OnCustomPackageDirsChanged, ThreadOption.UIThread);
 
-        public bool IsAllUsers
-        {
-            get => this.isAllUsers;
-            set
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.InstalledForCurrentUser(), "Current user"));
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.InstalledForAllUsers(), "All users"));
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(null), "Folder selected by user"));
+
+            if (this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.Installed)
             {
-                if (!this.SetField(ref this.isAllUsers, value))
+                if (UserHelper.IsAdministrator())
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == PackageQuerySourceType.InstalledForAllUsers) ?? this.Sources.FirstOrDefault();
+                }
+                else
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == PackageQuerySourceType.InstalledForCurrentUser) ?? this.Sources.FirstOrDefault();
+                }
+            }
+            else
+            {
+                this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == this._application.ApplicationState.Packages.Mode.Type) ?? this.Sources.FirstOrDefault();
+            }
+
+            this.LoadCustomDirs(true);
+
+            this.Browse = new DelegateCommand<object>(p =>
+            {
+                var selected = (SourceViewModel)p;
+                if (selected == null)
                 {
                     return;
                 }
 
-                this.LoadContext(value ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser);
+                if (!this._interactionService.SelectFolder(out var dir))
+                {
+                    return;
+                }
+
+                selected.SourceType = PackageQuerySource.FromFolder(dir);
+
+                this.SelectedSource = selected;
+                this.LoadContext(selected.SourceType);
+            }, p => ((SourceViewModel)p)?.SourceType.Type == PackageQuerySourceType.Directory);
+        }
+
+        private void OnGetPackages(UiExecutingPayload<GetPackagesCommand> obj)
+        {
+            if (!obj.Request.Source.HasValue)
+            {
+                return;
+            }
+
+            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == obj.Request.Source.Value.Type);
+
+            this.OnPropertyChanged(nameof(SelectedSource));
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(IsAllUsers));
+        }
+
+        public string SearchKey
+        {
+            get => this._application.ApplicationState.Packages.SearchKey;
+            set => this._application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this._application.CommandExecutor.ApplicationState.Packages.Filter, value));
+        }
+
+        public bool IsAllUsers
+        {
+            get => this._isAllUsers;
+            set
+            {
+                if (!this.SetField(ref this._isAllUsers, value))
+                {
+                    return;
+                }
+
+                this.LoadContext(value ? PackageQuerySource.InstalledForAllUsers() : PackageQuerySource.InstalledForCurrentUser());
             }
         }
+
+        public ObservableCollection<SourceViewModel> Sources { get; } = new();
         
-        private void OnGetPackages(UiFailedPayload<GetInstalledPackagesCommand> obj)
+        public SourceViewModel SelectedSource
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
-            this.OnPropertyChanged(nameof(IsAllUsers));
+            get => this._selectedSource;
+            set
+            {
+                if (value.SourceType.Type == PackageQuerySourceType.Directory)
+                {
+                    if (string.IsNullOrEmpty(value.SourceType.Path))
+                    {
+                        if (!this._interactionService.SelectFolder(out var dir))
+                        {
+                            return;
+                        }
+
+                        value.SourceType = PackageQuerySource.FromFolder(dir);
+                    }
+                }
+
+                if (!this.SetField(ref this._selectedSource, value))
+                {
+                    return;
+                }
+
+                this.LoadContext(value.SourceType);
+            }
         }
 
-        private void OnGetPackages(UiExecutedPayload<GetInstalledPackagesCommand> obj)
+        public PackageQuerySourceType SourceType
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
-            this.OnPropertyChanged(nameof(IsAllUsers));
+            get => this.SelectedSource == null ? PackageQuerySourceType.Installed : this.SelectedSource.SourceType.Type;
+            set
+            {
+                if (this.SelectedSource?.SourceType.Type == value)
+                {
+                    return;
+                }
+
+                this.OnPropertyChanged();
+
+                switch (value)
+                {
+                    case PackageQuerySourceType.InstalledForAllUsers:
+                        this.LoadContext(PackageQuerySource.InstalledForAllUsers());
+                        break;
+                    case PackageQuerySourceType.InstalledForCurrentUser:
+                        this.LoadContext(PackageQuerySource.InstalledForCurrentUser());
+                        break;
+                }
+            }
         }
 
-        private void OnGetPackages(UiCancelledPayload<GetInstalledPackagesCommand> obj)
+        public bool ShowAddSourcesButton => this.Sources.Any(d => d.SourceType.Type == PackageQuerySourceType.Directory && d.SourceType.Path != null);
+
+        public ICommand Browse { get; }
+
+        private void LoadCustomDirs(bool initialCall = false)
         {
-            this.isAllUsers = this.application.ApplicationState.Packages.Mode == PackageInstallationContext.AllUsers;
-            this.OnPropertyChanged(nameof(IsAllUsers));
+            // Remove all sources that are directory
+
+            var selectedSource = this.SelectedSource.SourceType;
+            var selectedDirectory = this.SelectedSource.SourceType.Type == PackageQuerySourceType.Directory ? this.SelectedSource : null;
+            
+            for (var i = this.Sources.Count - 1; i >= 0; i--)
+            {
+                if (this.Sources[i].SourceType.Type != PackageQuerySourceType.Directory)
+                {
+                    continue;
+                }
+
+                this.Sources.RemoveAt(i);
+            }
+
+            var customDirs = this._configurationService.GetCurrentConfiguration()?.Packages?.CustomPackageDirectories ?? new List<PackageDirectoryConfiguration>();
+
+            if (!customDirs.Any())
+            {
+                // Add a dummy entry
+                this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(null)));
+            }
+
+            foreach (var cd in customDirs)
+            {
+                this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(cd.Path, cd.IsRecurse), cd.DisplayName ?? Path.GetFileName(cd.Path)));
+            }
+            
+            if (selectedDirectory != null)
+            {
+                if (customDirs.All(c => c.Path.Resolved != selectedDirectory.SourceType.Path))
+                {
+                    this.Sources.Add(selectedDirectory);
+                }
+                else
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == selectedDirectory.SourceType.Type && s.SourceType.Path == selectedDirectory.SourceType.Path) ?? this.Sources.FirstOrDefault();
+                }
+            }
+            else
+            {
+                this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == selectedSource.Type && s.SourceType.Path == selectedSource.Path) ?? this.Sources.FirstOrDefault();
+            }
+
+            if (!initialCall)
+            {
+                this.OnPropertyChanged(nameof(this.SelectedSource));
+                this.OnPropertyChanged(nameof(this.ShowAddSourcesButton));
+            }
         }
 
-        private async void LoadContext(PackageFindMode mode)
+        private void OnCustomPackageDirsChanged(IReadOnlyCollection<PackageDirectoryConfiguration> obj)
         {
-            var executor = this.application.CommandExecutor
-                .WithBusyManager(this.busyManager, OperationType.PackageLoading)
-                .WithErrorHandling(this.interactionService, true);
+            this.LoadCustomDirs();
+        }
 
-            await executor.Invoke<GetInstalledPackagesCommand, IList<PackageEntry>>(this, new GetInstalledPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
+        private void OnGetPackages(UiFailedPayload<GetPackagesCommand> obj)
+        {
+            this._isAllUsers = this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers;
+            this.OnPropertyChanged(nameof(IsAllUsers));
+
+            var mode = this._application.ApplicationState.Packages.Mode;
+            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
+
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
+        }
+
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        {
+            this._isAllUsers = this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers;
+            this.OnPropertyChanged(nameof(IsAllUsers));
+
+            var mode = this._application.ApplicationState.Packages.Mode;
+            
+            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
+        }
+
+        private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> obj)
+        {
+            this._isAllUsers = this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers;
+            this.OnPropertyChanged(nameof(IsAllUsers));
+
+            var mode = this._application.ApplicationState.Packages.Mode;
+            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
+            
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
+        }
+
+        private async void LoadContext(PackageQuerySource mode)
+        {
+            var executor = this._application.CommandExecutor
+                .WithBusyManager(this._busyManager, OperationType.PackageLoading)
+                .WithErrorHandling(this._interactionService, true);
+
+            await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)

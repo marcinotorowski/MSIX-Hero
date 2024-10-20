@@ -27,7 +27,6 @@ using Otor.MsixHero.Appx.Packaging.Interop;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
-using Otor.MsixHero.Appx.Packaging.Installation;
 
 namespace Otor.MsixHero.Appx.Packaging.Services
 {

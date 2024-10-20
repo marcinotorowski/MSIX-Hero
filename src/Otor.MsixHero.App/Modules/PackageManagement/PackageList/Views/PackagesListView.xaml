@@ -148,7 +148,7 @@
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStop}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RunCommand}" x:Name="ContextMenuRunCommand" />
+            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.RunTool}" Header="{localization:Loc Packages_List_ContextMenu_RunCommand}" x:Name="ContextMenuRunCommand" />
         </ContextMenu>
     </UserControl.Resources>
 

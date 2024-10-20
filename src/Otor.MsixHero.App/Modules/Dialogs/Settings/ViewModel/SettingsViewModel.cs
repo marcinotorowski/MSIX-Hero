@@ -133,6 +133,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.TabEditors,
                 this.TabAppAttach,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
+                this.CustomPackageDirs = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
             );
 
@@ -245,6 +246,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableContainer TabAppAttach { get; } = new ChangeableContainer();
 
         public ToolsConfigurationViewModel Tools { get; }
+
+        // todo: correct view model
+        public ToolsConfigurationViewModel CustomPackageDirs { get; }
 
         public CertificateSelectorViewModel CertificateSelector { get; }
 
@@ -551,6 +555,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
             
             var toolsTouched = this.Tools.IsTouched;
+            var directoriesTouched = this.CustomPackageDirs.IsTouched;
             this.AllSettings.Commit();
 
             if (toolsTouched)
@@ -558,11 +563,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 newConfiguration.Packages.Tools = new List<ToolListConfiguration>(this.Tools.Items.Select(t => (ToolListConfiguration)t));
             }
 
+            if (directoriesTouched)
+            {
+                // todo: !!!
+                newConfiguration.Packages.CustomPackageDirectories = new List<PackageDirectoryConfiguration>(this.Tools.Items.Select(t => (PackageDirectoryConfiguration)null));
+            }
+
             await this._configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
 
             if (toolsTouched)
             {
                 this._eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
+            }
+            
+            if (directoriesTouched)
+            {
+                // todo: !!!
+                this._eventAggregator.GetEvent<CustomPackageDirectoriesChangedEvent>().Publish(this.CustomPackageDirs.Items.Select(t => (PackageDirectoryConfiguration)null).ToArray());
             }
             
             return true;

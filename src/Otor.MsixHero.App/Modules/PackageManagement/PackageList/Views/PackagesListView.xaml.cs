@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
             this._application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(_ => this._tools = null);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesCommand, ThreadOption.UIThread);
-            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetInstalledPackagesCommand>>().Subscribe(this.OnGetPackagesCommand, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCommand, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilter, ThreadOption.UIThread);
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
@@ -143,7 +143,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             }
         }
 
-        private void OnGetPackagesCommand(UiExecutedPayload<GetInstalledPackagesCommand> obj)
+        private void OnGetPackagesCommand(UiExecutedPayload<GetPackagesCommand> obj)
         {
             try
             {
@@ -372,14 +372,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             this.SetTools();
             var frameworkElement = (FrameworkElement)sender;
             // ReSharper disable once PossibleNullReferenceException
-            var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().Last();
+            var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().LastOrDefault(m => m.Command == MsixHeroRoutedUICommands.RunTool);
+            if (lastMenu == null)
+            {
+                return;
+            }
 
             lastMenu.Items.Clear();
+            // ReSharper disable once PossibleNullReferenceException
             foreach (var item in this._tools)
             {
                 lastMenu.Items.Add(item);
             }
-
+            
             lastMenu.Items.Add(new Separator());
             lastMenu.Items.Add(new MenuItem
             {
