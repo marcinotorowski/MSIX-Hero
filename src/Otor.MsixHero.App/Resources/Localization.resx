@@ -4354,4 +4354,22 @@ Click the icon again to remove the star.</value>
   <data name="Packages_Search_Badge_Directory" xml:space="preserve">
     <value>DIRECTORY</value>
   </data>
+  <data name="Packages_QuerySource_AllUsers_Line1" xml:space="preserve">
+    <value>All users</value>
+  </data>
+  <data name="Packages_QuerySource_AllUsers_Line2" xml:space="preserve">
+    <value>Displays packages, installed for all users on this machine</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line1" xml:space="preserve">
+    <value>Current user</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line2" xml:space="preserve">
+    <value>Displays packages, installed for the current user</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line1" xml:space="preserve">
+    <value>Directory</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line2" xml:space="preserve">
+    <value>Browses the current computer and shows packages from a specified directory</value>
+  </data>
 </root>

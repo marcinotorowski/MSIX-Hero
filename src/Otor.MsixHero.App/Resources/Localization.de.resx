@@ -4354,4 +4354,22 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="Packages_Search_Badge_Directory" xml:space="preserve">
     <value>ORDNER</value>
   </data>
+  <data name="Packages_QuerySource_AllUsers_Line1" xml:space="preserve">
+    <value>Alle Benutzer</value>
+  </data>
+  <data name="Packages_QuerySource_AllUsers_Line2" xml:space="preserve">
+    <value>Zeigt Pakete an, die für alle Benutzer auf dieser Maschine installiert sind</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line1" xml:space="preserve">
+    <value>Aktueller Benutzer</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line2" xml:space="preserve">
+    <value>Zeigt die für den aktuellen Benutzer installierten Pakete an</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line1" xml:space="preserve">
+    <value>Ordner</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line2" xml:space="preserve">
+    <value>Durchsucht den aktuellen Computer und zeigt Pakete aus einem angegebenen Verzeichnis an</value>
+  </data>
 </root>

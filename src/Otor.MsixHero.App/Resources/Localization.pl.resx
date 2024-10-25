@@ -4354,4 +4354,22 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="Packages_Search_Badge_Directory" xml:space="preserve">
     <value>FOLDER</value>
   </data>
+  <data name="Packages_QuerySource_AllUsers_Line1" xml:space="preserve">
+    <value>Wszyscy użytkownicy</value>
+  </data>
+  <data name="Packages_QuerySource_AllUsers_Line2" xml:space="preserve">
+    <value>Wyświetla pakiety, zainstalowane dla wszystkich użytkowników tego komputera</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line1" xml:space="preserve">
+    <value>Aktualny użytkownik</value>
+  </data>
+  <data name="Packages_QuerySource_CurrentUser_Line2" xml:space="preserve">
+    <value>Wyświetla pakiety, zainstalowane dla obecnego użytkownika</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line1" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="Packages_QuerySource_Directory_Line2" xml:space="preserve">
+    <value>Wyświetla pakiety z wybranego lokalnego foldeeru</value>
+  </data>
 </root>

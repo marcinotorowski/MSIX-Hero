@@ -10910,6 +10910,60 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All users.
+        /// </summary>
+        public static string Packages_QuerySource_AllUsers_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_AllUsers_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays packages, installed for all users on this machine.
+        /// </summary>
+        public static string Packages_QuerySource_AllUsers_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_AllUsers_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current user.
+        /// </summary>
+        public static string Packages_QuerySource_CurrentUser_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_CurrentUser_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays packages, installed for the current user.
+        /// </summary>
+        public static string Packages_QuerySource_CurrentUser_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_CurrentUser_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory.
+        /// </summary>
+        public static string Packages_QuerySource_Directory_Line1 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_Directory_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browses the current computer and shows packages from a specified directory.
+        /// </summary>
+        public static string Packages_QuerySource_Directory_Line2 {
+            get {
+                return ResourceManager.GetString("Packages_QuerySource_Directory_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DIRECTORY.
         /// </summary>
         public static string Packages_Search_Badge_Directory {

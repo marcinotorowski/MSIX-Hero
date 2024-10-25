@@ -310,7 +310,7 @@
                                             Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
                                             Data="{StaticResource VectorDirectory}" x:Name="Icon" Style="{StaticResource LargeIcon}" Margin="0 0 8 0" />
                                             <DockPanel VerticalAlignment="Center">
-                                                <Button Content="Browse..." Command="Open" CommandParameter="{Binding}" HorizontalAlignment="Left" x:Name="BrowseForFolder" Visibility="Visible" Margin="8 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" />
+                                                <Button Content="{localization:Loc Button_Browse}" Command="Open" CommandParameter="{Binding}" HorizontalAlignment="Left" x:Name="BrowseForFolder" Visibility="Visible" Margin="8 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" />
                                                 <StackPanel VerticalAlignment="Center">
                                                     <WrapPanel>
                                                         <TextBlock x:Name="DisplayName" Text="{Binding DisplayName, Mode=OneWay}" FontWeight="SemiBold" />
@@ -334,15 +334,15 @@
                                                 <Setter Property="Data" TargetName="Icon" Value="{StaticResource VectorUsers}" />
                                                 <Setter TargetName="UacIcon" Property="Visibility" Value="Visible" />
                                                 <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Collapsed" />
-                                                <Setter TargetName="DisplayName" Property="Text" Value="All users" />
-                                                <Setter TargetName="SecondLine" Property="Text" Value="Displays packages, installed for all users on this machine" />
+                                                <Setter TargetName="DisplayName" Property="Text" Value="{localization:Loc Packages_QuerySource_AllUsers_Line1}" />
+                                                <Setter TargetName="SecondLine" Property="Text" Value="{localization:Loc Packages_QuerySource_AllUsers_Line2}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding SourceType.Type}" Value="{x:Static services:PackageQuerySourceType.InstalledForCurrentUser}">
                                                 <Setter Property="Data" TargetName="Icon" Value="{StaticResource VectorUser}" />
                                                 <Setter TargetName="UacIcon" Property="Visibility" Value="Collapsed" />
                                                 <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Collapsed" />
-                                                <Setter TargetName="DisplayName" Property="Text" Value="Current user" />
-                                                <Setter TargetName="SecondLine" Property="Text" Value="Displays packages, installed for the current user" />
+                                                <Setter TargetName="DisplayName" Property="Text" Value="{localization:Loc Packages_QuerySource_CurrentUser_Line1}" />
+                                                <Setter TargetName="SecondLine" Property="Text" Value="{localization:Loc Packages_QuerySource_CurrentUser_Line2}" />
                                             </DataTrigger>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
@@ -352,8 +352,8 @@
                                                 <MultiDataTrigger.Setters>
                                                     <Setter TargetName="UacIcon" Property="Visibility" Value="Collapsed" />
                                                     <Setter TargetName="BrowseForFolder" Property="Visibility" Value="Visible" />
-                                                    <Setter TargetName="DisplayName" Property="Text" Value="Directory" />
-                                                    <Setter TargetName="SecondLine" Property="Text" Value="Browses the current computer and shows packages from a specified directory" />
+                                                    <Setter TargetName="DisplayName" Property="Text" Value="{localization:Loc Packages_QuerySource_Directory_Line1}" />
+                                                    <Setter TargetName="SecondLine" Property="Text" Value="{localization:Loc Packages_QuerySource_Directory_Line2}" />
                                                 </MultiDataTrigger.Setters>
                                             </MultiDataTrigger>
                                         </DataTemplate.Triggers>
