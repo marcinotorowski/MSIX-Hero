@@ -4372,4 +4372,10 @@ Kliknij ikonę, aby usunąć gwiazdkę.</value>
   <data name="Packages_QuerySource_Directory_Line2" xml:space="preserve">
     <value>Wyświetla pakiety z wybranego lokalnego foldeeru</value>
   </data>
+  <data name="Packages_Filter_Category_NotInstalled" xml:space="preserve">
+    <value>Niezainstalowane</value>
+  </data>
+  <data name="Button_Reset" xml:space="preserve">
+    <value>Zresetuj</value>
+  </data>
 </root>

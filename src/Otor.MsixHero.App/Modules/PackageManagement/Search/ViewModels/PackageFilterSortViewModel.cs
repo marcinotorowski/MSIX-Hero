@@ -166,6 +166,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             set => this.SetPackageFilter(PackageFilter.System, value);
         }
 
+        public bool FilterNotInstalled
+        {
+            get => this._application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.NotInstalled);
+            set => this.SetPackageFilter(PackageFilter.NotInstalled, value);
+        }
+
         public bool FilterX64
         {
             get => this._application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.x64);
@@ -222,7 +228,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     selected++;
                 }
 
-                return $"({selected}/3)";
+                if (this.FilterNotInstalled)
+                {
+                    selected++;
+                }
+
+                return $"({selected}/4)";
             }
         }
 
@@ -352,6 +363,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(FilterSystem));
             this.OnPropertyChanged(nameof(FilterSideLoaded));
             this.OnPropertyChanged(nameof(FilterStore));
+            this.OnPropertyChanged(nameof(FilterNotInstalled));
 
             this.OnPropertyChanged(nameof(FilterRunning));
 
@@ -380,6 +392,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> _)
         {
             this._source = this._application.ApplicationState.Packages.Mode.Type;
+
+            if (this._source == PackageQuerySourceType.Directory)
+            {
+                this.SetPackageFilter(PackageFilter.NotInstalled, true);
+            }
+
             this.OnPropertyChanged(nameof(Source));
         }
 
@@ -416,6 +434,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         private void SetPackageFilter(PackageFilter packageFilter)
         {
             var state = this._application.ApplicationState.Packages;
+            if (state.Filter == packageFilter)
+            {
+                return;
+            }
+
             this._application.CommandExecutor.WithErrorHandling(this._interactionService, false).Invoke(this, new SetPackageFilterCommand(packageFilter, state.SearchKey));
         }
         

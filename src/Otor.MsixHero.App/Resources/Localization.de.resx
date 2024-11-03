@@ -4372,4 +4372,10 @@ Klicken Sie auf das Symbol, um den Stern zu entfernen.</value>
   <data name="Packages_QuerySource_Directory_Line2" xml:space="preserve">
     <value>Durchsucht den aktuellen Computer und zeigt Pakete aus einem angegebenen Verzeichnis an</value>
   </data>
+  <data name="Packages_Filter_Category_NotInstalled" xml:space="preserve">
+    <value>Nicht installiert</value>
+  </data>
+  <data name="Button_Reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
 </root>

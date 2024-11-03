@@ -42,7 +42,7 @@
         <Hyperlink 
             Command="{Binding Clear}" 
             CommandParameter="{x:Static viewModels:ClearFilter.Activity}">
-            <Run Text="{localization:Loc Button_Clear}" />
+            <Run Text="{localization:Loc Button_Reset}" />
         </Hyperlink>
                     </TextBlock>
                 </DockPanel>
@@ -56,7 +56,7 @@
         <Hyperlink 
             Command="{Binding Clear}" 
             CommandParameter="{x:Static viewModels:ClearFilter.AppInstaller}">
-            <Run Text="{localization:Loc Button_Clear}" />
+            <Run Text="{localization:Loc Button_Reset}" />
         </Hyperlink>
                     </TextBlock>
                 </DockPanel>
@@ -71,7 +71,7 @@
         <Hyperlink 
             Command="{Binding Clear}" 
             CommandParameter="{x:Static viewModels:ClearFilter.Type}">
-            <Run Text="{localization:Loc Button_Clear}" />
+            <Run Text="{localization:Loc Button_Reset}" />
         </Hyperlink>
                     </TextBlock>
                 </DockPanel>
@@ -87,13 +87,14 @@
         <Hyperlink 
             Command="{Binding Clear}" 
             CommandParameter="{x:Static viewModels:ClearFilter.Category}">
-            <Run Text="{localization:Loc Button_Clear}" />
+            <Run Text="{localization:Loc Button_Reset}" />
         </Hyperlink>
                     </TextBlock>
                 </DockPanel>
                 <CheckBox IsChecked="{Binding FilterStore}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Store}" />
                 <CheckBox IsChecked="{Binding FilterSideLoaded}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_Sideloaded}" />
                 <CheckBox IsChecked="{Binding FilterSystem}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_SystemApp}" />
+                <CheckBox IsChecked="{Binding FilterNotInstalled}" Margin="8 4" Content="{localization:Loc Packages_Filter_Category_NotInstalled}" />
 
                 <DockPanel Margin="8 16 8 4">
                     <Label Margin="0" Content="{localization:Loc Packages_Filter_Architecture}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
@@ -104,7 +105,7 @@
         <Hyperlink 
             Command="{Binding Clear}" 
             CommandParameter="{x:Static viewModels:ClearFilter.Architecture}">
-            <Run Text="{localization:Loc Button_Clear}" />
+            <Run Text="{localization:Loc Button_Reset}" />
         </Hyperlink>
                     </TextBlock>
                 </DockPanel>

@@ -269,6 +269,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         }
 
                         break;
+                    case SignatureKind.Unknown:
+                        if ((packageFilterSignatureFlags & PackageFilter.NotInstalled) == 0)
+                        {
+                            return false;
+                        }
+
+                        break;
                 }
             }
 

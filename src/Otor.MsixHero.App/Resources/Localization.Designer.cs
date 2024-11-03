@@ -115,6 +115,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string Button_Reset {
+            get {
+                return ResourceManager.GetString("Button_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Button_Save {
@@ -10528,6 +10537,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Packages_Filter_Category {
             get {
                 return ResourceManager.GetString("Packages_Filter_Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not installed.
+        /// </summary>
+        public static string Packages_Filter_Category_NotInstalled {
+            get {
+                return ResourceManager.GetString("Packages_Filter_Category_NotInstalled", resourceCulture);
             }
         }
         
