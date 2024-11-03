@@ -18,7 +18,18 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
             this._application = application;
             this.Select = new DelegateCommand<object>(param =>
             {
-                application.CommandExecutor.Invoke(this, new SelectPackagesCommand((string)param));
+                if (param is string fullName)
+                {
+                    application.CommandExecutor.Invoke(this, new SelectPackagesCommand(new PackageLUID(fullName)));
+                }
+                else if (param is PackageEntry package)
+                {
+                    application.CommandExecutor.Invoke(this, new SelectPackagesCommand(new PackageLUID(package)));
+                }
+                else if (param is PackageLUID uid)
+                {
+                    application.CommandExecutor.Invoke(this, new SelectPackagesCommand(uid));
+                }
             });
         }
         

@@ -491,7 +491,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var selected = allPackages.FirstOrDefault(p => p.Name == appxIdentity.Name);
                     if (selected != null)
                     {
-                        await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.PackageFullName)).ConfigureAwait(false);
+                        await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(new PackageLUID(selected))).ConfigureAwait(false);
                     }
                 }
                 else

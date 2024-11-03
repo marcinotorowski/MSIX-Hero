@@ -25,23 +25,23 @@ namespace Otor.MsixHero.App.Hero.Handlers
         Task IRequestHandler<SelectPackagesCommand>.Handle(SelectPackagesCommand request, CancellationToken cancellationToken)
         {
             IList<PackageEntry> selected;
-            List<string> actualSelection;
+            List<PackageLUID> actualSelection;
 
             switch (request.SelectionMode)
             {
                 case SelectPackagesCommand.PackageSelectionMode.Replace:
-                    actualSelection = new List<string>(request.SelectedFullNames);
+                    actualSelection = new List<PackageLUID>(request.SelectedIds);
                     break;
                 case SelectPackagesCommand.PackageSelectionMode.Add:
-                    actualSelection = new List<string>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).Union(request.SelectedFullNames));
+                    actualSelection = new List<PackageLUID>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => new PackageLUID(p)).Union(request.SelectedIds));
                     break;
                 case SelectPackagesCommand.PackageSelectionMode.Remove:
-                    actualSelection = new List<string>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).Except(request.SelectedFullNames));
+                    actualSelection = new List<PackageLUID>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => new PackageLUID(p)).Except(request.SelectedIds));
                     break;
                 case SelectPackagesCommand.PackageSelectionMode.Toggle:
-                    actualSelection = this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToList();
+                    actualSelection = this._app.ApplicationState.Packages.SelectedPackages.Select(p => new PackageLUID(p)).ToList();
 
-                    foreach (var item in request.SelectedFullNames)
+                    foreach (var item in request.SelectedIds)
                     {
                         if (actualSelection.Contains(item))
                         {
@@ -67,8 +67,8 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 try
                 {
                     this._packageListSynchronizer.EnterReadLock();
-                    var singleSelection = this._commandExecutor.ApplicationState.Packages.AllPackages.FirstOrDefault(a => string.Equals(a.PackageFullName, actualSelection[0], StringComparison.OrdinalIgnoreCase));
-                    selected = singleSelection != null ? new List<PackageEntry> { singleSelection } : new List<PackageEntry>();
+                    var singleSelection = this._commandExecutor.ApplicationState.Packages.AllPackages.FirstOrDefault(a => new PackageLUID(a).Equals(actualSelection[0]));
+                    selected = singleSelection != null ? [singleSelection] : new List<PackageEntry>();
                 }
                 finally
                 {
@@ -80,7 +80,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 try
                 {
                     this._packageListSynchronizer.EnterReadLock();
-                    selected = this._commandExecutor.ApplicationState.Packages.AllPackages.Where(a => actualSelection.Contains(a.PackageFullName)).ToList();
+                    selected = this._commandExecutor.ApplicationState.Packages.AllPackages.Where(a => actualSelection.Contains(new PackageLUID(a))).ToList();
                 }
                 finally
                 {

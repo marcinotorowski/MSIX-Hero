@@ -88,7 +88,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                     }
 
                     this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand());
-                    this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(current.PackageFullName));
+                    this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(new PackageLUID(current.Model)));
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                         }
 
                         this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand());
-                        this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(current.PackageFullName));
+                        this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(new PackageLUID(current.Model)));
                     });
                 }
             };
@@ -131,7 +131,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.PageDown || e.Key == Key.PageUp)
             {
                 this.ListBox.SelectionChanged += this.ListBoxOnSelectionChanged;
-                this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => p.PackageFullName)));
+                this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => new PackageLUID(p.Model))));
             }
         }
 
@@ -155,7 +155,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                     this._allItems.Add(item);
                 }
 
-                var selectedPackages = new HashSet<string>(((PackagesListViewModel)this.DataContext).SelectedPackages.Select(p => p.PackageFullName));
+                var selectedPackages = new HashSet<PackageLUID>(((PackagesListViewModel)this.DataContext).SelectedPackages.Select(p => new PackageLUID(p.Model)));
 
                 switch (selectedPackages.Count)
                 {
@@ -164,13 +164,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                         break;
                     
                     case 1:
-                        this.ListBox.SelectedItem = this._allItems.FirstOrDefault(item => selectedPackages.Contains(item.PackageFullName));
+                        this.ListBox.SelectedItem = this._allItems.FirstOrDefault(item => selectedPackages.Contains(new PackageLUID(item.Model)));
                         break;
 
                     default:
                         foreach (var item in this._allItems)
                         {
-                            if (selectedPackages.Contains(item.PackageFullName))
+                            if (selectedPackages.Contains(new PackageLUID(item.Model)))
                             {
                                 this.ListBox.SelectedItems.Add(item);
                             }
@@ -318,7 +318,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
         private void OnSelectPackagesCommand(UiExecutedPayload<SelectPackagesCommand> obj)
         {
-            var selectedPackages = new HashSet<string>(obj.Request.SelectedFullNames);
+            var selectedPackages = new HashSet<PackageLUID>(obj.Request.SelectedIds);
 
             this.ListBox.SelectionChanged -= this.ListBoxOnSelectionChanged;
             try
@@ -330,14 +330,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                         break;
 
                     case 1:
-                        this.ListBox.SelectedItem = this._allItems.FirstOrDefault(item => selectedPackages.Contains(item.PackageFullName));
+                        this.ListBox.SelectedItem = this._allItems.FirstOrDefault(item => selectedPackages.Contains(new PackageLUID(item.Model)));
                         break;
 
                     default:
                     {
                         foreach (var item in this._allItems)
                         {
-                            if (selectedPackages.Contains(item.PackageFullName))
+                            if (selectedPackages.Contains(new PackageLUID(item.Model)))
                             {
                                 this.ListBox.SelectedItems.Add(item);
                             }
@@ -359,7 +359,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
         private void ListBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<SelectableInstalledPackageViewModel>().Select(p => p.PackageFullName)));
+            this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<SelectableInstalledPackageViewModel>().Select(p => new PackageLUID(p.Model))));
         }
 
         private void PackageContextMenu_OnContextMenuOpening(object sender, ContextMenuEventArgs e)

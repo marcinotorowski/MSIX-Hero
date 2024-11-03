@@ -48,7 +48,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             try
             {
                 PackageQuerySource mode;
-                var selected = this._commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName).ToList();
+                var selected = this._commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => new PackageLUID(p)).ToList();
 
                 List<PackageEntry> results;
                 if (request.Source.HasValue && request.Source.Value.Type == PackageQuerySourceType.Directory)
@@ -125,7 +125,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 // Just in case, make sure to remove stuff from the selection if the list of packages does not have it anymore.
                 for (var i = selected.Count - 1; i >= 0; i--)
                 {
-                    if (this._commandExecutor.ApplicationState.Packages.AllPackages.Any(p => p.PackageFullName == selected[i]))
+                    if (this._commandExecutor.ApplicationState.Packages.AllPackages.Any(p => new PackageLUID(p).Equals(selected[i])))
                     {
                         continue;
                     }

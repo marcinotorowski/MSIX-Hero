@@ -33,41 +33,34 @@ namespace Otor.MsixHero.App.Hero.Commands.Packages
         public SelectPackagesCommand()
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedFullNames = new List<string>();
+            this.SelectedIds = new List<PackageLUID>();
         }
 
-        public SelectPackagesCommand(string packageFullName, PackageSelectionMode mode = PackageSelectionMode.Replace)
+        public SelectPackagesCommand(PackageLUID packageId, PackageSelectionMode mode = PackageSelectionMode.Replace)
         {
             this.SelectionMode = mode;
-            if (packageFullName == null)
-            {
-                this.SelectedFullNames = new List<string>();
-            }
-            else
-            {
-                this.SelectedFullNames = new List<string> { packageFullName };
-            }
+            this.SelectedIds = new List<PackageLUID> { packageId };
         }
 
-        public SelectPackagesCommand(IList<string> packageFullNames)
+        public SelectPackagesCommand(IList<PackageLUID> packageIds)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedFullNames = packageFullNames;
+            this.SelectedIds = packageIds;
         }
 
-        public SelectPackagesCommand(params string[] packageFullNames)
+        public SelectPackagesCommand(params PackageLUID[] packageFullNames)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedFullNames = packageFullNames.ToList();
+            this.SelectedIds = packageFullNames.ToList();
         }
 
-        public SelectPackagesCommand(IEnumerable<string> packageFullNames)
+        public SelectPackagesCommand(IEnumerable<PackageLUID> packageFullNames)
         {
             this.SelectionMode = PackageSelectionMode.Replace;
-            this.SelectedFullNames = packageFullNames.ToList();
+            this.SelectedIds = packageFullNames.ToList();
         }
 
-        public IList<string> SelectedFullNames { get; }
+        public IList<PackageLUID> SelectedIds { get; }
 
         public PackageSelectionMode SelectionMode { get; set; }
     }

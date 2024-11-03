@@ -160,7 +160,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                             return;
                         }
 
-                        value.SourceType = PackageQuerySource.FromFolder(dir);
+                        value.SourceType = PackageQuerySource.FromFolder(dir, true);
                     }
                 }
 

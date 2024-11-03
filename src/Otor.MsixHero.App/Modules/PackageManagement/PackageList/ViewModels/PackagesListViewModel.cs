@@ -170,7 +170,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             if (toRemove.Any())
             {
                 // if there was any change, let's inform the main backend that we de-selected something...
-                this._commandExecutor.Invoke(this, new SelectPackagesCommand(toRemove.Select(p => p.PackageFullName)));
+                this._commandExecutor.Invoke(this, new SelectPackagesCommand(toRemove.Select(p => new PackageLUID(p.Model))));
             }
         }
         
@@ -204,11 +204,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         private void OnSelectPackagesExecuted(UiExecutedPayload<SelectPackagesCommand> obj)
         {
-            var allSelected = new HashSet<string>(this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageFullName));
+            var allSelected = new HashSet<PackageLUID>(this._application.ApplicationState.Packages.SelectedPackages.Select(p => new PackageLUID(p)));
             
             this.SelectedPackages.Clear();
             
-            foreach (var item in this.AllPackages.Where(p => p.IsVisible && allSelected.Contains(p.PackageFullName)))
+            foreach (var item in this.AllPackages.Where(p => p.IsVisible && allSelected.Contains(new PackageLUID(p.Model))))
             {
                 this.SelectedPackages.Add(item);
             }

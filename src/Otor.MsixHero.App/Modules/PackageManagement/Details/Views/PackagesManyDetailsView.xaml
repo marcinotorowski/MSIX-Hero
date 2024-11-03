@@ -49,7 +49,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type packaging:PackageEntry}">
                         <TextBlock Margin="0 2">
-                            <Hyperlink Command="{Binding Path=DataContext.Select, ElementName=Root}" CommandParameter="{Binding PackageFullName}">
+                            <Hyperlink Command="{Binding Path=DataContext.Select, ElementName=Root}" CommandParameter="{Binding}">
                                 <Run Text="{Binding DisplayName, Mode=OneWay}" />
                                 <Run Text="{Binding Version, Mode=OneWay}" Foreground="Gray" />
                             </Hyperlink>
