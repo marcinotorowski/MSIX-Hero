@@ -122,17 +122,17 @@
                                 <WrapPanel>
                                     <TextBlock x:Name="DisplayName" Text="{Binding DisplayName, Mode=OneWay}" FontWeight="SemiBold" />
                                     <Image 
-                                x:Name="UacIcon"
-                                VerticalAlignment="Center" 
-                                Source="{x:Static interop:WindowsIcons.UacShield}" 
-                                Stretch="None" 
-                                Margin="4 0 0 0"
-                                Visibility="Collapsed"
-                                UseLayoutRounding="True" 
-                                SnapsToDevicePixels="True">
+                                        x:Name="UacIcon"
+                                        VerticalAlignment="Center" 
+                                        Source="{x:Static interop:WindowsIcons.UacShield}" 
+                                        Stretch="None" 
+                                        Margin="4 0 0 0"
+                                        Visibility="Collapsed"
+                                        UseLayoutRounding="True" 
+                                        SnapsToDevicePixels="True">
                                     </Image>
                                 </WrapPanel>
-                                <TextBlock x:Name="SecondLine" Text="{Binding Path=SourceType.Path, Mode=OneWay}" />
+                                <TextBlock x:Name="SecondLine" Text="{Binding Path=DisplayPath, Mode=OneWay}" />
                             </StackPanel>
                         </DockPanel>
                     </DockPanel>

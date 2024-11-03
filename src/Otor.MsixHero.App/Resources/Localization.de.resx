@@ -3694,7 +3694,7 @@
     <value>Hauptordner</value>
   </data>
   <data name="Package_DragDropToOpen" xml:space="preserve">
-    <value>Ziehen Sie eine beliebige Datei hier, um sie zu öffnen</value>
+    <value>Ziehen Sie eine beliebige Datei oder Ordner hier, um sie zu öffnen</value>
   </data>
   <data name="Psf_Redirect" xml:space="preserve">
     <value>Umleitung auf **{0}**  </value>

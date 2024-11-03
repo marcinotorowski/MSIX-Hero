@@ -6,9 +6,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
     public class SourceViewModel(PackagesSearchViewModel parent, PackageQuerySource sourceType, [CanBeNull] string displayName = null) : NotifyPropertyChanged
     {
-        private readonly PackagesSearchViewModel _parent = parent;
         private PackageQuerySource _sourceType = sourceType;
-        [CanBeNull] private string _displayName = displayName;
+        
+        [CanBeNull] private string _displayName = displayName ?? ConvertToDisplayName(sourceType);
+        [CanBeNull] private string _displayPath = ConvertToDisplayPath(sourceType);
         
         public PackageQuerySource SourceType
         {
@@ -20,14 +21,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     return;
                 }
 
-                if (value.Type == PackageQuerySourceType.Directory)
-                {
-                    this.DisplayName = System.IO.Path.GetFileName(value.Path);
-                }
-                else
-                {
-                    this.DisplayName = null;
-                }
+                this.DisplayName = ConvertToDisplayName(value);
+                this.DisplayPath = ConvertToDisplayPath(value);
             }
         }
 
@@ -44,16 +39,29 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             }
         }
 
+        [CanBeNull]
+        public string DisplayPath
+        {
+            get => _displayPath;
+            private set
+            {
+                if (!this.SetField(ref this._displayPath, value))
+                {
+                    return;
+                }
+            }
+        }
+
         public bool IsSelected
         {
-            get => this._parent.SelectedSource == this;
+            get => parent.SelectedSource == this;
             set
             {
-                var wasSelected = this._parent.SelectedSource == this;
+                var wasSelected = parent.SelectedSource == this;
 
                 if (value)
                 {
-                    this._parent.SelectedSource = this;
+                    parent.SelectedSource = this;
                 }
 
                 if (!wasSelected && value || wasSelected && !value)
@@ -61,6 +69,36 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     this.OnPropertyChanged();
                 }
             }
+        }
+
+        private static string ConvertToDisplayPath(PackageQuerySource mode)
+        {
+            if (mode.Path == null || mode.Type != PackageQuerySourceType.Directory)
+            {
+                return mode.Path;
+            }
+
+            if (mode.Path.EndsWith("/*") || mode.Path.EndsWith("\\*"))
+            {
+                return System.IO.Path.GetDirectoryName(mode.Path);
+            }
+
+            return mode.Path;
+        }
+
+        private static string ConvertToDisplayName(PackageQuerySource mode)
+        {
+            if (mode.Path == null || mode.Type != PackageQuerySourceType.Directory)
+            {
+                return null;
+            }
+
+            if (mode.Path.EndsWith("/*") || mode.Path.EndsWith("\\*"))
+            {
+                return System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(mode.Path));
+            }
+
+            return System.IO.Path.GetFileName(mode.Path);
         }
     }
 }

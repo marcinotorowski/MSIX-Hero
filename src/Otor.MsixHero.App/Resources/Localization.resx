@@ -3694,7 +3694,7 @@
     <value>Root folder</value>
   </data>
   <data name="Package_DragDropToOpen" xml:space="preserve">
-    <value>Drop any file here to open it</value>
+    <value>Drop any file or folder here to open it</value>
   </data>
   <data name="Psf_Redirect" xml:space="preserve">
     <value>Redirect to **{0}**  </value>

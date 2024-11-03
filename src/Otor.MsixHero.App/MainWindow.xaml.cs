@@ -21,7 +21,9 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Helpers.DragAndDrop;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Dialogs;
 using Prism.Modularity;
@@ -37,13 +39,13 @@ namespace Otor.MsixHero.App
         private readonly IDialogService _dialogService;
         private readonly DialogOpener _dialogOpener;
 
-        public MainWindow(IModuleManager moduleManager, IDialogService dialogService, IInteractionService interactionService)
+        public MainWindow(IModuleManager moduleManager, IDialogService dialogService, IInteractionService interactionService, IMsixHeroCommandExecutor commandExecutor, IBusyManager busyManager)
         {
             this._moduleManager = moduleManager;
             this._dialogService = dialogService;
             InitializeComponent();
             this.Loaded += OnLoaded;
-            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
+            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService, commandExecutor, busyManager);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -87,8 +89,17 @@ namespace Otor.MsixHero.App
                 return;
             }
 
-            var dropped = new FileInfo(data.First());
-            this._dialogOpener.OpenFile(dropped);
+            var path = data.First();
+            if (Directory.Exists(path))
+            {
+                var dropped = new DirectoryInfo(path);
+                this._dialogOpener.OpenDirectory(dropped);
+            }
+            else if (path != null)
+            {
+                var dropped = new FileInfo(path);
+                this._dialogOpener.OpenFile(dropped);
+            }
         }
 
         private void OnDragEnter(object sender, DragEventArgs e)

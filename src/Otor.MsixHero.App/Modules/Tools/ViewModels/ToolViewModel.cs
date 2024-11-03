@@ -20,8 +20,10 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers.Dialogs;
 using Otor.MsixHero.App.Hero.Commands.Tools;
 using Otor.MsixHero.App.Hero.Events.Base;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedPackageContainer.Navigation;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -43,9 +45,11 @@ namespace Otor.MsixHero.App.Modules.Tools.ViewModels
             IEventAggregator eventAggregator,
             IInteractionService interactionService, 
             IDialogService dialogService,
-            IModuleManager moduleManager)
+            IModuleManager moduleManager,
+            IMsixHeroCommandExecutor commandExecutor,
+            IBusyManager busyManager)
         {
-            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
+            this._dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService, commandExecutor, busyManager);
             
             this._interactionService = interactionService;
             this._dialogService = dialogService;

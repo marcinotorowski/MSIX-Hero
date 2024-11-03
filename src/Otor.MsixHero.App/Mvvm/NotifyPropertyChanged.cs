@@ -14,8 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Otor.MsixHero.App.Mvvm
@@ -38,6 +41,43 @@ namespace Otor.MsixHero.App.Mvvm
             this.OnPropertyChanged(propertyName);
 
             return true;
+        }
+    }
+
+    public static class NotifyPropertyChangedHelper
+    {
+        public static void RaisePropertyChanged(INotifyPropertyChanged target, string propertyName)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            // Retrieve the protected OnPropertyChanged method via reflection
+            var methodInfo = target.GetType().GetMethod("OnPropertyChanged",
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new[] { typeof(string) }, null);
+
+            if (methodInfo == null)
+            {
+                // Fallback if no suitable method is found
+                throw new InvalidOperationException();
+            }
+
+            methodInfo.Invoke(target, [propertyName]);
+        }
+
+        public static void RaisePropertyChanged<TObject, TProperty>(TObject target, Expression<Func<TObject, TProperty>> propertyExpression) where TObject : NotifyPropertyChanged
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (propertyExpression.Body is MemberExpression memberExpression)
+            {
+                RaisePropertyChanged(target, memberExpression.Member.Name);
+            }
         }
     }
 }

@@ -34,6 +34,7 @@ using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
@@ -102,7 +103,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     return;
                 }
 
-                selected.SourceType = PackageQuerySource.FromFolder(dir);
+                selected.SourceType = PackageQuerySource.FromFolder(dir, true);
 
                 this.SelectedSource = selected;
                 this.LoadContext(selected.SourceType);
@@ -264,10 +265,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(IsAllUsers));
 
             var mode = this._application.ApplicationState.Packages.Mode;
-            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
-
-            this.OnPropertyChanged(nameof(SourceType));
-            this.OnPropertyChanged(nameof(SelectedSource));
+            this.SetSelectedSource(mode);
         }
 
         private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
@@ -276,10 +274,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(IsAllUsers));
 
             var mode = this._application.ApplicationState.Packages.Mode;
-            
-            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
-            this.OnPropertyChanged(nameof(SourceType));
-            this.OnPropertyChanged(nameof(SelectedSource));
+            this.SetSelectedSource(mode);
         }
 
         private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> obj)
@@ -288,10 +283,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(IsAllUsers));
 
             var mode = this._application.ApplicationState.Packages.Mode;
-            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
-            
-            this.OnPropertyChanged(nameof(SourceType));
-            this.OnPropertyChanged(nameof(SelectedSource));
+            this.SetSelectedSource(mode);
         }
 
         private async void LoadContext(PackageQuerySource mode)
@@ -301,6 +293,39 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 .WithErrorHandling(this._interactionService, true);
 
             await executor.Invoke<GetPackagesCommand, IList<PackageEntry>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private void SetSelectedSource(PackageQuerySource mode)
+        {
+            var previousSelected = this._selectedSource;
+
+            if (mode.Type == PackageQuerySourceType.Directory)
+            {
+                this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path);
+                if (this._selectedSource == null)
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(t => t.SourceType.Type == PackageQuerySourceType.Directory);
+                    if (this._selectedSource != null)
+                    {
+                        this._selectedSource.SourceType = mode;
+                    }
+                }
+            }
+            else
+            {
+                this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path);
+            }
+
+            if (this._selectedSource == null)
+            {
+                this._selectedSource = this.Sources.FirstOrDefault();
+            }
+
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
+
+            NotifyPropertyChangedHelper.RaisePropertyChanged(previousSelected, p => p.IsSelected);
+            NotifyPropertyChangedHelper.RaisePropertyChanged(this._selectedSource, p => p.IsSelected);
         }
 
         private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)

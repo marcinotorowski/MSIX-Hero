@@ -8116,7 +8116,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drop any file here to open it.
+        ///   Looks up a localized string similar to Drop any file or folder here to open it.
         /// </summary>
         public static string Package_DragDropToOpen {
             get {

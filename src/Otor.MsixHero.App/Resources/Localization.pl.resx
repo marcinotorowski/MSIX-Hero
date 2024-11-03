@@ -3694,7 +3694,7 @@
     <value>Folder główny</value>
   </data>
   <data name="Package_DragDropToOpen" xml:space="preserve">
-    <value>Upuść w tym miejscu plik, aby go otworzyć</value>
+    <value>Upuść w tym miejscu plik lub folder, aby go otworzyć</value>
   </data>
   <data name="Psf_Redirect" xml:space="preserve">
     <value>Przekieruj do **{0}**  </value>

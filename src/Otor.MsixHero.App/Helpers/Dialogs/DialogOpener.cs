@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands.Packages;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Common;
 using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Dialogs;
 using Prism.Modularity;
@@ -15,12 +22,21 @@ namespace Otor.MsixHero.App.Helpers.Dialogs
         private readonly IModuleManager _moduleManager;
         private readonly IDialogService _dialogService;
         private readonly IInteractionService _interactionService;
+        private readonly IMsixHeroCommandExecutor _msixHeroCommandExecutor;
+        private readonly IBusyManager _busyManager;
 
-        public DialogOpener(IModuleManager moduleManager, IDialogService dialogService, IInteractionService interactionService)
+        public DialogOpener(
+            IModuleManager moduleManager, 
+            IDialogService dialogService, 
+            IInteractionService interactionService, 
+            IMsixHeroCommandExecutor msixHeroCommandExecutor, 
+            IBusyManager busyManager)
         {
             this._moduleManager = moduleManager;
             this._dialogService = dialogService;
             this._interactionService = interactionService;
+            this._msixHeroCommandExecutor = msixHeroCommandExecutor;
+            this._busyManager = busyManager;
         }
 
         public DialogOpener(PrismServices prismServices, IInteractionService interactionService)
@@ -38,6 +54,22 @@ namespace Otor.MsixHero.App.Helpers.Dialogs
             }
 
             OpenFile(new FileInfo(selectedFile));
+        }
+
+        public void OpenDirectory(DirectoryInfo directory)
+        {
+            if (!directory.Exists)
+            {
+                _interactionService.ShowError(string.Format(Resources.Localization.Dialogs_Error_FileNotFound_Format, directory.FullName));
+                return;
+            }
+
+            var getPackages = new GetPackagesCommand(PackageQuerySource.FromFolder(directory.FullName, true));
+
+            this._msixHeroCommandExecutor
+                .WithBusyManager(this._busyManager, OperationType.PackageLoading)
+                .WithErrorHandling(this._interactionService, true)
+                .Invoke<GetPackagesCommand, IList<PackageEntry>>(this, getPackages);
         }
 
         public void OpenFile(FileInfo file)
