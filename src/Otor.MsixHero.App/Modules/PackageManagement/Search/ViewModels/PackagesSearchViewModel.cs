@@ -20,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events;
@@ -31,6 +30,7 @@ using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Services;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -57,19 +57,35 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this._application = application;
             this._busyManager = busyManager;
             this._interactionService = interactionService;
-            _configurationService = configurationService;
+            this._configurationService = configurationService;
             this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand);
             this._isAllUsers = application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.InstalledForAllUsers;
 
+            eventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
             eventAggregator.GetEvent<CustomPackageDirectoriesChangedEvent>().Subscribe(this.OnCustomPackageDirsChanged, ThreadOption.UIThread);
 
-            this.Sources.Add(new SourceViewModel(PackageQuerySource.InstalledForCurrentUser(), "Current user"));
-            this.Sources.Add(new SourceViewModel(PackageQuerySource.InstalledForAllUsers(), "All users"));
-            this.Sources.Add(new SourceViewModel(PackageQuerySource.FromFolder(null), "Folder selected by user"));
-            this._selectedSource = this.Sources.FirstOrDefault();
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.InstalledForCurrentUser(), "Current user"));
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.InstalledForAllUsers(), "All users"));
+            this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(null), "Folder selected by user"));
+
+            if (this._application.ApplicationState.Packages.Mode.Type == PackageQuerySourceType.Installed)
+            {
+                if (UserHelper.IsAdministrator())
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == PackageQuerySourceType.InstalledForAllUsers) ?? this.Sources.FirstOrDefault();
+                }
+                else
+                {
+                    this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == PackageQuerySourceType.InstalledForCurrentUser) ?? this.Sources.FirstOrDefault();
+                }
+            }
+            else
+            {
+                this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == this._application.ApplicationState.Packages.Mode.Type) ?? this.Sources.FirstOrDefault();
+            }
 
             this.LoadCustomDirs(true);
 
@@ -92,7 +108,21 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 this.LoadContext(selected.SourceType);
             }, p => ((SourceViewModel)p)?.SourceType.Type == PackageQuerySourceType.Directory);
         }
-        
+
+        private void OnGetPackages(UiExecutingPayload<GetPackagesCommand> obj)
+        {
+            if (!obj.Request.Source.HasValue)
+            {
+                return;
+            }
+
+            this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == obj.Request.Source.Value.Type);
+
+            this.OnPropertyChanged(nameof(SelectedSource));
+            this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(IsAllUsers));
+        }
+
         public string SearchKey
         {
             get => this._application.ApplicationState.Packages.SearchKey;
@@ -114,7 +144,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         }
 
         public ObservableCollection<SourceViewModel> Sources { get; } = new();
-
+        
         public SourceViewModel SelectedSource
         {
             get => this._selectedSource;
@@ -192,12 +222,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             if (!customDirs.Any())
             {
                 // Add a dummy entry
-                this.Sources.Add(new SourceViewModel(PackageQuerySource.FromFolder(null)));
+                this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(null)));
             }
 
             foreach (var cd in customDirs)
             {
-                this.Sources.Add(new SourceViewModel(PackageQuerySource.FromFolder(cd.Path, cd.IsRecurse), cd.DisplayName ?? Path.GetFileName(cd.Path)));
+                this.Sources.Add(new SourceViewModel(this, PackageQuerySource.FromFolder(cd.Path, cd.IsRecurse), cd.DisplayName ?? Path.GetFileName(cd.Path)));
             }
             
             if (selectedDirectory != null)
@@ -235,7 +265,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 
             var mode = this._application.ApplicationState.Packages.Mode;
             this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
+
             this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
         }
 
         private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
@@ -244,8 +276,10 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             this.OnPropertyChanged(nameof(IsAllUsers));
 
             var mode = this._application.ApplicationState.Packages.Mode;
+            
             this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
             this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
         }
 
         private void OnGetPackages(UiCancelledPayload<GetPackagesCommand> obj)
@@ -255,7 +289,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 
             var mode = this._application.ApplicationState.Packages.Mode;
             this._selectedSource = this.Sources.FirstOrDefault(s => s.SourceType.Type == mode.Type && s.SourceType.Path == mode.Path) ?? this.Sources.FirstOrDefault();
+            
             this.OnPropertyChanged(nameof(SourceType));
+            this.OnPropertyChanged(nameof(SelectedSource));
         }
 
         private async void LoadContext(PackageQuerySource mode)
