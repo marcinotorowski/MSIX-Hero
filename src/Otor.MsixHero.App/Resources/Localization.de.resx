@@ -1288,7 +1288,7 @@
     <value>Vollständiger Name</value>
   </data>
   <data name="Packages_List_ContextMenu_Copy_InstallPath" xml:space="preserve">
-    <value>Installationspfad</value>
+    <value>Ordnerpfad</value>
   </data>
   <data name="Packages_List_ContextMenu_Copy_Name" xml:space="preserve">
     <value>Name</value>
@@ -1309,7 +1309,7 @@
     <value>Config.json</value>
   </data>
   <data name="Packages_List_ContextMenu_Open_InstallFolder" xml:space="preserve">
-    <value>Installationsordner</value>
+    <value>Ordner</value>
   </data>
   <data name="Packages_List_ContextMenu_Open_ManifestFile" xml:space="preserve">
     <value>Manifest-Datei</value>

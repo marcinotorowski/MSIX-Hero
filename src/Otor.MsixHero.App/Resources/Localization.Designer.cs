@@ -10775,7 +10775,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install path.
+        ///   Looks up a localized string similar to Directory path.
         /// </summary>
         public static string Packages_List_ContextMenu_Copy_InstallPath {
             get {
@@ -10838,7 +10838,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install folder.
+        ///   Looks up a localized string similar to Folder.
         /// </summary>
         public static string Packages_List_ContextMenu_Open_InstallFolder {
             get {

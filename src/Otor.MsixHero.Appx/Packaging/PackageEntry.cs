@@ -106,6 +106,8 @@ namespace Otor.MsixHero.Appx.Packaging
 
         public bool IsRunning { get; set; }
 
+        public bool IsInstalled => this.SignatureKind != SignatureKind.Unknown;
+
         public Uri AppInstallerUri { get; set; }
 
         public async Task<AppxPackage> ToAppxPackage(CancellationToken cancellationToken = default)

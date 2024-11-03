@@ -372,14 +372,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             this.SetTools();
             var frameworkElement = (FrameworkElement)sender;
             // ReSharper disable once PossibleNullReferenceException
-            var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().Last();
+            var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().LastOrDefault(m => m.Command == MsixHeroRoutedUICommands.RunTool);
+            if (lastMenu == null)
+            {
+                return;
+            }
 
             lastMenu.Items.Clear();
+            // ReSharper disable once PossibleNullReferenceException
             foreach (var item in this._tools)
             {
                 lastMenu.Items.Add(item);
             }
-
+            
             lastMenu.Items.Add(new Separator());
             lastMenu.Items.Add(new MenuItem
             {

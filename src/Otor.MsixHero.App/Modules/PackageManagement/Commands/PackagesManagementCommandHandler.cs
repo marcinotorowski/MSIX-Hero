@@ -187,7 +187,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -371,7 +371,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private bool CanMountRegistry()
         {
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -397,7 +397,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private bool CanDismountRegistry()
         {
             var selection = this._application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
+            if (selection.Count != 1 || !this.AreAllSelectedInstalled())
             {
                 return false;
             }
@@ -544,16 +544,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
         }
 
-        private bool CanStartApp(object parameter) => this.IsSingleSelected();
+        private bool CanStartApp(object parameter) => this.IsSingleSelected() && this.AreAllSelectedInstalled();
 
         private bool CanRunTool(object parameter)
         {
-            if (!(parameter is ToolListConfiguration))
-            {
-                return false;
-            }
+            //if (!(parameter is ToolListConfiguration))
+            //{
+            //    return false;
+            //}
 
-            return this.IsSingleSelected();
+            return this.IsSingleSelected() && this.AreAllSelectedInstalled();
         }
 
         private async void OnRunTool(object parameter)
@@ -721,7 +721,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this._application.ApplicationState.Packages.SelectedPackages.Any(p => p.SignatureKind == SignatureKind.Store || p.AppInstallerUri != null);
         }
 
-        private bool CanChangeVolume() => this.GetSingleOrDefaultSelection()?.InstallDirPath != null;
+        private bool CanChangeVolume() =>  this.GetSingleOrDefaultSelection()?.InstallDirPath != null && this.AreAllSelectedInstalled();
 
         private void OnChangeVolume()
         {
@@ -858,7 +858,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
         }
 
-        private bool CanRemovePackage() => this.IsAnySelected();
+        private bool CanRemovePackage() => this.IsAnySelected() && this.AreAllSelectedInstalled();
 
         private bool CanOpenStore() => this.IsSingleSelected() && this._application.ApplicationState.Packages.SelectedPackages.FirstOrDefault()?.SignatureKind == SignatureKind.Store;
 
@@ -872,7 +872,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this._application.ApplicationState.Packages.SelectedPackages[0].PackageType == MsixApplicationType.Win32Psf;
         }
 
-        private bool CanOpenManifest() => this.IsSingleSelected();
+        private bool CanOpenManifest() => this.IsSingleSelected() && this.AreAllSelectedInstalled();
 
         private void OnOpenManifest()
         {
@@ -916,6 +916,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             return true;
+        }
+
+        private bool AreAllSelectedInstalled()
+        {
+            if (!this._application.ApplicationState.Packages.SelectedPackages.Any())
+            {
+                return false;
+            }
+
+            return this._application.ApplicationState.Packages.SelectedPackages.All(p => p.IsInstalled);
         }
 
         private bool IsAnySelected()
@@ -1019,6 +1029,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         {
             var selection = this.GetSingleOrDefaultSelection();
             if (selection?.PackageFamilyName == null)
+            {
+                return false;
+            }
+
+            if (!this.AreAllSelectedInstalled())
             {
                 return false;
             }
