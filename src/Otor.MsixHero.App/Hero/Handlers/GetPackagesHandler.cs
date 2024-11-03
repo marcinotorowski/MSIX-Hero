@@ -65,9 +65,23 @@ namespace Otor.MsixHero.App.Hero.Handlers
                         so = SearchOption.TopDirectoryOnly;
                     }
 
-                    var allFiles = System.IO.Directory.EnumerateFiles(actualPath, "*.msix", so);
+                    var allFiles = Directory.EnumerateFiles(actualPath, string.Empty, so);
 
-                    results = await PackageEntryExtensions.FromReaders(allFiles.Select(FileReaderFactory.CreateFileReader), checkIfRunning: true, cancellationToken: cancellationToken).ToListAsync(cancellationToken: cancellationToken);
+                    Func<string, bool> filePredicate = fullFilePath =>
+                    {
+                        switch (Path.GetExtension(fullFilePath).ToLowerInvariant())
+                        {
+                            case ".msix":
+                            case ".appx":
+                                return true;
+                            case ".xml":
+                                return string.Equals(Path.GetFileName(fullFilePath), "appxmanifest.xml", StringComparison.OrdinalIgnoreCase);
+                        }
+
+                        return false;
+                    };
+
+                    results = await PackageEntryExtensions.FromReaders(allFiles.Where(filePredicate).Select(FileReaderFactory.CreateFileReader), checkIfRunning: true, cancellationToken: cancellationToken).ToListAsync(cancellationToken: cancellationToken);
 
                     this._commandExecutor.ApplicationState.Packages.AllPackages.Clear();
                     this._commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
