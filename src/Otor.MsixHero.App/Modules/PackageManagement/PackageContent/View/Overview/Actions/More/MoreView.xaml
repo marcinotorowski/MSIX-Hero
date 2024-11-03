@@ -31,8 +31,11 @@
             </b:Interaction.Behaviors>
         </Button>
 
-        <Label Content="{localization:Loc PackageExpert_App_SendTo}" />
+        <Label
+            HorizontalAlignment="Stretch" 
+            Content="{localization:Loc PackageExpert_App_SendTo}" />
         <Button 
+            HorizontalAlignment="Stretch"
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
@@ -46,6 +49,7 @@
 
         <Button 
             Style="{StaticResource ActionButton}"
+            HorizontalAlignment="Stretch"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.ModificationPackage}">
             <controls:LabelWithIcon 
@@ -57,6 +61,7 @@
         </Button>
 
         <Button
+            HorizontalAlignment="Stretch"
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.AppInstaller}">
@@ -69,6 +74,7 @@
         </Button>
 
         <Button
+            HorizontalAlignment="Stretch"
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
@@ -84,6 +90,7 @@
         </Button>
 
         <Button
+            HorizontalAlignment="Stretch"
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
@@ -99,10 +106,12 @@
         </Button>
 
         <Label
+            HorizontalAlignment="Stretch"
             Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
             Content="{localization:Loc PackageExpert_App_Other}" />
 
         <Button 
+            HorizontalAlignment="Stretch"
             Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
