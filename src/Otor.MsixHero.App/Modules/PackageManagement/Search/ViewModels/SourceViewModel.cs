@@ -1,15 +1,14 @@
-﻿using JetBrains.Annotations;
-using Otor.MsixHero.App.Mvvm;
+﻿using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Services;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
-    public class SourceViewModel(PackagesSearchViewModel parent, PackageQuerySource sourceType, [CanBeNull] string displayName = null) : NotifyPropertyChanged
+    public class SourceViewModel(PackagesSearchViewModel parent, PackageQuerySource sourceType, string displayName = null) : NotifyPropertyChanged
     {
         private PackageQuerySource _sourceType = sourceType;
         
-        [CanBeNull] private string _displayName = displayName ?? ConvertToDisplayName(sourceType);
-        [CanBeNull] private string _displayPath = ConvertToDisplayPath(sourceType);
+        private string _displayName = displayName ?? ConvertToDisplayName(sourceType);
+        private string _displayPath = ConvertToDisplayPath(sourceType);
         
         public PackageQuerySource SourceType
         {
@@ -26,7 +25,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             }
         }
 
-        [CanBeNull]
         public string DisplayName
         {
             get => _displayName;
@@ -39,7 +37,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
             }
         }
 
-        [CanBeNull]
         public string DisplayPath
         {
             get => _displayPath;
