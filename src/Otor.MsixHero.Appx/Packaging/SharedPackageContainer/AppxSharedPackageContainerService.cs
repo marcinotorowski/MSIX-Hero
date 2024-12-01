@@ -27,25 +27,53 @@ using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Exceptions;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
 namespace Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 
 public class AppxSharedPackageContainerService : IAppxSharedPackageContainerService
 {
+    public AppxSharedPackageContainerService()
+    {
+    }
+
     private Lazy<SharedPackageContainerManager> _manager = new(SharedPackageContainerManager.GetDefault);
 
-    public Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<IList<Entities.SharedPackageContainer>> GetAll(CancellationToken cancellationToken = default)
     {
-        var containers = this._manager.Value.FindContainers(new FindSharedPackageContainerOptions());
+        // Note: Some issues with SharedPackageContainerManager, let's revert to PowerShell
+        var pss = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
+        pss.AddCommand("Get-AppSharedPackageContainer");
+        var powerShellResult = await pss.InvokeAsync().ConfigureAwait(false);
 
         IList<Entities.SharedPackageContainer> list = new List<Entities.SharedPackageContainer>();
+        foreach (var item in powerShellResult)
+        {
+            var propName = item.Properties.FirstOrDefault(p => p.Name == "Name")?.Value as string;
+            var propId = item.Properties.FirstOrDefault(p => p.Name == "Id")?.Value as string;
+            var propPackageFamilies = item.Properties.FirstOrDefault(p => p.Name == "PackageFamilyNames")?.Value as IList<string> ?? Array.Empty<string>();
+
+            var spc = new Entities.SharedPackageContainer()
+            {
+                Id = propId,
+                Name = propName,
+                PackageFamilies = propPackageFamilies.Select(pfn => new SharedPackageFamily { FamilyName = pfn }).ToList()
+            };
+
+            list.Add(spc);
+        }
+
+        return list;
+
+        var containers = this._manager.Value.FindContainers(new FindSharedPackageContainerOptions());
+
         foreach (var result in containers)
         {
 
             list.Add(SourceToSharedContainer(result));
         }
 
-        return Task.FromResult(list);
+        return list;
     }
 
     public async Task<Entities.SharedPackageContainer> Add(

@@ -24,20 +24,24 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer;
 using Otor.MsixHero.Appx.Packaging.SharedPackageContainer.Entities;
+using Otor.MsixHero.Elevation;
 
 namespace Otor.MsixHero.App.Hero.Handlers;
 
 public class GetSharedPackageContainersHandler : IRequestHandler<GetSharedPackageContainersCommand, IList<SharedPackageContainer>>
 {
+    private readonly IUacElevation _uacElevation;
     private readonly IAppxSharedPackageContainerService _containerService;
     private readonly IMsixHeroCommandExecutor _commandExecutor;
     private readonly IBusyManager _busyManager;
 
     public GetSharedPackageContainersHandler(
+        IUacElevation uacElevation,
         IMsixHeroCommandExecutor commandExecutor,
         IBusyManager busyManager,
         IAppxSharedPackageContainerService containerService)
     {
+        _uacElevation = uacElevation;
         this._containerService = containerService;
         this._commandExecutor = commandExecutor;
         this._busyManager = busyManager;

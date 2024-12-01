@@ -6,7 +6,6 @@ Breaking changes:
 New features:
 * It is now possible to show packages in a specific folder (83b31861, e5c64e05, 8639ab33)
 * PSF analyzer now supports [MSIX Helper](https://techcommunity.microsoft.com/discussions/msix-discussions/msix-helper/3935229)  (dbad0b95)
-* A new screen for managing Shared Package Containers (c2986972)
 
 Improvements:
 * Support for human-friendly display of Windows 11 versions 22H2, 23H2, and 24H2 (5fc1ce2f)

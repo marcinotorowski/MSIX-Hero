@@ -107,7 +107,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             }
             catch (Exception e)
             {
-                this._interactionService.ShowError("The container could not be reset. " + e.GetBaseException().Message);
+                this._interactionService.ShowError("The container could not be deleted. " + e.GetBaseException().Message);
                 return;
             }
             finally
