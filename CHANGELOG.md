@@ -1,3 +1,24 @@
+# 3.1.0
+
+Breaking changes:
+* MSIX Hero has been migrated to .NET 8 (486eee0d)
+
+New features:
+* It is now possible to show packages in a specific folder (83b31861, e5c64e05, 8639ab33)
+* PSF analyzer now supports [MSIX Helper](https://techcommunity.microsoft.com/discussions/msix-discussions/msix-helper/3935229)  (dbad0b95)
+* A new screen for managing Shared Package Containers (c2986972)
+
+Improvements:
+* Support for human-friendly display of Windows 11 versions 22H2, 23H2, and 24H2 (5fc1ce2f)
+* Updated `msixmgr` to version 1.2 (486eee0d)
+* Improved progress display for MSIX packing (79a8734a)
+
+Resolved issues:
+* Fixed an issue where the default filter state caused no packages to be shown for new MSIX Hero users (ba0aa3c8)
+* Corrected button alignment in the More menu (8eef21fd)
+* Resolved an issue with retrieving Authenticode signatures from files located on UNC paths (b13cbd49)
+* Addressed incorrect flag handling for compression and validation, where the meanings of the flags were reversed (82bf81ae)
+
 # 3.0.0
 
 Feature highlights:
