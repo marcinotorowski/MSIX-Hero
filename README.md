@@ -7,7 +7,7 @@ MSIX Hero is an open source MSIX manager and toolkit. The feature list is availa
 Bug reports, feature requests and pull requests are welcome.
 
 ## Requirements
-* .NET 8.0
+* .NET 9.0
 * Windows 10 1809 or later / Windows 11
 
 ## Official binaries ###
@@ -16,7 +16,7 @@ You can download official binaries (signed + deployable via MSIX) from the offic
 ## Build
 ## Requirements
 * Visual Studio 2022
-* .NET 8
+* .NET 9 SDK
 * Windows SDK 10.0.22621.0
 
 ### How to Build
