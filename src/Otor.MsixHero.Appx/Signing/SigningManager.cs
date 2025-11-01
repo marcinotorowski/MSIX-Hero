@@ -401,16 +401,7 @@ namespace Otor.MsixHero.Appx.Signing
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                string type;
-                
-                if (x509[0].SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    type = x509[0].SignatureAlgorithm.FriendlyName.Substring(0, x509[0].SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
-                }
-                else
-                {
-                    throw new NotSupportedException(string.Format(Resources.Localization.Signing_AlgNotSupported, x509[0].SignatureAlgorithm.FriendlyName));
-                }
+                var type = AlgorithmHelper.GetAlgorithmTypeFromFriendlyName(x509[0].SignatureAlgorithm.FriendlyName ?? string.Empty);
 
                 Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
 
@@ -551,16 +542,8 @@ namespace Otor.MsixHero.Appx.Signing
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                string type;
-                if (x509.SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    type = x509.SignatureAlgorithm.FriendlyName.Substring(0, x509.SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
-                }
-                else
-                {
-                    throw new NotSupportedException(string.Format(Resources.Localization.Signing_Test_AlgorithmNotSupported_Format, x509.SignatureAlgorithm.FriendlyName));
-                }
 
+                var type = AlgorithmHelper.GetAlgorithmTypeFromFriendlyName(x509.SignatureAlgorithm.FriendlyName ?? string.Empty);
                 var openTextPassword = new System.Net.NetworkCredential(string.Empty, password).Password;
 
                 Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);

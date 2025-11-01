@@ -51,12 +51,8 @@ public class SigningTestService : ISigningTestService
             var signTool = new SignToolWrapper();
             var x509 = new X509Certificate2(await File.ReadAllBytesAsync(pfxPath, cancellation).ConfigureAwait(false), password);
 
-            string type;
-            if (x509.SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                type = x509.SignatureAlgorithm.FriendlyName.Substring(0, x509.SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
-            }
-            else
+            var type = AlgorithmHelper.GetAlgorithmTypeFromFriendlyName(x509.SignatureAlgorithm.FriendlyName ?? string.Empty);
+            if (string.IsNullOrEmpty(type))
             {
                 return new SignTestResult(string.Format(Resources.Localization.Signing_Test_AlgorithmNotSupported_Format, x509.SignatureAlgorithm.FriendlyName), SignTestResultType.Error);
             }
@@ -141,12 +137,9 @@ public class SigningTestService : ISigningTestService
                 return new SignTestResult(string.Format(Resources.Localization.Signing_Test_WrongThumbPrint_Format, thumbprint), SignTestResultType.Error);
             }
 
-            string type;
-            if (x509[0].SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                type = x509[0].SignatureAlgorithm.FriendlyName?.Substring(0, x509[0].SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
-            }
-            else
+            var type = AlgorithmHelper.GetAlgorithmTypeFromFriendlyName(x509[0].SignatureAlgorithm.FriendlyName ?? string.Empty);
+
+            if (string.IsNullOrEmpty(type))
             {
                 return new SignTestResult(string.Format(Resources.Localization.Signing_Test_AlgorithmNotSupported_Format, x509[0].SignatureAlgorithm.FriendlyName), SignTestResultType.Error);
             }

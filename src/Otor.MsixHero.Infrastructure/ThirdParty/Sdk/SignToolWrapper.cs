@@ -125,7 +125,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             signToolArguments.Append("sign");
             signToolArguments.Append(" /debug /fd ");
             signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(algorithmType));
-            signToolArguments.Append(" /a /f ");
+            signToolArguments.Append(" /f ");
             signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(pfxPath));
 
             if (!string.IsNullOrEmpty(password))
@@ -208,7 +208,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 signToolArguments.Append(" /td SHA256");
             }
 
-            signToolArguments.Append(" /a /s MY ");
+            signToolArguments.Append(" /s MY ");
             signToolArguments.Append(" /sha1 ");
             signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(thumbprint));
 
