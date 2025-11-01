@@ -37,25 +37,28 @@ namespace Otor.MsixHero.Appx.Common.WindowsVersioning
                 new (VersionRange.Exact("6.3.9600"), version => new AppxTargetOperatingSystem("Windows 8.1 / Server 2012 R2", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win81) ),
 
                 // Windows 10
-                new (VersionRange.Exact("10.0.10240"), version => new AppxTargetOperatingSystem("Windows 10 1507", "RTM", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.10586"), version => new AppxTargetOperatingSystem("Windows 10 1511", "November Update", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.14393"), version => new AppxTargetOperatingSystem("Windows 10 1607", "Anniversary Update", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.15063"), version => new AppxTargetOperatingSystem("Windows 10 1703", "Creators Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.16299"), version => new AppxTargetOperatingSystem("Windows 10 1709", "Fall Creators Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.17134"), version => new AppxTargetOperatingSystem("Windows 10 1803", "April 2018 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.17763"), version => new AppxTargetOperatingSystem("Windows 10 1809", "October 2018 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.18362"), version => new AppxTargetOperatingSystem("Windows 10 1903", "May 2019 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.18363"), version => new AppxTargetOperatingSystem("Windows 10 1909", "November 2019 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.19041"), version => new AppxTargetOperatingSystem("Windows 10 2004", "May 2020 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.19042"), version => new AppxTargetOperatingSystem("Windows 10 20H2", "October 2020 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
-                new (VersionRange.Exact("10.0.19043"), version => new AppxTargetOperatingSystem("Windows 10 21H1", "May 2021 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                // https://learn.microsoft.com/en-us/windows/release-health/release-information
+                new (VersionRange.Between("10.0.10240", true, "10.0.10586", false), version => new AppxTargetOperatingSystem("Windows 10 1507", "RTM", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.10586", true, "10.0.14393", false), version => new AppxTargetOperatingSystem("Windows 10 1511", "November Update", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.14393", true, "10.0.15063", false), version => new AppxTargetOperatingSystem("Windows 10 1607", "Anniversary Update", AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.15063", true, "10.0.16299", false), version => new AppxTargetOperatingSystem("Windows 10 1703", "Creators Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.16299", true, "10.0.17134", false), version => new AppxTargetOperatingSystem("Windows 10 1709", "Fall Creators Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.17134", true, "10.0.17763", false), version => new AppxTargetOperatingSystem("Windows 10 1803", "April 2018 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.17763", true, "10.0.18362", false), version => new AppxTargetOperatingSystem("Windows 10 1809", "October 2018 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.18362", true, "10.0.18363", false), version => new AppxTargetOperatingSystem("Windows 10 1903", "May 2019 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.18363", true, "10.0.19041", false), version => new AppxTargetOperatingSystem("Windows 10 1909", "November 2019 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.19041", true, "10.0.19042", false), version => new AppxTargetOperatingSystem("Windows 10 2004", "May 2020 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.19042", true, "10.0.19043", false), version => new AppxTargetOperatingSystem("Windows 10 20H2", "October 2020 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.19043", true, "10.0.19044", true), version => new AppxTargetOperatingSystem("Windows 10 21H1", "May 2021 Update", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
+                new (VersionRange.Between("10.0.19045", true, "10.0.19045.9999", true), version => new AppxTargetOperatingSystem("Windows 10 21H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win10) ),
                 
                 // Windows 11
                 // https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information
-                new (VersionRange.Between("10.0.22000", true, "10.0.22000.3260", true), version => new AppxTargetOperatingSystem("Windows 11 21H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
-                new (VersionRange.Between("10.0.22000.3260", false, "10.0.22621.4317", true), version => new AppxTargetOperatingSystem("Windows 11 22H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
-                new (VersionRange.Between("10.0.22621.4317", false, "10.0.22631.4317", true), version => new AppxTargetOperatingSystem("Windows 11 23H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
-                new (VersionRange.Between("10.0.22631.4317", false, "10.0.26100.2033", true), version => new AppxTargetOperatingSystem("Windows 11 24H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
+                new (VersionRange.Between("10.0.22000", true, "10.0.22621", false), version => new AppxTargetOperatingSystem("Windows 11 21H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
+                new (VersionRange.Between("10.0.22621", true, "10.0.22631", false), version => new AppxTargetOperatingSystem("Windows 11 22H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
+                new (VersionRange.Between("10.0.22631", true, "10.0.26100", false), version => new AppxTargetOperatingSystem("Windows 11 23H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
+                new (VersionRange.Between("10.0.26100", true, "10.0.26200", false), version => new AppxTargetOperatingSystem("Windows 11 24H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
+                new (VersionRange.Between("10.0.26200", true, "10.0.26200.9999", true), version => new AppxTargetOperatingSystem("Windows 11 25H2", AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) ),
 
                 // Generic Windows 7 builds
                 new (VersionRange.Between("6.1.0", true, "6.2.0", false), version => new AppxTargetOperatingSystem("Windows 7 SP1 / Server 2008 R2 Build " + version.Build, AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win7) ),
@@ -70,7 +73,7 @@ namespace Otor.MsixHero.Appx.Common.WindowsVersioning
                 new (VersionRange.Between("10.0.0", true, "10.0.22000", false), version => new AppxTargetOperatingSystem("Windows 10 Build " + version.Build, version.Build >= 15063 ? AppxTargetOperatingSystemType.MsixNativeSupported : AppxTargetOperatingSystemType.MsixCore, WindowsVersion.Win10) ),
 
                 // Future Windows 11 builds
-                new (VersionRange.HigherThan("10.0.26100.2033"), version => new AppxTargetOperatingSystem("Windows 11 Build " + version.Build, AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) )
+                new (VersionRange.HigherThan("10.0.26200.9999"), version => new AppxTargetOperatingSystem("Windows 11 Build " + version.Build, AppxTargetOperatingSystemType.MsixNativeSupported, WindowsVersion.Win11) )
             ];
         }
 

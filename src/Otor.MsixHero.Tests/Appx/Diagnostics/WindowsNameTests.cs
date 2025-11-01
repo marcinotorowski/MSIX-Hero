@@ -45,6 +45,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var windows1122H2 = new Tuple<string, string>("Windows.Desktop", "10.0.22621");
             var windows1123H2 = new Tuple<string, string>("Windows.Desktop", "10.0.22631");
             var windows1124H2 = new Tuple<string, string>("Windows.Desktop", "10.0.26100");
+            var windows1125H2 = new Tuple<string, string>("Windows.Desktop", "10.0.26200");
             var windowsOther = new Tuple<string, string>("Windows.Desktop", "10.0.99999");
 
             var parsedWindows7 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows7.Item1, windows7.Item2);
@@ -66,6 +67,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var parsedWindows1122H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1122H2.Item1, windows1122H2.Item2);
             var parsedWindows1123H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1123H2.Item1, windows1123H2.Item2);
             var parsedWindows1124H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1124H2.Item1, windows1124H2.Item2);
+            var parsedWindows1125H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1125H2.Item1, windows1125H2.Item2);
             var parsedWindowsOther = WindowsNames.GetOperatingSystemFromNameAndVersion(windowsOther.Item1, windowsOther.Item2);
             
             // Test if technical versions were recognized
@@ -88,6 +90,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.That(parsedWindows1122H2.TechnicalVersion, Is.EqualTo("10.0.22621"));
             Assert.That(parsedWindows1123H2.TechnicalVersion, Is.EqualTo("10.0.22631"));
             Assert.That(parsedWindows1124H2.TechnicalVersion, Is.EqualTo("10.0.26100"));
+            Assert.That(parsedWindows1125H2.TechnicalVersion, Is.EqualTo("10.0.26200"));
             Assert.That(parsedWindowsOther.TechnicalVersion, Is.EqualTo("10.0.99999"));
 
             // Test if display versions were recognized
@@ -110,6 +113,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.That(parsedWindows1122H2.Name, Is.EqualTo("Windows 11 22H2"));
             Assert.That(parsedWindows1123H2.Name, Is.EqualTo("Windows 11 23H2"));
             Assert.That(parsedWindows1124H2.Name, Is.EqualTo("Windows 11 24H2"));
+            Assert.That(parsedWindows1125H2.Name, Is.EqualTo("Windows 11 25H2"));
             Assert.That(parsedWindowsOther.Name, Is.EqualTo("Windows 11 Build 99999"));
 
             // Test if type of support for MSIX was recognized
@@ -133,6 +137,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.That(parsedWindows1122H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
             Assert.That(parsedWindows1123H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
             Assert.That(parsedWindows1124H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
+            Assert.That(parsedWindows1125H2.IsNativeMsixPlatform, Is.EqualTo(AppxTargetOperatingSystemType.MsixNativeSupported));
 
             // Test if marketing names were recognized
             Assert.That(parsedWindows101507.MarketingCodename, Is.EqualTo("RTM"));
