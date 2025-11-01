@@ -103,7 +103,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
 
             try
             {
-                await this._uac.AsAdministrator<IAppxSharedPackageContainerService>().Reset(this._application.ApplicationState.Containers.SelectedContainer?.Name).ConfigureAwait(false);
+                await this._uac.AsAdministrator<IAppxSharedPackageContainerService>().Remove(this._application.ApplicationState.Containers.SelectedContainer?.Name).ConfigureAwait(false);
             }
             catch (Exception e)
             {
