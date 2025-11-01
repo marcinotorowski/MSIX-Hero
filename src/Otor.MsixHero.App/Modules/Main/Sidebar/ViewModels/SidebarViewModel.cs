@@ -66,10 +66,10 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                     NavigationPaths.PackageManagement,
                     TabPackages),
 
-                 /*new SidebarItemViewModel(
+                new SidebarItemViewModel(
                      ApplicationMode.Containers,
                      NavigationPaths.Containers,
-                     TabContainer),*/
+                     TabContainer),
 
                 new SidebarItemViewModel(
                     ApplicationMode.VolumeManager,
