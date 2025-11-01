@@ -1,5 +1,5 @@
 ﻿// MSIX Hero
-// Copyright (C) 2024 Marcin Otorowski
+// Copyright (C) 2025 Marcin Otorowski
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -78,6 +78,15 @@ namespace Otor.MsixHero.Infrastructure.Logging
                 FileName = logFile,
                 Header = GetHeader()
             };
+
+            // Suppress noisy MediatR license logger (recommended by MediatR for WPF apps)
+            // This will prevent any logs coming from the LuckyPennySoftware.MediatR.License namespace.
+            var suppressRule = new NLog.Config.LoggingRule("LuckyPennySoftware.MediatR.License*", NLog.LogLevel.Off, fileTarget)
+            {
+                Final = true
+            };
+            // Insert suppress rule first so it takes precedence
+            config.AddRule(suppressRule);
 
             config.AddRuleForAllLevels(fileTarget);
             config.AddRule(LogLevel.Warn, LogLevel.Fatal, new ColoredConsoleTarget

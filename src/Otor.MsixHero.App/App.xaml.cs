@@ -1,5 +1,5 @@
 ﻿// MSIX Hero
-// Copyright (C) 2024 Marcin Otorowski
+// Copyright (C) 2025 Marcin Otorowski
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Helpers.Tiers;
 using Otor.MsixHero.App.Helpers.Update;
@@ -358,11 +359,13 @@ namespace Otor.MsixHero.App
     {
         public static IUnityContainer RegisterMediator(this IUnityContainer container)
         {
-            return container
-                .RegisterFactory<IMediator>(c => new Mediator(c.Resolve<IServiceProvider>()), new SingletonLifetimeManager())
-                .RegisterInstance<IServiceProvider>(new ContainerServiceProvider(container));
-        }
+            return container.RegisterFactory<IMediator>(c => new Mediator(c.Resolve<IServiceProvider>()), new SingletonLifetimeManager())
+ .RegisterInstance<IServiceProvider>(new ContainerServiceProvider(container));
+ }
 
+        /// <summary>
+        /// Register MediatR handlers present in the provided assembly.
+        /// </summary>
         public static IUnityContainer RegisterMediatorHandlers(this IUnityContainer container, Assembly assembly)
         {
             return container
@@ -370,7 +373,6 @@ namespace Otor.MsixHero.App
                 .RegisterTypesImplementingType(assembly, typeof(IRequestHandler<,>))
                 .RegisterNamedTypesImplementingType(assembly, typeof(INotificationHandler<>));
         }
-        
 
         /// <summary>
         ///     Register all implementations of a given type for provided assembly.
@@ -419,6 +421,7 @@ namespace Otor.MsixHero.App
         private class ContainerServiceProvider : IServiceProvider
         {
             private readonly IUnityContainer _container;
+            private static ILoggerFactory _loggerFactory;
 
             public ContainerServiceProvider(IUnityContainer container)
             {
@@ -427,6 +430,70 @@ namespace Otor.MsixHero.App
 
             public object GetService(Type type)
             {
+                // Provide MediatRServiceConfiguration via reflection if requested (MediatR may request this when using DI extensions)
+                try
+                {
+                    if (type.FullName == "Microsoft.Extensions.DependencyInjection.MediatRServiceConfiguration")
+                    {
+                        // Try to find the type in loaded assemblies
+                        var configType = AppDomain.CurrentDomain.GetAssemblies()
+                            .SelectMany(a =>
+                            {
+                                try { return a.GetTypes(); } catch { return []; }
+                            })
+                            .FirstOrDefault(t => t.FullName == "Microsoft.Extensions.DependencyInjection.MediatRServiceConfiguration");
+
+                        if (configType != null)
+                        {
+                            try
+                            {
+                                return Activator.CreateInstance(configType);
+                            }
+                            catch
+                            {
+                                // ignore and fallback to container
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore reflection errors
+                }
+
+                // Provide ILoggerFactory and ILogger<T> if requested
+                try
+                {
+                    // ILoggerFactory
+                    if (type.FullName == typeof(ILoggerFactory).FullName || type == typeof(ILoggerFactory))
+                    {
+                        if (_loggerFactory == null)
+                        {
+                            _loggerFactory = LoggerFactory.Create(builder => { /* no providers by default */ });
+                        }
+                            
+                        return _loggerFactory;
+                    }
+                        
+                    // ILogger<T>
+                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ILogger<>))
+                    {
+                        if (_loggerFactory == null)
+                        {
+                            _loggerFactory = LoggerFactory.Create(builder => { /* no providers by default */ });
+                        }
+                            
+                        var genericArg = type.GetGenericArguments()[0];
+                        var createLoggerMethod = typeof(ILoggerFactory).GetMethod("CreateLogger", [typeof(string)]);
+                        var logger = createLoggerMethod!.Invoke(_loggerFactory, [genericArg.FullName]);
+                        return logger;
+                    }
+                }
+                catch
+                {
+                    // ignore logging creation errors and continue to container resolution
+                }
+                
                 var enumerableType = type
                     .GetInterfaces()
                     .Concat(new[] { type })

@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
-    <Copyright>Copyright (C) 2024 by Marcin Otorowski</Copyright>
+    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+    <Copyright>Copyright (C) 2025 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
     <Product>MSIX Hero</Product>
-    <RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
-    <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
 	<AllowUnsageBlocks>true</AllowUnsageBlocks>
@@ -26,16 +24,16 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
     <PackageReference Include="chausner.PriFormat.Forked" Version="1.0.0" />
-    <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+    <PackageReference Include="ini-parser-netstandard" Version="2.5.3" />
     <PackageReference Include="Microsoft.Acs.Dgss.Client" Version="1.0.11" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.66.1" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.6" />
-    <PackageReference Include="Registry" Version="1.3.4" />
-    <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.1" />
-    <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
-    <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.78.0" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.5.4" />
+    <PackageReference Include="Registry" Version="1.5.1" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.10" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.10" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.10" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.10" />
+    <PackageReference Include="System.Text.Json" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
