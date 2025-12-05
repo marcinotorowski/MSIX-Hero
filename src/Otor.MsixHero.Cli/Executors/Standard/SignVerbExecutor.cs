@@ -247,7 +247,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             if (this.Verb.TimeStampUrl != null && !Uri.TryCreate(this.Verb.TimeStampUrl, UriKind.Absolute, out _))
             {
                 if (this.Verb.TimeStampUrl.ToLower() == "none")
-                    this.Verb.TimeStampUrl = null;
+                    this.Verb.TimeStampUrl = "";
                 else
                     return await this.GetSetValueError(nameof(SignVerb.TimeStampUrl), string.Format(Resources.Localization.CLI_Executor_Sign_Error_InvalidTimestampUrl_Format, this.Verb.TimeStampUrl));
             }
