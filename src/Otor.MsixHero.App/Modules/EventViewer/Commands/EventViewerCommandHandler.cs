@@ -70,7 +70,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
             var log = this._application.ApplicationState.EventViewer.SelectedAppxEvent;
             if (log != null)
             {
-                Clipboard.SetText(GetCopyText(log), TextDataFormat.Text);
+                Clipboard.SetText(GetCopyText(log), TextDataFormat.UnicodeText);
             }
         }
 

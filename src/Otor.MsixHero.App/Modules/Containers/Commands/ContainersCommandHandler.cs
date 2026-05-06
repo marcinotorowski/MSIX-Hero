@@ -159,7 +159,7 @@ namespace Otor.MsixHero.App.Modules.Containers.Commands
             var container = this._application.ApplicationState.Containers.SelectedContainer;
             if (container != null)
             {
-                Clipboard.SetText(GetCopyText(container), TextDataFormat.Text);
+                Clipboard.SetText(GetCopyText(container), TextDataFormat.UnicodeText);
             }
         }
 

@@ -999,11 +999,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     }
                 }
 
-                Clipboard.SetText(toCopy.ToString().TrimEnd(), TextDataFormat.Text);
+                Clipboard.SetText(toCopy.ToString().TrimEnd(), TextDataFormat.UnicodeText);
             }
             else if (parameter is string stringParameter)
             {
-                Clipboard.SetText(stringParameter, TextDataFormat.Text);
+                Clipboard.SetText(stringParameter, TextDataFormat.UnicodeText);
             }
         }
 
